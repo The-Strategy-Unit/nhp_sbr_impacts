@@ -189,7 +189,7 @@ fun_site_plot("RJR05","Countess of Chester")
 
 ## Case-mix
 
-Case mix analysis using main specialty
+Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings.
 
 ```{r top_10_specs}
 #| include: false
@@ -219,6 +219,10 @@ top_10_nonelective <- df_top_10_nonelective$der_admit_treatment_function_code
 ## Elective
 
 ```{r elective_by_spec}
+#| column: page-inset-right
+#| out-width: 100%
+#| fig-format: svg
+
 df |> 
   filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
   filter(adm_meth_desc == "elective") |>
@@ -230,11 +234,11 @@ df |>
   mutate(avg_los = round(spell_los / spells,2)) |>
   ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
   geom_line(colour = "#f9bf07") +
-  geom_point(colour = "#686F73") +
+  geom_point(colour = "#686F73", shape = 21, size = 1, alpha = 0.4, fill = "#686F73") +
   geom_vline(xintercept = "2022-43", colour = "blue") +
   facet_wrap(vars(der_admit_treatment_function_code), scales = "free") + 
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  theme(axis.text.x = element_blank()) +
   labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
        ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
        ,caption = "blue line indicates week of site switch") 
@@ -243,6 +247,9 @@ df |>
 ## Non-elective
 
 ```{r nonelective_by_spec}
+#| column: page-inset-right
+#| out-width: 100%
+#| fig-format: svg
 
 df |> 
   filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
@@ -255,11 +262,11 @@ df |>
   mutate(avg_los = round(spell_los / spells,2)) |>
   ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
   geom_line(colour = "#f9bf07") +
-  geom_point(colour = "#686F73") +
+  geom_point(colour = "#686F73", shape = 21, size = 1, alpha = 0.4, fill = "#686F73") +
   geom_vline(xintercept = "2022-43", colour = "blue") +
   facet_wrap(vars(der_admit_treatment_function_code), scales = "free") + 
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  theme(axis.text.x = element_blank()) +
   labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
        ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
        ,caption = "blue line indicates week of site switch") 

@@ -39,7 +39,8 @@ library(janitor)
 
 df <- read.csv("single_room_extract.csv") |> 
   clean_names() |>
-  mutate(yyyy_wk = paste0(yr,"-",wk)) |> 
+  mutate(wk_2 = ifelse(wk<10, paste0(0,wk), wk)) |> 
+  mutate(yyyy_wk = paste0(yr,"-",wk_2)) |> 
   mutate(avg_los = round(spell_los / spells,2))
 
 # add table to get unique period number for year-wk
@@ -51,7 +52,8 @@ periods <- df |>
   mutate(n_period = row_number())
 
 df <- df |> 
-  left_join(periods |> select(yyyy_wk, n_period), by = "yyyy_wk")
+  left_join(periods |> select(yyyy_wk, n_period), by = "yyyy_wk") |> 
+  mutate(yyyy_wk = fct_reorder(yyyy_wk, n_period))
 
 rm(periods)
 
@@ -91,7 +93,7 @@ df |>
       ungroup() |> 
       mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="#ABDDA4", linetype = "dashed", se = FALSE) +
   geom_line(colour = "#f9bf07") +
-  geom_point(colour = "#686F73") +
+  geom_point(colour = "#686F73", alpha = 0.4) +
   geom_vline(xintercept = "2022-43", colour = "blue") +
   expand_limits(y=0) +
   theme_minimal() +

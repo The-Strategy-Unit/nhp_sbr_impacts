@@ -63,6 +63,47 @@ df_post <- df |>
 
 ```
 
+```{r site_plot_function}
+#| include: false
+
+fun_site_plot <- function(sitecode, sitename){
+  
+df |> 
+  filter(der_provider_site_code == sitecode, adm_meth_desc != 'other', between(n_period, 72, 181)) |> 
+  group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) |> 
+  ungroup() |> 
+  mutate(avg_los = round(spell_los / spells,2)) |>
+  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
+  geom_smooth(data = df_pre |> 
+      filter(der_provider_site_code == sitecode, adm_meth_desc != 'other') |> 
+      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+      summarise(spells = sum(spells)
+                ,spell_los = sum(spell_los)) |> 
+      ungroup() |> 
+      mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", fullrange = TRUE, color="#ec6555", linetype = "dashed", se = FALSE) +
+  geom_smooth(data = df_post |> 
+      filter(der_provider_site_code == sitecode, adm_meth_desc != 'other') |> 
+      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+      summarise(spells = sum(spells)
+                ,spell_los = sum(spell_los)) |> 
+      ungroup() |> 
+      mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="#ABDDA4", linetype = "dashed", se = FALSE) +
+  geom_line(colour = "#f9bf07") +
+  geom_point(colour = "#686F73") +
+  geom_vline(xintercept = "2022-43", colour = "blue") +
+  expand_limits(y=0) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)
+        ,panel.grid = element_blank()) +
+  labs(title = "Average length of stay (days) by week"
+      ,subtitle = paste0(sitename, " hospital, Aug 2021 to Aug 2023")
+      ,caption = "blue line indicates week of site switch"
+      ,x = "Year and week"
+      ,y = "LoS in days")
+}
+```
 
 ## Introduction
 
@@ -70,7 +111,7 @@ The New Hospitals Programme (NHP) team have asked the Strategy Unit to provide s
 
 The Royal Liverpool is the only hospital in recent memory to have made this switch in bed composition and therefore makes a useful case study.
 
-Through necessity, this analysis is crude and indicative and carried significant cavveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future modelling.
+Through necessity, this analysis is crude and carries significant caveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future bed modelling.
 
 ## Length of stay pattern over time
 
@@ -80,65 +121,71 @@ The week of transition between the old and new hospital (officially the 20th Oct
 
 ```{r overall_trends}
 
-df |> 
-  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 72, 181)) |> 
-  group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
-  summarise(spells = sum(spells)
-            ,spell_los = sum(spell_los)) |> 
-  ungroup() |> 
-  mutate(avg_los = round(spell_los / spells,2)) |>
-  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
-  geom_smooth(data = df_pre |> 
-      filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |> 
-      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
-      summarise(spells = sum(spells)
-                ,spell_los = sum(spell_los)) |> 
-      ungroup() |> 
-      mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", fullrange = TRUE, color="red", linetype = "dashed") +
-  geom_smooth(data = df_post |> 
-      filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |> 
-      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
-      summarise(spells = sum(spells)
-                ,spell_los = sum(spell_los)) |> 
-      ungroup() |> 
-      mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="green", linetype = "dashed") +
-  geom_line(colour = "#f9bf07") +
-  geom_point(colour = "#686F73") +
-  geom_vline(xintercept = "2022-43", colour = "blue") +
-  expand_limits(y=0) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
-  labs(title = "Average length of stay (days) by week"
-      ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
-      ,caption = "blue line indicates week of site switch"
-      ,x = "Year and week"
-      ,y = "LoS in days")
+fun_site_plot("REMRQ","Royal Liverpool")
+
 ```
 
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
 
 ## Control Group
 
-Other hospitals analysis considering any variation in lengths of stay between Royal Liverpool and other hospitals in the region:
+One limitation of considering only the activity at the Royal Liverpool hospital over the specified time period is that the effects might be similar elsewhere and therefore the single/multiple bedded rooms might not be a variable of influence. 
+
+To test this, we have extracted and present the same set of activity for the 5 nearest other hospitals providing general acute services to (among others) patients from Liverpool:
 
 -   Aintree
 
 -   Whiston
-
--   Warrington
 
 -   Southport and Formby
 
 -   Ormskirk and district
 
 -   Countess of Chester
+
+:::panel-tabset
+
+### Aintree
+
+```{r control_hospital_aintree}
+
+fun_site_plot("REM21","Aintree University")
+
+```
+
+### Whiston
+
+```{r control_hospital_whiston}
+
+fun_site_plot("RBN01","Whiston")
+
+```
+
+### Southport & Formby
+
+```{r control_hospital_southport}
+
+fun_site_plot("RVY01","Southport & Formby")
+
+```
+
+### Ormskirk & District
+
+```{r control_hospital_ormskirk}
+
+fun_site_plot("RVY02","Ormskirk & District")
+
+```
+
+### Countess Chester
+
+```{r control_hospital_chester}
+
+fun_site_plot("RJR05","Countess of Chester")
+
+```
+
+:::
+
 
 ## Case-mix
 

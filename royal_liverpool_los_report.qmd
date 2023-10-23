@@ -26,13 +26,13 @@ format:
 css: styles.css
 ---
 
-## Quarto
+## Introduction
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+dhfjshglsjlgjsndgsfgsgd
 
-## Running Code
+## Time-Series
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+Time-series analysis to compare the lengths of
 
 ```{r}
 1 + 1
@@ -46,3 +46,23 @@ You can add options to executable code like this
 ```
 
 The `echo: false` option disables the printing of code (only output is displayed).
+
+## Control Group
+
+Other hospitals analysis considering any variation in lengths of stay between Royal Liverpool and other hospitals in the region:
+
+-   Aintree
+
+-   Whiston
+
+-   Warrington
+
+-   Southport and Formby
+
+-   Ormskirk and district
+
+-   Countess of Chester
+
+## Case-mix
+
+Case mix analysis using main specialty

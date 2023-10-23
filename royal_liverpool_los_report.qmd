@@ -191,7 +191,7 @@ fun_site_plot("RJR05","Countess of Chester")
 
 Case mix analysis using main specialty
 
-```{r}
+```{r top_10_specs}
 #| include: false
 
 df_top_10_elective <- df |>
@@ -218,7 +218,7 @@ top_10_nonelective <- df_top_10_nonelective$der_admit_treatment_function_code
 ::: panel-tabset
 ## Elective
 
-```{r}
+```{r elective_by_spec}
 df |> 
   filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
   filter(adm_meth_desc == "elective") |>
@@ -242,7 +242,8 @@ df |>
 
 ## Non-elective
 
-```{r}
+```{r nonelective_by_spec}
+
 df |> 
   filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
   filter(adm_meth_desc == "non_elective") |>

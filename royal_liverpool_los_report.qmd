@@ -65,11 +65,11 @@ df_post <- df |>
 
 ## Introduction
 
-The New Hospitals Programme (NHP) team have asked the Strategy Unit to provide some insight as the potential effect on length of stay of single-bed rooms compared to multi-bed rooms or wards. The following is a brief exploratory analysis of length of stay patterns for admitted patients at Royal Liverpool hospital.
+The New Hospitals Programme (NHP) team have asked the Strategy Unit to provide some insight as to the potential effect on length of stay of single-bed rooms compared to multi-bed rooms or wards. The following is a brief exploratory analysis of length of stay patterns for admitted patients at Royal Liverpool hospital.
 
 The Royal Liverpool is the only hospital in recent memory to have made this switch in bed composition and therefore makes a useful case study.
 
-Through necessity, this analysis is crude and indicative and carried significant cavveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future modelling.
+Through necessity, this analysis is crude and indicative and carries significant caveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future modelling.
 
 ## Length of stay pattern over time
 
@@ -169,12 +169,13 @@ Other hospitals analysis considering any variation in lengths of stay between Ro
 
 ## Case-mix
 
-Case mix analysis using main specialty
+An analysis has been carried out to consider by main specialty for ...
 
 ```{r}
 df_top_10_elective <- df |>
   filter(der_provider_site_code == "REMRQ") |> 
   filter(adm_meth_desc == "elective") |>
+  filter(new_site == 1) |>
   group_by(der_admit_treatment_function_code) |>
   summarise(spells_total = sum(spells))|>
   ungroup() |>
@@ -183,16 +184,15 @@ slice_max(spells_total, n = 10)
 df_top_10_nonelective <- df |>
   filter(der_provider_site_code == "REMRQ") |> 
   filter(adm_meth_desc == "non_elective") |>
+  filter(new_site == 1) |>
   group_by(der_admit_treatment_function_code) |>
   summarise(spells_total = sum(spells))|>
   ungroup() |>
   slice_max(spells_total, n = 10)
 
+
 top_10_elective <- df_top_10_elective$der_admit_treatment_function_code
 top_10_nonelective <- df_top_10_nonelective$der_admit_treatment_function_code
-
-
-
 
 
 ```
@@ -214,7 +214,7 @@ df |>
   geom_line(colour = "#f9bf07") +
   geom_point(colour = "#686F73") +
   geom_vline(xintercept = "2022-43", colour = "blue") +
-  facet_wrap(vars(der_admit_treatment_function_code), scales = "free") + 
+  facet_grid(rows = vars(der_admit_treatment_function_code), scales = "free") + 
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
   labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
@@ -222,9 +222,16 @@ df |>
        ,caption = "blue line indicates week of site switch") 
 ```
 
-## Non-elective
+## Non-Elective
 
 ```{r}
+
+```
+:::
+
+```{r}
+#| column: screen-inset-right
+
 df |> 
   filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
   filter(adm_meth_desc == "non_elective") |>
@@ -244,5 +251,5 @@ df |>
   labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
        ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
        ,caption = "blue line indicates week of site switch") 
+
 ```
-:::

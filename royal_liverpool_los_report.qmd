@@ -1,6 +1,6 @@
 ---
 title: "NHP Royal Liverpool Length of Stay"
-author: "Andrew Hood and Jacqueline Grout"
+author: "Andy Hood and Jacqueline Grout"
 editor: visual
 execute:
   echo: false
@@ -192,6 +192,8 @@ fun_site_plot("RJR05","Countess of Chester")
 Case mix analysis using main specialty
 
 ```{r}
+#| include: false
+
 df_top_10_elective <- df |>
   filter(der_provider_site_code == "REMRQ") |> 
   filter(adm_meth_desc == "elective") |>
@@ -210,10 +212,6 @@ df_top_10_nonelective <- df |>
 
 top_10_elective <- df_top_10_elective$der_admit_treatment_function_code
 top_10_nonelective <- df_top_10_nonelective$der_admit_treatment_function_code
-
-
-
-
 
 ```
 

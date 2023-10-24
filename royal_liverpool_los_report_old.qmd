@@ -1,0 +1,255 @@
+---
+title: "NHP Royal Liverpool Length of Stay"
+author: "Andrew Hood and Jacqueline Grout"
+editor: visual
+execute:
+  echo: false
+  message: false
+  warning: false
+lang: en-GB
+date: last-modified
+date-format: "YYYY-MM-DD"
+title-block-banner: "#f9bf07"
+title-block-banner-color: "#333739"
+format:
+  html:
+    embed-resources: true
+    smooth-scroll: true
+    theme: cosmo
+    fontcolor: black
+    toc: true
+    toc-location: left
+    toc-title: Summary
+    toc-depth: 3
+    callout-icon: false
+    
+css: styles.css
+---
+
+```{r load_packages}
+#| include: false
+#| 
+library(tidyverse)
+library(janitor)
+
+```
+
+```{r load_clean_data}
+#| include: false
+
+df <- read.csv("single_room_extract.csv") |> 
+  clean_names() |>
+  mutate(yyyy_wk = paste0(yr,"-",wk)) |> 
+  mutate(avg_los = round(spell_los / spells,2))
+
+# add table to get unique period number for year-wk
+periods <- df |>
+  group_by(yr,wk) |> 
+  distinct(yyyy_wk) |>
+  ungroup() |> 
+  arrange(yr, wk) |> 
+  mutate(n_period = row_number())
+
+df <- df |> 
+  left_join(periods |> select(yyyy_wk, n_period), by = "yyyy_wk")
+
+rm(periods)
+
+df_pre <- df |> 
+  filter(between(n_period,72 ,136))
+
+df_post <- df |> 
+  filter(n_period > 136)
+
+```
+
+## Introduction
+
+The New Hospitals Programme (NHP) team have asked the Strategy Unit to provide some insight as to the potential effect on length of stay of single-bed rooms compared to multi-bed rooms or wards. The following is a brief exploratory analysis of length of stay patterns for admitted patients at Royal Liverpool hospital.
+
+The Royal Liverpool is the only hospital in recent memory to have made this switch in bed composition and therefore makes a useful case study.
+
+Through necessity, this analysis is crude and indicative and carries significant caveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future modelling.
+
+## Length of stay pattern over time
+
+In order to observe the potential change in length of stay patterns in multi-bed wards and rooms in the old hospital compared to single-bed rooms in the new hospital, we plot the length of stay averages by week of all the patients admitted to Royal Liverpool (REMRQ) between August 2021 (end of legal covid restrictions) and August 2023.
+
+The week of transition between the old and new hospital (officially the 20th October 2022) is indicated by a vertical blue line on the plots.
+
+```{r overall_trends}
+
+df |> 
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 72, 181)) |> 
+  group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) |> 
+  ungroup() |> 
+  mutate(avg_los = round(spell_los / spells,2)) |>
+  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
+  geom_smooth(data = df_pre |> 
+      filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |> 
+      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+      summarise(spells = sum(spells)
+                ,spell_los = sum(spell_los)) |> 
+      ungroup() |> 
+      mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", fullrange = TRUE, color="red", linetype = "dashed") +
+  geom_smooth(data = df_post |> 
+      filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |> 
+      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+      summarise(spells = sum(spells)
+                ,spell_los = sum(spell_los)) |> 
+      ungroup() |> 
+      mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="green", linetype = "dashed") +
+  geom_line(colour = "#f9bf07") +
+  geom_point(colour = "#686F73") +
+  geom_vline(xintercept = "2022-43", colour = "blue") +
+  expand_limits(y=0) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  labs(title = "Average length of stay (days) by week"
+      ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
+      ,caption = "blue line indicates week of site switch"
+      ,x = "Year and week"
+      ,y = "LoS in days")
+```
+
+```{r}
+df |> 
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 72, 181)) |> 
+  group_by(der_provider_site_code, adm_meth_desc, yr, wk, yyyy_wk, n_period) |> 
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) |> 
+  ungroup() |> 
+  mutate(avg_los = round(spell_los / spells,2)) |>
+  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
+  geom_smooth(data = df_pre |> 
+      filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |> 
+      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+      summarise(spells = sum(spells)
+                ,spell_los = sum(spell_los)) |> 
+      ungroup() |> 
+      mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", fullrange = TRUE, color="red", linetype = "dashed") +
+  geom_smooth(data = df_post |> 
+      filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |> 
+      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+      summarise(spells = sum(spells)
+                ,spell_los = sum(spell_los)) |> 
+      ungroup() |> 
+      mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="green", linetype = "dashed") +
+  geom_line(colour = "#f9bf07") +
+  geom_point(colour = "#686F73") +
+  geom_vline(xintercept = "2022-43", colour = "blue") +
+  facet_grid(vars(adm_meth_desc), scales = "free") + 
+    expand_limits(y=0) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  labs(title = "Average length of stay (days) by week"
+      ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
+      ,caption = "blue line indicates week of site switch"
+      ,x = "Year and week"
+      ,y = "LoS in days")
+```
+
+## Control Group
+
+Other hospitals analysis considering any variation in lengths of stay between Royal Liverpool and other hospitals in the region:
+
+-   Aintree
+
+-   Whiston
+
+-   Warrington
+
+-   Southport and Formby
+
+-   Ormskirk and district
+
+-   Countess of Chester
+
+## Case-mix
+
+An analysis has been carried out to consider by main specialty for ...
+
+```{r}
+df_top_10_elective <- df |>
+  filter(der_provider_site_code == "REMRQ") |> 
+  filter(adm_meth_desc == "elective") |>
+  filter(new_site == 1) |>
+  group_by(der_admit_treatment_function_code) |>
+  summarise(spells_total = sum(spells))|>
+  ungroup() |>
+slice_max(spells_total, n = 10)
+
+df_top_10_nonelective <- df |>
+  filter(der_provider_site_code == "REMRQ") |> 
+  filter(adm_meth_desc == "non_elective") |>
+  filter(new_site == 1) |>
+  group_by(der_admit_treatment_function_code) |>
+  summarise(spells_total = sum(spells))|>
+  ungroup() |>
+  slice_max(spells_total, n = 10)
+
+
+top_10_elective <- df_top_10_elective$der_admit_treatment_function_code
+top_10_nonelective <- df_top_10_nonelective$der_admit_treatment_function_code
+
+
+```
+
+::: panel-tabset
+## Elective
+
+```{r}
+df |> 
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
+  filter(adm_meth_desc == "elective") |>
+  filter(der_admit_treatment_function_code %in% top_10_elective)|>
+  group_by(der_provider_site_code, der_admit_treatment_function_code, yr, wk, yyyy_wk, n_period) |> 
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) |> 
+  ungroup() |> 
+  mutate(avg_los = round(spell_los / spells,2)) |>
+  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
+  geom_line(colour = "#f9bf07") +
+  geom_point(colour = "#686F73") +
+  geom_vline(xintercept = "2022-43", colour = "blue") +
+  facet_grid(rows = vars(der_admit_treatment_function_code), scales = "free") + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
+       ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
+       ,caption = "blue line indicates week of site switch") 
+```
+
+## Non-Elective
+
+```{r}
+
+```
+:::
+
+```{r}
+#| column: screen-inset-right
+
+df |> 
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
+  filter(adm_meth_desc == "non_elective") |>
+  filter(der_admit_treatment_function_code %in% top_10_nonelective)|>
+  group_by(der_provider_site_code, der_admit_treatment_function_code, yr, wk, yyyy_wk, n_period) |> 
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) |> 
+  ungroup() |> 
+  mutate(avg_los = round(spell_los / spells,2)) |>
+  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
+  geom_line(colour = "#f9bf07") +
+  geom_point(colour = "#686F73") +
+  geom_vline(xintercept = "2022-43", colour = "blue") +
+  facet_wrap(vars(der_admit_treatment_function_code), scales = "free") + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
+       ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
+       ,caption = "blue line indicates week of site switch") 
+
+```

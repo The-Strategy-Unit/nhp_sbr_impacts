@@ -376,3 +376,7 @@ fun_spec_plot(top_5_nonelective[4],"non_elective", "Accident and Emergency")
 fun_spec_plot(top_5_nonelective[5],"non_elective", "Urology")
 ```
 :::
+
+::: {.callout-tip icon="false"}
+## Non-elective case-mix variation
+:::

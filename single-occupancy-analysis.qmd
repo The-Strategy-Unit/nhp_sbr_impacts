@@ -42,7 +42,7 @@ Suggest to initially choose a selection of procedures/diagnoses and then make a 
 - Staffing models and ratios may have changed with factors such as catchment area, change in working practice, loss or gaining of staff.
 - Access to only SUS data is a limiting factor in being able to fully understand the impact.
 
-## More detailed analysis
+## More detailed analysis - Next steps and recomendations
 
 After initial investigations more detailed analysis should be considered including:
 

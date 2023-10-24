@@ -22,7 +22,7 @@ periods <- df |>
   ungroup() |> 
   arrange(yr, wk) |> 
   mutate(n_period = row_number()
-         ,pseudo_date = as.Date("2020-04-12") + (n_period*7))
+         ,pseudo_date = as.Date("2020-03-15") + (n_period*7))
 
 df <- df |> 
   left_join(periods |> select(yyyy_wk, n_period,pseudo_date), by = "yyyy_wk") |> 
@@ -31,10 +31,11 @@ df <- df |>
 rm(periods)
 
 df_pre <- df |> 
-  filter(between(n_period,72 ,136))
+  filter(between(n_period,72 ,135))
 
 df_post <- df |> 
   filter(n_period > 136)
+
 
 
 

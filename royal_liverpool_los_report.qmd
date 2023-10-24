@@ -31,6 +31,7 @@ css: styles.css
 #| 
 library(tidyverse)
 library(janitor)
+library(NHSRplotthedots)
 
 ```
 
@@ -147,7 +148,7 @@ df |>
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)
         ,panel.grid = element_blank()) +
-  labs(title = paste0("Average length of stay (days) by week - ", elec_nonelec, " ",specname)
+  labs(title = paste0("Average length of stay (days) by week - ", specname)
       ,subtitle = "Royal Liverpool Hospital,  Aug 2021 to Aug 2023"
       ,caption = "blue line indicates week of site switch"
       ,x = "Year and week"
@@ -275,7 +276,7 @@ fun_site_plot("RJR05","Countess of Chester")
 
 ## Case-mix
 
-Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings.
+Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings. We have identified the top 5 treatment specialties in elective and non-elective (excluding 180) by spell volume for the period after the hospital move. These are presented below:
 
 ```{r top_5_specs}
 #| include: false
@@ -341,7 +342,13 @@ fun_spec_plot(top_5_elective[5],"elective", "Transplantation Surgery")
 ::: {.callout-tip icon="false"}
 ## Elective case-mix variation
 
-gfgdfggsgsdgsdgsdgsdgdgsdsdgsd
+Whilst the change in average length of stay for elective shows a slight trend of a reducing length of stay following the move to the new hospital site, variation can be seen between specialties.
+
+Urology and Opthalmology both show a contrasting pattern with a trend of rising length of stay. However, Urology shows a marked step change of a reduced average length of stay following the hospital move which is now rising back towards its previous level.
+
+Similar to Urology there has also been a step change of a reduced average length of stay for Hepatobiliary and Pancreatic Surgery. This change though has sustained over the 10 months since the move that are reported here.
+
+Both Colorectal and Transplantation Surgery show a declining trend in average length of stay following the hospital move. However, both specialtes have a marked step change increase in the average length of stay following the move to the new site.
 :::
 
 ### Non-Elective
@@ -381,5 +388,11 @@ fun_spec_plot(top_5_nonelective[5],"non_elective", "Elderly Medicine")
 ::: {.callout-tip icon="false"}
 ## Non-elective case-mix variation
 
-dvdsdvgksdgjdkg;skmgs;d
+The change in average length of stay for non-elective spells shows a more marked reducing length of stay than for elective spells. Within this there is variation between the top 5 non-elective specialties. Each of the 5 specialties shows a reducing trend in average length of stay.
+
+Of particular interest is Elderly Medicine where the trend prior to the move to the new site was one of increasing average length of stay. Following the move there has been a marked step change to a reduced average length of stay and this has continued to decline. A similar, although less marked, pattern can be seen in General Medicine.
+
+Both General Surgery and Cardiology also show a step change to a reduced average length of stay, albeit with a slight continuation of this decline.
+
+There is a contrasting picture for non-elective Urology where prior to the move to the new hospital there was a declining trend in average length of stay. Following the site move the data shows a marked increase in average length of stay and this average length of stay has remained fairly stable since the move. Further investigation would be needed to identify whether there has possibly been other changes within the specialty or the wider-system to lead to such a change.
 :::

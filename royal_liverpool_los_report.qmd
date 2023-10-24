@@ -1,5 +1,5 @@
 ---
-title: "NHP Royal Liverpool Length of Stay"
+title: "NHP Royal Liverpool length of stay and single-occupancy room impacts"
 author: "Andy Hood, Jacqueline Grout and Zoe Turner"
 editor: visual
 execute:
@@ -51,7 +51,8 @@ periods <- df |>
   distinct(yyyy_wk) |>
   ungroup() |> 
   arrange(yr, wk) |> 
-  mutate(n_period = row_number())
+  mutate(n_period = row_number()
+         ,pseudo_date = as.Date("2020-04-12") + (n_period*7))
 
 df <- df |> 
   left_join(periods |> select(yyyy_wk, n_period), by = "yyyy_wk") |> 
@@ -161,7 +162,7 @@ df |>
 
 The New Hospitals Programme (NHP) team are considering the assumption that introducing single rooms will reduce average length of stay by 12%. This number that has been quoted has not been verified or tested.
 
-Section 8 of the [Better, broader, safer using health data for research and analysis](https://www.gov.uk/government/publications/better-broader-safer-using-health-data-for-research-and-analysis/better-broader-safer-using-health-data-for-research-and-analysis) states: 
+Section 8 of the [Better, broader, safer using health data for research and analysis](https://www.gov.uk/government/publications/better-broader-safer-using-health-data-for-research-and-analysis/better-broader-safer-using-health-data-for-research-and-analysis) states:
 
 > Ensure all code for data curation and analysis paid for by the state through academic funders and NHS procurement is shared openly, with appropriate technical documentation, to all data users. Data preparation, analysis and visualisation is complex technical work, requiring collaboration by many individuals, who may never meet, in a range of organisations, across the NHS and other sectors. The only way to manage this shared complexity is by sharing information, as in other technical fields.
 
@@ -177,14 +178,13 @@ A BMJ systematic review [@Bertuzzie068932] suggested a non-significant reduction
 
 Qualitative work has pointed to factors and consequences on staff and patients [@maben2015] outside of the direct association on length of stay such as infection rates, isolation and staff workload/movement that should be considered.
 
-
 ## Analysis plan
 
 In order to evaluate the hypothesis that single rooms might reduce the average length of stay we will undertake:
 
 ### Trend analysis / Statistical Process Control chart
 
-If there are enough points then an SPC chart can be used to detect significant variance from prior or overall measures of length of stay, otherwise the analysis can be on a traditional run chart. 
+If there are enough points then an SPC chart can be used to detect significant variance from prior or overall measures of length of stay, otherwise the analysis can be on a traditional run chart.
 
 This will be done by week to provide standard units of time which calendar months cannot do: February is a short month so will always be lower in number.
 
@@ -225,14 +225,14 @@ df |>
   ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
   geom_smooth(data = df_pre |> 
       filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |> 
-      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+      group_by(der_provider_site_code, adm_meth_desc, yr, wk, yyyy_wk, n_period) |> 
       summarise(spells = sum(spells)
                 ,spell_los = sum(spell_los)) |> 
       ungroup() |> 
       mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", fullrange = TRUE, color="#ec6555", linetype = "dashed", se = FALSE) +
   geom_smooth(data = df_post |> 
       filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |> 
-      group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
+      group_by(der_provider_site_code, adm_meth_desc, yr, wk, yyyy_wk, n_period) |> 
       summarise(spells = sum(spells)
                 ,spell_los = sum(spell_los)) |> 
       ungroup() |> 
@@ -310,6 +310,14 @@ fun_site_plot("RJR05","Countess of Chester")
 ```
 :::
 
+::: {.callout-tip icon="false"}
+## Control hospital observations
+
+Aintree University Hospital, also operated by Royal Liverpool NHS Trust, demonstrates a similar pattern in average length of stay to Royal Liverpool despite not having moved to single-occupancy facilities. This suggests there may be other systematic changes that have occurred trust-wide.
+
+All other neighbouring general acute sites do not appear to have reducing length of stay trends after October 2022 suggesting the effects are specific to Royal Liverpool NHS Trust sites.
+:::
+
 ## Case-mix
 
 Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds or surgical case-loads changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings. We have identified the top 5 treatment specialties in elective and non-elective (excluding 180) by spell volume for the period after the hospital move. These are presented below:
@@ -344,7 +352,6 @@ top_5_nonelective <- df_top_5_nonelective$der_admit_treatment_function_code
 ### Elective
 
 ::: panel-tabset
-
 ## Urology
 
 ```{r Urology}
@@ -387,7 +394,6 @@ Similar to Urology there has also been a step change of a reduced average length
 
 Both Colorectal and Transplantation Surgery show a declining trend in average length of stay following the hospital move. However, both specialtes have a marked step change increase in the average length of stay following the move to the new site.
 :::
-
 
 ### Non-Elective
 
@@ -443,8 +449,8 @@ As such, in our view and based on this initial exploration, any universal assump
 
 This analysis has been performed on only one metric - average length of stay - and only in the dimension of time - pre and post 'event'. However; a change in the building or processes within a building can result in a change in working and/or caseloads.
 
-- The type of patients treated by the provider, by the patient's condition or by the catchment area.
-- Staffing models and ratios may have changed with factors such as catchment area, change in working practice, loss or gaining of staff.
+-   The type of patients treated by the provider, by the patient's condition or by the catchment area.
+-   Staffing models and ratios may have changed with factors such as catchment area, change in working practice, loss or gaining of staff.
 
 Additionally, access to only SUS data is a limiting factor in being able to fully understand the impact on patients and their support network.
 
@@ -452,10 +458,9 @@ Additionally, access to only SUS data is a limiting factor in being able to full
 
 After our initial investigations more detailed analysis should be considered in order to make more informed conclusions about the impacts addressed including:
 
-- thorough review of published evidence
-- interrupted time series (incorporating ARIMA)
-- retrospective matched cohort analysis
-- standardisation of length of stay for age/sex/comorbidities etc...
+-   thorough review of published evidence
+-   interrupted time series (incorporating ARIMA)
+-   retrospective matched cohort analysis
+-   standardisation of length of stay for age/sex/comorbidities etc...
 
 ## References
-

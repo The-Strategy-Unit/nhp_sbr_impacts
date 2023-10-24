@@ -1,0 +1,55 @@
+---
+title: "Analytical plan"
+format: html
+---
+
+The assumption that introducing single rooms will reduce average length of stay by 12% is a number that has been quoted but is not verifiable or testable.
+Section 8 of the [Better, broader, safer using health data for research and analysis](https://www.gov.uk/government/publications/better-broader-safer-using-health-data-for-research-and-analysis/better-broader-safer-using-health-data-for-research-and-analysis) states: 
+
+> Ensure all code for data curation and analysis paid for by the state through academic funders and NHS procurement is shared openly, with appropriate technical documentation, to all data users. Data preparation, analysis and visualisation is complex technical work, requiring collaboration by many individuals, who may never meet, in a range of organisations, across the NHS and other sectors. The only way to manage this shared complexity is by sharing information, as in other technical fields.
+
+The source of this assumption may come from the experience and analysis from recently opened hospital such as Royal Liverpool Hospital (opened October 2022) which had all single rooms, however, the analysis and code is not available to review.
+
+## Analysis plan
+
+In order to validate the hypothesis that single rooms will reduce the average length of stay the following analysis is recommended for exploratory purposes:
+
+### Statistical Process Control chart
+
+If there are enough points (more than 15) then an SPC chart can be used, otherwise the analysis should be on a run chart. 
+
+This needs to be by week rather than calendar month to provide standard units of time which calendar months cannot do: February is a short month so will always be lower in number.
+
+SPCs can be overall and then also faceted by volume, specialty, ICD10, HRG chapter and so on.
+
+### Benchmarking
+
+Comparing the data with hospitals in England, near neighbours or regional could show that there is another effect that is reducing length of stay.
+
+Published evidence on single occupancy (perhaps from other countries) should be referred to.
+
+### Case mix
+
+If the hospital beds have changed or a new hospital has replaced an old, the types of procedures that are carried out needs to be compared to ensure that the change is not related to changes in medical care.
+Different procedures may have different lengths of stay, and types of patients may also affect it (those with more complex needs).
+
+Suggest to initially choose a selection of procedures/diagnoses and then make a comparison on those.
+
+### Factors to consider or caveat
+
+- A change in the building or processes within a building can result in a change in working.
+- The type of patients treated by the provider, by the patient's condition or by the catchment area.
+- Staffing models and ratios may have changed with factors such as catchment area, change in working practice, loss or gaining of staff.
+- Access to only SUS data is a limiting factor in being able to fully understand the impact.
+
+## More detailed analysis - Next steps and recomendations
+
+After initial investigations more detailed analysis should be considered including:
+
+- interrupted time series
+- matched cohort
+- standardising for age/sex/comobidities
+
+
+
+

@@ -4,6 +4,7 @@
 
 # Session Data files
 .RData
+.Rdata
 .RDataTmp
 
 # User-specific files
@@ -50,3 +51,9 @@ rsconnect/
 
 #secret folder
 /secret
+
+# css style
+*.css
+
+# images
+*.png

@@ -157,7 +157,8 @@ df |>
 df_top_10_elective <- df |>
   filter(der_provider_site_code == "REMRQ") |> 
   filter(adm_meth_desc == "elective") |>
-  group_by(main_specialty_code) |>
+  filter(new_site == 1) |>
+  group_by(der_admit_treatment_function_code) |>
   summarise(spells_total = sum(spells))|>
   ungroup() |>
   slice_max(spells_total, n = 10)
@@ -165,20 +166,21 @@ df_top_10_elective <- df |>
 df_top_10_nonelective <- df |>
   filter(der_provider_site_code == "REMRQ") |> 
   filter(adm_meth_desc == "non_elective") |>
-  group_by(main_specialty_code) |>
+  filter(new_site == 1) |>
+  group_by(der_admit_treatment_function_code) |>
   summarise(spells_total = sum(spells))|>
   ungroup() |>
   slice_max(spells_total, n = 10)
 
-top_10_elective <- df_top_10_elective$main_specialty_code
-top_10_nonelective <- df_top_10_nonelective$main_specialty_code
+top_10_elective <- df_top_10_elective$der_admit_treatment_function_code
+top_10_nonelective <- df_top_10_nonelective$der_admit_treatment_function_code
 
 
 df |> 
   filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
   filter(adm_meth_desc == "elective") |>
-  filter(main_specialty_code %in% top_10_elective)|>
-  group_by(der_provider_site_code, main_specialty_code, yr, wk, yyyy_wk, n_period) |> 
+  filter(der_admit_treatment_function_code %in% top_10_elective)|>
+  group_by(der_provider_site_code, der_admit_treatment_function_code, yr, wk, yyyy_wk, n_period) |> 
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) |> 
   ungroup() |> 
@@ -187,7 +189,7 @@ df |>
   geom_line(colour = "#f9bf07") +
   geom_point(colour = "#686F73") +
   geom_vline(xintercept = "2022-43", colour = "blue") +
-  facet_wrap(vars(main_specialty_code), scales = "free") + 
+  facet_wrap(vars(der_admit_treatment_function_code), scales = "free") + 
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
   labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
@@ -213,4 +215,25 @@ df |>
   labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
        ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
        ,caption = "blue line indicates week of site switch") 
+
+
+df |> 
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other') |>
+  filter(adm_meth_desc == "elective") |>
+  filter(der_admit_treatment_function_code %in% top_5_elective)|>
+  group_by(der_provider_site_code, der_admit_treatment_function_code, yr, wk, yyyy_wk, n_period) |> 
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) |> 
+  ungroup() |> 
+  mutate(avg_los = round(spell_los / spells,2)) |>
+  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
+  geom_line(colour = "#f9bf07") +
+  geom_point(colour = "#686F73") +
+  geom_vline(xintercept = "2022-43", colour = "blue") +
+  facet_grid(rows = vars(der_admit_treatment_function_code), scales = "free") + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)) +
+  labs(title = "Average length of stay (days) by week and top 10 elective main specialties"
+       ,subtitle = "Royal Liverpool Hospital, Aug 2021 to Aug 2023"
+       ,caption = "blue line indicates week of site switch")
 

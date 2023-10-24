@@ -337,6 +337,12 @@ fun_spec_plot(top_5_elective[5],"elective", "Transplantation Surgery")
 ```
 :::
 
+::: {.callout-tip icon="false"}
+## Elective case-mix variation
+
+gfgdfggsgsdgsdgsdgsdgdgsdsdgsd
+:::
+
 ### Non-Elective
 
 ::: panel-tabset

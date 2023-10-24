@@ -50,3 +50,6 @@ rsconnect/
 
 #secret folder
 /secret
+
+# css style
+*.css

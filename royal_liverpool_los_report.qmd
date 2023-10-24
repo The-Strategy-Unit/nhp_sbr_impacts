@@ -129,7 +129,7 @@ fun_site_plot("REMRQ","Royal Liverpool")
 
 ## Control Group
 
-One limitation of considering only the activity at the Royal Liverpool hospital over the specified time period is that the effects might be similar elsewhere and therefore the single/multiple bedded rooms might not be a variable of influence. 
+One limitation of considering only the activity at the Royal Liverpool hospital over the specified time period is that the effects might be similar elsewhere and therefore the single/multiple bedded rooms might not be a variable of influence.
 
 To test this, we have extracted and present the same set of activity for the 5 nearest other hospitals providing general acute services to (among others) patients from Liverpool:
 
@@ -143,8 +143,7 @@ To test this, we have extracted and present the same set of activity for the 5 n
 
 -   Countess of Chester
 
-:::panel-tabset
-
+::: panel-tabset
 ### Aintree
 
 ```{r control_hospital_aintree}
@@ -184,7 +183,6 @@ fun_site_plot("RVY02","Ormskirk & District")
 fun_site_plot("RJR05","Countess of Chester")
 
 ```
-
 :::
 
 ## Case-mix
@@ -197,6 +195,7 @@ Another potential cause of changes in length of stay may be the case mix of pati
 df_top_10_elective <- df |>
   filter(der_provider_site_code == "REMRQ") |> 
   filter(adm_meth_desc == "elective") |>
+   filter(new_site == 1) |>
   group_by(der_admit_treatment_function_code) |>
   summarise(spells_total = sum(spells))|>
   ungroup() |>
@@ -205,6 +204,7 @@ slice_max(spells_total, n = 10)
 df_top_10_nonelective <- df |>
   filter(der_provider_site_code == "REMRQ") |> 
   filter(adm_meth_desc == "non_elective") |>
+   filter(new_site == 1) |>
   group_by(der_admit_treatment_function_code) |>
   summarise(spells_total = sum(spells))|>
   ungroup() |>

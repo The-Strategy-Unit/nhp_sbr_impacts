@@ -1,6 +1,6 @@
 ---
 title: "NHP Royal Liverpool Length of Stay"
-author: "Andy Hood and Jacqueline Grout"
+author: "Andy Hood, Jacqueline Grout and Zoe Turner"
 editor: visual
 execute:
   echo: false
@@ -24,6 +24,7 @@ format:
     callout-icon: false
     
 css: styles.css
+bibliography: references.bib
 ---
 
 ```{r load_packages}
@@ -108,7 +109,7 @@ df |>
 }
 ```
 
-```{r spec plot function}
+```{r spec_plot_function}
 #| include: false
 
 fun_spec_plot <- function(speccode, elec_nonelec, specname){
@@ -158,13 +159,48 @@ df |>
 
 ## Introduction
 
-The New Hospitals Programme (NHP) team have asked the Strategy Unit to provide some insight as the potential effect on length of stay of single-bed rooms compared to multi-bed rooms or wards. The following is a brief exploratory analysis of length of stay patterns for admitted patients at Royal Liverpool hospital.
+The New Hospitals Programme (NHP) team are considering the assumption that introducing single rooms will reduce average length of stay by 12%. This number that has been quoted has not been verified or tested.
 
-The Royal Liverpool is the only hospital in recent memory to have made this switch in bed composition and therefore makes a useful case study.
+Section 8 of the [Better, broader, safer using health data for research and analysis](https://www.gov.uk/government/publications/better-broader-safer-using-health-data-for-research-and-analysis/better-broader-safer-using-health-data-for-research-and-analysis) states: 
 
-Through necessity, this analysis is crude and carries significant caveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future bed modelling.
+> Ensure all code for data curation and analysis paid for by the state through academic funders and NHS procurement is shared openly, with appropriate technical documentation, to all data users. Data preparation, analysis and visualisation is complex technical work, requiring collaboration by many individuals, who may never meet, in a range of organisations, across the NHS and other sectors. The only way to manage this shared complexity is by sharing information, as in other technical fields.
 
-## Length of stay pattern over time
+The source of this assumption may come from the experience and analysis from recently opened hospital such as Royal Liverpool Hospital (opened October 2022) which had all single rooms, however, the analysis and code does not exist or is not available to review. The Strategy Unit therefore aims to provide some insight as the potential direction of effect on length of stay of single-occupancy rooms compared to multi-occupancy rooms or wards. The following is a brief exploratory analysis of length of stay patterns for admitted patients at Royal Liverpool hospital.
+
+Through necessity, this analysis was conducted rapidly, is crude and carries significant caveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future bed modelling.
+
+### Evidential context
+
+A systematic literature search and review was not undertaken as part of this work, however a rapid search on key terms (single occupancy and reduced length of stay) did highlight some recent empirical evidence of effects.
+
+A BMJ systematic review [@Bertuzzie068932] suggested a non-significant reduction of 10% in length of stay after change to single rooms. Another recent literature review [@kinloch2023] for NHS Scotland found single-occupancy rooms impact was variable (increased and decreased LoS depending on patient groups) and may be more effective for post-operative stays.
+
+Qualitative work has pointed to factors and consequences on staff and patients [@maben2015] outside of the direct association on length of stay such as infection rates, isolation and staff workload/movement that should be considered.
+
+
+## Analysis plan
+
+In order to evaluate the hypothesis that single rooms might reduce the average length of stay we will undertake:
+
+### Trend analysis / Statistical Process Control chart
+
+If there are enough points then an SPC chart can be used to detect significant variance from prior or overall measures of length of stay, otherwise the analysis can be on a traditional run chart. 
+
+This will be done by week to provide standard units of time which calendar months cannot do: February is a short month so will always be lower in number.
+
+### Benchmarking
+
+Comparing the data with hospitals in England, near neighbour hospitals or regional sites could show that there may be another effect extant to single rooms that is impacting length of stay.
+
+Published evidence on single occupancy (perhaps from other countries) should be referred to alongside this analysis.
+
+### Case mix
+
+If the hospital beds have changed or a new hospital has replaced an old, the types of procedures that are carried out needs to be compared to ensure that the change is not related to changes in medical care. Different procedures may have different lengths of stay, and types of patients that present may also affect it (those with more complex needs).
+
+Initially we will use treatment specialty on admission as a proxy for case-mix. More work could be done to specify this.
+
+## Trend analysis
 
 In order to observe the potential change in length of stay patterns in multi-bed wards and rooms in the old hospital compared to single-bed rooms in the new hospital, we plot the length of stay averages by week of all the patients admitted to Royal Liverpool (REMRQ) between August 2021 (end of legal covid restrictions) and August 2023.
 
@@ -276,7 +312,7 @@ fun_site_plot("RJR05","Countess of Chester")
 
 ## Case-mix
 
-Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings. We have identified the top 5 treatment specialties in elective and non-elective (excluding 180) by spell volume for the period after the hospital move. These are presented below:
+Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds or surgical case-loads changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings. We have identified the top 5 treatment specialties in elective and non-elective (excluding 180) by spell volume for the period after the hospital move. These are presented below:
 
 ```{r top_5_specs}
 #| include: false
@@ -308,6 +344,7 @@ top_5_nonelective <- df_top_5_nonelective$der_admit_treatment_function_code
 ### Elective
 
 ::: panel-tabset
+
 ## Urology
 
 ```{r Urology}
@@ -350,6 +387,7 @@ Similar to Urology there has also been a step change of a reduced average length
 
 Both Colorectal and Transplantation Surgery show a declining trend in average length of stay following the hospital move. However, both specialtes have a marked step change increase in the average length of stay following the move to the new site.
 :::
+
 
 ### Non-Elective
 
@@ -396,3 +434,28 @@ Both General Surgery and Cardiology also show a step change to a reduced average
 
 There is a contrasting picture for non-elective Urology where prior to the move to the new hospital there was a declining trend in average length of stay. Following the site move the data shows a marked increase in average length of stay and this average length of stay has remained fairly stable since the move. Further investigation would be needed to identify whether there has possibly been other changes within the specialty or the wider-system to lead to such a change.
 :::
+
+## Summary, discussion and next steps
+
+There are indications that single-occupancy rooms have reduced length of stay for patients at Liverpool Royal Hospital contrary to what has occured at neighbouring trust sites. However; length of stay averages at the Trusts other large site in Liverpool (Aintree) have followed a similar pattern over the same time period. Additionally the effects appear to be variable within the new hospital depending on which clinical group patients belong to.
+
+As such, in our view and based on this initial exploration, any universal assumptions about length of stay reductions as a result of single occupancy rooms (in the region of 12%) are likely to be overstated and would ignore differential effects on different patient groups.
+
+This analysis has been performed on only one metric - average length of stay - and only in the dimension of time - pre and post 'event'. However; a change in the building or processes within a building can result in a change in working and/or caseloads.
+
+- The type of patients treated by the provider, by the patient's condition or by the catchment area.
+- Staffing models and ratios may have changed with factors such as catchment area, change in working practice, loss or gaining of staff.
+
+Additionally, access to only SUS data is a limiting factor in being able to fully understand the impact on patients and their support network.
+
+### Next steps
+
+After our initial investigations more detailed analysis should be considered in order to make more informed conclusions about the impacts addressed including:
+
+- thorough review of published evidence
+- interrupted time series (incorporating ARIMA)
+- retrospective matched cohort analysis
+- standardisation of length of stay for age/sex/comorbidities etc...
+
+## References
+

@@ -1,29 +1,11 @@
 library(NHSRplotthedots)
-
-######################
-
-library(NHSRdatasets)
 library(dplyr)
 library(ggplot2)
 library(scales)
 library(lubridate)
 
-data("ae_attendances")
-
-ae_attendances %>% 
-  filter(org_code == "RRK", type == 1) %>% 
-  ggplot(aes(x = period, y = breaches)) +
-  geom_point() +
-  geom_line() +
-  scale_y_continuous("4-hour target breaches", labels = comma) +
-  scale_x_date("Date") +
-  labs(title = "Example plot of A&E breaches for organsiation: 'RRK'") +
-  theme_minimal()
-
-
 
 ######################
-
 
 
 
@@ -39,10 +21,11 @@ periods <- df |>
   distinct(yyyy_wk) |>
   ungroup() |> 
   arrange(yr, wk) |> 
-  mutate(n_period = row_number())
+  mutate(n_period = row_number()
+         ,pseudo_date = as.Date("2020-04-12") + (n_period*7))
 
 df <- df |> 
-  left_join(periods |> select(yyyy_wk, n_period), by = "yyyy_wk") |> 
+  left_join(periods |> select(yyyy_wk, n_period,pseudo_date), by = "yyyy_wk") |> 
   mutate(yyyy_wk = fct_reorder(yyyy_wk, n_period))
 
 rm(periods)
@@ -53,36 +36,44 @@ df_pre <- df |>
 df_post <- df |> 
   filter(n_period > 136)
 
-df |>
-  mutate(admit_month_start = as.Date(paste0((as.character(yr),as.character(mth),"01")))
-as.Date(paste0("2022","09","01"))
 
 
 df %>% 
   filter(der_provider_site_code == "REMRQ",adm_meth_desc != 'other', between(n_period, 72, 181)) %>%
-  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group = 1)) +
+  group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period,pseudo_date) %>%  
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) %>%  
+  ungroup() %>% 
+  mutate(avg_los = round(spell_los / spells,2)) %>% 
+  ggplot(aes(x=pseudo_date, y=avg_los, group = 1)) +
   geom_point() +
   geom_line() +
   scale_y_continuous("LoS in days") +
-  #scale_x_date("Date") +
+  scale_x_date("pseudo_date") +
   labs(title = "Example plot for organsiation: 'REMRQ'") +
   theme_minimal()
 
 
-
 stable_set <- df %>% 
-  filter(der_provider_site_code == "REMRQ",
-         adm_meth_desc != 'other', between(n_period, 72, 181)) %>% 
-  mutate(date1=ymd(case_when(mth<=9 ~ as.character(paste0(as.character(yr),"0",as.character(mth),"01")),
-                         mth>9 ~ as.character(paste0(as.character(yr),as.character(mth),"01")))
-  )
-  ) %>% 
-  group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period,date1) %>%  
+  filter(der_provider_site_code == "REMRQ",adm_meth_desc != 'other', between(n_period, 72, 181)) %>%
+  group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period,pseudo_date) %>%  
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) %>%  
   ungroup() %>% 
-  mutate(avg_los = round(spell_los / spells,2)) 
+  mutate(avg_los = round(spell_los / spells,2))
+
+ptd_spc(stable_set, value_field = avg_los, date_field = pseudo_date, improvement_direction = "decrease")
+
+change_set <- stable_set 
+
+ptd_spc(change_set,
+        value_field = avg_los,
+        date_field = pseudo_date,
+        improvement_direction = "decrease",
+        rebase = ptd_rebase(as.Date("2022-10-23")))
+#> Warning in ptd_add_short_group_warnings(.): Some groups have 'n < 12'
+#> observations. These have trial limits, which will be revised with each
+#> additional observation until 'n = fix_after_n_points' has been reached.
 
 
 
-ptd_spc(stable_set, value_field = avg_los, date_field = date1, improvement_direction = "decrease")

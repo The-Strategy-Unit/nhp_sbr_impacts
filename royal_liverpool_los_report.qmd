@@ -292,7 +292,8 @@ slice_max(spells_total, n = 5)
 df_top_5_nonelective <- df |>
   filter(der_provider_site_code == "REMRQ") |> 
   filter(adm_meth_desc == "non_elective") |>
-   filter(new_site == 1) |>
+  filter(der_admit_treatment_function_code != "180") |>
+  filter(new_site == 1) |>
   group_by(der_admit_treatment_function_code) |>
   summarise(spells_total = sum(spells))|>
   ungroup() |>
@@ -364,19 +365,21 @@ fun_spec_plot(top_5_nonelective[2],"non_elective", "General Surgery")
 fun_spec_plot(top_5_nonelective[3],"non_elective", "Cardiology")
 ```
 
-## Accident and Emergency
-
-```{r}
-fun_spec_plot(top_5_nonelective[4],"non_elective", "Accident and Emergency")
-```
-
 ## Urology
 
 ```{r}
-fun_spec_plot(top_5_nonelective[5],"non_elective", "Urology")
+fun_spec_plot(top_5_nonelective[4],"non_elective", "Urology")
+```
+
+## Elderly Medicine
+
+```{r}
+fun_spec_plot(top_5_nonelective[5],"non_elective", "Elderly Medicine")
 ```
 :::
 
 ::: {.callout-tip icon="false"}
 ## Non-elective case-mix variation
+
+dvdsdvgksdgjdkg;skmgs;d
 :::

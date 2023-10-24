@@ -61,10 +61,10 @@ df <- df |>
 rm(periods)
 
 df_pre <- df |> 
-  filter(between(n_period,72 ,136))
+  filter(between(n_period,69 ,131))
 
 df_post <- df |> 
-  filter(n_period > 136)
+  filter(n_period > 132)
 
 ```
 
@@ -74,7 +74,7 @@ df_post <- df |>
 fun_site_plot <- function(sitecode, sitename){
   
 df |> 
-  filter(der_provider_site_code == sitecode, adm_meth_desc != 'other', between(n_period, 72, 181)) |> 
+  filter(der_provider_site_code == sitecode, adm_meth_desc != 'other', between(n_period, 69, 176)) |> 
   group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) |> 
@@ -116,7 +116,7 @@ df |>
 fun_spec_plot <- function(speccode, elec_nonelec, specname){
   
 df |> 
-  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 72, 181)) |>
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 69, 176)) |>
       filter(adm_meth_desc == elec_nonelec) |>
   filter(der_admit_treatment_function_code == speccode)|>
   group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
@@ -216,7 +216,7 @@ The change in length of stay patterns from the old hospital to the new hospital 
 
 ```{r elective/nonelective}
 df |> 
-  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 72, 181)) |> 
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 69, 176)) |> 
   group_by(der_provider_site_code, adm_meth_desc, yr, wk, yyyy_wk, n_period) |> 
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) |> 
@@ -315,7 +315,9 @@ fun_site_plot("RJR05","Countess of Chester")
 
 Aintree University Hospital, also operated by Royal Liverpool NHS Trust, demonstrates a similar pattern in average length of stay to Royal Liverpool despite not having moved to single-occupancy facilities. This suggests there may be other systematic changes that have occurred trust-wide.
 
-All other neighbouring general acute sites do not appear to have reducing length of stay trends after October 2022 suggesting the effects are specific to Royal Liverpool NHS Trust sites.
+LoS trends at Whiston Hospital also appear to be reducing at a quicker rate since October 2022 than they were before that point.
+
+Other neighbouring general acute sites do not appear to have reducing length of stay trends after October 2022 suggesting the effects could be more specific to Royal Liverpool NHS Trust sites.
 :::
 
 ## Case-mix
@@ -388,11 +390,11 @@ fun_spec_plot(top_5_elective[5],"elective", "Transplantation Surgery")
 
 Whilst the change in average length of stay for elective shows a slight trend of a reducing length of stay following the move to the new hospital site, variation can be seen between specialties.
 
-Urology and Opthalmology both show a contrasting pattern with a trend of rising length of stay. However, Urology shows a marked step change of a reduced average length of stay following the hospital move which is now rising back towards its previous level.
+Urology and Opthalmology both show a contrasting pattern with a trend of rising length of stay. However, Urology shows a marked step change of a reduced average length of stay following the hospital move which is now consistent with previous trends.
 
-Similar to Urology there has also been a step change of a reduced average length of stay for Hepatobiliary and Pancreatic Surgery. This change though has sustained over the 10 months since the move that are reported here.
+Similar to Urology there has also been a step change of a reduced average length of stay for Hepatobiliary and Pancreatic Surgery. This change though has sustained over the 10 months since the move that is reported here.
 
-Both Colorectal and Transplantation Surgery show a declining trend in average length of stay following the hospital move. However, both specialtes have a marked step change increase in the average length of stay following the move to the new site.
+Both Colorectal and Transplantation Surgery show a declining trend in average length of stay following the hospital move. However, both specialties have a marked step change increase in the average length of stay following the move to the new site.
 :::
 
 ### Non-Elective
@@ -432,7 +434,7 @@ fun_spec_plot(top_5_nonelective[5],"non_elective", "Elderly Medicine")
 ::: {.callout-tip icon="false"}
 ## Non-elective case-mix variation
 
-The change in average length of stay for non-elective spells shows a more marked reducing length of stay than for elective spells. Within this there is variation between the top 5 non-elective specialties. Each of the 5 specialties shows a reducing trend in average length of stay.
+The change in average length of stay for non-elective spells shows a more marked reducing length of stay than for elective spells. Within this there is variation between the top 5 non-elective specialties. Each of the top 5 specialties shows a reducing trend in average length of stay.
 
 Of particular interest is Elderly Medicine where the trend prior to the move to the new site was one of increasing average length of stay. Following the move there has been a marked step change to a reduced average length of stay and this has continued to decline. A similar, although less marked, pattern can be seen in General Medicine.
 

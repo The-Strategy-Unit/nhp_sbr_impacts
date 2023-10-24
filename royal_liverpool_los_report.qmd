@@ -255,7 +255,7 @@ df |>
       ,y = "LoS in days")
 ```
 
-## Control Group
+## Benchmark analysis
 
 One limitation of considering only the activity at the Royal Liverpool hospital over the specified time period is that the effects might be similar elsewhere and therefore the single/multiple bedded rooms might not be a variable of influence.
 
@@ -288,7 +288,7 @@ fun_site_plot("RBN01","Whiston")
 
 ```
 
-### Southport & Formby
+### Southport & Formby\*
 
 ```{r control_hospital_southport}
 
@@ -321,6 +321,8 @@ Aintree University Hospital, also operated by Royal Liverpool NHS Trust, demonst
 LoS trends at Whiston Hospital also appear to be reducing at a quicker rate since October 2022 than they were before that point.
 
 Other neighbouring general acute sites do not appear to have reducing length of stay trends after October 2022 suggesting the effects could be more specific to Royal Liverpool NHS Trust sites.
+
+\*Note: data issues re: length of stay at Southport & Formby from July. Need to investigate more thoroughly before draw conclusions on that provider.
 :::
 
 ## Case-mix

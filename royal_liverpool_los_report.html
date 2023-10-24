@@ -6,8 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Andy Hood and Jacqueline Grout">
-<meta name="dcterms.date" content="2023-10-23">
+<meta name="author" content="Andy Hood, Jacqueline Grout and Zoe Turner">
+<meta name="dcterms.date" content="2023-10-24">
 
 <title>NHP Royal Liverpool Length of Stay</title>
 <style>
@@ -21,6 +21,25 @@ ul.task-list li input[type="checkbox"] {
 width: 0.8em;
 margin: 0 0.8em 0.2em -1.6em;
 vertical-align: middle;
+}
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
 }
 </style>
 
@@ -2561,14 +2580,14 @@ background: #f9bf07;
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Andy Hood and Jacqueline Grout </p>
+               <p>Andy Hood, Jacqueline Grout and Zoe Turner </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">2023-10-23</p>
+        <p class="date">2023-10-24</p>
       </div>
     </div>
     
@@ -2582,10 +2601,24 @@ background: #f9bf07;
     <h2 id="toc-title">Summary</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#length-of-stay-pattern-over-time" id="toc-length-of-stay-pattern-over-time" class="nav-link" data-scroll-target="#length-of-stay-pattern-over-time">Length of stay pattern over time</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#evidential-context" id="toc-evidential-context" class="nav-link" data-scroll-target="#evidential-context">Evidential context</a></li>
+  </ul></li>
+  <li><a href="#analysis-plan" id="toc-analysis-plan" class="nav-link" data-scroll-target="#analysis-plan">Analysis plan</a>
+  <ul class="collapse">
+  <li><a href="#trend-analysis-statistical-process-control-chart" id="toc-trend-analysis-statistical-process-control-chart" class="nav-link" data-scroll-target="#trend-analysis-statistical-process-control-chart">Trend analysis / Statistical Process Control chart</a></li>
+  <li><a href="#benchmarking" id="toc-benchmarking" class="nav-link" data-scroll-target="#benchmarking">Benchmarking</a></li>
+  <li><a href="#case-mix" id="toc-case-mix" class="nav-link" data-scroll-target="#case-mix">Case mix</a></li>
+  </ul></li>
+  <li><a href="#trend-analysis" id="toc-trend-analysis" class="nav-link" data-scroll-target="#trend-analysis">Trend analysis</a></li>
   <li><a href="#control-group" id="toc-control-group" class="nav-link" data-scroll-target="#control-group">Control Group</a></li>
-  <li><a href="#case-mix" id="toc-case-mix" class="nav-link" data-scroll-target="#case-mix">Case-mix</a></li>
+  <li><a href="#case-mix-1" id="toc-case-mix-1" class="nav-link" data-scroll-target="#case-mix-1">Case-mix</a></li>
+  <li><a href="#summary-discussion-and-next-steps" id="toc-summary-discussion-and-next-steps" class="nav-link" data-scroll-target="#summary-discussion-and-next-steps">Summary, discussion and next steps</a>
+  <ul class="collapse">
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next steps</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
 </div>
@@ -2598,12 +2631,41 @@ background: #f9bf07;
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>The New Hospitals Programme (NHP) team have asked the Strategy Unit to provide some insight as the potential effect on length of stay of single-bed rooms compared to multi-bed rooms or wards. The following is a brief exploratory analysis of length of stay patterns for admitted patients at Royal Liverpool hospital.</p>
-<p>The Royal Liverpool is the only hospital in recent memory to have made this switch in bed composition and therefore makes a useful case study.</p>
-<p>Through necessity, this analysis is crude and carries significant caveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future bed modelling.</p>
+<p>The New Hospitals Programme (NHP) team are considering the assumption that introducing single rooms will reduce average length of stay by 12%. This number that has been quoted has not been verified or tested.</p>
+<p>Section 8 of the <a href="https://www.gov.uk/government/publications/better-broader-safer-using-health-data-for-research-and-analysis/better-broader-safer-using-health-data-for-research-and-analysis">Better, broader, safer using health data for research and analysis</a> states:</p>
+<blockquote class="blockquote">
+<p>Ensure all code for data curation and analysis paid for by the state through academic funders and NHS procurement is shared openly, with appropriate technical documentation, to all data users. Data preparation, analysis and visualisation is complex technical work, requiring collaboration by many individuals, who may never meet, in a range of organisations, across the NHS and other sectors. The only way to manage this shared complexity is by sharing information, as in other technical fields.</p>
+</blockquote>
+<p>The source of this assumption may come from the experience and analysis from recently opened hospital such as Royal Liverpool Hospital (opened October 2022) which had all single rooms, however, the analysis and code does not exist or is not available to review. The Strategy Unit therefore aims to provide some insight as the potential direction of effect on length of stay of single-occupancy rooms compared to multi-occupancy rooms or wards. The following is a brief exploratory analysis of length of stay patterns for admitted patients at Royal Liverpool hospital.</p>
+<p>Through necessity, this analysis was conducted rapidly, is crude and carries significant caveats and limitations. However; it may be indicative that the theory has some credit and that more robust in-depth work is required to quantify the potential impact on whole hospital or sub-hospital populations that may be considered in future bed modelling.</p>
+<section id="evidential-context" class="level3">
+<h3 class="anchored" data-anchor-id="evidential-context">Evidential context</h3>
+<p>A systematic literature search and review was not undertaken as part of this work, however a rapid search on key terms (single occupancy and reduced length of stay) did highlight some recent empirical evidence of effects.</p>
+<p>A BMJ systematic review <span class="citation" data-cites="Bertuzzie068932">(<a href="#ref-Bertuzzie068932" role="doc-biblioref">Bertuzzi et al. 2023</a>)</span> suggested a non-significant reduction of 10% in length of stay after change to single rooms. Another recent literature review <span class="citation" data-cites="kinloch2023">(<a href="#ref-kinloch2023" role="doc-biblioref">Kinloch J 2023</a>)</span> for NHS Scotland found single-occupancy rooms impact was variable (increased and decreased LoS depending on patient groups) and may be more effective for post-operative stays.</p>
+<p>Qualitative work has pointed to factors and consequences on staff and patients <span class="citation" data-cites="maben2015">(<a href="#ref-maben2015" role="doc-biblioref">Maben J 2016</a>)</span> outside of the direct association on length of stay such as infection rates, isolation and staff workload/movement that should be considered.</p>
 </section>
-<section id="length-of-stay-pattern-over-time" class="level2">
-<h2 class="anchored" data-anchor-id="length-of-stay-pattern-over-time">Length of stay pattern over time</h2>
+</section>
+<section id="analysis-plan" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-plan">Analysis plan</h2>
+<p>In order to evaluate the hypothesis that single rooms might reduce the average length of stay we will undertake:</p>
+<section id="trend-analysis-statistical-process-control-chart" class="level3">
+<h3 class="anchored" data-anchor-id="trend-analysis-statistical-process-control-chart">Trend analysis / Statistical Process Control chart</h3>
+<p>If there are enough points then an SPC chart can be used to detect significant variance from prior or overall measures of length of stay, otherwise the analysis can be on a traditional run chart.</p>
+<p>This will be done by week to provide standard units of time which calendar months cannot do: February is a short month so will always be lower in number.</p>
+</section>
+<section id="benchmarking" class="level3">
+<h3 class="anchored" data-anchor-id="benchmarking">Benchmarking</h3>
+<p>Comparing the data with hospitals in England, near neighbour hospitals or regional sites could show that there may be another effect extant to single rooms that is impacting length of stay.</p>
+<p>Published evidence on single occupancy (perhaps from other countries) should be referred to alongside this analysis.</p>
+</section>
+<section id="case-mix" class="level3">
+<h3 class="anchored" data-anchor-id="case-mix">Case mix</h3>
+<p>If the hospital beds have changed or a new hospital has replaced an old, the types of procedures that are carried out needs to be compared to ensure that the change is not related to changes in medical care. Different procedures may have different lengths of stay, and types of patients that present may also affect it (those with more complex needs).</p>
+<p>Initially we will use treatment specialty on admission as a proxy for case-mix. More work could be done to specify this.</p>
+</section>
+</section>
+<section id="trend-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="trend-analysis">Trend analysis</h2>
 <p>In order to observe the potential change in length of stay patterns in multi-bed wards and rooms in the old hospital compared to single-bed rooms in the new hospital, we plot the length of stay averages by week of all the patients admitted to Royal Liverpool (REMRQ) between August 2021 (end of legal covid restrictions) and August 2023.</p>
 <p>The week of transition between the old and new hospital (officially the 20th October 2022) is indicated by a vertical blue line on the plots.</p>
 <div class="cell">
@@ -2664,9 +2726,9 @@ background: #f9bf07;
 </div>
 </div>
 </section>
-<section id="case-mix" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="case-mix">Case-mix</h2>
-<p>Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings.</p>
+<section id="case-mix-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="case-mix-1">Case-mix</h2>
+<p>Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds or surgical case-loads changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings of patients.</p>
 <div class="panel-tabset page-columns page-full">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href>Elective</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href>Non-elective</a></li></ul>
 <div class="tab-content page-columns page-full">
@@ -2687,8 +2749,43 @@ background: #f9bf07;
 </div>
 </div>
 </section>
+<section id="summary-discussion-and-next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="summary-discussion-and-next-steps">Summary, discussion and next steps</h2>
+<p>There are indications that single-occupancy rooms have reduced length of stay for patients at Liverpool Royal Hospital contrary to what has occured at neighbouring trust sites. However; length of stay averages at the Trusts other large site in Liverpool (Aintree) have followed a similar pattern over the same time period. Additionally the effects appear to be variable within the new hospital depending on which clinical group patients belong to.</p>
+<p>As such, in our view and based on this initial exploration, any universal assumptions about length of stay reductions as a result of single occupancy rooms (in the region of 12%) are likely to be overstated and would ignore differential effects on different patient groups.</p>
+<p>This analysis has been performed on only one metric - average length of stay - and only in the dimension of time - pre and post ‘event’. However; a change in the building or processes within a building can result in a change in working and/or caseloads.</p>
+<ul>
+<li>The type of patients treated by the provider, by the patient’s condition or by the catchment area.</li>
+<li>Staffing models and ratios may have changed with factors such as catchment area, change in working practice, loss or gaining of staff.</li>
+</ul>
+<p>Additionally, access to only SUS data is a limiting factor in being able to fully understand the impact on patients and their support network.</p>
+<section id="next-steps" class="level3">
+<h3 class="anchored" data-anchor-id="next-steps">Next steps</h3>
+<p>After our initial investigations more detailed analysis should be considered in order to make more informed conclusions about the impacts addressed including:</p>
+<ul>
+<li>thorough review of published evidence</li>
+<li>interrupted time series (incorporating ARIMA)</li>
+<li>retrospective matched cohort analysis</li>
+<li>standardisation of length of stay for age/sex/comorbidities etc…</li>
+</ul>
+</section>
+</section>
+<section id="references" class="level2 unnumbered">
 
-</main>
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-Bertuzzie068932" class="csl-entry" role="doc-biblioentry">
+Bertuzzi, Andrea, Alison Martin, Nicola Clarke, Cassandra Springate, Rachel Ashton, Wayne Smith, Andi Orlowski, and Duncan McPherson. 2023. <span>‘Clinical, Humanistic and Economic Outcomes, Including Experiencing of Patient Safety Events, Associated with Admitting Patients to Single Rooms Compared with Shared Accommodation for Acute Hospital Admissions: A Systematic Review and Narrative Synthesis’</span>. <em>BMJ Open</em> 13 (5). <a href="https://doi.org/10.1136/bmjopen-2022-068932">https://doi.org/10.1136/bmjopen-2022-068932</a>.
+</div>
+<div id="ref-kinloch2023" class="csl-entry" role="doc-biblioentry">
+Kinloch J, Rodriguez-Labajos L. 2023. <span>‘Impact of Room Design on Length of Stay: Systematic Literature Review’</span>. NHS Scotland. <a href="https://www.nss.nhs.scot/media/4115/literature-review-impact-of-room-design-on-length-of-stay-v1.pdf">https://www.nss.nhs.scot/media/4115/literature-review-impact-of-room-design-on-length-of-stay-v1.pdf</a>.
+</div>
+<div id="ref-maben2015" class="csl-entry" role="doc-biblioentry">
+Maben J, Penfold C, Griffiths P. 2016. <span>‘One Size Fits All? Mixed Methods Evaluation of the Impact of 100’</span>. <em>BMJ Qual Saf.</em> <a href="https://doi.org/10.1136/bmjqs-2015-004265">https://doi.org/10.1136/bmjqs-2015-004265</a>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

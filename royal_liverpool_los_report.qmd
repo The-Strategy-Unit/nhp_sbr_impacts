@@ -59,6 +59,7 @@ df <- df |>
 
 rm(periods)
 
+  
 df_pre <- df |> 
   filter(between(n_period,71 ,133))
 
@@ -250,7 +251,7 @@ los_split |>
   filter(n_period < 134) |> 
   ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group=as.factor(lrh_flag), colour=as.factor(lrh_flag))) +
   geom_line() +
-  scale_color_manual(name = "Liverpool Royal?", values=c("#ec6555", "#f9bf07")) +
+  scale_color_manual(name = "Trust", values=c("#ec6555", "#f9bf07"),labels = c("All other acute trusts","Royal Liverpool")) +
   #geom_point(colour = "#686F73", alpha = 0.4) +
   expand_limits(y=2) +
   theme_minimal() +
@@ -263,13 +264,12 @@ los_split |>
       ,y = "Avg. LoS in days")
 
 ```
+
 ::: {.callout-tip icon="false"}
 ## Length of stay longer at Royal Liverpool Hospital
 
 In the year Aug 2020 to September 2021 patients were typically staying in hospital for half a day longer at Liverpool Royal than at other sites. Between October 2021 and October 2022 this difference was around 1.5 days extra on average.
-
 :::
-
 
 In order to observe the potential change in length of stay patterns in multi-bed wards and rooms in the old hospital compared to single-bed rooms in the new hospital, we plot the length of stay averages by week of all the patients admitted to Royal Liverpool (REMRQ) between August 2021 (end of legal covid restrictions) and August 2023.
 
@@ -355,7 +355,7 @@ fun_site_plot("RBN01","Whiston")
 
 ```
 
-### Southport & Formby\*
+### Southport & Formby
 
 ```{r control_hospital_southport}
 
@@ -385,11 +385,7 @@ fun_site_plot("RJR05","Countess of Chester")
 
 Aintree University Hospital, also operated by Royal Liverpool NHS Trust, demonstrates a similar pattern in average length of stay to Royal Liverpool despite not having moved to single-occupancy facilities. This suggests there may be other systematic changes that have occurred trust-wide.
 
-LoS trends at Whiston Hospital also appear to be reducing at a quicker rate since October 2022 than they were before that point.
-
-Other neighbouring general acute sites do not appear to have reducing length of stay trends after October 2022 suggesting the effects could be more specific to Royal Liverpool NHS Trust sites.
-
-\*Note: data issues re: length of stay at Southport & Formby from July. Need to investigate more thoroughly before draw conclusions on that provider.
+LoS trends at Whiston, Southport & Formby and Ormskirk Hospitals also appear to have varying reduced length of stay since October 2022. Countess of Chester shows a continuing trend of a declining average length of stay over the period August 2021 to August 2023.
 :::
 
 ## Case-mix

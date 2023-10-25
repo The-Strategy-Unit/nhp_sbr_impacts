@@ -136,7 +136,7 @@ df |>
       mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="#ABDDA4", linetype = "dashed", se = FALSE) +
   geom_line(colour = "#f9bf07") +
   geom_point(colour = "#686F73", alpha = 0.4) +
-  geom_vline(xintercept = "2022-43", colour = "blue") +
+  geom_vline(xintercept = "2022-41", colour = "blue") +
   expand_limits(y=0) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)
@@ -185,7 +185,7 @@ df |>
       mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="#ABDDA4", linetype = "dashed", se = FALSE) +
   geom_line(colour = "#f9bf07") +
   geom_point(colour = "#686F73", alpha = 0.4) +
-  geom_vline(xintercept = "2022-43", colour = "blue") +
+  geom_vline(xintercept = "2022-41", colour = "blue") +
   expand_limits(y=0) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)
@@ -310,7 +310,7 @@ df |>
       mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="#ABDDA4", linetype = "dashed", se = FALSE) +
   geom_line(colour = "#f9bf07") +
   geom_point(colour = "#686F73", alpha = 0.4) +
-  geom_vline(xintercept = "2022-43", colour = "blue") +
+  geom_vline(xintercept = "2022-41", colour = "blue") +
   facet_grid(vars(adm_meth_desc), scales = "free") + 
     expand_limits(y=0) +
   theme_minimal() +
@@ -517,16 +517,21 @@ There is a contrasting picture for non-elective Urology where prior to the move 
 
 ## Summary, discussion and next steps
 
-There are indications that single-occupancy rooms have reduced length of stay for patients at Liverpool Royal Hospital contrary to what has occured at neighbouring trust sites. However; length of stay averages at the Trusts other large site in Liverpool (Aintree) have followed a similar pattern over the same time period. Additionally the effects appear to be variable within the new hospital depending on which clinical group patients belong to.
+There are indications that single-occupancy rooms may have reduced length of stay for patients at Liverpool Royal Hospital slightly more than changes seen at neighbouring trust sites. However; length of stay averages at the Trusts other large site in Liverpool (Aintree) have followed a similar pattern over the same time period suggesting perhaps trust-wide systemic changes to discharge practice and/or pathways.
 
-As such, in our view and based on this initial exploration, any universal assumptions about length of stay reductions as a result of single occupancy rooms (in the region of 12%) are likely to be overstated and would ignore differential effects on different patient groups.
+The reductions in length of stay have also not persisted for all sub-groups.
+- Elective admissions have been impacted much less
+- General Medicine, Cardiology and Elderly Medicine have seen large decreases since October 2022
+- Urology patients are now staying substantially longer
+
+As such, in our view and based on this initial exploration, any universal assumptions about length of stay reductions as a result of single occupancy rooms (in the region of 12%) are likely to be overstated (given changes at non-single-occupancy room sites) and would also ignore differential effects on different patient groups.
 
 This analysis has been performed on only one metric - average length of stay - and only in the dimension of time - pre and post 'event'. However; a change in the building or processes within a building can result in a change in working and/or caseloads.
 
 -   The type of patients treated by the provider, by the patient's condition or by the catchment area.
 -   Staffing models and ratios may have changed with factors such as catchment area, change in working practice, loss or gaining of staff.
 
-Additionally, access to only SUS data is a limiting factor in being able to fully understand the impact on patients and their support network.
+Additionally, access to only SUS data is a limiting factor in being able to fully understand the broader impact on patients, their support network and also staff.
 
 ### Next steps
 

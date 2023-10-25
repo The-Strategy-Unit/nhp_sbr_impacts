@@ -3,6 +3,8 @@ library(dplyr)
 library(ggplot2)
 library(scales)
 library(lubridate)
+library(janitor)
+library(tidyverse)
 
 
 ######################
@@ -64,7 +66,7 @@ stable_set <- df %>%
   ungroup() %>% 
   mutate(avg_los = round(spell_los / spells,2))
 
-ptd_spc(stable_set, value_field = avg_los, date_field = pseudo_date, improvement_direction = "decrease")
+#ptd_spc(stable_set, value_field = avg_los, date_field = pseudo_date, improvement_direction = "decrease")
 
 change_set <- stable_set 
 
@@ -72,10 +74,46 @@ ptd_spc(change_set,
         value_field = avg_los,
         date_field = pseudo_date,
         improvement_direction = "decrease",
-        rebase = ptd_rebase(as.Date("2022-10-23")))
-#> Warning in ptd_add_short_group_warnings(.): Some groups have 'n < 12'
-#> observations. These have trial limits, which will be revised with each
-#> additional observation until 'n = fix_after_n_points' has been reached.
+        rebase = ptd_rebase(as.Date("2022-10-22")))
+
+#elective
+stable_set <- df %>% 
+  filter(der_provider_site_code == "REMRQ",adm_meth_desc != 'other', between(n_period, 71, 181),adm_meth_desc=="elective") %>%
+  group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period,pseudo_date) %>%  
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) %>%  
+  ungroup() %>% 
+  mutate(avg_los = round(spell_los / spells,2))
+
+#ptd_spc(stable_set, value_field = avg_los, date_field = pseudo_date, improvement_direction = "decrease")
+
+change_set <- stable_set 
+
+ptd_spc(change_set,
+        value_field = avg_los,
+        date_field = pseudo_date,
+        improvement_direction = "decrease",
+        rebase = ptd_rebase(as.Date("2022-10-22")))
+
+#non-elective
+stable_set <- df %>% 
+  filter(der_provider_site_code == "REMRQ",adm_meth_desc != 'other', between(n_period, 71, 181),adm_meth_desc=="non_elective") %>%
+  group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period,pseudo_date) %>%  
+  summarise(spells = sum(spells)
+            ,spell_los = sum(spell_los)) %>%  
+  ungroup() %>% 
+  mutate(avg_los = round(spell_los / spells,2))
+
+#ptd_spc(stable_set, value_field = avg_los, date_field = pseudo_date, improvement_direction = "decrease")
+
+change_set <- stable_set 
+
+ptd_spc(change_set,
+        value_field = avg_los,
+        date_field = pseudo_date,
+        improvement_direction = "decrease",
+        rebase = ptd_rebase(as.Date("2022-10-22")))
+
 
 
 

@@ -68,6 +68,45 @@ df_post <- df |>
 
 ```
 
+```{r load_clean_data_los_general}
+#| include: false
+
+los_all <- read.csv("los_extract_all.csv") |> 
+  clean_names() |>
+  mutate(wk_2 = ifelse(wk<10, paste0(0,wk), wk)) |> 
+  mutate(yyyy_wk = paste0(yr,"-",wk_2)) |>
+  mutate(avg_los = round(spell_los / spells,2))
+
+los_split <- los_all |> 
+  group_by(lrh_flag, yyyy_wk) |> 
+  summarise(pats = sum(pats)
+            ,spells = sum(spells)
+            ,spell_los = sum(spell_los)) |>
+  ungroup() |> 
+  mutate(avg_los = round(spell_los / spells,2))
+  
+
+# add table to get unique period number for year-wk
+periods_2 <- los_all |>
+  group_by(yr,wk) |> 
+  distinct(yyyy_wk) |>
+  ungroup() |> 
+  arrange(yr, wk) |> 
+  mutate(n_period = row_number()
+         ,pseudo_date = as.Date("2020-04-04") + (n_period*7) - 7)
+
+los_all <- los_all |> 
+  left_join(periods_2 |> select(yyyy_wk, n_period), by = "yyyy_wk") |> 
+  mutate(yyyy_wk = fct_reorder(yyyy_wk, n_period))
+
+los_split <- los_split |> 
+  left_join(periods_2 |> select(yyyy_wk, n_period), by = "yyyy_wk") |> 
+  mutate(yyyy_wk = fct_reorder(yyyy_wk, n_period))
+
+rm(periods_2)
+
+```
+
 ```{r site_plot_function}
 #| include: false
 
@@ -204,9 +243,38 @@ Initially we will use treatment specialty on admission as a proxy for case-mix. 
 
 ## Trend analysis
 
+Initially, we will look at the underlying trend in length of stay by week of admission compared to other hospitals across the rest of the country and up to the point that the single-occupancy room site was adopted (Oct 2022). The comparator group of hospitals is all those who submit data to SUS and who have a type 1 ED department. Is Liverpool typical of acute trusts? Was their length of stay higher or lower than benchmarks at the point the new site began operation?
+
+```{r background_trends}
+
+los_split |>
+  filter(n_period < 134) |> 
+  ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group=as.factor(lrh_flag), colour=as.factor(lrh_flag))) +
+  geom_line() +
+  scale_color_manual(name = "Liverpool Royal?", values=c("#ec6555", "#f9bf07")) +
+  #geom_point(colour = "#686F73", alpha = 0.4) +
+  expand_limits(y=2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)
+        ,panel.grid = element_blank(),
+        plot.caption = element_text(face = "bold", size=8)) +
+  labs(title = "Average length of stay (days) by week of admission"
+      ,subtitle = "Royal Liverpool Hospital versus All Other Sites in England, Aug 2020 to Oct 2022"
+      ,x = "Year and week"
+      ,y = "Avg. LoS in days")
+
+```
+::: {.callout-tip icon="false"}
+## Length of stay longer at Royal Liverpool Hospital
+
+In the year Aug 2020 to September 2021 patients were typically staying in hospital for half a day longer at Liverpool Royal than at other sites. Between October 2021 and October 2022 this difference was around 1.5 days extra on average.
+
+:::
+
+
 In order to observe the potential change in length of stay patterns in multi-bed wards and rooms in the old hospital compared to single-bed rooms in the new hospital, we plot the length of stay averages by week of all the patients admitted to Royal Liverpool (REMRQ) between August 2021 (end of legal covid restrictions) and August 2023.
 
-The week of transition between the old and new hospital (officially the 20th October 2022) is indicated by a vertical blue line on the plots.
+The week of transition between the old and new hospital (officially the 20th October 2022) is indicated by a vertical blue line on the plots and red dashed lines (pre new site) and green dashed lines (post move to new site) show the linear trends of those periods.
 
 ```{r overall_trends}
 

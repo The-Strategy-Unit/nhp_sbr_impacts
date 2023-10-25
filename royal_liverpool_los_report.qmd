@@ -69,6 +69,11 @@ move_period <- 136 # week of hospital move
 end_period <- 181 # final week in time series
 move_wk <- "2022-43" # yyyy_wk to use in geom_vline call
 
+### retrospective fix of the blue line  issue (transplantation)
+
+df <- df |> 
+  add_row(adm_meth_desc = "elective", admission_method = NA, avg_los = NA, der_admit_treatment_function_code = "102", der_provider_code = "REM", der_provider_site_code = "REMRQ", moved_site = 1, n_period = 136, new_site = 0, old_site = 0, site_name = "Royal Liverpool", spell_los = NA, spells = NA, wk = 43, wk_2 = "43", yr = 2022, yyyy_wk = "2022-43")
+
 df_pre <- df |> 
   filter(between(n_period,start_period ,move_period-1))
 

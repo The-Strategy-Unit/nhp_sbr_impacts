@@ -251,8 +251,10 @@ los_split |>
   filter(n_period < 134) |> 
   ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group=as.factor(lrh_flag), colour=as.factor(lrh_flag))) +
   geom_line() +
-  scale_color_manual(name = "Trust", values=c("#ec6555", "#f9bf07"),labels = c("All other acute trusts","Royal Liverpool")) +
-  #geom_point(colour = "#686F73", alpha = 0.4) +
+
+  scale_color_manual(name = "", values=c("#ec6555", "#f9bf07"),labels = c("All other acute trusts","Royal Liverpool")) +
+
+
   expand_limits(y=2) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)

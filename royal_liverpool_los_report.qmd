@@ -530,6 +530,10 @@ This analysis has been performed on only one metric - average length of stay - a
 
 Additionally, access to only SUS data is a limiting factor in being able to fully understand the broader impact on patients, their support network and also staff.
 
+### Data caveat
+
+Admitted patients yet to be discharged will not be represented in the SUS data we have utilised for this analysis. The data we have used covers admissions up to 31st August 2023 and discharges up to 30th September 2023. As such, some patients with a length of stay > 30 days will not be represented in more recent average LoS thus bring those figures down artificially. We believe this is only a very marginal affect, but recommend the analysis is re-run as SUS data is refreshed to represent the most topical view of trends. Omitting the most recent admission month from the series may be an alternative 'fix'.
+
 ### Next steps
 
 After our initial investigations more detailed analysis should be considered in order to make more informed conclusions about the impacts addressed including:

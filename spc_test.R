@@ -22,25 +22,26 @@ periods <- df |>
   ungroup() |> 
   arrange(yr, wk) |> 
   mutate(n_period = row_number()
-         ,pseudo_date = as.Date("2020-03-15") + (n_period*7))
+         ,pseudo_date = as.Date("2020-04-04") + (n_period*7) - 7)
 
 df <- df |> 
-  left_join(periods |> select(yyyy_wk, n_period,pseudo_date), by = "yyyy_wk") |> 
+  left_join(periods |> select(yyyy_wk, n_period, pseudo_date), by = "yyyy_wk") |> 
   mutate(yyyy_wk = fct_reorder(yyyy_wk, n_period))
 
 rm(periods)
 
+
 df_pre <- df |> 
-  filter(between(n_period,72 ,135))
+  filter(between(n_period,71 ,133))
 
 df_post <- df |> 
-  filter(n_period > 136)
+  filter(n_period > 134)
 
 
 
 
 df %>% 
-  filter(der_provider_site_code == "REMRQ",adm_meth_desc != 'other', between(n_period, 72, 181)) %>%
+  filter(der_provider_site_code == "REMRQ",adm_meth_desc != 'other', between(n_period, 71, 181)) %>%
   group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period,pseudo_date) %>%  
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) %>%  
@@ -56,7 +57,7 @@ df %>%
 
 
 stable_set <- df %>% 
-  filter(der_provider_site_code == "REMRQ",adm_meth_desc != 'other', between(n_period, 72, 181)) %>%
+  filter(der_provider_site_code == "REMRQ",adm_meth_desc != 'other', between(n_period, 71, 181)) %>%
   group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period,pseudo_date) %>%  
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) %>%  

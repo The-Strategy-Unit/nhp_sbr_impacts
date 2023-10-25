@@ -38,6 +38,9 @@ library(janitor)
 ```{r load_clean_data}
 #| include: false
 
+# to use in the period and date processing below - aligns with move date 20th Oct 2022
+pseudo_date_seed <- "2020-03-22"
+
 df <- read.csv("single_room_extract.csv") |> 
   clean_names() |>
   mutate(wk_2 = ifelse(wk<10, paste0(0,wk), wk)) |> 
@@ -51,7 +54,7 @@ periods <- df |>
   ungroup() |> 
   arrange(yr, wk) |> 
   mutate(n_period = row_number()
-         ,pseudo_date = as.Date("2020-04-04") + (n_period*7) - 7)
+         ,pseudo_date = as.Date(pseudo_date_seed) + (n_period*7) - 7)
 
 df <- df |> 
   left_join(periods |> select(yyyy_wk, n_period), by = "yyyy_wk") |> 
@@ -59,12 +62,18 @@ df <- df |>
 
 rm(periods)
 
-  
+###review periods file to specify the cut-off variables here
+
+start_period <- 73 # first full week in August 2021
+move_period <- 136 # week of hospital move
+end_period <- 181 # final week in time series
+move_wk <- "2022-43" # yyyy_wk to use in geom_vline call
+
 df_pre <- df |> 
-  filter(between(n_period,71 ,133))
+  filter(between(n_period,start_period ,move_period-1))
 
 df_post <- df |> 
-  filter(n_period > 134)
+  filter(n_period > move_period)
 
 ```
 
@@ -85,7 +94,6 @@ los_split <- los_all |>
   ungroup() |> 
   mutate(avg_los = round(spell_los / spells,2))
   
-
 # add table to get unique period number for year-wk
 periods_2 <- los_all |>
   group_by(yr,wk) |> 
@@ -93,7 +101,7 @@ periods_2 <- los_all |>
   ungroup() |> 
   arrange(yr, wk) |> 
   mutate(n_period = row_number()
-         ,pseudo_date = as.Date("2020-04-04") + (n_period*7) - 7)
+         ,pseudo_date = as.Date(pseudo_date_seed) + (n_period*7) - 7)
 
 los_all <- los_all |> 
   left_join(periods_2 |> select(yyyy_wk, n_period), by = "yyyy_wk") |> 
@@ -113,7 +121,7 @@ rm(periods_2)
 fun_site_plot <- function(sitecode, sitename){
   
 df |> 
-  filter(der_provider_site_code == sitecode, adm_meth_desc != 'other', between(n_period, 71, 181)) |> 
+  filter(der_provider_site_code == sitecode, adm_meth_desc != 'other', between(n_period, start_period, end_period)) |> 
   group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) |> 
@@ -136,7 +144,7 @@ df |>
       mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="#ABDDA4", linetype = "dashed", se = FALSE) +
   geom_line(colour = "#f9bf07") +
   geom_point(colour = "#686F73", alpha = 0.4) +
-  geom_vline(xintercept = "2022-41", colour = "blue") +
+  geom_vline(xintercept = move_wk, colour = "blue") +
   expand_limits(y=0) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)
@@ -156,7 +164,7 @@ df |>
 fun_spec_plot <- function(speccode, elec_nonelec, specname){
   
 df |> 
-  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 71, 181)) |>
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, start_period, end_period)) |>
       filter(adm_meth_desc == elec_nonelec) |>
   filter(der_admit_treatment_function_code == speccode)|>
   group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
@@ -185,7 +193,7 @@ df |>
       mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="#ABDDA4", linetype = "dashed", se = FALSE) +
   geom_line(colour = "#f9bf07") +
   geom_point(colour = "#686F73", alpha = 0.4) +
-  geom_vline(xintercept = "2022-41", colour = "blue") +
+  geom_vline(xintercept = move_wk, colour = "blue") +
   expand_limits(y=0) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5)
@@ -248,7 +256,7 @@ Initially, we will look at the underlying trend in length of stay by week of adm
 ```{r background_trends}
 
 los_split |>
-  filter(n_period < 134) |> 
+  filter(n_period < start_period) |> 
   ggplot(aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los, group=as.factor(lrh_flag), colour=as.factor(lrh_flag))) +
   geom_line() +
 
@@ -270,7 +278,7 @@ los_split |>
 ::: {.callout-tip icon="false"}
 ## Length of stay longer at Royal Liverpool Hospital
 
-In the year Aug 2020 to September 2021 patients were typically staying in hospital for half a day longer at Royal Liverpool than at other sites. Between October 2021 and October 2022 this difference was around 1.5 days extra on average.
+Whilst there is some variation week by week, in the period Aug 2020 to Oct 2022 patients were typically staying in hospital for around 0.5 to 1 day longer at Royal Liverpool than at other sites across England.
 :::
 
 In order to observe the potential change in length of stay patterns in multi-bed wards and rooms in the old hospital compared to single-bed rooms in the new hospital, we plot the length of stay averages by week of all the patients admitted to Royal Liverpool (REMRQ) between August 2021 (end of legal covid restrictions) and August 2023.
@@ -287,7 +295,7 @@ The change in length of stay patterns from the old hospital to the new hospital 
 
 ```{r elective/nonelective}
 df |> 
-  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 71, 181)) |> 
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, start_period, end_period)) |> 
   group_by(der_provider_site_code, adm_meth_desc, yr, wk, yyyy_wk, n_period) |> 
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) |> 
@@ -310,7 +318,7 @@ df |>
       mutate(avg_los = round(spell_los / spells,2)), aes(x=fct_reorder(yyyy_wk, n_period), y=avg_los), method = "lm", color="#ABDDA4", linetype = "dashed", se = FALSE) +
   geom_line(colour = "#f9bf07") +
   geom_point(colour = "#686F73", alpha = 0.4) +
-  geom_vline(xintercept = "2022-41", colour = "blue") +
+  geom_vline(xintercept = move_wk, colour = "blue") +
   facet_grid(vars(adm_meth_desc), scales = "free") + 
     expand_limits(y=0) +
   theme_minimal() +
@@ -519,7 +527,13 @@ There is a contrasting picture for non-elective Urology where prior to the move 
 
 There are indications that single-occupancy rooms may have reduced length of stay for patients at Liverpool Royal Hospital slightly more than changes seen at neighbouring trust sites. However; length of stay averages at the Trusts other large site in Liverpool (Aintree) have followed a similar pattern over the same time period suggesting perhaps trust-wide systemic changes to discharge practice and/or pathways.
 
-The reductions in length of stay have also not persisted for all sub-groups. - Elective admissions have been impacted much less - General Medicine, Cardiology and Elderly Medicine have seen large decreases since October 2022 - Urology patients are now staying substantially longer
+The reductions in length of stay have also not persisted for all sub-groups:
+
+-   Elective admissions have been impacted much less
+
+-   General Medicine, Cardiology and Elderly Medicine have seen large decreases since October 2022
+
+-   Urology patients are now staying substantially longer
 
 As such, in our view and based on this initial exploration, any universal assumptions about length of stay reductions as a result of single occupancy rooms (in the region of 12%) are likely to be overstated (given changes at non-single-occupancy room sites) and would also ignore differential effects on different patient groups.
 
@@ -532,7 +546,7 @@ Additionally, access to only SUS data is a limiting factor in being able to full
 
 ### Data caveat
 
-Admitted patients yet to be discharged will not be represented in the SUS data we have utilised for this analysis. The data we have used covers admissions up to 31st August 2023 and discharges up to 30th September 2023. As such, some patients with a length of stay > 30 days will not be represented in more recent average LoS thus bring those figures down artificially. We believe this is only a very marginal affect, but recommend the analysis is re-run as SUS data is refreshed to represent the most topical view of trends. Omitting the most recent admission month from the series may be an alternative 'fix'.
+Admitted patients yet to be discharged will not be represented in the SUS data we have utilised for this analysis. The data we have used covers admissions up to 31st August 2023 and discharges up to 30th September 2023. As such, some patients with a length of stay \> 30 days will not be represented in more recent average LoS thus bring those figures down artificially. We believe this is only a very marginal affect, but recommend the analysis is re-run as SUS data is refreshed to represent the most topical view of trends. Omitting the most recent admission month from the series may be an alternative 'fix'.
 
 ### Next steps
 
@@ -542,5 +556,6 @@ After our initial investigations more detailed analysis should be considered in 
 -   interrupted time series (incorporating ARIMA)
 -   retrospective matched cohort analysis
 -   standardisation of length of stay for age/sex/comorbidities etc...
+-   quantifiaction of other indirect effects (positive and negative) such as healthcare-acquired infection rates, staff productivity, patient experience.
 
 ## References

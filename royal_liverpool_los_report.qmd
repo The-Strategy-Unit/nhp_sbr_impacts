@@ -52,7 +52,7 @@ periods <- df |>
   ungroup() |> 
   arrange(yr, wk) |> 
   mutate(n_period = row_number()
-         ,pseudo_date = as.Date("2020-03-15") + (n_period*7))
+         ,pseudo_date = as.Date("2020-04-04") + (n_period*7) - 7)
 
 df <- df |> 
   left_join(periods |> select(yyyy_wk, n_period), by = "yyyy_wk") |> 
@@ -61,10 +61,10 @@ df <- df |>
 rm(periods)
 
 df_pre <- df |> 
-  filter(between(n_period,72 ,135))
+  filter(between(n_period,71 ,133))
 
 df_post <- df |> 
-  filter(n_period > 136)
+  filter(n_period > 134)
 
 ```
 
@@ -74,7 +74,7 @@ df_post <- df |>
 fun_site_plot <- function(sitecode, sitename){
   
 df |> 
-  filter(der_provider_site_code == sitecode, adm_meth_desc != 'other', between(n_period, 72, 181)) |> 
+  filter(der_provider_site_code == sitecode, adm_meth_desc != 'other', between(n_period, 71, 181)) |> 
   group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) |> 
@@ -117,7 +117,7 @@ df |>
 fun_spec_plot <- function(speccode, elec_nonelec, specname){
   
 df |> 
-  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 72, 181)) |>
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 71, 181)) |>
       filter(adm_meth_desc == elec_nonelec) |>
   filter(der_admit_treatment_function_code == speccode)|>
   group_by(der_provider_site_code, yr, wk, yyyy_wk, n_period) |> 
@@ -218,7 +218,7 @@ The change in length of stay patterns from the old hospital to the new hospital 
 
 ```{r elective/nonelective}
 df |> 
-  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 72, 181)) |> 
+  filter(der_provider_site_code == "REMRQ", adm_meth_desc != 'other', between(n_period, 71, 181)) |> 
   group_by(der_provider_site_code, adm_meth_desc, yr, wk, yyyy_wk, n_period) |> 
   summarise(spells = sum(spells)
             ,spell_los = sum(spell_los)) |> 

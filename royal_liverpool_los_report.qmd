@@ -270,7 +270,7 @@ los_split |>
 ::: {.callout-tip icon="false"}
 ## Length of stay longer at Royal Liverpool Hospital
 
-In the year Aug 2020 to September 2021 patients were typically staying in hospital for half a day longer at Liverpool Royal than at other sites. Between October 2021 and October 2022 this difference was around 1.5 days extra on average.
+In the year Aug 2020 to September 2021 patients were typically staying in hospital for half a day longer at Royal Liverpool than at other sites. Between October 2021 and October 2022 this difference was around 1.5 days extra on average.
 :::
 
 In order to observe the potential change in length of stay patterns in multi-bed wards and rooms in the old hospital compared to single-bed rooms in the new hospital, we plot the length of stay averages by week of all the patients admitted to Royal Liverpool (REMRQ) between August 2021 (end of legal covid restrictions) and August 2023.
@@ -519,10 +519,7 @@ There is a contrasting picture for non-elective Urology where prior to the move 
 
 There are indications that single-occupancy rooms may have reduced length of stay for patients at Liverpool Royal Hospital slightly more than changes seen at neighbouring trust sites. However; length of stay averages at the Trusts other large site in Liverpool (Aintree) have followed a similar pattern over the same time period suggesting perhaps trust-wide systemic changes to discharge practice and/or pathways.
 
-The reductions in length of stay have also not persisted for all sub-groups.
-- Elective admissions have been impacted much less
-- General Medicine, Cardiology and Elderly Medicine have seen large decreases since October 2022
-- Urology patients are now staying substantially longer
+The reductions in length of stay have also not persisted for all sub-groups. - Elective admissions have been impacted much less - General Medicine, Cardiology and Elderly Medicine have seen large decreases since October 2022 - Urology patients are now staying substantially longer
 
 As such, in our view and based on this initial exploration, any universal assumptions about length of stay reductions as a result of single occupancy rooms (in the region of 12%) are likely to be overstated (given changes at non-single-occupancy room sites) and would also ignore differential effects on different patient groups.
 

@@ -400,7 +400,7 @@ LoS trends at Whiston, Southport & Formby and Ormskirk Hospitals also appear to 
 
 ## Case-mix
 
-Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds or surgical case-loads changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings. We have identified the top 5 treatment specialties in elective and non-elective (excluding 180) by spell volume for the period after the hospital move. These are presented below:
+Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds or surgical case-loads changed? In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings. We have identified the top 5 treatment specialties in elective and non-elective (excluding 180) by spell volume for the period after the hospital move. These are presented below:
 
 ```{r top_5_specs}
 #| include: false
@@ -546,7 +546,7 @@ Additionally, access to only SUS data is a limiting factor in being able to full
 
 ### Data caveat
 
-Admitted patients yet to be discharged will not be represented in the SUS data we have utilised for this analysis. The data we have used covers admissions up to 31st August 2023 and discharges up to 30th September 2023. As such, some patients with a length of stay \> 30 days will not be represented in more recent average LoS thus bring those figures down artificially. We believe this is only a very marginal affect, but recommend the analysis is re-run as SUS data is refreshed to represent the most topical view of trends. Omitting the most recent admission month from the series may be an alternative 'fix'.
+Admitted patients yet to be discharged will not be represented in the SUS data we have utilised for this analysis. The data we have used covers admissions up to 31st August 2023 and discharges up to 30th September 2023. As such, some patients with a length of stay \> 30 days will not be represented in more recent average LoS thus bringing those figures down artificially. We believe this is only a very marginal affect, but recommend the analysis is re-run as SUS data is refreshed to represent the most topical view of trends. Omitting the most recent admission month from the series may be an alternative 'fix'.
 
 ### Next steps
 

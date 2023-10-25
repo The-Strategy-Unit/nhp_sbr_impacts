@@ -392,7 +392,7 @@ LoS trends at Whiston, Southport & Formby and Ormskirk Hospitals also appear to 
 
 ## Case-mix
 
-Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds or surgical case-loads changed?. In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings. We have identified the top 5 treatment specialties in elective and non-elective (excluding 180) by spell volume for the period after the hospital move. These are presented below:
+Another potential cause of changes in length of stay may be the case mix of patients admitted to both the old and new hospitals - have services or admission thresholds or surgical case-loads changed? In this data, we have used the treatment specialty on admission as a proxy for case-mix and repeated the trend analysis to indicate if length of stay changes might be driven by clinical groupings. We have identified the top 5 treatment specialties in elective and non-elective (excluding 180) by spell volume for the period after the hospital move. These are presented below:
 
 ```{r top_5_specs}
 #| include: false

@@ -1,0 +1,72 @@
+---
+title: "Quantifying the impacts of single-bed accommodation versus multi-bed accommodation"
+subtitle: "Supporting NHP decision-making"
+title-slide-attributes:
+  data-background-color: "#f9bf07"
+  data-background-image: 'https://raw.githubusercontent.com/The-Strategy-Unit/assets/main/logo_black.svg'
+  data-background-size: 10%
+  data-background-position: 98% 2%
+author: "Andy Hood"
+date: last-modified
+date-format: "YYYY-MM-DD"
+format:
+  revealjs:
+    slide-number: c/t
+    preview-links: true
+    width: 1600
+    height: 900
+editor: visual
+toc: true
+toc-title: "Table of contents:"
+---
+
+# Background
+
+:::: {.columns}
+::: {.column width="50%"}
+
+The New Hospitals Programme (NHP) team are considering the impacts of single-bedded inpatient accommodation in it's planning assumptions. A notional figure of 12% reduction in length of stay was being assumed.
+:::
+
+::: {.column width="50%"}
+
+The Strategy Unit was engaged to review the appropriateness of this figure. A rapid analysis of legnth of stay trends at Royal Liverpool Hospital (switched to single-bed accommodation in October 2022) was undertaken to assess the potential direction and scale of effect. The result of that initial crude analysis suggested some reduction was likely however there is significant potential that factors outside of the data may be influencing the effects, for example case-mix, hospital processes and pathways or wider ecological changes to inpatient demand.
+:::
+::::
+
+## Natural experiments
+
+There are thought to be 7 schemes of similar nature in the UK (England??) where inpatient accommodation replaced multi-bed accommodation. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.
+
+# Proposal
+
+The previous work highlighted the need for further work to better understand and quantify both the direct and indirect impacts of such a change to service model. This includes:
+
+-   Literature review of the nature and scale of impacts of changes like this
+-   Impact analysis to quantify the (range of) effects on length of stay
+-   Impact modelling of the indirect effects on non-length of stay metrics
+
+## Literature Review
+
+Using length of stay as the objective term, locate and review evidence that clearly quantifies the impacts of switching from multi to single-bed inpatient accommodation. This will be used for general context and for validation of any novel analysis undertaken for this project.
+
+The secondary purpose of the search is to identify non-direct impacts of such changes e.g. on staffing efficiency, patient experience, infection rates in order to provide figures that can be modelled alongside length of stay
+
+## Impact analysis
+
+Questions of this nature are probably best addressed with some form of time-series analysis. There are multiple options for this:
+
+-   Interrupted Time Series analysis (ITS)
+-   Autoregressive Integrated Moving Average (ARIMA)
+-   Causal discovery analysis (CDA)
+-   Causal Impact Analysis (CIA)
+
+### Causal Impact Analysis
+
+CIA represents a relatively new technique (developed by google) with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.
+
+CIA used in this way would negate the need to collect significant amounts of explanatory variable data.
+
+More information on CIA can be found [here](https://research.google.com/pubs/archive/41854.pdf) and [here](http://google.github.io/CausalImpact/CausalImpact.html)
+
+## Indirect impacts modelling

@@ -22,17 +22,15 @@ toc-title: "Table of contents:"
 
 # Background
 
-:::: {.columns}
+::: columns
 ::: {.column width="50%"}
-
-The New Hospitals Programme (NHP) team are considering the impacts of single-bedded inpatient accommodation in it's planning assumptions. A notional figure of 12% reduction in length of stay was being assumed.
+The New Hospitals Programme (NHP) team are considering the impacts of single-bedded inpatient accommodation in it's planning assumptions. A notional figure of 12% reduction in length of stay was being assumed. The Strategy Unit was engaged to review the appropriateness of this figure.
 :::
 
 ::: {.column width="50%"}
-
-The Strategy Unit was engaged to review the appropriateness of this figure. A rapid analysis of legnth of stay trends at Royal Liverpool Hospital (switched to single-bed accommodation in October 2022) was undertaken to assess the potential direction and scale of effect. The result of that initial crude analysis suggested some reduction was likely however there is significant potential that factors outside of the data may be influencing the effects, for example case-mix, hospital processes and pathways or wider ecological changes to inpatient demand.
+A rapid analysis of legnth of stay trends at Royal Liverpool Hospital (switched to single-bed accommodation in October 2022) was undertaken to assess the potential direction and scale of effect. The result of that initial crude analysis suggested some reduction was likely however there is significant potential that factors outside of the data may be influencing the effects, for example case-mix, hospital processes and pathways or wider ecological changes to inpatient demand.
 :::
-::::
+:::
 
 ## Natural experiments
 
@@ -61,12 +59,32 @@ Questions of this nature are probably best addressed with some form of time-seri
 -   Causal discovery analysis (CDA)
 -   Causal Impact Analysis (CIA)
 
-### Causal Impact Analysis
+## Causal Impact Analysis
 
-CIA represents a relatively new technique (developed by google) with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.
+CIA represents a relatively new technique (developed by google c2015) with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.
 
-CIA used in this way would negate the need to collect significant amounts of explanatory variable data.
+CIA used in this way would also negate the need to collect significant amounts of explanatory variable data. More information on CIA can be found [here](https://research.google.com/pubs/archive/41854.pdf) and [here](http://google.github.io/CausalImpact/CausalImpact.html). A simplified visualisation of the analytical output is below for reference:
 
-More information on CIA can be found [here](https://research.google.com/pubs/archive/41854.pdf) and [here](http://google.github.io/CausalImpact/CausalImpact.html)
+![](https://images.squarespace-cdn.com/content/v1/5df3d68da6faaa72f61492dd/1581436264749-1XWAMQAAOTO7HGCT4NUB/Screen+Shot+2020-02-11+at+10.56.04+AM.png?format=2500w){.absolute bottom="0" left="500" height="420"}
+
+## Direct impacts modelling
+
+As identified in a previous review of literature on this topic, the most commonly cited direct impacts of switching to single room accommodation are:
+
+-   Reduction of in-hospital mortality (HSMI)
+
+-   Reduction in length of stay (LoS)
+
+-   Reduced healthcare associated infection (HCAI)
+
+-   Improved patient experience
 
 ## Indirect impacts modelling
+
+Literature identified during our rapid analysis work suggests there are likely to be unintended/indirect negative impacts of switching accommodation from multi to single beds that go beyond patient length of stays (ergo clinical improvement) and that should be part of a wider assessment of impacts. These may include, but are not restricted to:
+
+-   Staff efficiency (moving between rooms and teamwork)
+
+-   Patient loneliness
+
+We will attempt to refine the recognition of these factors or outcomes and aim to quantify them in the context of any given unit's size and activity and also in respect of potential costs.

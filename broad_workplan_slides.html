@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.2.335">
 
   <meta name="author" content="Andy Hood">
-  <meta name="dcterms.date" content="2023-12-15">
+  <meta name="dcterms.date" content="2023-12-22">
   <title>Quantifying the impacts of single-bed accommodation versus multi-bed accommodation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -28,6 +28,25 @@
       width: 0.8em;
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
+    }
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
     }
   </style>
   <link rel="stylesheet" href="broad_workplan_slides_files/libs/revealjs/dist/theme/quarto.css" id="theme">
@@ -319,6 +338,9 @@
       margin-right: 0; 
     }
   </style>
+  
+  <script src="broad_workplan_slides_files/libs/kePrint-0.0.1/kePrint.js"></script>
+  <link href="broad_workplan_slides_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -336,7 +358,7 @@ Andy Hood
 </div>
 </div>
 
-  <p class="date">2023-12-15</p>
+  <p class="date">2023-12-22</p>
 </section><section id="TOC">
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents:</h2>
@@ -348,10 +370,17 @@ Andy Hood
 <li><a href="#/proposal" id="/toc-proposal">Proposal</a>
 <ul>
 <li><a href="#/literature-review" id="/toc-literature-review">Literature Review</a></li>
+<li><a href="#/literature-review-update" id="/toc-literature-review-update">Literature review update</a></li>
 <li><a href="#/impact-analysis" id="/toc-impact-analysis">Impact analysis</a></li>
-<li><a href="#/causal-impact-analysis" id="/toc-causal-impact-analysis">Causal Impact Analysis</a></li>
-<li><a href="#/direct-impacts-modelling" id="/toc-direct-impacts-modelling">Direct impacts modelling</a></li>
-<li><a href="#/indirect-impacts-modelling" id="/toc-indirect-impacts-modelling">Indirect impacts modelling</a></li>
+<li><a href="#/method---interrupted-time-series-analysis" id="/toc-method---interrupted-time-series-analysis">Method - Interrupted Time Series Analysis</a></li>
+<li><a href="#/method---autoregressive-integrated-moving-average" id="/toc-method---autoregressive-integrated-moving-average">Method - Autoregressive Integrated Moving Average</a></li>
+<li><a href="#/method---causal-discovery-analysis" id="/toc-method---causal-discovery-analysis">Method - Causal Discovery Analysis</a></li>
+<li><a href="#/method---causal-impact-analysis" id="/toc-method---causal-impact-analysis">Method - Causal Impact Analysis</a></li>
+<li><a href="#/choice-of-method" id="/toc-choice-of-method">Choice of method</a></li>
+<li><a href="#/direct-impacts" id="/toc-direct-impacts">Direct impacts</a></li>
+<li><a href="#/indirect-impacts" id="/toc-indirect-impacts">Indirect impacts</a></li>
+<li><a href="#/proxy-outcome-measures" id="/toc-proxy-outcome-measures">Proxy outcome measures</a></li>
+<li><a href="#/references" id="/toc-references">References</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -369,7 +398,16 @@ Andy Hood
 </section>
 <section id="natural-experiments" class="slide level2">
 <h2>Natural experiments</h2>
-<p>There are thought to be 7 schemes of similar nature in the UK (England??) where inpatient accommodation replaced multi-bed accommodation. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.</p>
+<p>There are thought to be 7 schemes of similar nature in the UK (England??) where single-bed inpatient accommodation replaced multi-bed accommodation. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.</p>
+<ol type="1">
+<li>Royal Liverpool Hospital (Oct 2022)</li>
+<li>Papworth</li>
+<li>Tunbridge Wells</li>
+<li>Hospital 4</li>
+<li>Hospital 5</li>
+<li>Hospital 6</li>
+<li>Hospital 7</li>
+</ol>
 </section></section>
 <section>
 <section id="proposal" class="title-slide slide level1 center">
@@ -383,12 +421,27 @@ Andy Hood
 </section>
 <section id="literature-review" class="slide level2">
 <h2>Literature Review</h2>
-<p>Using length of stay as the objective term, locate and review evidence that clearly quantifies the impacts of switching from multi to single-bed inpatient accommodation. This will be used for general context and for validation of any novel analysis undertaken for this project.</p>
-<p>The secondary purpose of the search is to identify non-direct impacts of such changes e.g.&nbsp;on staffing efficiency, patient experience, infection rates in order to provide figures that can be modelled alongside length of stay</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>A previous systematic evidence review <span class="citation" data-cites="HEU2022">(<a href="#/references" role="doc-biblioref" onclick="">J 2022</a>)</span> on the topic was commissioned by NHS England. The review aimed to identify significant clinical, humanistic and economic outcomes associated with admission to single-bed accommodation compared to shared rooms. The review grouped potential impacts into the following:</p>
+<ul>
+<li>Clinical outcomes</li>
+<li>Patient experience and satisfaction</li>
+<li>Professional experience</li>
+<li>Economic outcomes</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p>Conclusive findings were difficult to ascertain, though the review noted that patients generally preferred single rooms and length of stay savings may potentially offset increased costs of providing single-bed accommodation.</p>
+</div>
+</div>
+</section>
+<section id="literature-review-update" class="slide level2">
+<h2>Literature review update</h2>
+<p>Adopting the same search strategy, locate and undertake rapid review of evidence published since February 2022 that clearly identifies (and quantifies) the impacts of switching from multi to single-bed inpatient accommodation. This is principally being done to identify any additional factor or outcomes for which data can be collected and analysed in our impact. Some logic theories that may emerge include impacts on efficiency e.g.&nbsp;bed flexibility and waiting list management, staff productivity and workforce retention.</p>
 </section>
 <section id="impact-analysis" class="slide level2">
 <h2>Impact analysis</h2>
-<p>Questions of this nature are probably best addressed with some form of time-series analysis. There are multiple options for this:</p>
+<p>Questions of this type, where natural experiments are being assessed, are best addressed with some form of unit-level time-series analysis. There are multiple options for this:</p>
 <ul>
 <li>Interrupted Time Series analysis (ITS)</li>
 <li>Autoregressive Integrated Moving Average (ARIMA)</li>
@@ -396,32 +449,127 @@ Andy Hood
 <li>Causal Impact Analysis (CIA)</li>
 </ul>
 </section>
-<section id="causal-impact-analysis" class="slide level2">
-<h2>Causal Impact Analysis</h2>
+<section id="method---interrupted-time-series-analysis" class="slide level2">
+<h2>Method - Interrupted Time Series Analysis</h2>
+</section>
+<section id="method---autoregressive-integrated-moving-average" class="slide level2">
+<h2>Method - Autoregressive Integrated Moving Average</h2>
+</section>
+<section id="method---causal-discovery-analysis" class="slide level2">
+<h2>Method - Causal Discovery Analysis</h2>
+</section>
+<section id="method---causal-impact-analysis" class="slide level2">
+<h2>Method - Causal Impact Analysis</h2>
 <p>CIA represents a relatively new technique (developed by google c2015) with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.</p>
 <p>CIA used in this way would also negate the need to collect significant amounts of explanatory variable data. More information on CIA can be found <a href="https://research.google.com/pubs/archive/41854.pdf">here</a> and <a href="http://google.github.io/CausalImpact/CausalImpact.html">here</a>. A simplified visualisation of the analytical output is below for reference:</p>
 <p><img data-src="https://images.squarespace-cdn.com/content/v1/5df3d68da6faaa72f61492dd/1581436264749-1XWAMQAAOTO7HGCT4NUB/Screen+Shot+2020-02-11+at+10.56.04+AM.png?format=2500w" class="absolute" style="left: 500px; bottom: 0px; height: 420px; "></p>
 </section>
-<section id="direct-impacts-modelling" class="slide level2">
-<h2>Direct impacts modelling</h2>
-<p>As identified in a previous review of literature on this topic, the most commonly cited direct impacts of switching to single room accommodation are:</p>
+<section id="choice-of-method" class="slide level2">
+<h2>Choice of method</h2>
+<p>Each of the above has advantages or disadvantages when compared to each other for example…..</p>
+<p>On balance, and given the time and capacity constraints of the project, we feel that ITS / ARIMA / CDA / CIA (delete as appropriate) represents the most appropriate method to deploy in this instance against a range of proxy outcome measures.</p>
+</section>
+<section id="direct-impacts" class="slide level2">
+<h2>Direct impacts</h2>
+<p>As identified in a previous review of literature on this topic <span class="citation" data-cites="HEU2022">(<a href="#/references" role="doc-biblioref" onclick="">J 2022</a>)</span>, the most commonly cited direct impacts of switching to single room accommodation are:</p>
 <ul>
-<li><p>Reduction of in-hospital mortality (HSMI)</p></li>
-<li><p>Reduction in length of stay (LoS)</p></li>
-<li><p>Reduced healthcare associated infection (HCAI)</p></li>
-<li><p>Improved patient experience</p></li>
+<li><p>In or out of hospital mortality</p></li>
+<li><p>Changes to length of stay (LoS)</p></li>
+<li><p>Healthcare associated infection (HCAI)</p></li>
+<li><p>Improved patient experience (sleep, privacy)</p></li>
 </ul>
 </section>
-<section id="indirect-impacts-modelling" class="slide level2">
-<h2>Indirect impacts modelling</h2>
+<section id="indirect-impacts" class="slide level2">
+<h2>Indirect impacts</h2>
 <p>Literature identified during our rapid analysis work suggests there are likely to be unintended/indirect negative impacts of switching accommodation from multi to single beds that go beyond patient length of stays (ergo clinical improvement) and that should be part of a wider assessment of impacts. These may include, but are not restricted to:</p>
 <ul>
 <li><p>Staff efficiency (moving between rooms and teamwork)</p></li>
+<li><p>Overall productivity e.g.&nbsp;ability to manage waiting lists, recover occupancy from urgent care peaks</p></li>
 <li><p>Patient loneliness</p></li>
 </ul>
-<p>We will attempt to refine the recognition of these factors or outcomes and aim to quantify them in the context of any given unit’s size and activity and also in respect of potential costs.</p>
+<p>We will attempt to refine the recognition and definition of these factors or outcomes and aim to quantify them in the context of any given unit’s size and activity and also in respect of potential costs.</p>
+</section>
+<section id="proxy-outcome-measures" class="slide level2">
+<h2>Proxy outcome measures</h2>
+<p>Given the collection of primary data is not in scope for this analysis, there is a requirement to identify existing routine and publicly accessible data that can act as relevant measures to assess changes over time before and after the move of any units to single-bed accommodation. The accuracy (specificity) of each proxy measure will be assessed and caveated during interpretation.</p>
+<p>Current proposed measures:</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; "><table class="table table-striped table-hover table-condensed" style="font-size: 28px; ">
+ <thead>
+  <tr>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> id </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> desc </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> source </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:left;"> Summary Hospital-Level Mortality Indicator </td>
+   <td style="text-align:left;"> https://digital.nhs.uk/data-and-information/publications/statistical/shmi </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> Length of Stay </td>
+   <td style="text-align:left;"> SUS APCE, NCDR/UDAL </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 3 </td>
+   <td style="text-align:left;"> Healthcare Associated Infections </td>
+   <td style="text-align:left;"> UKHSA (restricted) </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:left;"> Patient experience </td>
+   <td style="text-align:left;"> Friends and Family test, UKHF </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:left;"> Staff turnover </td>
+   <td style="text-align:left;"> https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 6 </td>
+   <td style="text-align:left;"> Waiting Times </td>
+   <td style="text-align:left;"> https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/ </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 7 </td>
+   <td style="text-align:left;"> Patient readmissions </td>
+   <td style="text-align:left;"> SUS APCE, NCDR/UDAL </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 8 </td>
+   <td style="text-align:left;"> measure8 </td>
+   <td style="text-align:left;"> source8 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 9 </td>
+   <td style="text-align:left;"> measure9 </td>
+   <td style="text-align:left;"> source9 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:left;"> measure10 </td>
+   <td style="text-align:left;"> source10 </td>
+  </tr>
+</tbody>
+</table></div>
+
+</div>
+</div>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
 <div class="footer footer-default">
 
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-HEU2022" class="csl-entry" role="doc-biblioentry">
+J, Elliott. 2022. <span>“Single Versus Shared Rooms in Hospital: Systematic Review.”</span> Health Economics Unit.
+</div>
 </div>
 </section></section>
     </div>
@@ -635,6 +783,44 @@ Andy Hood
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {

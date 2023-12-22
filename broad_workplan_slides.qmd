@@ -15,11 +15,21 @@ format:
     preview-links: true
     width: 1600
     height: 900
+    center: false
+engine: knitr
 editor: visual
 toc: true
 toc-title: "Table of contents:"
+bibliography: references.bib
 ---
 
+``` {r load_packages, include = FALSE}
+
+library(tidyverse)
+library(janitor)
+library(kableExtra)
+
+```
 # Background
 
 ::: columns
@@ -34,7 +44,15 @@ A rapid analysis of legnth of stay trends at Royal Liverpool Hospital (switched 
 
 ## Natural experiments
 
-There are thought to be 7 schemes of similar nature in the UK (England??) where inpatient accommodation replaced multi-bed accommodation. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.
+There are thought to be 7 schemes of similar nature in the UK (England??) where single-bed inpatient accommodation replaced multi-bed accommodation. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.
+
+1.  Royal Liverpool Hospital (Oct 2022)
+2.  Papworth
+3.  Tunbridge Wells
+4.  Hospital 4
+5.  Hospital 5
+6.  Hospital 6
+7.  Hospital 7
 
 # Proposal
 
@@ -46,20 +64,41 @@ The previous work highlighted the need for further work to better understand and
 
 ## Literature Review
 
-Using length of stay as the objective term, locate and review evidence that clearly quantifies the impacts of switching from multi to single-bed inpatient accommodation. This will be used for general context and for validation of any novel analysis undertaken for this project.
+::: columns
+::: {.column width="50%"}
+A previous systematic evidence review [@HEU2022] on the topic was commissioned by NHS England. The review aimed to identify significant clinical, humanistic and economic outcomes associated with admission to single-bed accommodation compared to shared rooms. The review grouped potential impacts into the following:
 
-The secondary purpose of the search is to identify non-direct impacts of such changes e.g. on staffing efficiency, patient experience, infection rates in order to provide figures that can be modelled alongside length of stay
+-   Clinical outcomes
+-   Patient experience and satisfaction
+-   Professional experience
+-   Economic outcomes
+:::
+
+::: {.column width="50%"}
+Conclusive findings were difficult to ascertain, though the review noted that patients generally preferred single rooms and length of stay savings may potentially offset increased costs of providing single-bed accommodation.
+:::
+:::
+
+## Literature review update
+
+Adopting the same search strategy, locate and undertake rapid review of evidence published since February 2022 that clearly identifies (and quantifies) the impacts of switching from multi to single-bed inpatient accommodation. This is principally being done to identify any additional factor or outcomes for which data can be collected and analysed in our impact. Some logic theories that may emerge include impacts on efficiency e.g. bed flexibility and waiting list management, staff productivity and workforce retention.
 
 ## Impact analysis
 
-Questions of this nature are probably best addressed with some form of time-series analysis. There are multiple options for this:
+Questions of this type, where natural experiments are being assessed, are best addressed with some form of unit-level time-series analysis. There are multiple options for this:
 
 -   Interrupted Time Series analysis (ITS)
 -   Autoregressive Integrated Moving Average (ARIMA)
 -   Causal discovery analysis (CDA)
 -   Causal Impact Analysis (CIA)
 
-## Causal Impact Analysis
+## Method - Interrupted Time Series Analysis
+
+## Method - Autoregressive Integrated Moving Average
+
+## Method - Causal Discovery Analysis
+
+## Method - Causal Impact Analysis
 
 CIA represents a relatively new technique (developed by google c2015) with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.
 
@@ -67,24 +106,74 @@ CIA used in this way would also negate the need to collect significant amounts o
 
 ![](https://images.squarespace-cdn.com/content/v1/5df3d68da6faaa72f61492dd/1581436264749-1XWAMQAAOTO7HGCT4NUB/Screen+Shot+2020-02-11+at+10.56.04+AM.png?format=2500w){.absolute bottom="0" left="500" height="420"}
 
-## Direct impacts modelling
+## Choice of method
 
-As identified in a previous review of literature on this topic, the most commonly cited direct impacts of switching to single room accommodation are:
+Each of the above has advantages or disadvantages when compared to each other for example.....
 
--   Reduction of in-hospital mortality (HSMI)
+On balance, and given the time and capacity constraints of the project, we feel that ITS / ARIMA / CDA / CIA (delete as appropriate) represents the most appropriate method to deploy in this instance against a range of proxy outcome measures.
 
--   Reduction in length of stay (LoS)
+## Direct impacts
 
--   Reduced healthcare associated infection (HCAI)
+As identified in a previous review of literature on this topic [@HEU2022], the most commonly cited direct impacts of switching to single room accommodation are:
 
--   Improved patient experience
+-   In or out of hospital mortality
 
-## Indirect impacts modelling
+-   Changes to length of stay (LoS)
+
+-   Healthcare associated infection (HCAI)
+
+-   Improved patient experience (sleep, privacy)
+
+## Indirect impacts
 
 Literature identified during our rapid analysis work suggests there are likely to be unintended/indirect negative impacts of switching accommodation from multi to single beds that go beyond patient length of stays (ergo clinical improvement) and that should be part of a wider assessment of impacts. These may include, but are not restricted to:
 
 -   Staff efficiency (moving between rooms and teamwork)
 
+-   Overall productivity e.g. ability to manage waiting lists, recover occupancy from urgent care peaks
+
 -   Patient loneliness
 
-We will attempt to refine the recognition of these factors or outcomes and aim to quantify them in the context of any given unit's size and activity and also in respect of potential costs.
+We will attempt to refine the recognition and definition of these factors or outcomes and aim to quantify them in the context of any given unit's size and activity and also in respect of potential costs.
+
+```{r developing_proxy_measures, include = FALSE}
+head <- c("id","desc","source")
+m1 <- c(1,"Summary Hospital-Level Mortality Indicator","https://digital.nhs.uk/data-and-information/publications/statistical/shmi")
+m2 <- c(2,"Length of Stay","SUS APCE, NCDR/UDAL")
+m3 <- c(3,"Healthcare Associated Infections","UKHSA (restricted)")
+m4 <- c(4,"Patient experience","Friends and Family test, UKHF")
+m5 <- c(5,"Staff turnover","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics")
+m6 <- c(6,"Waiting Times","https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/")
+m7 <- c(7,"Patient readmissions","SUS APCE, NCDR/UDAL")
+m8 <- c(8,"measure8","source8")
+m9 <- c(9,"measure9","source9")
+m10 <- c(10,"measure10","source10")
+
+measures <- rbind(head, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10) |> 
+  row_to_names(row_number = 1)
+rownames(measures) <- NULL
+
+rm(head, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10)
+
+```
+
+## Proxy outcome measures
+
+Given the collection of primary data is not in scope for this analysis, there is a requirement to identify existing routine and publicly accessible data that can act as relevant measures to assess changes over time before and after the move of any units to single-bed accommodation. The accuracy (specificity) of each proxy measure will be assessed and caveated during interpretation.
+
+Current proposed measures:
+```{r current_measures}
+
+measures |> 
+  kbl() |> 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")
+                ,position = "left"
+                ,font_size = 28
+                ,fixed_thead = list(enabled = T)) |>  
+  row_spec(0, bold = T, color = "black", background = "#f9bf07") |> 
+  scroll_box(height = "400px")
+
+```
+
+## References
+

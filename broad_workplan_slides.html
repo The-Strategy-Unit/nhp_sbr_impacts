@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.2.335">
 
   <meta name="author" content="Andy Hood">
-  <meta name="dcterms.date" content="2023-12-22">
+  <meta name="dcterms.date" content="2024-01-05">
   <title>Quantifying the impacts of single-bed accommodation versus multi-bed accommodation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -358,7 +358,7 @@ Andy Hood
 </div>
 </div>
 
-  <p class="date">2023-12-22</p>
+  <p class="date">2024-01-05</p>
 </section><section id="TOC">
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents:</h2>
@@ -373,13 +373,13 @@ Andy Hood
 <li><a href="#/literature-review-update" id="/toc-literature-review-update">Literature review update</a></li>
 <li><a href="#/impact-analysis" id="/toc-impact-analysis">Impact analysis</a></li>
 <li><a href="#/method---interrupted-time-series-analysis" id="/toc-method---interrupted-time-series-analysis">Method - Interrupted Time Series Analysis</a></li>
-<li><a href="#/method---autoregressive-integrated-moving-average" id="/toc-method---autoregressive-integrated-moving-average">Method - Autoregressive Integrated Moving Average</a></li>
-<li><a href="#/method---causal-discovery-analysis" id="/toc-method---causal-discovery-analysis">Method - Causal Discovery Analysis</a></li>
+<li><a href="#/method---difference-in-differences" id="/toc-method---difference-in-differences">Method - Difference in Differences</a></li>
 <li><a href="#/method---causal-impact-analysis" id="/toc-method---causal-impact-analysis">Method - Causal Impact Analysis</a></li>
 <li><a href="#/choice-of-method" id="/toc-choice-of-method">Choice of method</a></li>
 <li><a href="#/direct-impacts" id="/toc-direct-impacts">Direct impacts</a></li>
 <li><a href="#/indirect-impacts" id="/toc-indirect-impacts">Indirect impacts</a></li>
 <li><a href="#/proxy-outcome-measures" id="/toc-proxy-outcome-measures">Proxy outcome measures</a></li>
+<li><a href="#/project-timescales" id="/toc-project-timescales">Project timescales</a></li>
 <li><a href="#/references" id="/toc-references">References</a></li>
 </ul></li>
 </ul>
@@ -441,39 +441,40 @@ Andy Hood
 </section>
 <section id="impact-analysis" class="slide level2">
 <h2>Impact analysis</h2>
-<p>Questions of this type, where natural experiments are being assessed, are best addressed with some form of unit-level time-series analysis. There are multiple options for this:</p>
+<p>Questions of this type, where natural healthcare experiments are being assessed, are best addressed with some form of unit-level time-series analysis <span class="citation" data-cites="Clarke2019">(<a href="#/references" role="doc-biblioref" onclick="">Clarke et al. 2019</a>)</span>. There are multiple options for this including:</p>
 <ul>
 <li>Interrupted Time Series analysis (ITS)</li>
-<li>Autoregressive Integrated Moving Average (ARIMA)</li>
-<li>Causal discovery analysis (CDA)</li>
+<li>Difference in Differences (DID)</li>
 <li>Causal Impact Analysis (CIA)</li>
 </ul>
 </section>
 <section id="method---interrupted-time-series-analysis" class="slide level2">
 <h2>Method - Interrupted Time Series Analysis</h2>
-</section>
-<section id="method---autoregressive-integrated-moving-average" class="slide level2">
-<h2>Method - Autoregressive Integrated Moving Average</h2>
-</section>
-<section id="method---causal-discovery-analysis" class="slide level2">
-<h2>Method - Causal Discovery Analysis</h2>
-</section>
+<p>Interrupted time series analysis (ITS), sometimes known as quasi-experimental time series analysis, is a method of statistical analysis involving tracking a long-term period before and after a point of intervention to assess the intervention’s effects. Effects of the intervention are evaluated by changes in the level and slope of the time series and statistical significance of the intervention parameters. ITS analysis can be performed on data with or without control groups.</p>
+
+<img data-src="its_eg1.png" class="r-stretch quarto-figure-center"></section>
+<section id="method---difference-in-differences" class="slide level2">
+<h2>Method - Difference in Differences</h2>
+<p>Difference in differences is a statistical technique used to mimic an experimental research design using observational study data, by studying the differential effect of a treatment on a ‘treatment group’ versus a ‘control group’ in a natural experiment. It calculates the effect of a intervention on an outcome by comparing the average change over time in the outcome variable for the treatment group to the average change over time for the control group assuming on unobserved differences between groups.</p>
+
+<img data-src="did_eg1.png" class="r-stretch quarto-figure-center"></section>
 <section id="method---causal-impact-analysis" class="slide level2">
 <h2>Method - Causal Impact Analysis</h2>
-<p>CIA represents a relatively new technique (developed by google c2015) with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.</p>
-<p>CIA used in this way would also negate the need to collect significant amounts of explanatory variable data. More information on CIA can be found <a href="https://research.google.com/pubs/archive/41854.pdf">here</a> and <a href="http://google.github.io/CausalImpact/CausalImpact.html">here</a>. A simplified visualisation of the analytical output is below for reference:</p>
-<p><img data-src="https://images.squarespace-cdn.com/content/v1/5df3d68da6faaa72f61492dd/1581436264749-1XWAMQAAOTO7HGCT4NUB/Screen+Shot+2020-02-11+at+10.56.04+AM.png?format=2500w" class="absolute" style="left: 500px; bottom: 0px; height: 420px; "></p>
-</section>
+<p>CIA represents a relatively new technique <span class="citation" data-cites="broderson2015">(<a href="#/references" role="doc-biblioref" onclick="">Broderson K 2015</a>)</span> with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.</p>
+<p>CIA used in this way would also negate the need to collect significant amounts of explanatory variable data. More information on CIA can be found <a href="https://research.google.com/pubs/archive/41854.pdf">here</a> and <a href="http://google.github.io/CausalImpact/CausalImpact.html">here</a>.</p>
+
+<img data-src="https://images.squarespace-cdn.com/content/v1/5df3d68da6faaa72f61492dd/1581436264749-1XWAMQAAOTO7HGCT4NUB/Screen+Shot+2020-02-11+at+10.56.04+AM.png?format=2500w" class="r-stretch quarto-figure-center"></section>
 <section id="choice-of-method" class="slide level2">
 <h2>Choice of method</h2>
 <p>Each of the above has advantages or disadvantages when compared to each other for example…..</p>
-<p>On balance, and given the time and capacity constraints of the project, we feel that ITS / ARIMA / CDA / CIA (delete as appropriate) represents the most appropriate method to deploy in this instance against a range of proxy outcome measures.</p>
+<p>On balance, and given the objectives, time and capacity constraints of the project, we feel that CIA represents the most appropriate method to deploy in this instance against a range of proxy outcome measures.</p>
 </section>
 <section id="direct-impacts" class="slide level2">
 <h2>Direct impacts</h2>
 <p>As identified in a previous review of literature on this topic <span class="citation" data-cites="HEU2022">(<a href="#/references" role="doc-biblioref" onclick="">J 2022</a>)</span>, the most commonly cited direct impacts of switching to single room accommodation are:</p>
 <ul>
 <li><p>In or out of hospital mortality</p></li>
+<li><p>In-hospital falls and fractures</p></li>
 <li><p>Changes to length of stay (LoS)</p></li>
 <li><p>Healthcare associated infection (HCAI)</p></li>
 <li><p>Improved patient experience (sleep, privacy)</p></li>
@@ -542,8 +543,8 @@ Andy Hood
   </tr>
   <tr>
    <td style="text-align:left;"> 8 </td>
-   <td style="text-align:left;"> measure8 </td>
-   <td style="text-align:left;"> source8 </td>
+   <td style="text-align:left;"> In-hospital falls/fractures </td>
+   <td style="text-align:left;"> SUS APCE, NCDR/UDAL </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 9 </td>
@@ -561,12 +562,22 @@ Andy Hood
 </div>
 </div>
 </section>
+<section id="project-timescales" class="slide level2">
+<h2>Project timescales</h2>
+
+<img data-src="broad_workplan_slides_files/figure-revealjs/generate_gantt-1.png" width="960" class="r-stretch"></section>
 <section id="references" class="slide level2 smaller scrollable">
 <h2>References</h2>
 <div class="footer footer-default">
 
 </div>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-broderson2015" class="csl-entry" role="doc-biblioentry">
+Broderson K, Remy N, Koehler J. 2015. <span>“Inferring Causal Impact Using Bayesian Structural Time-Series Models.”</span> <em>Annals of Applied Statistics</em> 9: 247–74. <a href="https://research.google/pubs/inferring-causal-impact-using-bayesian-structural-time-series-models/">https://research.google/pubs/inferring-causal-impact-using-bayesian-structural-time-series-models/</a>.
+</div>
+<div id="ref-Clarke2019" class="csl-entry" role="doc-biblioentry">
+Clarke, Geraldine M, Stefano Conti, Arne T Wolters, and Adam Steventon. 2019. <span>“Evaluating the Impact of Healthcare Interventions Using Routine Data.”</span> <em>BMJ</em> 365. <a href="https://doi.org/10.1136/bmj.l2239">https://doi.org/10.1136/bmj.l2239</a>.
+</div>
 <div id="ref-HEU2022" class="csl-entry" role="doc-biblioentry">
 J, Elliott. 2022. <span>“Single Versus Shared Rooms in Hospital: Systematic Review.”</span> Health Economics Unit.
 </div>

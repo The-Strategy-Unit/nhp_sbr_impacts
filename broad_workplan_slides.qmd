@@ -23,13 +23,22 @@ toc-title: "Table of contents:"
 bibliography: references.bib
 ---
 
+
 ``` {r load_packages, include = FALSE}
 
 library(tidyverse)
 library(janitor)
 library(kableExtra)
+library(knitr)
+library(ganttrify)
 
 ```
+
+```{r setup, include=FALSE}
+## setting working directory
+knitr::opts_knit$set(root.dir = 'C:/Users/Andrew.Hood/OneDrive - Midlands and Lancashire CSU/Working Projects/NHP/single rooms query')
+```
+
 # Background
 
 ::: columns
@@ -85,38 +94,45 @@ Adopting the same search strategy, locate and undertake rapid review of evidence
 
 ## Impact analysis
 
-Questions of this type, where natural experiments are being assessed, are best addressed with some form of unit-level time-series analysis. There are multiple options for this:
+Questions of this type, where natural healthcare experiments are being assessed, are best addressed with some form of unit-level time-series analysis [@Clarke2019]. There are multiple options for this including:
 
 -   Interrupted Time Series analysis (ITS)
--   Autoregressive Integrated Moving Average (ARIMA)
--   Causal discovery analysis (CDA)
+-   Difference in Differences (DID)
 -   Causal Impact Analysis (CIA)
 
 ## Method - Interrupted Time Series Analysis
 
-## Method - Autoregressive Integrated Moving Average
+Interrupted time series analysis (ITS), sometimes known as quasi-experimental time series analysis, is a method of statistical analysis involving tracking a long-term period before and after a point of intervention to assess the intervention's effects. Effects of the intervention are evaluated by changes in the level and slope of the time series and statistical significance of the intervention parameters. ITS analysis can be performed on data with or without control groups.
 
-## Method - Causal Discovery Analysis
+![](its_eg1.png){fig-align="center"}
+
+## Method - Difference in Differences
+
+Difference in differences is a statistical technique used to mimic an experimental research design using observational study data, by studying the differential effect of a treatment on a 'treatment group' versus a 'control group' in a natural experiment. It calculates the effect of a intervention on an outcome by comparing the average change over time in the outcome variable for the treatment group to the average change over time for the control group assuming on unobserved differences between groups.
+
+![](did_eg1.png){fig-align="center"}
 
 ## Method - Causal Impact Analysis
 
-CIA represents a relatively new technique (developed by google c2015) with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.
+CIA represents a relatively new technique [@broderson2015] with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.
 
-CIA used in this way would also negate the need to collect significant amounts of explanatory variable data. More information on CIA can be found [here](https://research.google.com/pubs/archive/41854.pdf) and [here](http://google.github.io/CausalImpact/CausalImpact.html). A simplified visualisation of the analytical output is below for reference:
+CIA used in this way would also negate the need to collect significant amounts of explanatory variable data. More information on CIA can be found [here](https://research.google.com/pubs/archive/41854.pdf) and [here](http://google.github.io/CausalImpact/CausalImpact.html).
 
-![](https://images.squarespace-cdn.com/content/v1/5df3d68da6faaa72f61492dd/1581436264749-1XWAMQAAOTO7HGCT4NUB/Screen+Shot+2020-02-11+at+10.56.04+AM.png?format=2500w){.absolute bottom="0" left="500" height="420"}
+![](https://images.squarespace-cdn.com/content/v1/5df3d68da6faaa72f61492dd/1581436264749-1XWAMQAAOTO7HGCT4NUB/Screen+Shot+2020-02-11+at+10.56.04+AM.png?format=2500w){fig-align="center"}
 
 ## Choice of method
 
 Each of the above has advantages or disadvantages when compared to each other for example.....
 
-On balance, and given the time and capacity constraints of the project, we feel that ITS / ARIMA / CDA / CIA (delete as appropriate) represents the most appropriate method to deploy in this instance against a range of proxy outcome measures.
+On balance, and given the objectives, time and capacity constraints of the project, we feel that CIA represents the most appropriate method to deploy in this instance against a range of proxy outcome measures.
 
 ## Direct impacts
 
 As identified in a previous review of literature on this topic [@HEU2022], the most commonly cited direct impacts of switching to single room accommodation are:
 
 -   In or out of hospital mortality
+
+-   In-hospital falls and fractures
 
 -   Changes to length of stay (LoS)
 
@@ -145,7 +161,7 @@ m4 <- c(4,"Patient experience","Friends and Family test, UKHF")
 m5 <- c(5,"Staff turnover","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics")
 m6 <- c(6,"Waiting Times","https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/")
 m7 <- c(7,"Patient readmissions","SUS APCE, NCDR/UDAL")
-m8 <- c(8,"measure8","source8")
+m8 <- c(8,"In-hospital falls/fractures","SUS APCE, NCDR/UDAL")
 m9 <- c(9,"measure9","source9")
 m10 <- c(10,"measure10","source10")
 
@@ -172,6 +188,52 @@ measures |>
                 ,fixed_thead = list(enabled = T)) |>  
   row_spec(0, bold = T, color = "black", background = "#f9bf07") |> 
   scroll_box(height = "400px")
+
+```
+
+## Project timescales
+
+```{r gantt_date, include = FALSE}
+
+gantt_data <- as_tibble(rbind(c("wp","activity","start_date","end_date")
+      ,c("Scoping and planning","1. Draft proposal","2023-12-18","2024-01-12")
+      ,c("Scoping and planning","2. Background information","2024-01-01","2024-01-12")
+      ,c("Scoping and planning","3. Project setup","2024-01-08","2024-01-12")
+      ,c("Literature","1. Establish search strategy","2024-01-15","2024-01-26")
+      ,c("Literature","2. Execute search","2024-01-29","2024-02-02")
+      ,c("Literature","3. Review and synthesise","2024-02-05","2024-02-16")
+      ,c("Data collection","1. Scraping published data","2024-02-19","2024-02-23")
+      ,c("Data collection","2. Routine data extracts","2024-02-19","2024-02-23")
+      ,c("Data collection","3. Request / process bespoke","2024-02-19","2024-03-01")
+      ,c("Analysis","1. Wrangling and recoding","2024-03-04","2024-03-15")
+      ,c("Analysis","2. Apply methods","2024-03-18","2024-03-29")
+      ,c("Analysis","3. Validate","2024-04-01","2024-04-05")
+      ,c("Analysis","4. Visualise outputs","2024-04-01","2024-04-12")
+      ,c("Reporting","1. Draft report","2024-03-04","2024-04-26")
+      ,c("Reporting","2. Share & revise","2024-04-29","2024-05-17")
+      ,c("Reporting","3. Disseminate final report","2024-05-20","2024-05-24"))) |> 
+  row_to_names(row_number = 1)
+
+```
+
+``` {r generate_gantt}
+
+ganttrify(project = gantt_data,
+          by_date = TRUE,
+          exact_date = TRUE,
+          alpha_wp = 1,
+          alpha_activity = 0.6,
+          line_end_wp = "round",
+          line_end_activity = "round",
+          axis_text_align = "left",
+          size_text_relative = 1.2,
+          month_number_label = FALSE,
+          font_family = "Calibri",
+          colour_palette = c("#f9bf07", "#ec6555", "#ABDDA4", "#5881c1", "#686F73"))  +
+  ggplot2::labs(title = "Evaluating single-bed accommodation impacts",
+                subtitle = "Project timeline")
+
+
 
 ```
 

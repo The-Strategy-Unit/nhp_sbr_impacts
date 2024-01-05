@@ -34,11 +34,6 @@ library(ganttrify)
 
 ```
 
-```{r setup, include=FALSE}
-## setting working directory
-knitr::opts_knit$set(root.dir = 'C:/Users/Andrew.Hood/OneDrive - Midlands and Lancashire CSU/Working Projects/NHP/single rooms query')
-```
-
 # Background
 
 ::: columns
@@ -122,9 +117,23 @@ CIA used in this way would also negate the need to collect significant amounts o
 
 ## Choice of method
 
-Each of the above has advantages or disadvantages when compared to each other for example.....
+Though slightly different, each of the above methods would be appropriate for the requirements of this work. 
 
-On balance, and given the objectives, time and capacity constraints of the project, we feel that CIA represents the most appropriate method to deploy in this instance against a range of proxy outcome measures.
+On balance, we feel that CIA is the preferred method to deploy in this instance against a range of proxy outcome measures. This is principally due to it's inherent ability to infer significance as well as provide a range of effect sizes without the need to overlay bootstrapping or monte carlo simulation methods. Selection of control sites to calculate the counter-factual will be crucial in this approach.
+
+Should time/resource allow, and to compare & validate findings, we may apply all the above techniques to the same data.
+
+## Choice of control sites
+
+As mentioned above, the choice of control sites against which to compare changes in outcome variables post-switch to single-bed accommodation will be critical to the interpretation of the results. Each of the 7 sites in question changed accommodation type at different times and are likely to have a different set of controls.
+
+We would aim to choose hospital sites that, for the period in question, match the study site in terms of:
+
+-   Size and function (using ERIC data?)
+-   demographic catchment (e.g. age and socio-economic profile)
+-   patient case-mix (disease / morbidity profile)
+
+If no clear and obvious control site/s emerge, we propose to use clustering or similarity analysis to find the n (3-5?) closest matching sites according to mixture of the above variables.
 
 ## Direct impacts
 
@@ -153,23 +162,19 @@ Literature identified during our rapid analysis work suggests there are likely t
 We will attempt to refine the recognition and definition of these factors or outcomes and aim to quantify them in the context of any given unit's size and activity and also in respect of potential costs.
 
 ```{r developing_proxy_measures, include = FALSE}
-head <- c("id","desc","source")
-m1 <- c(1,"Summary Hospital-Level Mortality Indicator","https://digital.nhs.uk/data-and-information/publications/statistical/shmi")
-m2 <- c(2,"Length of Stay","SUS APCE, NCDR/UDAL")
-m3 <- c(3,"Healthcare Associated Infections","UKHSA (restricted)")
-m4 <- c(4,"Patient experience","Friends and Family test, UKHF")
-m5 <- c(5,"Staff turnover","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics")
-m6 <- c(6,"Waiting Times","https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/")
-m7 <- c(7,"Patient readmissions","SUS APCE, NCDR/UDAL")
-m8 <- c(8,"In-hospital falls/fractures","SUS APCE, NCDR/UDAL")
-m9 <- c(9,"measure9","source9")
-m10 <- c(10,"measure10","source10")
 
-measures <- rbind(head, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10) |> 
+measures <- as_tibble(rbind(c("id","desc","source")
+    , c(1,"Summary Hospital-Level Mortality Indicator","https://digital.nhs.uk/data-and-information/publications/statistical/shmi")
+    , c(2,"Length of Stay","SUS APCE, NCDR/UDAL")
+    , c(3,"Healthcare Associated Infections","UKHSA (restricted)")
+    , c(4,"Patient experience","Friends and Family test, UKHF")
+    , c(5,"Staff turnover","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics")
+    , c(6,"Waiting Times","https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/")
+    , c(7,"Patient readmissions","SUS APCE, NCDR/UDAL")
+    , c(8,"In-hospital falls/fractures","SUS APCE, NCDR/UDAL")
+    , c(9,"measure9","source9")
+    , c(10,"measure10","source10"))) |> 
   row_to_names(row_number = 1)
-rownames(measures) <- NULL
-
-rm(head, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10)
 
 ```
 
@@ -232,8 +237,6 @@ ganttrify(project = gantt_data,
           colour_palette = c("#f9bf07", "#ec6555", "#ABDDA4", "#5881c1", "#686F73"))  +
   ggplot2::labs(title = "Evaluating single-bed accommodation impacts",
                 subtitle = "Project timeline")
-
-
 
 ```
 

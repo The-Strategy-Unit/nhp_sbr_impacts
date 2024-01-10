@@ -34,7 +34,7 @@ library(ganttrify)
 
 ```
 
-# Background
+## Background
 
 ::: columns
 ::: {.column width="50%"}
@@ -42,29 +42,58 @@ The New Hospitals Programme (NHP) team are considering the impacts of single-bed
 :::
 
 ::: {.column width="50%"}
-A rapid analysis of legnth of stay trends at Royal Liverpool Hospital (switched to single-bed accommodation in October 2022) was undertaken to assess the potential direction and scale of effect. The result of that initial crude analysis suggested some reduction was likely however there is significant potential that factors outside of the data may be influencing the effects, for example case-mix, hospital processes and pathways or wider ecological changes to inpatient demand.
+A rapid analysis of length of stay trends at Royal Liverpool Hospital (switched to single-bed accommodation in October 2022) was undertaken to assess the potential direction and scale of effect. The result of that initial crude analysis suggested some reduction was likely however there is significant potential that factors outside of the data may be influencing the effects, for example case-mix, hospital processes and pathways or wider ecological changes to inpatient demand.
 :::
 :::
 
 ## Natural experiments
 
-There are thought to be 7 schemes of similar nature in the UK (England??) where single-bed inpatient accommodation replaced multi-bed accommodation. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.
+There are thought to be 7 schemes of similar nature in the UK (England??) where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.
 
-1.  Royal Liverpool Hospital (Oct 2022)
-2.  Papworth
-3.  Tunbridge Wells
-4.  Hospital 4
-5.  Hospital 5
-6.  Hospital 6
-7.  Hospital 7
+```{r hospital_details, include = FALSE}
 
-# Proposal
+sbr_sites <- as_tibble(rbind(c("num","name","location","date","full/partial","ods_code")
+    , c(1,"Royal Liverpool","Liverpool","Oct 2022","Full","REMRQ")
+    , c(2,"Royal Papworth","Cambridge","May 2019","Full^","RGM22")
+    , c(3,"Peterborough Hospital","Peterborough","Nov 2010","Partial","RGN%%")
+    , c(4,"Clatterbridge Cancer Centre","Liverpool","Jun 2020","Partial","REN22")
+    , c(5,"Chase Farm Hospital","London","Sep 2018","Partial","RALC7")
+    , c(6,"Southmead Hospital","Bristol","May 2014","Partial","RVJ01")
+    , c(7,"Tunbridge Wells","Kent","Jan 2011","Partial","RWFTW")
+    , c(8,"Ulster Hospital","Northern Ireland","Apr 2017","Partial","-")
+    , c(9,"Glasgow Central","Scotland","Apr 2015","Partial","-")
+    , c(10,"The Grange Hospital","Wales","Nov 2020","Partial","-"))) |> 
+  row_to_names(row_number = 1)
 
-The previous work highlighted the need for further work to better understand and quantify both the direct and indirect impacts of such a change to service model. This includes:
+```
+
+```{r hospital_list}
+
+sbr_sites |> 
+  kbl() |> 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")
+                ,full_width = F
+                ,position = "left"
+                ,font_size = 28
+                ,fixed_thead = list(enabled = T)) |>  
+  row_spec(0, bold = T, color = "black", background = "#f9bf07") |> 
+  scroll_box(width = "70%", height = "400px")
+
+```
+
+^ shared accommodation in exceptional circumstances
+
+## Proposal
+
+The previous SU analysis highlighted the need for further work to better understand and quantify both the direct and indirect impacts of such a change to service model. This includes:
 
 -   Literature review of the nature and scale of impacts of changes like this
 -   Impact analysis to quantify the (range of) effects on length of stay
 -   Impact modelling of the indirect effects on non-length of stay metrics
+
+Currently out of scope:
+
+-   Patient sub-group impacts
 
 ## Literature Review
 
@@ -119,7 +148,7 @@ CIA used in this way would also negate the need to collect significant amounts o
 
 Though slightly different, each of the above methods would be appropriate for the requirements of this work. 
 
-On balance, we feel that CIA is the preferred method to deploy in this instance against a range of proxy outcome measures. This is principally due to it's inherent ability to infer significance as well as provide a range of effect sizes without the need to overlay bootstrapping or monte carlo simulation methods. Selection of control sites to calculate the counter-factual will be crucial in this approach.
+On balance, we feel that CIA is the preferred method to deploy in this instance against a range of proxy outcome measures. This is principally due to the direct incorporation of control data into the counterfactual, it's inherent ability to infer significance as well as provide a range of effect sizes i.e. without the need to overlay bootstrapping or monte carlo simulation methods. The selection of control sites to calculate the counter-factual will be particularly crucial in this approach.
 
 Should time/resource allow, and to compare & validate findings, we may apply all the above techniques to the same data.
 
@@ -129,9 +158,10 @@ As mentioned above, the choice of control sites against which to compare changes
 
 We would aim to choose hospital sites that, for the period in question, match the study site in terms of:
 
--   Size and function (using ERIC data?)
+-   size (levels of activity)
+-   function [@eric]
 -   demographic catchment (e.g. age and socio-economic profile)
--   patient case-mix (disease / morbidity profile)
+-   patient case-mix (disease / morbidity / HRG profile)
 
 If no clear and obvious control site/s emerge, we propose to use clustering or similarity analysis to find the n (3-5?) closest matching sites according to mixture of the above variables.
 
@@ -159,7 +189,7 @@ Literature identified during our rapid analysis work suggests there are likely t
 
 -   Patient loneliness
 
-We will attempt to refine the recognition and definition of these factors or outcomes and aim to quantify them in the context of any given unit's size and activity and also in respect of potential costs.
+We will attempt to refine the recognition and definition of these factors or outcomes and aim to quantify them in the context of any given unit's size and activity and also, where possible, in respect of potential costs/savings.
 
 ```{r developing_proxy_measures, include = FALSE}
 
@@ -195,6 +225,16 @@ measures |>
   scroll_box(height = "400px")
 
 ```
+
+## Analytical plan
+
+For each of the 7 hospital sites, undertake a controlled impact analysis against each of the 10? proxy outcome measures.
+
+Where the 7 sites themselves are similar, it may be appropriate to pool the data to improve the power to detect changes over time. Either way, the output will be a ranged estimate of impacts for each measure and an indication of whether they might be increasing/sustainable/deteriorating effects.
+
+Written report detailing data, methods and summary of key findings.
+
+With agreement, code to be shared on github (either without data or with simulated data).
 
 ## Project timescales
 

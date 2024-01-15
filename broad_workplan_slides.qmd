@@ -30,6 +30,7 @@ library(tidyverse)
 library(janitor)
 library(kableExtra)
 library(knitr)
+library(lubridate)
 library(ganttrify)
 
 ```
@@ -54,7 +55,7 @@ There are thought to be 7 schemes of similar nature in the UK (England??) where 
 
 sbr_sites <- as_tibble(rbind(c("num","name","location","date","full/partial","ods_code")
     , c(1,"Royal Liverpool","Liverpool","Oct 2022","Full","REMRQ")
-    , c(2,"Royal Papworth","Cambridge","May 2019","Full^","RGM22")
+    , c(2,"Royal Papworth","Cambridge","May 2019","Full","RGM22")
     , c(3,"Peterborough Hospital","Peterborough","Nov 2010","Partial","RGN%%")
     , c(4,"Clatterbridge Cancer Centre","Liverpool","Jun 2020","Partial","REN22")
     , c(5,"Chase Farm Hospital","London","Sep 2018","Partial","RALC7")
@@ -81,7 +82,6 @@ sbr_sites |>
 
 ```
 
-^ shared accommodation in exceptional circumstances
 
 ## Proposal
 
@@ -259,6 +259,8 @@ gantt_data <- as_tibble(rbind(c("wp","activity","start_date","end_date")
       ,c("Reporting","3. Disseminate final report","2024-05-20","2024-05-24"))) |> 
   row_to_names(row_number = 1)
 
+today <- ymd(today())
+
 ```
 
 ``` {r generate_gantt}
@@ -275,8 +277,10 @@ ganttrify(project = gantt_data,
           month_number_label = FALSE,
           font_family = "Calibri",
           colour_palette = c("#f9bf07", "#ec6555", "#ABDDA4", "#5881c1", "#686F73"))  +
+  ggplot2::geom_vline(xintercept = today) +
   ggplot2::labs(title = "Evaluating single-bed accommodation impacts",
-                subtitle = "Project timeline")
+                subtitle = "Project timeline",
+                caption = paste0("vertical line indicates todays date (",today,")"))
 
 ```
 

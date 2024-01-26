@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.2.335">
 
   <meta name="author" content="Andy Hood">
-  <meta name="dcterms.date" content="2024-01-15">
+  <meta name="dcterms.date" content="2024-01-26">
   <title>Quantifying the impacts of single-bed accommodation versus multi-bed accommodation</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -358,7 +358,7 @@ Andy Hood
 </div>
 </div>
 
-  <p class="date">2024-01-15</p>
+  <p class="date">2024-01-26</p>
 </section><section id="TOC">
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents:</h2>
@@ -377,6 +377,8 @@ Andy Hood
 <li><a href="#/direct-impacts" id="/toc-direct-impacts">Direct impacts</a></li>
 <li><a href="#/indirect-impacts" id="/toc-indirect-impacts">Indirect impacts</a></li>
 <li><a href="#/proxy-outcome-measures" id="/toc-proxy-outcome-measures">Proxy outcome measures</a></li>
+<li><a href="#/current-proposed-measures" id="/toc-current-proposed-measures">Current proposed measures:</a></li>
+<li><a href="#/summary-of-hospitals-and-indicator-coverage" id="/toc-summary-of-hospitals-and-indicator-coverage">Summary of hospitals and indicator coverage</a></li>
 <li><a href="#/analytical-plan" id="/toc-analytical-plan">Analytical plan</a></li>
 <li><a href="#/project-timescales" id="/toc-project-timescales">Project timescales</a></li>
 <li><a href="#/references" id="/toc-references">References</a></li>
@@ -395,100 +397,132 @@ Andy Hood
 </section>
 <section id="natural-experiments" class="slide level2">
 <h2>Natural experiments</h2>
-<p>There are thought to be 7 schemes of similar nature in the UK (England??) where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.</p>
+<p>There are thought to be 8 schemes of similar nature in England where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.</p>
 <div class="cell">
 <div class="cell-output-display">
 
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:70%; "><table class="table table-striped table-hover table-condensed" style="font-size: 28px; width: auto !important; ">
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; "><table class="table table-striped table-hover table-condensed" style="font-size: 28px; width: auto !important; ">
  <thead>
   <tr>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> num </th>
+   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> num </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> name </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> location </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> date </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> full/partial </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> PRE SBR state </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> POST SBR state </th>
+   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> notes </th>
    <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> ods_code </th>
   </tr>
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> 1 </td>
+   <td style="text-align:right;"> 1 </td>
    <td style="text-align:left;"> Royal Liverpool </td>
    <td style="text-align:left;"> Liverpool </td>
    <td style="text-align:left;"> Oct 2022 </td>
+   <td style="text-align:left;"> Unknown </td>
    <td style="text-align:left;"> Full </td>
+   <td style="text-align:left;">  </td>
    <td style="text-align:left;"> REMRQ </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 2 </td>
-   <td style="text-align:left;"> Royal Papworth </td>
-   <td style="text-align:left;"> Cambridge </td>
-   <td style="text-align:left;"> May 2019 </td>
-   <td style="text-align:left;"> Full </td>
-   <td style="text-align:left;"> RGM22 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 3 </td>
-   <td style="text-align:left;"> Peterborough Hospital </td>
-   <td style="text-align:left;"> Peterborough </td>
-   <td style="text-align:left;"> Nov 2010 </td>
-   <td style="text-align:left;"> Partial </td>
-   <td style="text-align:left;"> RGN%% </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:right;"> 2 </td>
    <td style="text-align:left;"> Clatterbridge Cancer Centre </td>
    <td style="text-align:left;"> Liverpool </td>
    <td style="text-align:left;"> Jun 2020 </td>
-   <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> Unknown </td>
+   <td style="text-align:left;"> Full </td>
+   <td style="text-align:left;"> Day case and routine cancer inpatient only? </td>
    <td style="text-align:left;"> REN22 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 5 </td>
-   <td style="text-align:left;"> Chase Farm Hospital </td>
-   <td style="text-align:left;"> London </td>
-   <td style="text-align:left;"> Sep 2018 </td>
-   <td style="text-align:left;"> Partial </td>
-   <td style="text-align:left;"> RALC7 </td>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> Royal Papworth </td>
+   <td style="text-align:left;"> Cambridge </td>
+   <td style="text-align:left;"> May 2019 </td>
+   <td style="text-align:left;"> Unknown </td>
+   <td style="text-align:left;"> Full </td>
+   <td style="text-align:left;"> Non-single bed in exceptional circumstances, otherwise full </td>
+   <td style="text-align:left;"> RGM22 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 6 </td>
-   <td style="text-align:left;"> Southmead Hospital </td>
-   <td style="text-align:left;"> Bristol </td>
-   <td style="text-align:left;"> May 2014 </td>
-   <td style="text-align:left;"> Partial </td>
-   <td style="text-align:left;"> RVJ01 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 7 </td>
+   <td style="text-align:right;"> 4 </td>
    <td style="text-align:left;"> Tunbridge Wells </td>
    <td style="text-align:left;"> Kent </td>
    <td style="text-align:left;"> Jan 2011 </td>
-   <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> Unknown </td>
+   <td style="text-align:left;"> Full </td>
+   <td style="text-align:left;"> Jan 11 for W&amp;C, Sep 11 for remainder of inpatient </td>
    <td style="text-align:left;"> RWFTW </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 8 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> James Paget (concept) </td>
+   <td style="text-align:left;"> Norfolk </td>
+   <td style="text-align:left;"> May 2023 </td>
+   <td style="text-align:left;"> Unknown </td>
+   <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> One ward only, 20 of 28 beds SR </td>
+   <td style="text-align:left;"> RGP75 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:left;"> Chase Farm Hospital </td>
+   <td style="text-align:left;"> London </td>
+   <td style="text-align:left;"> Sep 2018 </td>
+   <td style="text-align:left;"> Unknown </td>
+   <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> 42 of 50 rooms single bed. surgical wards only </td>
+   <td style="text-align:left;"> RALC7 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:left;"> Southmead Hospital </td>
+   <td style="text-align:left;"> Bristol </td>
+   <td style="text-align:left;"> May 2014 </td>
+   <td style="text-align:left;"> Unknown </td>
+   <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> 75% (of 800) are single bed rooms </td>
+   <td style="text-align:left;"> RVJ01 </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:left;"> Peterborough Hospital </td>
+   <td style="text-align:left;"> Peterborough </td>
+   <td style="text-align:left;"> Nov 2010 </td>
+   <td style="text-align:left;"> Unknown </td>
+   <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> Single ensuite or 3/4 bedded units, exact mix unknown </td>
+   <td style="text-align:left;"> RGN%% </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 9 </td>
    <td style="text-align:left;"> Ulster Hospital </td>
    <td style="text-align:left;"> Northern Ireland </td>
    <td style="text-align:left;"> Apr 2017 </td>
+   <td style="text-align:left;"> Unknown </td>
    <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> Out of scope - data acess </td>
    <td style="text-align:left;"> - </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 9 </td>
+   <td style="text-align:right;"> 10 </td>
    <td style="text-align:left;"> Glasgow Central </td>
    <td style="text-align:left;"> Scotland </td>
    <td style="text-align:left;"> Apr 2015 </td>
+   <td style="text-align:left;"> Unknown </td>
    <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> Out of scope - data acess </td>
    <td style="text-align:left;"> - </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> 10 </td>
+   <td style="text-align:right;"> 11 </td>
    <td style="text-align:left;"> The Grange Hospital </td>
    <td style="text-align:left;"> Wales </td>
    <td style="text-align:left;"> Nov 2020 </td>
+   <td style="text-align:left;"> Unknown </td>
    <td style="text-align:left;"> Partial </td>
+   <td style="text-align:left;"> Out of scope - data acess </td>
    <td style="text-align:left;"> - </td>
   </tr>
 </tbody>
@@ -528,7 +562,9 @@ Andy Hood
 </section>
 <section id="literature-review-update" class="slide level2">
 <h2>Literature review update</h2>
-<p>Adopting the same search strategy, locate and undertake rapid review of evidence published since February 2022 that clearly identifies (and quantifies) the impacts of switching from multi to single-bed inpatient accommodation. This is principally being done to identify any additional factor or outcomes for which data can be collected and analysed in our impact. Some logic theories that may emerge include impacts on efficiency e.g.&nbsp;bed flexibility and waiting list management, staff productivity and workforce retention.</p>
+<p>The NHSE innovations team (@ Joanne Wood) have created a ‘living review’ of evidence on this topic recently updated in January 2024 as well as specific reviews on e.g.&nbsp;Maternity admissions. No novel impacts have been identified although there may be important sub-groups to consider in the analysis including Neonate, Oncology, ICU and Frailty. As such, given the significant overlap, we feel there is no need for a comprehensive update to literature in support of this analysis.</p>
+<p>However; there are still potentially a couple of gaps in respect of identifying other impacts for us to measure in our study or locating evaluative grey literature that may enhance validation of our findings. Identifying mitigating actions was discussed as another gap, however we believe is out of scope (or haven’t resourced it within this plan) and should be considered as a follow-on exercise and/or separate commission.</p>
+<p>Therefore we will execute a general internet search of literature related to impacts and use appropriate AI queries to exhaust the ‘accepted wisdom’ on impacts, their scale and to identify any appropriate case study candidates.</p>
 </section>
 <section id="impact-analysis" class="slide level2">
 <h2>Impact analysis</h2>
@@ -543,12 +579,12 @@ Andy Hood
 <h2>Method - Interrupted Time Series Analysis</h2>
 <p>Interrupted time series analysis (ITS), sometimes known as quasi-experimental time series analysis, is a method of statistical analysis involving tracking a long-term period before and after a point of intervention to assess the intervention’s effects. Effects of the intervention are evaluated by changes in the level and slope of the time series and statistical significance of the intervention parameters. ITS analysis can be performed on data with or without control groups.</p>
 
-<img data-src="its_eg1.png" class="r-stretch quarto-figure-center"></section>
+<img data-src="images/its_eg1.png" class="r-stretch quarto-figure-center"></section>
 <section id="method---difference-in-differences" class="slide level2">
 <h2>Method - Difference in Differences</h2>
 <p>Difference in differences is a statistical technique used to mimic an experimental research design using observational study data, by studying the differential effect of a treatment on a ‘treatment group’ versus a ‘control group’ in a natural experiment. It calculates the effect of a intervention on an outcome by comparing the average change over time in the outcome variable for the treatment group to the average change over time for the control group assuming on unobserved differences between groups.</p>
 
-<img data-src="did_eg1.png" class="r-stretch quarto-figure-center"></section>
+<img data-src="images/did_eg1.png" class="r-stretch quarto-figure-center"></section>
 <section id="method---causal-impact-analysis" class="slide level2">
 <h2>Method - Causal Impact Analysis</h2>
 <p>CIA represents a relatively new technique <span class="citation" data-cites="broderson2015">(<a href="#/references" role="doc-biblioref" onclick="">Broderson K 2015</a>)</span> with the specific aim of using control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Selection of controls to account for similar hospital providers, similar catchment population, similar patient case-mix will be crucial.</p>
@@ -557,7 +593,7 @@ Andy Hood
 <img data-src="https://images.squarespace-cdn.com/content/v1/5df3d68da6faaa72f61492dd/1581436264749-1XWAMQAAOTO7HGCT4NUB/Screen+Shot+2020-02-11+at+10.56.04+AM.png?format=2500w" class="r-stretch quarto-figure-center"></section>
 <section id="choice-of-method" class="slide level2">
 <h2>Choice of method</h2>
-<p>Though slightly different, each of the above methods would be appropriate for the requirements of this work.</p>
+<p>Though all slightly different, each of the above methods would be appropriate for the requirements of this work.</p>
 <p>On balance, we feel that CIA is the preferred method to deploy in this instance against a range of proxy outcome measures. This is principally due to the direct incorporation of control data into the counterfactual, it’s inherent ability to infer significance as well as provide a range of effect sizes i.e.&nbsp;without the need to overlay bootstrapping or monte carlo simulation methods. The selection of control sites to calculate the counter-factual will be particularly crucial in this approach.</p>
 <p>Should time/resource allow, and to compare &amp; validate findings, we may apply all the above techniques to the same data.</p>
 </section>
@@ -586,7 +622,7 @@ Andy Hood
 </section>
 <section id="indirect-impacts" class="slide level2">
 <h2>Indirect impacts</h2>
-<p>Literature identified during our rapid analysis work suggests there are likely to be unintended/indirect negative impacts of switching accommodation from multi to single beds that go beyond patient length of stays (ergo clinical improvement) and that should be part of a wider assessment of impacts. These may include, but are not restricted to:</p>
+<p>Literature identified during our rapid analysis work suggests there are also likely to be unintended/indirect negative impacts of switching accommodation from multi to single beds that go beyond patient length of stays (ergo clinical improvement) and that should be part of a wider assessment of impacts. These may include, but are not restricted to:</p>
 <ul>
 <li><p>Staff efficiency (moving between rooms and teamwork)</p></li>
 <li><p>Overall productivity e.g.&nbsp;ability to manage waiting lists, recover occupancy from urgent care peaks</p></li>
@@ -597,16 +633,24 @@ Andy Hood
 <section id="proxy-outcome-measures" class="slide level2">
 <h2>Proxy outcome measures</h2>
 <p>Given the collection of primary data is not in scope for this analysis, there is a requirement to identify existing routine and publicly accessible data that can act as relevant measures to assess changes over time before and after the move of any units to single-bed accommodation. The accuracy (specificity) of each proxy measure will be assessed and caveated during interpretation.</p>
-<p>Current proposed measures:</p>
+<p>The following represent a summary of the metrics that we believe to me most relevant proxies for impacts identified by prior research or analysis and that are available from routine or publicly available data sources.</p>
+</section>
+<section id="current-proposed-measures" class="slide level2">
+<h2>Current proposed measures:</h2>
+<div class="r-stack">
+<p><strong>Health &amp; Safety</strong></p>
+</div>
 <div class="cell">
 <div class="cell-output-display">
 
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; "><table class="table table-striped table-hover table-condensed" style="font-size: 28px; ">
+<table class="table table-striped table-hover table-condensed" style="font-size: 24px; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> id </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> desc </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;font-weight: bold;color: black !important;background-color: #f9bf07 !important;position: sticky; top:0; background-color: #FFFFFF;"> source </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> id </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> desc </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> source </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> freq </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> time_period </th>
   </tr>
  </thead>
 <tbody>
@@ -614,58 +658,127 @@ Andy Hood
    <td style="text-align:left;"> 1 </td>
    <td style="text-align:left;"> Summary Hospital-Level Mortality Indicator </td>
    <td style="text-align:left;"> https://digital.nhs.uk/data-and-information/publications/statistical/shmi </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 2 </td>
-   <td style="text-align:left;"> Length of Stay </td>
-   <td style="text-align:left;"> SUS APCE, NCDR/UDAL </td>
+   <td style="text-align:left;"> M </td>
+   <td style="text-align:left;"> Dec18 to Aug23 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 3 </td>
    <td style="text-align:left;"> Healthcare Associated Infections </td>
    <td style="text-align:left;"> UKHSA (restricted) </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 4 </td>
-   <td style="text-align:left;"> Patient experience </td>
-   <td style="text-align:left;"> Friends and Family test, UKHF </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 5 </td>
-   <td style="text-align:left;"> Staff turnover </td>
-   <td style="text-align:left;"> https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 6 </td>
-   <td style="text-align:left;"> Waiting Times </td>
-   <td style="text-align:left;"> https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/ </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> 7 </td>
-   <td style="text-align:left;"> Patient readmissions </td>
-   <td style="text-align:left;"> SUS APCE, NCDR/UDAL </td>
+   <td style="text-align:left;"> - </td>
+   <td style="text-align:left;"> - </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 8 </td>
    <td style="text-align:left;"> In-hospital falls/fractures </td>
    <td style="text-align:left;"> SUS APCE, NCDR/UDAL </td>
+   <td style="text-align:left;"> W/M/A </td>
+   <td style="text-align:left;"> Apr08 to Nov23 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="r-stack">
+<p><strong>Productivity &amp; Efficiency</strong></p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table table-striped table-hover table-condensed" style="font-size: 24px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> id </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> desc </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> source </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> freq </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> time_period </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 2 </td>
+   <td style="text-align:left;"> Length of Stay </td>
+   <td style="text-align:left;"> SUS APCE, NCDR/UDAL </td>
+   <td style="text-align:left;"> W/M/A </td>
+   <td style="text-align:left;"> Apr08 to Nov23 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 6 </td>
+   <td style="text-align:left;"> Waiting Times </td>
+   <td style="text-align:left;"> https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/ </td>
+   <td style="text-align:left;"> M </td>
+   <td style="text-align:left;"> Mar07 to Nov23 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 9 </td>
-   <td style="text-align:left;"> measure9 </td>
-   <td style="text-align:left;"> source9 </td>
+   <td style="text-align:left;"> Occupancy levels </td>
+   <td style="text-align:left;"> TBC, sitreps or KH03 </td>
+   <td style="text-align:left;"> M/Q </td>
+   <td style="text-align:left;"> Mar20/Apr1998 to Dec23 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="r-stack">
+<p><strong>Patient &amp; Staff Experience</strong></p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table table-striped table-hover table-condensed" style="font-size: 24px; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> id </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> desc </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> source </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> freq </th>
+   <th style="text-align:left;font-weight: bold;color: black !important;background-color: #f9bf07 !important;"> time_period </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> 4 </td>
+   <td style="text-align:left;"> Patient experience </td>
+   <td style="text-align:left;"> Friends and Family test, UKHF </td>
+   <td style="text-align:left;"> M </td>
+   <td style="text-align:left;"> Apr13 to Nov23 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 5 </td>
+   <td style="text-align:left;"> Staff turnover </td>
+   <td style="text-align:left;"> https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics </td>
+   <td style="text-align:left;"> M </td>
+   <td style="text-align:left;"> Sept13 to Oct 2023 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> 7 </td>
+   <td style="text-align:left;"> Emergency readmissions </td>
+   <td style="text-align:left;"> SUS APCE, NCDR/UDAL </td>
+   <td style="text-align:left;"> W/M/A </td>
+   <td style="text-align:left;"> Apr08 to Nov23 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> 10 </td>
-   <td style="text-align:left;"> measure10 </td>
-   <td style="text-align:left;"> source10 </td>
+   <td style="text-align:left;"> Sickness absence rates </td>
+   <td style="text-align:left;"> https://digital.nhs.uk/data-and-information/publications/statistical/nhs-sickness-absence-rates/august-2023-provisional-statistics </td>
+   <td style="text-align:left;"> M </td>
+   <td style="text-align:left;"> Apr14 to Sept23 </td>
   </tr>
 </tbody>
-</table></div>
+</table>
 
 </div>
 </div>
 </section>
+<section id="summary-of-hospitals-and-indicator-coverage" class="slide level2">
+<h2>Summary of hospitals and indicator coverage</h2>
+<p>The following summarises, for each SBR site, the availability of the (current) impact measures for assessment of pre and post trends.</p>
+
+<img data-src="images/hosp_ind_cov.png" class="r-stretch quarto-figure-center"></section>
 <section id="analytical-plan" class="slide level2">
 <h2>Analytical plan</h2>
 <p>For each of the 7 hospital sites, undertake a controlled impact analysis against each of the 10? proxy outcome measures.</p>

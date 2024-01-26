@@ -23,8 +23,7 @@ toc-title: "Table of contents:"
 bibliography: references.bib
 ---
 
-
-``` {r load_packages, include = FALSE}
+```{r load_packages, include = FALSE}
 
 library(tidyverse)
 library(janitor)
@@ -32,6 +31,26 @@ library(kableExtra)
 library(knitr)
 library(lubridate)
 library(ganttrify)
+library(svgparser)
+
+getwd()
+
+```
+
+```{r for_logo, include = FALSE}
+
+## trying with png
+#get_png <- function(filename) {
+#  grid::rasterGrob(png::readPNG(filename), interpolate = TRUE)
+#}
+
+#l <- get_png("tsu_logo_yellow.png")
+#t <- grid::roundrectGrob() # dummy object to test placement
+
+## trying with svg
+#logo_filename <- system.file("logo_yellow.svg", package = "svgparser")
+#logo_grob <- svgparser::read_svg(logo_filename)
+#grid::grid.draw(logo_grob)
 
 ```
 
@@ -49,22 +68,25 @@ A rapid analysis of length of stay trends at Royal Liverpool Hospital (switched 
 
 ## Natural experiments
 
-There are thought to be 7 schemes of similar nature in the UK (England??) where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.
+There are thought to be 8 schemes of similar nature in England where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.
 
 ```{r hospital_details, include = FALSE}
 
-sbr_sites <- as_tibble(rbind(c("num","name","location","date","full/partial","ods_code")
-    , c(1,"Royal Liverpool","Liverpool","Oct 2022","Full","REMRQ")
-    , c(2,"Royal Papworth","Cambridge","May 2019","Full","RGM22")
-    , c(3,"Peterborough Hospital","Peterborough","Nov 2010","Partial","RGN%%")
-    , c(4,"Clatterbridge Cancer Centre","Liverpool","Jun 2020","Partial","REN22")
-    , c(5,"Chase Farm Hospital","London","Sep 2018","Partial","RALC7")
-    , c(6,"Southmead Hospital","Bristol","May 2014","Partial","RVJ01")
-    , c(7,"Tunbridge Wells","Kent","Jan 2011","Partial","RWFTW")
-    , c(8,"Ulster Hospital","Northern Ireland","Apr 2017","Partial","-")
-    , c(9,"Glasgow Central","Scotland","Apr 2015","Partial","-")
-    , c(10,"The Grange Hospital","Wales","Nov 2020","Partial","-"))) |> 
-  row_to_names(row_number = 1)
+sbr_sites <- as_tibble(rbind(c("num","name","location","date","PRE SBR state","POST SBR state","notes","ods_code")
+    , c(1,"Royal Liverpool","Liverpool","Oct 2022","Unknown","Full","","REMRQ")
+    , c(3,"Royal Papworth","Cambridge","May 2019","Unknown","Full","Non-single bed in exceptional circumstances, otherwise full","RGM22")
+    , c(8,"Peterborough Hospital","Peterborough","Nov 2010","Unknown","Partial","Single ensuite or 3/4 bedded units, exact mix unknown","RGN%%")
+    , c(5,"James Paget (concept)","Norfolk","May 2023","Unknown","Partial","One ward only, 20 of 28 beds SR","RGP75")
+    , c(2,"Clatterbridge Cancer Centre","Liverpool","Jun 2020","Unknown","Full","Day case and routine cancer inpatient only?","REN22")
+    , c(6,"Chase Farm Hospital","London","Sep 2018","Unknown","Partial","42 of 50 rooms single bed. surgical wards only","RALC7")
+    , c(7,"Southmead Hospital","Bristol","May 2014","Unknown","Partial","75% (of 800) are single bed rooms","RVJ01")
+    , c(4,"Tunbridge Wells","Kent","Jan 2011","Unknown","Full","Jan 11 for W&C, Sep 11 for remainder of inpatient","RWFTW")
+    , c(9,"Ulster Hospital","Northern Ireland","Apr 2017","Unknown","Partial","Out of scope - data acess","-")
+    , c(10,"Glasgow Central","Scotland","Apr 2015","Unknown","Partial","Out of scope - data acess","-")
+    , c(11,"The Grange Hospital","Wales","Nov 2020","Unknown","Partial","Out of scope - data acess","-"))) |> 
+  row_to_names(row_number = 1) |>
+  mutate(num = as.integer(num)) |> 
+  arrange(num)
 
 ```
 
@@ -78,10 +100,9 @@ sbr_sites |>
                 ,font_size = 28
                 ,fixed_thead = list(enabled = T)) |>  
   row_spec(0, bold = T, color = "black", background = "#f9bf07") |> 
-  scroll_box(width = "70%", height = "400px")
+  scroll_box(height = "400px")
 
 ```
-
 
 ## Proposal
 
@@ -114,7 +135,11 @@ Conclusive findings were difficult to ascertain, though the review noted that pa
 
 ## Literature review update
 
-Adopting the same search strategy, locate and undertake rapid review of evidence published since February 2022 that clearly identifies (and quantifies) the impacts of switching from multi to single-bed inpatient accommodation. This is principally being done to identify any additional factor or outcomes for which data can be collected and analysed in our impact. Some logic theories that may emerge include impacts on efficiency e.g. bed flexibility and waiting list management, staff productivity and workforce retention.
+The NHSE innovations team (@ Joanne Wood) have created a 'living review' of evidence on this topic recently updated in January 2024 as well as specific reviews on e.g. Maternity admissions. No novel impacts have been identified although there may be important sub-groups to consider in the analysis including Neonate, Oncology, ICU and Frailty. As such, given the significant overlap, we feel there is no need for a comprehensive update to literature in support of this analysis.
+
+However; there are still potentially a couple of gaps in respect of identifying other impacts for us to measure in our study or locating evaluative grey literature that may enhance validation of our findings. Identifying mitigating actions was discussed as another gap, however we believe is out of scope (or haven't resourced it within this plan) and should be considered as a follow-on exercise and/or separate commission.
+
+Therefore we will execute a general internet search of literature related to impacts and use appropriate AI queries to exhaust the 'accepted wisdom' on impacts, their scale and to identify any appropriate case study candidates.
 
 ## Impact analysis
 
@@ -128,13 +153,13 @@ Questions of this type, where natural healthcare experiments are being assessed,
 
 Interrupted time series analysis (ITS), sometimes known as quasi-experimental time series analysis, is a method of statistical analysis involving tracking a long-term period before and after a point of intervention to assess the intervention's effects. Effects of the intervention are evaluated by changes in the level and slope of the time series and statistical significance of the intervention parameters. ITS analysis can be performed on data with or without control groups.
 
-![](its_eg1.png){fig-align="center"}
+![](images/its_eg1.png){fig-align="center"}
 
 ## Method - Difference in Differences
 
 Difference in differences is a statistical technique used to mimic an experimental research design using observational study data, by studying the differential effect of a treatment on a 'treatment group' versus a 'control group' in a natural experiment. It calculates the effect of a intervention on an outcome by comparing the average change over time in the outcome variable for the treatment group to the average change over time for the control group assuming on unobserved differences between groups.
 
-![](did_eg1.png){fig-align="center"}
+![](images/did_eg1.png){fig-align="center"}
 
 ## Method - Causal Impact Analysis
 
@@ -146,7 +171,7 @@ CIA used in this way would also negate the need to collect significant amounts o
 
 ## Choice of method
 
-Though slightly different, each of the above methods would be appropriate for the requirements of this work. 
+Though all slightly different, each of the above methods would be appropriate for the requirements of this work.
 
 On balance, we feel that CIA is the preferred method to deploy in this instance against a range of proxy outcome measures. This is principally due to the direct incorporation of control data into the counterfactual, it's inherent ability to infer significance as well as provide a range of effect sizes i.e. without the need to overlay bootstrapping or monte carlo simulation methods. The selection of control sites to calculate the counter-factual will be particularly crucial in this approach.
 
@@ -181,7 +206,7 @@ As identified in a previous review of literature on this topic [@HEU2022], the m
 
 ## Indirect impacts
 
-Literature identified during our rapid analysis work suggests there are likely to be unintended/indirect negative impacts of switching accommodation from multi to single beds that go beyond patient length of stays (ergo clinical improvement) and that should be part of a wider assessment of impacts. These may include, but are not restricted to:
+Literature identified during our rapid analysis work suggests there are also likely to be unintended/indirect negative impacts of switching accommodation from multi to single beds that go beyond patient length of stays (ergo clinical improvement) and that should be part of a wider assessment of impacts. These may include, but are not restricted to:
 
 -   Staff efficiency (moving between rooms and teamwork)
 
@@ -193,17 +218,17 @@ We will attempt to refine the recognition and definition of these factors or out
 
 ```{r developing_proxy_measures, include = FALSE}
 
-measures <- as_tibble(rbind(c("id","desc","source")
-    , c(1,"Summary Hospital-Level Mortality Indicator","https://digital.nhs.uk/data-and-information/publications/statistical/shmi")
-    , c(2,"Length of Stay","SUS APCE, NCDR/UDAL")
-    , c(3,"Healthcare Associated Infections","UKHSA (restricted)")
-    , c(4,"Patient experience","Friends and Family test, UKHF")
-    , c(5,"Staff turnover","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics")
-    , c(6,"Waiting Times","https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/")
-    , c(7,"Patient readmissions","SUS APCE, NCDR/UDAL")
-    , c(8,"In-hospital falls/fractures","SUS APCE, NCDR/UDAL")
-    , c(9,"measure9","source9")
-    , c(10,"measure10","source10"))) |> 
+measures <- as_tibble(rbind(c("domain","id","desc","source","freq","time_period")
+    , c("Health & Safety",1,"Summary Hospital-Level Mortality Indicator","https://digital.nhs.uk/data-and-information/publications/statistical/shmi","M","Dec18 to Aug23")
+    , c("Productivity & Efficiency",2,"Length of Stay","SUS APCE, NCDR/UDAL","W/M/A","Apr08 to Nov23")
+    , c("Health & Safety",3,"Healthcare Associated Infections","UKHSA (restricted)","-","-")
+    , c("Patient or Staff Experience",4,"Patient experience","Friends and Family test, UKHF","M","Apr13 to Nov23")
+    , c("Patient or Staff Experience",5,"Staff turnover","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics","M","Sept13 to Oct 2023")
+    , c("Productivity & Efficiency",6,"Waiting Times","https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/","M","Mar07 to Nov23")
+    , c("Patient or Staff Experience",7,"Emergency readmissions","SUS APCE, NCDR/UDAL","W/M/A","Apr08 to Nov23")
+    , c("Health & Safety",8,"In-hospital falls/fractures","SUS APCE, NCDR/UDAL","W/M/A","Apr08 to Nov23")
+    , c("Productivity & Efficiency",9,"Occupancy levels","TBC, sitreps or KH03","M/Q","Mar20/Apr1998 to Dec23")
+    , c("Patient or Staff Experience",10,"Sickness absence rates","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-sickness-absence-rates/august-2023-provisional-statistics","M","Apr14 to Sept23"))) |> 
   row_to_names(row_number = 1)
 
 ```
@@ -212,19 +237,66 @@ measures <- as_tibble(rbind(c("id","desc","source")
 
 Given the collection of primary data is not in scope for this analysis, there is a requirement to identify existing routine and publicly accessible data that can act as relevant measures to assess changes over time before and after the move of any units to single-bed accommodation. The accuracy (specificity) of each proxy measure will be assessed and caveated during interpretation.
 
-Current proposed measures:
-```{r current_measures}
+The following represent a summary of the metrics that we believe to me most relevant proxies for impacts identified by prior research or analysis and that are available from routine or publicly available data sources.
+
+## Current proposed measures:
+
+:::{.r-stack}
+**Health & Safety**
+:::
+```{r current_measures_HS}
 
 measures |> 
-  kbl() |> 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed")
-                ,position = "left"
-                ,font_size = 28
-                ,fixed_thead = list(enabled = T)) |>  
-  row_spec(0, bold = T, color = "black", background = "#f9bf07") |> 
-  scroll_box(height = "400px")
+  filter(domain == "Health & Safety") |> 
+  select(2:6) |> 
+  kbl() |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = TRUE,
+                font_size = 24
+                ) |>  
+  row_spec(0, bold = T, color = "black", background = "#f9bf07")
 
 ```
+
+:::{.r-stack}
+**Productivity & Efficiency**
+:::
+```{r current_measures_PE}
+
+measures |> 
+  filter(domain == "Productivity & Efficiency") |> 
+  select(2:6) |> 
+  kbl() |> 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = TRUE,
+                font_size = 24
+                ) |>  
+  row_spec(0, bold = T, color = "black", background = "#f9bf07")
+
+```
+
+:::{.r-stack}
+**Patient & Staff Experience**
+:::
+```{r current_measures_PSE}
+
+measures |> 
+  filter(domain == "Patient or Staff Experience") |> 
+  select(2:6) |> 
+  kbl() |> 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = TRUE,
+                font_size = 24
+                ) |>  
+  row_spec(0, bold = T, color = "black", background = "#f9bf07")
+
+```
+
+## Summary of hospitals and indicator coverage
+
+The following summarises, for each SBR site, the availability of the (current) impact measures for assessment of pre and post trends.
+
+![](images/hosp_ind_cov.png){fig-align="center"}
 
 ## Analytical plan
 
@@ -246,10 +318,10 @@ gantt_data <- as_tibble(rbind(c("wp","activity","start_date","end_date")
       ,c("Scoping and planning","3. Project setup","2024-01-08","2024-01-12")
       ,c("Literature","1. Establish search strategy","2024-01-15","2024-01-26")
       ,c("Literature","2. Execute search","2024-01-29","2024-02-02")
-      ,c("Literature","3. Review and synthesise","2024-02-05","2024-02-16")
-      ,c("Data collection","1. Scraping published data","2024-02-19","2024-02-23")
-      ,c("Data collection","2. Routine data extracts","2024-02-19","2024-02-23")
-      ,c("Data collection","3. Request / process bespoke","2024-02-19","2024-03-01")
+      ,c("Literature","3. Review and synthesise","2024-02-05","2024-02-09")
+      ,c("Data collection","1. Scraping published data","2024-02-12","2024-02-23")
+      ,c("Data collection","2. Routine data extracts","2024-02-12","2024-02-23")
+      ,c("Data collection","3. Request / process bespoke","2024-02-12","2024-03-01")
       ,c("Analysis","1. Wrangling and recoding","2024-03-04","2024-03-15")
       ,c("Analysis","2. Apply methods","2024-03-18","2024-03-29")
       ,c("Analysis","3. Validate","2024-04-01","2024-04-05")
@@ -257,13 +329,15 @@ gantt_data <- as_tibble(rbind(c("wp","activity","start_date","end_date")
       ,c("Reporting","1. Draft report","2024-03-04","2024-04-26")
       ,c("Reporting","2. Share & revise","2024-04-29","2024-05-17")
       ,c("Reporting","3. Disseminate final report","2024-05-20","2024-05-24"))) |> 
-  row_to_names(row_number = 1)
+  row_to_names(row_number = 1) |> 
+  mutate(start_date = ymd(start_date)
+         ,end_date = ymd(end_date))
 
 today <- ymd(today())
 
 ```
 
-``` {r generate_gantt}
+```{r generate_gantt}
 
 ganttrify(project = gantt_data,
           by_date = TRUE,
@@ -275,14 +349,14 @@ ganttrify(project = gantt_data,
           axis_text_align = "left",
           size_text_relative = 1.2,
           month_number_label = FALSE,
-          font_family = "Calibri",
+          font_family = "Segoe",
           colour_palette = c("#f9bf07", "#ec6555", "#ABDDA4", "#5881c1", "#686F73"))  +
-  ggplot2::geom_vline(xintercept = today) +
-  ggplot2::labs(title = "Evaluating single-bed accommodation impacts",
+  geom_vline(xintercept = today) +
+  labs(title = "Evaluating single-bed accommodation impacts",
                 subtitle = "Project timeline",
                 caption = paste0("vertical line indicates todays date (",today,")"))
 
+## consider adding logo to plot as per https://www.markhw.com/blog/logos
 ```
 
 ## References
-

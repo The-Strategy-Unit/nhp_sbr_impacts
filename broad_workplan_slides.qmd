@@ -66,6 +66,20 @@ A rapid analysis of length of stay trends at Royal Liverpool Hospital (switched 
 :::
 :::
 
+## Official bed numbers...
+
+There are several different published data sets that account for bed numbers in NHS hospitals:
+
+-   KH03 returns
+-   Bed Occupancy SitRep reports
+-   Estates returns (ERIC)
+
+Only ERIC (annual data collection) returns the number of Single Bed Rooms at NHS hospital sites, having done so since 2010/11. Previously it had reported the % of SBR rather than counts. The absolute number of (all) beds per site was only reported to 2014/15 making reliable ongoing measurement of SBR levels across the NHS difficult (read as impossible!).
+
+Combining the SBR data from ERIC and KH03 (staffed) bed numbers suggest that overall in England, for NHS trust sites, the numbers of SBR have changed from 46,335 (`r round(46335/137151*100,1)`%) in 2010/11 to 56,449 (`r round(56449/130863*100,1)`%) in 2022/23.
+
+Given this is a retrospective study, the debate on exactly what defines an NHS bed and how it is measured will not be addressed within our work - NHS England have established a working group to explore the issue going forward, information to be published shortly.
+
 ## Natural experiments
 
 There are thought to be 8 schemes of similar nature in England where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We will explore the feasibility of treating these intervention sites collectively or analysing them separately before producing combined estimates of effect.
@@ -108,7 +122,7 @@ sbr_sites |>
 
 The previous SU analysis highlighted the need for further work to better understand and quantify both the direct and indirect impacts of such a change to service model. This includes:
 
--   Literature review of the nature and scale of impacts of changes like this
+-   Targeted literature review of the nature and scale of impacts of changes like this
 -   Impact analysis to quantify the (range of) effects on length of stay
 -   Impact modelling of the indirect effects on non-length of stay metrics
 
@@ -225,10 +239,11 @@ measures <- as_tibble(rbind(c("domain","id","desc","source","freq","time_period"
     , c("Patient or Staff Experience",4,"Patient experience","Friends and Family test, UKHF","M","Apr13 to Nov23")
     , c("Patient or Staff Experience",5,"Staff turnover","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-workforce-statistics","M","Sept13 to Oct 2023")
     , c("Productivity & Efficiency",6,"Waiting Times","https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/","M","Mar07 to Nov23")
-    , c("Patient or Staff Experience",7,"Emergency readmissions","SUS APCE, NCDR/UDAL","W/M/A","Apr08 to Nov23")
+    , c("Productivity & Efficiency",7,"Emergency readmissions","SUS APCE, NCDR/UDAL","W/M/A","Apr08 to Nov23")
     , c("Health & Safety",8,"In-hospital falls/fractures","SUS APCE, NCDR/UDAL","W/M/A","Apr08 to Nov23")
     , c("Productivity & Efficiency",9,"Occupancy levels","TBC, sitreps or KH03","M/Q","Mar20/Apr1998 to Dec23")
-    , c("Patient or Staff Experience",10,"Sickness absence rates","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-sickness-absence-rates/august-2023-provisional-statistics","M","Apr14 to Sept23"))) |> 
+    , c("Patient or Staff Experience",10,"Sickness absence rates","https://digital.nhs.uk/data-and-information/publications/statistical/nhs-sickness-absence-rates/august-2023-provisional-statistics","M","Apr14 to Sept23"))
+    , c("Productivity & Efficiency",11,"Cleaning staff WTE","https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection","A","2011-12 to 2022-23")) |> 
   row_to_names(row_number = 1)
 
 ```

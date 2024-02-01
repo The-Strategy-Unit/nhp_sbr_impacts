@@ -11,6 +11,7 @@ date: last-modified
 date-format: "YYYY-MM-DD"
 format:
   revealjs:
+    font-family: 'Segoe UI'
     slide-number: c/t
     preview-links: true
     width: 1600
@@ -33,7 +34,8 @@ library(lubridate)
 library(ganttrify)
 library(svgparser)
 
-getwd()
+# getwd()
+windowsFonts('Segoe UI' = windowsFont('Segoe UI'))
 
 ```
 

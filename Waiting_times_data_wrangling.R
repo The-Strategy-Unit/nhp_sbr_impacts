@@ -1,31 +1,18 @@
-library(RCurl)
-library(dplyr)
+
 library(tidyverse)
-library(parsedate)
 library(janitor)
-library(readxl)
+library(stringr)
 
 
-# Pulling and wrangling Waiting times data 
+# Wrangling Waiting times data 
+pat <- "(\\d)+"
 
-#Function
-read_rtt<-function(url, name){
-  
-  tmp = tempfile(fileext = "")
-  
-  download.file(url = url, destfile = tmp, mode="wb")
-  df<-read_excel(tmp, sheet="Provider",range = cell_limits(c(14, 2), c(NA, NA)) )|>
-    clean_names()|>
-    select(c(1:5,total_number_of_incomplete_pathways, average_median_waiting_time_in_weeks))|>
-    mutate(date=name)
- 
-  assign(name, df, envir=.GlobalEnv)
-  
-}
-
-#names(Attendance21)<-names(Attendance22)
-#names(Attendance20)<-names(Attendance22)
-
+rrt_data<-read.csv("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/rtt_data_sample.csv")|>
+  clean_names()|>
+  mutate(weeks=gsub("^>", "", number_of_weeks_since_referral) )|>
+  mutate(weeks=sub("\\-.*", "", weeks))|>
+  mutate(weeks=sub("\\+.*", "", weeks))|>
+  mutate(weeks=as.numeric(weeks))
 
 
 

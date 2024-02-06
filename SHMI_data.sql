@@ -9,6 +9,9 @@ SELECT
 	SHMI_Trust.Reporting_Period_Start,
 	SHMI_Trust.Reporting_Period_End,
 	SHMI_Trust.SHMI_Value,
+	SHMI_Trust.Observed,
+	SHMI_Trust.Expected,
+	SHMI_Trust.Denominator,
 	Providers.Organisation_Code AS Provider_Code,
 	Providers.Organisation_Name AS Provider,
 	'All' AS Site_Code,
@@ -30,6 +33,9 @@ SELECT
 	SHMI_Site.Reporting_Period_Start,
 	SHMI_Site.Reporting_Period_End,
 	SHMI_Site.SHMI_Value,
+	SHMI_Site.Observed,
+	SHMI_Site.Expected,
+	SHMI_Site.Spells,
 	SHMI_Site.Provider_Code,
 	Providers.Organisation_Name AS Provider,
 	SHMI_Site.Site_Code,
@@ -54,7 +60,10 @@ SELECT
 	Provider,
 	Site_Code,
 	Site,
-	SHMI_Value,
+	SHMI_Value,	
+	Observed,
+	Expected,
+	Denominator AS Spells,
 	Level
 
 FROM #SHMI_All

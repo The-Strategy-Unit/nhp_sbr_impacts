@@ -11,9 +11,7 @@ rtt_data<-read.csv("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed
   mutate(weeks=gsub("^>", "", number_of_weeks_since_referral) )|>
   mutate(weeks=sub("\\-.*", "", weeks))|>
   mutate(weeks=sub("\\+.*", "", weeks))|>
-  mutate(weeks=as.numeric(weeks))|>
-  select(-number_of_weeks_since_referral)
-
+  mutate(weeks=as.numeric(weeks))
 
 
 

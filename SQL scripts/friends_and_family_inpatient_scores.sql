@@ -1,0 +1,11 @@
+SELECT
+       [Grouped_By]
+      ,[Organisation_Code]
+      ,[Site_Code]
+      ,[Ward_Name]
+      ,[Ward_First_Specialty_Code]
+      ,[Ward_Second_Specialty_Code]
+      ,[Likely_To_Recommend]
+      ,[Count]
+      ,[Effective_Snapshot_Date]
+  FROM [UKHF_FriendsAndFamilyTest].[Inpatient_Scores1_1]

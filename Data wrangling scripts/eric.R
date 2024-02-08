@@ -1,5 +1,7 @@
 # ERIC data
 
+library(dplyr)
+
 # uses functions from data_wrangling_functions.R file
 
 eric_22_23 <- scrape_csv("https://files.digital.nhs.uk/41/5787C9/ERIC%20-%202022_23%20-%20Site%20data.csv")
@@ -38,3 +40,92 @@ eric_08_09 <- scrape_xls("https://files.digital.nhs.uk/7B/DBAA4A/ERIC-200809-Dat
                          )
 
 # lots different colnames
+
+# 08_09 and 09_10 - needs cleaning is only at trust? diff single beds reporting
+eric_09_10 <- eric_09_10 |> 
+  select(trust_code = organisation_code, 
+         trust_name = organisation_name,
+         commissioning_region,
+         site_code,
+         site_name,
+         site_type,
+         gross_internal_floor_area_m = gross_internal_site_floor_area_m2,
+         available_beds_no,
+         percentage_of_single_bedrooms_for_patients_percent#,
+         # cleaning_services_cost,
+         #  cleaning_staff_wte
+  )
+
+# works for 10_11 to 13_14 - needs cleaning is only at trust?
+eric_13_14 <- eric_13_14 |> 
+  select(trust_code = organisation_code, # not 15-16
+         trust_name = organisation_name,
+         commissioning_region,
+         site_code,
+         site_name,
+         site_type,
+         gross_internal_floor_area_m = gross_internal_site_floor_area_m2,
+         single_bedrooms_for_patients_with_en_suite_facilities_no,
+         single_bedrooms_for_patients_without_en_suite_facilities_no#,
+        # cleaning_service_cost,
+       #  cleaning_staff_wte
+  )
+
+# for 14-15 - need to skip first row
+eric_14_15 <- eric_14_15 |> 
+  janitor::row_to_names(1) |>
+  janitor::clean_names() |>
+  select(trust_code = organisation_code, 
+         trust_name = organisation_name,
+         commissioning_region,
+         site_code,
+         site_name,
+         site_type,
+         gross_internal_floor_area_m = gross_internal_site_floor_area_m2,
+         single_bedrooms_for_patients_with_en_suite_facilities_no,
+         single_bedrooms_for_patients_without_en_suite_facilities_no,
+         cleaning_service_cost,
+         cleaning_staff_wte
+  )
+
+# for 15_16 - need to skip first row
+eric_15_16 <- eric_15_16 |> 
+  janitor::row_to_names(1) |>
+  janitor::clean_names() |>
+  select(trust_code = organisation_code, 
+         trust_name = organisation_name,
+         commissioning_region,
+         site_code,
+         site_name,
+         site_type,
+         gross_internal_floor_area_m = gross_internal_floor_area_m2,
+         single_bedrooms_for_patients_with_en_suite_facilities_no,
+         single_bedrooms_for_patients_without_en_suite_facilities_no,
+         cleaning_service_cost,
+         cleaning_staff_wte
+  )
+
+
+# for 16-17 to 22_23
+eric_22_23 <- eric_22_23|>
+  select(trust_code,
+         trust_name,
+         commissioning_region,
+         site_code,
+         site_name,
+         site_type,
+         gross_internal_floor_area_m,
+         single_bedrooms_for_patients_with_en_suite_facilities_no,
+         single_bedrooms_for_patients_without_en_suite_facilities_no,
+         cleaning_service_cost,
+         cleaning_staff_wte
+         )
+
+
+tog <- rbind(eric_22_23,
+      eric_15_16,
+      eric_14_15 
+      )
+
+
+      

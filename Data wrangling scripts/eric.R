@@ -1,13 +1,6 @@
 # ERIC data
 
-scrape_csv <- function(url) {
-  download <- RCurl::getURL(url)
-  
-  data <- read.csv(text = download) |>
-    janitor::clean_names()
-  
-  return(data)
-}
+# uses functions from data_wrangling_functions.R file
 
 eric_22_23 <- scrape_csv("https://files.digital.nhs.uk/41/5787C9/ERIC%20-%202022_23%20-%20Site%20data.csv")
 eric_21_22 <- scrape_csv("https://files.digital.nhs.uk/EE/7E330D/ERIC%20-%20202122%20-%20Site%20Data%20v3.csv")
@@ -20,42 +13,28 @@ eric_16_17 <- scrape_csv("https://files.digital.nhs.uk/publication/q/3/eric-2016
 eric_15_16 <- scrape_csv("https://files.digital.nhs.uk/publicationimport/pub21xxx/pub21992/est-ret-info-col-2015-2016-site-data.csv")
 eric_14_15 <- scrape_csv("https://files.digital.nhs.uk/publicationimport/pub18xxx/pub18726/est-ret-info-col-2014-2015-dat.csv")
 
+eric_13_14 <- scrape_xls("https://files.digital.nhs.uk/CF/698629/ERIC-201314-Data.XLS",
+                         "Site Data"
+                         )
+
+eric_12_13 <- scrape_xls("https://files.digital.nhs.uk/98/1EB9FA/ERIC-2012-13-Data.XLS",
+                         "Site Data"
+                         )
+
+eric_11_12 <- scrape_xls("https://files.digital.nhs.uk/41/0BEE05/ERIC-201112-Data.XLS",
+                         "Site Data"
+                         )
+
+eric_10_11 <- scrape_xls("https://files.digital.nhs.uk/AE/D02AB9/ERIC-201011-Data.xls",
+                         "Site Data"
+                         )
+
+eric_09_10 <- scrape_xls("https://files.digital.nhs.uk/C7/22BBC6/ERIC-200910-Data.xls",
+                         "Site Data"
+                         )
+
+eric_08_09 <- scrape_xls("https://files.digital.nhs.uk/7B/DBAA4A/ERIC-200809-Data.xls",
+                         "Site Data"
+                         )
 
 # lots different colnames
-
-
-
-
-scrape_xls <- function(url, sheet) {
-  download <- RCurl::getURL(url)
-  
-  data <- readxl::read_excel(path = download,
-                             sheet = sheet
-                             ) |>
-    janitor::clean_names()
-  
-  return(data)
-}
-
-
-tmp = tempfile(fileext = "")
-download.file(url = "https://files.digital.nhs.uk/98/1EB9FA/ERIC-2012-13-Data.XLS", destfile = tmp, mode="wb")
-df<-readxl::read_excel(tmp)
-
-
-
-
-
-
-download <- RCurl::getURL("https://files.digital.nhs.uk/CF/698629/ERIC-201314-xls.XLS")
-readxl::read.xl(download)
-
-
-eric_13_14 <- openxlsx::read.xls("https://files.digital.nhs.uk/CF/698629/ERIC-201314-xls.XLS",
-                         "Site")
-eric_12_13 <- scrape_xls("https://files.digital.nhs.uk/98/1EB9FA/ERIC-2012-13-Data.XLS")
-eric_11_12 <- scrape_xls("https://files.digital.nhs.uk/41/0BEE05/ERIC-201112-Data.XLS")
-eric_10_11 <- scrape_xls("https://files.digital.nhs.uk/AE/D02AB9/ERIC-201011-Data.xls")
-eric_09_10 <- scrape_xls("https://files.digital.nhs.uk/C7/22BBC6/ERIC-200910-Data.xls")
-eric_08_09 <- scrape_xls("https://files.digital.nhs.uk/7B/DBAA4A/ERIC-200809-Data.xls")
-

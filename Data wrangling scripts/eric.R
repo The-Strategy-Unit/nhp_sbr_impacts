@@ -46,6 +46,7 @@ eric_08_09_site <- scrape_xls("https://files.digital.nhs.uk/7B/DBAA4A/ERIC-20080
                          )
 
 #### reading trust data in ####
+# before 2014, cleaning data is only at trust level
 eric_13_14_trust <- scrape_xls("https://files.digital.nhs.uk/CF/698629/ERIC-201314-Data.XLS",
                                "Trust Data"
 )
@@ -91,10 +92,25 @@ eric_data_site <- bind_rows(wrangle_eric_site(eric_08_09_site),
                             wrangle_eric_site(eric_22_23_site)
                             ) 
 
-eric_data_trust <- bind_rows(wrangle_eric_trust(eric_08_09_trust),
-                             wrangle_eric_trust(eric_09_10_trust),
-                             wrangle_eric_trust(eric_10_11_trust),
-                             wrangle_eric_trust(eric_11_12_trust),
-                             wrangle_eric_trust(eric_12_13_trust),
-                             wrangle_eric_trust(eric_13_14_trust)
-                             )
+eric_data_trust <- eric_data_site |>
+  filter(year %in% c("14_15", "15_16", "16_17", "17_18",  
+                     "18_19", "20_21", "21_22", "22_23")
+         ) |>
+  summarise(trust_cleaning_service_cost = sum(cleaning_service_cost, 
+                                              na.rm = TRUE
+                                              ),
+            trust_cleaning_staff_wte = sum(cleaning_staff_wte, 
+                                           na.rm = TRUE
+                                           ),
+            .by = c(trust_code, year)
+            ) |>
+  bind_rows(wrangle_eric_trust(eric_08_09_trust),
+            wrangle_eric_trust(eric_09_10_trust),
+            wrangle_eric_trust(eric_10_11_trust),
+            wrangle_eric_trust(eric_11_12_trust),
+            wrangle_eric_trust(eric_12_13_trust),
+            wrangle_eric_trust(eric_13_14_trust)
+            )
+
+
+

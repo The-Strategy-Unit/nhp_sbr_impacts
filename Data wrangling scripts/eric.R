@@ -1,40 +1,27 @@
 # ERIC data
 
-# uses functions from data_wrangling_functions.R file
+library(readxl)
+library(dplyr)
+library(stringr)
 
-eric_22_23 <- scrape_csv("https://files.digital.nhs.uk/41/5787C9/ERIC%20-%202022_23%20-%20Site%20data.csv")
-eric_21_22 <- scrape_csv("https://files.digital.nhs.uk/EE/7E330D/ERIC%20-%20202122%20-%20Site%20Data%20v3.csv")
-eric_20_21 <- scrape_csv("https://files.digital.nhs.uk/0F/46F719/ERIC%20-%20202021%20-%20Site%20data%20v2.csv")
-eric_19_20 <- scrape_csv("https://files.digital.nhs.uk/11/BC1043/ERIC%20-%20201920%20-%20SiteData%20-%20v2.csv")
-eric_18_19 <- scrape_csv("https://files.digital.nhs.uk/63/ADBFFF/ERIC%20-%20201819%20-%20SiteData%20v4.csv")
+#### Data after 2010 ####
+eric_after_2010 <- read_excel("data/ERIC.xlsx", 
+                                   sheet = "data"
+                                   ) |>
+  calculate_single_bedrooms() |>
+  mutate(value = as.numeric(value))
+  
 
-eric_17_18 <- scrape_csv("https://files.digital.nhs.uk/A8/188D99/ERIC-201718-SiteData.csv")
-eric_16_17 <- scrape_csv("https://files.digital.nhs.uk/publication/q/3/eric-201617-site-data.csv")
-eric_15_16 <- scrape_csv("https://files.digital.nhs.uk/publicationimport/pub21xxx/pub21992/est-ret-info-col-2015-2016-site-data.csv")
-eric_14_15 <- scrape_csv("https://files.digital.nhs.uk/publicationimport/pub18xxx/pub18726/est-ret-info-col-2014-2015-dat.csv")
+#### Getting the before 2010 data ####
+eric_2008 <- get_eric_before_2010(2008)
+eric_2009 <- get_eric_before_2010(2009)
 
-eric_13_14 <- scrape_xls("https://files.digital.nhs.uk/CF/698629/ERIC-201314-Data.XLS",
-                         "Site Data"
-                         )
-
-eric_12_13 <- scrape_xls("https://files.digital.nhs.uk/98/1EB9FA/ERIC-2012-13-Data.XLS",
-                         "Site Data"
-                         )
-
-eric_11_12 <- scrape_xls("https://files.digital.nhs.uk/41/0BEE05/ERIC-201112-Data.XLS",
-                         "Site Data"
-                         )
-
-eric_10_11 <- scrape_xls("https://files.digital.nhs.uk/AE/D02AB9/ERIC-201011-Data.xls",
-                         "Site Data"
-                         )
-
-eric_09_10 <- scrape_xls("https://files.digital.nhs.uk/C7/22BBC6/ERIC-200910-Data.xls",
-                         "Site Data"
-                         )
-
-eric_08_09 <- scrape_xls("https://files.digital.nhs.uk/7B/DBAA4A/ERIC-200809-Data.xls",
-                         "Site Data"
-                         )
-
-# lots different colnames
+#### Putting it all together ####
+eric <- eric_after_2010 |>
+  bind_rows(eric_2008,
+            eric_2009
+            ) |>
+  mutate(site_type = str_replace_all(site_type, "[:digit:]. ", "") |> 
+           str_to_lower(),
+         organisation_type = str_to_lower(organisation_type)
+  ) 

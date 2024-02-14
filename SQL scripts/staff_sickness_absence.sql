@@ -1,14 +1,7 @@
-SELECT 
-       [Org_Code]
-      ,[Cluster_Group]
-      ,[Benchmark_Group]
-      ,[NHSE_Region_Code]
-      ,[Staff_Group]
-      ,[FTE_Days_Lost]
+SELECT [Organisation_Code]
+      ,[Organisation_Type]
+      ,[FTE_Days_Sick]
       ,[FTE_Days_Available]
-      ,[Sickness_Absence_Rate_PCT]
       ,[Effective_Snapshot_Date]
-  FROM [UKHF_NHS_Workforce].[Sickness_Absence_Benchmarking_Tool1_1]
-
-
-
+  FROM [UKHF_NHS_Workforce].[Sickness_Absence1_1]
+    where Effective_Snapshot_Date between '2008-10-01' and '2023-10-31'

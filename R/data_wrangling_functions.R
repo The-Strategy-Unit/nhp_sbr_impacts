@@ -13,13 +13,13 @@ scrape_csv <- function(url) {
 
 # To get data from a xls file at a URL. Default is to read sheet 1, but can
   # specify other sheet.
-scrape_xls <- function(url, sheet = 1) {
+scrape_xls <- function(url, sheet = 1, skip = 0) {
   
   tmp = tempfile(fileext = "")
   
   download.file(url = url, destfile = tmp, mode = "wb")
   
-  data <- readxl::read_excel(path = tmp, sheet = sheet, skip = 1) |>
+  data <- readxl::read_excel(path = tmp, sheet = sheet, skip = skip) |>
     janitor::clean_names()
   
   return(data)

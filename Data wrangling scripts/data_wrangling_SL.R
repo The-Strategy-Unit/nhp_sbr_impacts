@@ -140,7 +140,8 @@ pre2011_rtt_data<- pre2011_rtt_data|>
   mutate(number_of_incomplete_pathways_with_dta=NA)|>
   mutate(treatment_function_code=gsub("^IP", "", treatment_function_code) )
 
-formatted_rtt_data<-rbind(rtt_data, pre2011_rtt_data)
+formatted_rtt_data<-rbind(rtt_data, pre2011_rtt_data)|>
+  filter(treatment_function_code=="999") #999 is the total for each provider
 
 write.csv(formatted_rtt_data, "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_rtt_data.csv", row.names=FALSE)
 }
@@ -155,13 +156,13 @@ rtt_data_formatting("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Be
 
 rtt_data<-read.csv("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_rtt_data.csv")
 
+
 # Plot of median wait time (in weeks)
 rtt_plot_median<-function(data){
   data|>
-    filter(treatment_function_code=="999")|>
-    mutate(month = yearmonth(month))|> #Format date to monthly  
   group_by(month)|>
 summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)))|> #Median by month and provider 
+    mutate(month = tsibble::yearmonth(month))|> #Format date to monthly
   ggplot(aes(x = month, y =median_by_prov)) + 
   geom_line(color = "#2c2825", size=1) +
   labs( title = "",y = "median wait (wks)", x="")+
@@ -169,14 +170,15 @@ summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)))|> #
 }
   
   rtt_plot_median(rtt_data)
+  
+
 
 # Plot of total number waiting
   rtt_plot_number_waiting<-function(data){
     data|>
-      filter(treatment_function_code=="999")|> 
-      mutate(month = yearmonth(month))|> #Format date to monthly    
   group_by(month)|>
   summarise(total_waiting = sum(number_of_incomplete_pathways))|> #Median by month and provider 
+      mutate(month = tsibble::yearmonth(month))|> #Format date to monthly    
   ggplot(aes(x = month, y =total_waiting)) + 
   geom_line(color = "#2c2825", size=1) +
   labs( title = "",y = "No. of patients on waiting list", x="")+

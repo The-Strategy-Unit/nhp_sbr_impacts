@@ -143,7 +143,7 @@ pre2011_rtt_data<- pre2011_rtt_data|>
 formatted_rtt_data<-rbind(rtt_data, pre2011_rtt_data)|>
   filter(treatment_function_code=="999") #999 is the total for each provider
 
-write.csv(formatted_rtt_data, "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_rtt_data.csv", row.names=FALSE)
+write.csv(formatted_rtt_data, "Data/formatted_rtt_data.csv", row.names=FALSE)
 }
 
 #remove individual files
@@ -154,7 +154,7 @@ write.csv(formatted_rtt_data, "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP
 
 rtt_data_formatting("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/rtt_waiting_times.csv")
 
-rtt_data<-read.csv("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_rtt_data.csv")
+rtt_data<-read.csv("Data/formatted_rtt_data.csv")
 
 
 # Plot of median wait time (in weeks)
@@ -191,35 +191,36 @@ summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)))|> #
 #Friends and Family format data 
   friends_and_family_scores_data_formatting<-function(data){
   
-    friends_and_family_scores_data<read.csv(data)|>
+    friends_and_family_scores_data<-read.csv(data)|>
   clean_names()|>
   mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date
   mutate(month = yearmonth(effective_snapshot_date))|> #Format date to monthly
   mutate(count=ifelse(count=="NULL", 0, count))|>
   mutate(count=as.numeric(count))|>
   mutate(positive_responses=ifelse(likely_to_recommend=="Very Good"|likely_to_recommend=="Good"|
-                                     likely_to_recommend=="Likely"|likely_to_recommend=="Extremely Likely" , "yes", "no")) #flag those that are +ive responses
+                                     likely_to_recommend=="Likely"|likely_to_recommend=="Extremely Likely" , "yes", "no"))|> #flag those that are +ive responses
+   filter(grouped_by=="Site")|>
+      select(-ward_name, -ward_first_specialty_code, -ward_second_specialty_code)
 
-write.csv(friends_and_family_scores_data, "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_friends_and_family_data.csv", row.names=FALSE) 
+write.csv(friends_and_family_scores_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE) 
 
 }
   
   friends_and_family_scores_data_formatting("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/friends_and_family_inpatient_scores.csv")
 
   
-  friends_and_family_scores_data<-read.csv("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_friends_and_family_data.csv")
+  friends_and_family_scores_data<-read.csv("Data/formatted_friends_and_family_data.csv")
   
 #Friends and Family calculate percent and plot data
  friends_family_scores_plot<-function(data){
    
    data |>
-  filter(grouped_by=="Site")|>
-     mutate(month = yearmonth(month))|> #Format date to monthly    
   group_by(month)|>
   mutate(percent=round(((count/sum(count))*100),1))|> #calculate %
   mutate(percent=ifelse(is.nan(percent), 0 , percent))|>
   filter(positive_responses=="yes")|>
   summarise(percent=sum(percent))|>
+  mutate(month = yearmonth(month))|> #Format date to monthly       
   ggplot(aes(x = month, y =percent)) + 
   geom_line(color = "#2c2825", size=1) +
   labs( title = "",y = "% positive responses", x="")+
@@ -270,20 +271,20 @@ HCAI_data<-rbind(hai_cdiff_data,  hai_klebsiella_data,hai_ecoli_data, hai_mssa_d
    select(-effective_snapshot_date, -organisation_type, -metric)|>
      rbind(hai_cdiff_pre_2018_data)
  
- write.csv(HCAI_data, "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_HCAI_data.csv", row.names=FALSE)
+ write.csv(HCAI_data, "Data/formatted_HCAI_data.csv", row.names=FALSE)
 }
 
-hcai_formatting("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/hai_cdiff_pre_2018.csv",
-                "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/hai_cdiff.csv",
-                 "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/hai_ecoli.csv",
-                 "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/hai_klebsiella.csv",
-                 "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/hai_mssa.csv",
-                "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/hai_mrsa.csv",
-                "C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/hai_p_aeruginosa.csv")
+hcai_formatting("Data/hai_cdiff_pre_2018.csv", 
+                "Data/hai_cdiff.csv",
+                "Data/hai_ecoli.csv",
+                 "Data/hai_klebsiella.csv",
+                 "Data/hai_mssa.csv",
+                "Data/hai_mrsa.csv",
+                "Data/hai_p_aeruginosa.csv")
                  
  #Health Care acquired infections (HCAI) plot data
 
-HCAI_data<-read.csv("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_HCAI_data.csv")
+HCAI_data<-read.csv("Data/formatted_HCAI_data.csv")
 
  hcai_plot<-function(data){
    
@@ -315,15 +316,15 @@ staff_sickness_absence_formatting<-function(data){
   mutate(fte_days_available=as.numeric(fte_days_available))|>
   mutate(fte_days_available=ifelse(is.na(fte_days_available),0, fte_days_available))
   
-  write.csv(sickness_absence_data,"C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_staff_sickness_absence.csv", row.names=FALSE )
+  write.csv(sickness_absence_data,"Data/formatted_staff_sickness_absence.csv", row.names=FALSE )
   
 }
   
-staff_sickness_absence_formatting ("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/staff_sickness_absence.csv")
+staff_sickness_absence_formatting ("Data/staff_sickness_absence.csv")
   
 #Staff sickness plot data
 
-sickess_absence_data<-read.csv("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/formatted_staff_sickness_absence.csv")
+sickess_absence_data<-read.csv("Data/formatted_staff_sickness_absence.csv")
 
 staff_sickness_absence_plot<-function(data){
   

@@ -46,8 +46,7 @@ WHERE effective_snapshot_date BETWEEN @startdate AND @enddate
 		)
 		AND NOT (-- to remove the extra null values for March 2015 for Occupied floor area (m²):
 				effective_snapshot_date = '2015-03-31' 
-				AND measure = 'Occupied floor area (m²)' 
-				AND measure_value IS NULL
+				AND measure = 'Occupied floor area (m²)' 				
 				)
 
 UNION

@@ -26,6 +26,42 @@ scrape_xls <- function(url, sheet = 1, skip = 0) {
   
 }
 
+# To read in the csv files of the outputs of sql queries and to apply common
+  # data manipulations:
+read_sql_output <- function(filename) {
+  
+  data <- read.csv(filename) |>
+    janitor::clean_names() |>
+    dplyr::mutate(effective_snapshot_date = as.Date(effective_snapshot_date, 
+                                                    format = "%d/%m/%Y"
+                                                    )
+           )
+  
+  return(data)
+}
+
+# To standardise the staff groups across data sources.
+  # There are probably some more groups that can be matched between workforce 
+  # data from UDAL and from NHS-D and the turnover data from UDAL.
+standardise_staff_group <- function(staff_group) {
+  
+  staff_group <- staff_group |> 
+    stringr::str_to_lower() |>
+    stringr::str_replace_all(c(" [[:punct:]]" = "",
+                      "&" = " ",
+                      "," = "",
+                      " " = "_",
+                      "managers" = "manager",
+                      "all_staff_groups" = "total"
+                      )
+                    )
+  
+  return(staff_group)
+  
+}
+
+#-----------------------------------------------------------------------------#
+
 #### ERIC functions ####
 # To calculate the total number of single bedrooms in eric UDAL data.
 get_single_bedrooms <- function(data) {
@@ -90,6 +126,8 @@ get_single_bedrooms_for_2009_10 <- function(year) {
   
 }
 
+#-----------------------------------------------------------------------------#
+
 #### Workforce functions ####
 # To wrangle the workforce data: 
 wrangle_workforce <- function(month, sheetname_hc, sheetname_fte, skip = 6) { 
@@ -130,9 +168,9 @@ wrangle_workforce <- function(month, sheetname_hc, sheetname_fte, skip = 6) {
     dplyr::filter(!is.na(org_code)) |>
     dplyr::mutate(across(-c(org_code, data_type), as.numeric)) |>
     tidyr::pivot_longer(names_to = "staff_group",
-                 values_to = "total",
-                 cols = -c(org_code, data_type)
-    ) |>
+                        values_to = "total",
+                        cols = -c(org_code, data_type)
+                        ) |>
     dplyr::mutate(effective_snapshot_date = as.Date(month)
     )
   

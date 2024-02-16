@@ -1,4 +1,8 @@
-# ERIC data
+# ERIC.
+
+# This script combines the ERIC data from UDAL and NHS-Digitial to get a 
+  # longer timeseries of cleaning, single bedroom and other data that may be
+  # used to select controls. 
 
 #### Setup ####
 library(dplyr)
@@ -57,7 +61,6 @@ ggplotly(
 
 ggplotly(
   eric |>
-    # filter(organisation_code == "RTH") |> # can look at specific organisation
     summarise(cleaning_staff_wte = sum(cleaning_staff_wte, na.rm = TRUE), 
               .by = c(effective_snapshot_date)
     ) |>

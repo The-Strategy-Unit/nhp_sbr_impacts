@@ -1,13 +1,11 @@
-# Workforce
+# Workforce.
 
 # This script combines the workforce data from UDAL and NHS-Digitial to get a 
   # longer timeseries of Headcount and FTE for NHS organisations.
 
 #### Setup ####
 library(dplyr)
-library(janitor)
 library(readxl)
-library(stringr)
 library(tidyr)
 
 # Monthly data from Jul 2019 and yearly Sept data from 2009 to 2018 are from
@@ -20,16 +18,7 @@ workforce_links <- read_excel("data/links_workforce.xlsx")
 #### Wrangling ####
 # This script uses functions from the data_wrangling_functions.R file.
 workforce <- workforce_udal |>
-  mutate(effective_snapshot_date = as.Date(effective_snapshot_date, format = "%d/%m/%Y"),
-         staff_group = str_to_lower(staff_group) |> 
-           str_replace_all(c(" [[:punct:]]" = "",
-                             "&" = " ",
-                             "," = "",
-                             " " = "_",
-                             "managers" = "manager"
-                             )
-                           )
-         ) |>
+  mutate(effective_snapshot_date = as.Date(effective_snapshot_date, format = "%d/%m/%Y")) |>
   bind_rows(get_workforce("2016-01-31"),
             get_workforce("2016-02-29"),
             get_workforce("2016-03-31"),
@@ -77,11 +66,12 @@ workforce <- workforce_udal |>
             get_workforce("2019-05-31"),
             get_workforce("2019-06-30")
             ) |>
+  mutate(staff_group = standardise_staff_group(staff_group)) |>
   pivot_wider(names_from = data_type, values_from = total) |>
   rename("organisation_code" = org_code,
-         "headcount" = hc
-         ) |>
-  clean_names()
+         "workforce_headcount" = HC,
+         "workforce_fte" = FTE
+         ) 
 
 #### Checks ####
 summary(workforce)
@@ -93,7 +83,7 @@ library(ggplot2)
 ggplotly(
   workforce |>
    # filter(organisation_code == "RAE") |> # can look at specific organisation
-    summarise(fte = sum(fte, na.rm = TRUE), 
+    summarise(fte = sum(workforce_fte, na.rm = TRUE), 
               .by = c(effective_snapshot_date)
               ) |>
     ggplot(aes(effective_snapshot_date, fte)) +
@@ -104,6 +94,3 @@ ggplotly(
 
 #### Saving output ####
 write.csv(workforce, "Data/formatted_workforce.csv", row.names = FALSE)
-
-
-

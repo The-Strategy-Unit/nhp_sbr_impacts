@@ -1,9 +1,10 @@
 # ERIC data
 
 #### Setup ####
-library(readxl)
 library(dplyr)
+library(janitor)
 library(stringr)
+library(tidyr)
 
 #### Getting the UDAL data ####
 eric_09_15 <- read.csv("data/sql_eric_09_15.csv") 
@@ -32,7 +33,8 @@ eric <- eric_udal |>
            str_to_lower(),
          organisation_type = str_to_lower(organisation_type)
   ) |>
-  pivot_wider(names_from = "measure", values_from = "value")
+  pivot_wider(names_from = "measure", values_from = "value") |>
+  clean_names()
 
 #### Checks ####
 summary(eric)
@@ -56,10 +58,10 @@ ggplotly(
 ggplotly(
   eric |>
     # filter(organisation_code == "RTH") |> # can look at specific organisation
-    summarise(`Cleaning staff (WTE)` = sum(`Cleaning staff (WTE)`, na.rm = TRUE), 
+    summarise(cleaning_staff_wte = sum(cleaning_staff_wte, na.rm = TRUE), 
               .by = c(effective_snapshot_date)
     ) |>
-    ggplot(aes(effective_snapshot_date, `Cleaning staff (WTE)`)) +
+    ggplot(aes(effective_snapshot_date, cleaning_staff_wte)) +
     geom_line() +
     geom_point() +
     theme_bw() 

@@ -13,13 +13,13 @@ scrape_csv <- function(url) {
 
 # To get data from a xls file at a URL. Default is to read sheet 1, but can
   # specify other sheet.
-scrape_xls <- function(url, sheet = 1) {
+scrape_xls <- function(url, sheet = 1, skip = 0) {
   
   tmp = tempfile(fileext = "")
   
   download.file(url = url, destfile = tmp, mode = "wb")
   
-  data <- readxl::read_excel(path = tmp, sheet = sheet, skip = 1) |>
+  data <- readxl::read_excel(path = tmp, sheet = sheet, skip = skip) |>
     janitor::clean_names()
   
   return(data)
@@ -87,5 +87,111 @@ get_eric_before_2010 <- function(year) {
     ) 
   
   return(data)
+  
+}
+
+#### Workforce functions ####
+# To wrangle the workforce data: 
+wrangle_workforce <- function(month, sheetname_hc, sheetname_fte, skip = 6) { 
+  
+  sheetnumber <- substr(sheetname_hc, 1, 1) 
+  
+  if(missing(sheetname_fte)) {
+    
+    sheetname_fte <- stringr::str_replace_all(sheetname_hc,
+                                     c("HC" = "FTE",
+                                       "[[:digit:]]" = 
+                                         as.numeric(sheetnumber) + 1
+                                     )
+    )
+    
+  }
+  
+  url <- workforce_links |>
+    dplyr::filter(date == as.Date(month)) |>
+    dplyr::pull(url)
+  
+  data_hc <- scrape_xls(url,
+                        sheet = sheetname_hc,
+                        skip = skip
+                        ) |>
+    dplyr::mutate(data_type = "HC")
+  
+  data_fte <- scrape_xls(url,
+                         sheet = sheetname_fte, 
+                         skip = skip
+                         ) |>
+    dplyr::mutate(data_type = "FTE")
+  
+  data <- data_hc |>
+    dplyr::bind_rows(data_fte) |>
+    dplyr::rename(org_code = x4) |>
+    dplyr::select(-starts_with("x")) |>
+    dplyr::filter(!is.na(org_code)) |>
+    dplyr::mutate(across(-c(org_code, data_type), as.numeric)) |>
+    tidyr::pivot_longer(names_to = "staff_group",
+                 values_to = "total",
+                 cols = -c(org_code, data_type)
+    ) |>
+    dplyr::mutate(effective_snapshot_date = as.Date(month),
+           report_period_length = "Snapshot"
+    )
+  
+  return(data)
+  
+}
+
+# To provide the different arguments needed for the wrangle_workforce function, 
+  # since the format of workforce files from NHS-Digital varies over time:
+get_workforce <- function(month){
+  
+  if (month >= as.Date("2016-01-31") & month < as.Date("2016-05-31")) {
+    
+    wrangle_workforce(month = month,
+                             sheetname_hc = "1. HEE Org Main Staff Gp HC",
+                             sheetname_fte = "2. HEE Org Main Staff Gp FTE ",
+                             skip = 3
+    )
+    
+  } else if (month == as.Date("2016-05-31")) {
+    
+    wrangle_workforce(month = month,
+                             sheetname_hc = "1. HEE Org Main Staff Gp HC",
+                             skip = 4
+    )
+    
+  } else if (month == as.Date("2016-06-30")) {
+    
+    wrangle_workforce(month = month,
+                             "1. HEE Org Main Staff Gp HC ",
+                             "2. HEE Org Main Staff Gp FTE",
+                             skip = 4
+    )
+    
+  } else if (month >= as.Date("2016-07-31") & month < as.Date("2017-03-31")) {
+    
+    wrangle_workforce(month = month,
+                             sheetname_hc = "1. HEE Org Main Staff Gp HC ",
+                             sheetname_fte = "2. HEE Org Main Staff Gp FTE"
+    )
+    
+  } else if (month >= as.Date("2017-03-31") & month < as.Date("2019-03-31")) {
+    
+    wrangle_workforce(month = month,
+                             sheetname_hc = "1. HEE Org Main Staff Gp HC"
+    )
+    
+    
+  } else if (month >= as.Date("2019-03-31") & month < as.Date("2019-07-31")) {
+    
+    wrangle_workforce(month = month,
+                             sheetname_hc = "2. HEE, Org & SG - HC"
+    )
+    
+  } else {
+    
+    print("Please enter a month end between 2016-01-31 and 2019-06-30.")
+    
+  }
   
 }

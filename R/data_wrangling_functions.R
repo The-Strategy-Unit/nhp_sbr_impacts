@@ -133,8 +133,7 @@ wrangle_workforce <- function(month, sheetname_hc, sheetname_fte, skip = 6) {
                  values_to = "total",
                  cols = -c(org_code, data_type)
     ) |>
-    dplyr::mutate(effective_snapshot_date = as.Date(month),
-           report_period_length = "Snapshot"
+    dplyr::mutate(effective_snapshot_date = as.Date(month)
     )
   
   return(data)

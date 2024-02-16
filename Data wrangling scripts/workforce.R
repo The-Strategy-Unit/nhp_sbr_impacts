@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Workforce
 
 # This script combines the workforce data from UDAL and NHS-Digitial to get a 
@@ -80,6 +79,8 @@ workforce <- workforce_udal |>
   pivot_wider(names_from = data_type, values_from = total)
 
 #### Checks ####
+summary(workforce)
+
 # Quick plot to check what months we have and data quality:
 library(plotly)
 library(ggplot2)
@@ -87,26 +88,17 @@ library(ggplot2)
 ggplotly(
   workforce |>
    # filter(org_code == "RAE") |> # can look at specific organisation
-    summarise(total = sum(total, na.rm = TRUE), 
-              .by = c(effective_snapshot_date, data_type)
+    summarise(FTE = sum(FTE, na.rm = TRUE), 
+              .by = c(effective_snapshot_date)
               ) |>
-    ggplot(aes(effective_snapshot_date, total)) +
+    ggplot(aes(effective_snapshot_date, FTE)) +
     geom_line() +
     geom_point() +
-    theme_bw() +
-    facet_wrap(~data_type, scales = "free")
+    theme_bw() 
   )
 
 #### Saving output ####
-write.csv(workforce, "Data/formatted_workforce.csv", row.names=FALSE)
+write.csv(workforce, "Data/formatted_workforce.csv", row.names = FALSE)
 
-=======
-# workforce
 
-workforce_udal <- read.csv("data/workforce.csv")
 
-# need to get monthly to fill in gaps from NHS-D
-# so scrape files, wrangle files, then collate all together
-
-# any turnover wrangling? or different script and/or with bed occup and shmi?
->>>>>>> df245bfcea56d6cedf269c904b6a0f6f128efb4e

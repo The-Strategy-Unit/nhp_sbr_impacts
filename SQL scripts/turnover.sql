@@ -1,6 +1,5 @@
 SELECT 
 	effective_snapshot_date,
-	report_period_length,
 	org_code,
 	type,
 	staff_group,

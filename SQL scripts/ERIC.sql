@@ -1,12 +1,15 @@
 -- ERIC from March 2009 to March 2023
 -- annual indicator
--- site level
+-- cleaning data at site level from X. but only at trust level before then
+-- file too big all together, so split into 2 based on dates
+
+DECLARE @startdate date = '2009-03-01';
+DECLARE @enddate date = '2016-03-01';
 
 SELECT 
 	effective_snapshot_date,
 	organisation_code,
 	site_code,
-	report_period_length,
 	organisation_type,
 	site_type,
 	measure,
@@ -15,7 +18,7 @@ SELECT
 
 FROM [UKHF_Estates_Returns_Information_Collection].[Site_Data1_1] 
 
-WHERE effective_snapshot_date > '2009-02-01'
+WHERE effective_snapshot_date BETWEEN @startdate AND @enddate
 	AND Measure IN (
 		'Age profile - pre 1948 (%)'
 		,'Age profile - 1948 to 1954 (%)'
@@ -41,14 +44,18 @@ WHERE effective_snapshot_date > '2009-02-01'
 		,'Cost to eradicate moderate risk backlog (£)'
 		,'Cost to eradicate Significant Risk Backlog (£)'
 		)
+		AND NOT (-- to remove the extra null values for March 2015 for Occupied floor area (m²):
+				effective_snapshot_date = '2015-03-31' 
+				AND measure = 'Occupied floor area (m²)' 
+				AND measure_value IS NULL
+				)
 
 UNION
 
 SELECT  
 	effective_snapshot_date,
 	organisation_code,
-	'All' AS site_code,
-	report_period_length,	
+	'All' AS site_code,	
 	organisation_type,
 	'NA' AS site_type,
 	CASE WHEN measure = 'Cleaning services costs (£)' THEN 'Cleaning service cost (£)'
@@ -59,5 +66,5 @@ SELECT
 
 FROM [UKHF_Estates_Returns_Information_Collection].[Trust_Data1_1] 
 
-WHERE effective_snapshot_date > '2009-02-01'
+WHERE effective_snapshot_date BETWEEN @startdate AND @enddate
 	AND Measure IN ('Number of cleaning staff (WTE)', 'Cleaning services costs (£)')

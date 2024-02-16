@@ -5,6 +5,7 @@
 
 #### Setup ####
 library(dplyr)
+library(janitor)
 library(readxl)
 library(stringr)
 library(tidyr)
@@ -76,7 +77,11 @@ workforce <- workforce_udal |>
             get_workforce("2019-05-31"),
             get_workforce("2019-06-30")
             ) |>
-  pivot_wider(names_from = data_type, values_from = total)
+  pivot_wider(names_from = data_type, values_from = total) |>
+  rename("organisation_code" = org_code,
+         "headcount" = hc
+         ) |>
+  clean_names()
 
 #### Checks ####
 summary(workforce)
@@ -87,11 +92,11 @@ library(ggplot2)
 
 ggplotly(
   workforce |>
-   # filter(org_code == "RAE") |> # can look at specific organisation
-    summarise(FTE = sum(FTE, na.rm = TRUE), 
+   # filter(organisation_code == "RAE") |> # can look at specific organisation
+    summarise(fte = sum(fte, na.rm = TRUE), 
               .by = c(effective_snapshot_date)
               ) |>
-    ggplot(aes(effective_snapshot_date, FTE)) +
+    ggplot(aes(effective_snapshot_date, fte)) +
     geom_line() +
     geom_point() +
     theme_bw() 

@@ -1,6 +1,6 @@
 -- ERIC from March 2009 to March 2023
 -- annual indicator
--- cleaning data at site level from X. but only at trust level before then
+-- cleaning data at site level from 2015, but only at trust level before then
 -- file too big all together, so split into 2 based on dates
 
 DECLARE @startdate date = '2009-03-01';
@@ -67,3 +67,5 @@ FROM [UKHF_Estates_Returns_Information_Collection].[Trust_Data1_1]
 
 WHERE effective_snapshot_date BETWEEN @startdate AND @enddate
 	AND Measure IN ('Number of cleaning staff (WTE)', 'Cleaning services costs (£)')
+
+ORDER BY effective_snapshot_date desc

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Workforce
 
 # This script combines the workforce data from UDAL and NHS-Digitial to get a 
@@ -99,3 +100,13 @@ ggplotly(
 #### Saving output ####
 write.csv(workforce, "Data/formatted_workforce.csv", row.names=FALSE)
 
+=======
+# workforce
+
+workforce_udal <- read.csv("data/workforce.csv")
+
+# need to get monthly to fill in gaps from NHS-D
+# so scrape files, wrangle files, then collate all together
+
+# any turnover wrangling? or different script and/or with bed occup and shmi?
+>>>>>>> df245bfcea56d6cedf269c904b6a0f6f128efb4e

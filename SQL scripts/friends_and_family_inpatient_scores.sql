@@ -1,7 +1,11 @@
-SELECT [Site_Code]
-      ,[Measure_Category]
-      ,[Measure_Name]
-      ,[Measure_Value]
+SELECT [Grouped_By]
+      ,[Organisation_Code]
+      ,[Site_Code]
+      ,[Ward_Name]
+      ,[Ward_First_Specialty_Code]
+      ,[Ward_Second_Specialty_Code]
+      ,[Likely_To_Recommend]
+      ,[Count]
       ,[Effective_Snapshot_Date]
-  FROM [UKHF_FriendsAndFamilyTest].[Inpatients_Sites1_1]
-    where Effective_Snapshot_Date between '2008-10-01' and '2023-10-31'
+  FROM [UKHF_FriendsAndFamilyTest].[Inpatient_Scores1_1]
+     where Effective_Snapshot_Date between '2008-10-01' and '2023-10-31'

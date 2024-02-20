@@ -5,6 +5,8 @@ library(stringr)
 library(tsibble)
 library(readxl)
 library(zoo)
+library(lubridate)
+
 
 
 # RTT Waiting times April 2011 to Oct 2023
@@ -12,8 +14,8 @@ rtt_data_formatting<-function(data){
   
   rtt_data<-read.csv(data)|>
   clean_names()|>
-  mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date
-  mutate(month = yearmonth(effective_snapshot_date))|> #Format date to monthly
+    mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date 
+    mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
   mutate(weeks=gsub("^>", "", number_of_weeks_since_referral) )|>
   mutate(weeks=sub("\\-.*", "", weeks))|>
   mutate(weeks=sub("\\+.*", "", weeks))|>
@@ -132,7 +134,7 @@ pre2011_rtt_data<-rbind(`Mar 2011`, `Feb 2011`, `Jan 2011`, `Dec 2010`, `Nov 201
 
 pre2011_rtt_data<- pre2011_rtt_data|>
   mutate(month=zoo::as.yearmon(month,format ="%b %Y"))|> #Format date
-  mutate(month = yearmonth(month))|> #Format date to monthly
+  mutate(month=as.Date(month,frac=0 )) #Format date to monthly
   mutate(weeks=gsub("^>", "", number_of_weeks_since_referral) )|>
   mutate(weeks=sub("\\-.*", "", weeks))|>
   mutate(weeks=sub("\\plus.*", "", weeks))|>
@@ -141,10 +143,17 @@ pre2011_rtt_data<- pre2011_rtt_data|>
   mutate(treatment_function_code=gsub("^IP", "", treatment_function_code) )
 
 formatted_rtt_data<-rbind(rtt_data, pre2011_rtt_data)|>
-  filter(treatment_function_code=="999") #999 is the total for each provider
+  filter(treatment_function_code=="999")|> #999 is the total for each provider
+group_by(month, organisation_code)|>
+  summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)), number_incomplete=sum(number_of_incomplete_pathways))|> #Median by month and provider 
+  mutate(median_by_prov=ifelse(is.na(median_by_prov),0,median_by_prov))
+
+
 
 write.csv(formatted_rtt_data, "Data/formatted_rtt_data.csv", row.names=FALSE)
 }
+
+
 
 #remove individual files
 #rm(`Mar 2011`, `Feb 2011`, `Jan 2011`, `Dec 2010`, `Nov 2010`, `Oct 2010`, `Sep 2010`,`Aug 2010`,
@@ -189,37 +198,53 @@ summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)))|> #
   rtt_plot_number_waiting(rtt_data)
 
 #Friends and Family format data 
-  friends_and_family_scores_data_formatting<-function(data){
-  
-    friends_and_family_scores_data<-read.csv(data)|>
-  clean_names()|>
-  mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date
-  mutate(month = yearmonth(effective_snapshot_date))|> #Format date to monthly
-  mutate(count=ifelse(count=="NULL", 0, count))|>
-  mutate(count=as.numeric(count))|>
-  mutate(positive_responses=ifelse(likely_to_recommend=="Very Good"|likely_to_recommend=="Good"|
-                                     likely_to_recommend=="Likely"|likely_to_recommend=="Extremely Likely" , "yes", "no"))|> #flag those that are +ive responses
-   filter(grouped_by=="Site")|>
-      select(-ward_name, -ward_first_specialty_code, -ward_second_specialty_code)
-
-write.csv(friends_and_family_scores_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE) 
+  friends_and_family_scores_data_formatting<-function(data1, data2){
+    
+    #pre 2022-07 data
+    friends_and_family_scores_data1<-read.csv(data1)|>
+      clean_names()|>
+      mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date
+      mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+      mutate(count=ifelse(count=="NULL", 0, count))|>
+      mutate(count=as.numeric(count))|>
+      mutate(positive_responses=ifelse(likely_to_recommend=="Very Good"|likely_to_recommend=="Good"|
+                                         likely_to_recommend=="Likely"|likely_to_recommend=="Extremely Likely" , "yes", "no"))|> #flag those that are +ive responses
+      filter(grouped_by=="Site")|>
+      group_by(month, site_code)|>
+      mutate(percent=round(((count/sum(count))*100),1))|> #calculate %
+      filter(positive_responses=="yes")|>
+      summarise(percent=sum(percent)) #calculate %
+    
+    #Post 2022-07 data  
+    friends_and_family_scores_data2<-read.csv(data2)|>
+      clean_names()|>
+      mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%d/%m/%Y"))|> #Format date
+      mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+      filter(measure_category=="Percentage Positive")|>
+      mutate(percent=as.numeric(measure_value)*100)|>
+      select(-effective_snapshot_date, -measure_category, -measure_value, -measure_name)|>
+      filter(month>='2022-08-01')
+    
+    friends_and_family_scores_data<-rbind(friends_and_family_scores_data1,friends_and_family_scores_data2)
+    
+    
+    write.csv(friends_and_family_scores_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE) 
+    
 
 }
   
-  friends_and_family_scores_data_formatting("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/friends_and_family_inpatient_scores.csv")
+  friends_and_family_scores_data_formatting("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/friends_and_family_inpatient_scores.csv",
+                                            "Data/friend_and_family_inpatient_scores_post_Jul2022.csv")
 
-  
+    
   friends_and_family_scores_data<-read.csv("Data/formatted_friends_and_family_data.csv")
   
 #Friends and Family calculate percent and plot data
  friends_family_scores_plot<-function(data){
    
    data |>
-  group_by(month)|>
-  mutate(percent=round(((count/sum(count))*100),1))|> #calculate %
-  mutate(percent=ifelse(is.nan(percent), 0 , percent))|>
-  filter(positive_responses=="yes")|>
-  summarise(percent=sum(percent))|>
+     group_by(month)|>
+     summarise(percent=mean(percent))|>
   mutate(month = yearmonth(month))|> #Format date to monthly       
   ggplot(aes(x = month, y =percent)) + 
   geom_line(color = "#2c2825", size=1) +
@@ -263,7 +288,8 @@ hai_p_aeruginosa_data<-read.csv(p_aeruginosa)|>
 
 HCAI_data<-rbind(hai_cdiff_data,  hai_klebsiella_data,hai_ecoli_data, hai_mssa_data,  hai_mrsa_data ,hai_p_aeruginosa_data )|> 
    clean_names()|>
-   mutate(month = yearmonth(effective_snapshot_date))|> #Format date to monthly
+  mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d")) |>#Format date
+  mutate(month=floor_date(effective_snapshot_date, "month"))|>
    rename(count_of_cases=figure)|>
    mutate(count_of_cases=as.numeric(count_of_cases))|>
    filter(metric=="HOHA cases"|metric=="Hospital-onset"|metric=="Hospital-onset, healthcare associated")|> #Select only hospital acquired
@@ -308,13 +334,14 @@ staff_sickness_absence_formatting<-function(data){
   
   sickness_absence_data<-read.csv(data)|>
    clean_names()|>
-  mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%d/%m/%Y"))|> #Format date
-  mutate(month = yearmonth(effective_snapshot_date))|> #Format date to monthly
+    mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%d/%m/%Y"))|> #Format date
+    mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
   select(-organisation_type,-effective_snapshot_date )|>
   mutate(fte_days_sick=as.numeric(fte_days_sick))|>
   mutate(fte_days_sick=ifelse(is.na(fte_days_sick),0, fte_days_sick))|>
   mutate(fte_days_available=as.numeric(fte_days_available))|>
-  mutate(fte_days_available=ifelse(is.na(fte_days_available),0, fte_days_available))
+  mutate(fte_days_available=ifelse(is.na(fte_days_available),0, fte_days_available))|>
+    mutate(percent=(fte_days_sick/fte_days_available)*100)
   
   write.csv(sickness_absence_data,"Data/formatted_staff_sickness_absence.csv", row.names=FALSE )
   

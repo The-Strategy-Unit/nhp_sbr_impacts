@@ -107,3 +107,55 @@ find_single_bedroom_matches <- function(data,
   return(similar_organisations_that_remain_stable)
   
 }
+
+# To create a dataframe of all the sites with their matching sites for single
+  # bedrooms.
+combine_single_bedroom_matches <- function(single_bedrooms) {
+  
+  data <- rbind(
+    #royal_liverpool_matches 
+    find_single_bedroom_matches(single_bedrooms, 
+                                "2022-03-31", 
+                                "REM"
+                                ),
+    
+    #clatterbridge_matches 
+    find_single_bedroom_matches(single_bedrooms, 
+                                "2020-03-31", 
+                                "REN"
+                                ),
+    
+    #royal_papworth_matches 
+    find_single_bedroom_matches(single_bedrooms, 
+                                "2019-03-31", 
+                                "RGM"
+                                ),
+    
+    #peterborough_matches 
+    find_single_bedroom_matches(single_bedrooms, 
+                                "2010-03-31", 
+                                "RGN"
+                                ),
+    
+    #chase_farm_matches 
+    find_single_bedroom_matches(single_bedrooms, 
+                                "2018-03-31", 
+                                "RAL"
+                                ),
+    
+    #southmead_matches 
+    find_single_bedroom_matches(single_bedrooms, 
+                                "2014-03-31", 
+                                "RVJ"
+                                ), 
+    
+    #tunbridge_wells_matches 
+    find_single_bedroom_matches(single_bedrooms, 
+                                "2011-03-31", 
+                                "RWF"
+                                )
+  )
+  
+  return(data)
+  
+}

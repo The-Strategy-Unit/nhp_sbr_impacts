@@ -62,7 +62,50 @@ standardise_staff_group <- function(staff_group) {
 
 #-----------------------------------------------------------------------------#
 
+#### Bed Occupancy functions ####
+get_bed_occupancy_from_udal <- function(bed_occupancy_file) {
+  
+  data <- read_sql_output(bed_occupancy_file) |>
+    mutate(bed_occupancy = as.numeric(bed_occupancy))
+  
+  return(data)
+  
+}
+
+#-----------------------------------------------------------------------------#
+
 #### ERIC functions ####
+get_eric_data_from_udal <- function(eric_09_15, eric_16_23) {
+  
+  data <- read.csv(eric_09_15) |>
+    bind_rows(read.csv(eric_16_23)) |>
+    get_single_bedrooms() |>
+    mutate(value = as.numeric(value),
+           effective_snapshot_date = as.Date(effective_snapshot_date, 
+                                             format = "%d/%m/%Y"
+           )
+    )
+  
+  return(data)
+}
+
+combine_eric_data <- function(eric_udal, eric_09, eric_10) {
+  
+  data <- eric_udal |>
+    bind_rows(eric_09,
+              eric_10
+    ) |>
+    mutate(site_type = str_replace_all(site_type, "[:digit:]. ", "") |> 
+             str_to_lower(),
+           organisation_type = str_to_lower(organisation_type)
+    ) |>
+    pivot_wider(names_from = "measure", values_from = "value") |>
+    clean_names()
+  
+  return(data)
+  
+}
+
 # To calculate the total number of single bedrooms in eric UDAL data.
 get_single_bedrooms <- function(data) {
   

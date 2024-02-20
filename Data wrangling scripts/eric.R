@@ -5,40 +5,40 @@
   # used to select controls. 
 
 #### Setup ####
-library(dplyr)
-library(janitor)
-library(stringr)
-library(tidyr)
+# library(dplyr)
+# library(janitor)
+# library(stringr)
+# library(tidyr)
 
 #### Getting the UDAL data ####
-eric_09_15 <- read.csv("data/sql_eric_09_15.csv") 
+# eric_09_15 <- read.csv("data/sql_eric_09_15.csv") 
+# 
+# eric_16_23 <- read.csv("data/sql_eric_16_23.csv") 
 
-eric_16_23 <- read.csv("data/sql_eric_16_23.csv") 
-
-eric_udal <- eric_09_15 |>
-  bind_rows(eric_16_23) |>
-  get_single_bedrooms() |>
-  mutate(value = as.numeric(value),
-         effective_snapshot_date = as.Date(effective_snapshot_date, 
-                                           format = "%d/%m/%Y"
-                                           )
-         )
+# eric_udal <- eric_09_15 |>
+#   bind_rows(eric_16_23) |>
+#   get_single_bedrooms() |>
+#   mutate(value = as.numeric(value),
+#          effective_snapshot_date = as.Date(effective_snapshot_date, 
+#                                            format = "%d/%m/%Y"
+#                                            )
+#          )
 
 #### Getting single bedrooms for 2009 and 2010 ####
-eric_09 <- get_single_bedrooms_for_2009_10(2009)
-eric_10 <- get_single_bedrooms_for_2009_10(2010)
+# eric_09 <- get_single_bedrooms_for_2009_10(2009)
+# eric_10 <- get_single_bedrooms_for_2009_10(2010)
 
 #### Putting it all together ####
-eric <- eric_udal |>
-  bind_rows(eric_09,
-            eric_10
-            ) |>
-  mutate(site_type = str_replace_all(site_type, "[:digit:]. ", "") |> 
-           str_to_lower(),
-         organisation_type = str_to_lower(organisation_type)
-  ) |>
-  pivot_wider(names_from = "measure", values_from = "value") |>
-  clean_names()
+# eric <- eric_udal |>
+#   bind_rows(eric_09,
+#             eric_10
+#             ) |>
+#   mutate(site_type = str_replace_all(site_type, "[:digit:]. ", "") |> 
+#            str_to_lower(),
+#          organisation_type = str_to_lower(organisation_type)
+#   ) |>
+#   pivot_wider(names_from = "measure", values_from = "value") |>
+#   clean_names()
 
 #### Checks ####
 summary(eric)
@@ -71,4 +71,4 @@ ggplotly(
 )
 
 #### Saving output ####
-write.csv(eric, "Data/formatted_eric.csv", row.names = FALSE)
+#write.csv(eric, "Data/formatted_eric.csv", row.names = FALSE)

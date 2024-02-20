@@ -43,8 +43,8 @@ write.csv(shmi, "Data/formatted_shmi.csv", row.names = FALSE)
 #-----------------------------------------------------------------------------#
 
 #### Wrangle bed occupancy ####
-bed_occupancy <- read_sql_output("Data/sql_bed_occupancy.csv") |>
-  mutate(bed_occupancy = as.numeric(bed_occupancy))
+# bed_occupancy <- read_sql_output("Data/sql_bed_occupancy.csv") |>
+#   mutate(bed_occupancy = as.numeric(bed_occupancy))
 
 #### Checks for bed occupancy ####
 summary(bed_occupancy)
@@ -68,7 +68,7 @@ ggplotly(
   )
 
 #### Saving bed occupancy output ####
-write.csv(bed_occupancy, "Data/formatted_bed_occupancy.csv", row.names = FALSE)
+#write.csv(bed_occupancy, "Data/formatted_bed_occupancy.csv", row.names = FALSE)
 
 #-----------------------------------------------------------------------------#
 

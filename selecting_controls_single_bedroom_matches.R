@@ -5,3 +5,4 @@ single_bedrooms <- read.csv("data/formatted_eric.csv") |>
   get_percentage_single_bedrooms(available_beds)
 
 single_bedroom_matches <- combine_single_bedroom_matches(single_bedrooms)
+

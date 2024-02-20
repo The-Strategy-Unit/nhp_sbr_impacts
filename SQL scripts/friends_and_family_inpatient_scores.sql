@@ -1,5 +1,4 @@
-SELECT
-       [Grouped_By]
+SELECT [Grouped_By]
       ,[Organisation_Code]
       ,[Site_Code]
       ,[Ward_Name]
@@ -9,3 +8,4 @@ SELECT
       ,[Count]
       ,[Effective_Snapshot_Date]
   FROM [UKHF_FriendsAndFamilyTest].[Inpatient_Scores1_1]
+     where Effective_Snapshot_Date between '2008-10-01' and '2023-10-31'

@@ -9,7 +9,7 @@ library(targets)
 
 # Set target options:
 tar_option_set(
-  packages = c("dplyr", "janitor", "stringr", "tidyr") # Packages that your targets need for their tasks.
+  packages = c("dplyr", "janitor", "readxl", "stringr", "tidyr") # Packages that your targets need for their tasks.
 )
 
 # Run the R scripts in the R/ folder with your custom functions:
@@ -22,7 +22,9 @@ list(
  #### Data Wrangling ####
   
   # Bed occupancy data
-  tar_target(bed_occupancy_filepath, "Data/sql_bed_occupancy.csv", format = "file"),
+  tar_target(bed_occupancy_filepath, "Data/sql_bed_occupancy.csv", 
+             format = "file"
+             ),
   
   tar_target(
     formatted_bed_occupancy,
@@ -65,6 +67,21 @@ list(
    formatted_turnover,
    wrangle_turnover(turnover_filepath)
  ),
+ 
+ # Workforce
+ tar_target(workforce_udal_filepath, "Data/sql_workforce.csv", 
+            format = "file"
+            ),
+ 
+ tar_target(workforce_udal, read.csv(workforce_udal_filepath)),
+ 
+ tar_target(workforce_links_filepath, "Data/links_workforce.xlsx", 
+            format = "file"
+            ),
+ tar_target(workforce_links, read_excel(workforce_links_filepath)),
+ 
+ tar_target(formatted_workforce, 
+            combine_workforce(workforce_udal, workforce_links)),
  
  #-----------------------------------------------------------------------------#
  

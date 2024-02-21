@@ -1,12 +1,25 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
 apcs|object|9a1eac0c34a7e2d5|||||||||||||||
-available_beds|stem|c32049f64ab239dd|a21978328a44315f|844aa9ef6b98aaac|-493241494||t19773.6478976291s|1441226a1a441d1d|57743|rds|local|vector|||0.21||
+available_beds|stem|ffa34aa027aa8768|aacddd32df4293bc|e0094a48365378c1|-493241494||t19773.671534691s|4a507ede665e881b|56863|rds|local|vector|||0.06||
 bd_plot|object|cde5afd7671240d3|||||||||||||||
+bed_occupancy_filepath|stem|4d70bf72f2eb9a99|eb86079296fca518|ef46db3751d8e999|1552112817|Data/sql_bed_occupancy.csv|t19772.3580531591s|6aa465b7419212e3|2947470|file|local|vector|||0||
 beddays|object|c466589030203cc9|||||||||||||||
+combine_eric_data|function|2465fb1f3fed63d8|||||||||||||||
 combine_single_bedroom_matches|function|a2a6abfc3c3a97ac|||||||||||||||
+combine_workforce|function|6859511f48875446|||||||||||||||
 cost_mth|object|b52028b8f11d7653|||||||||||||||
 cost_yr|object|ee2d6baa12b5f697|||||||||||||||
+eric_09|stem|09975e6b602468bd|38d017e4e26b29d3|5597e63e68854ed2|-1785803281||t19773.6643878646s|ff8e507ecce0c186|12682|rds|local|vector|||1.08|Expecting numeric in H1520  R1520C8 got No Data Provided. Expecting numeric in I1520  R1520C9 got No Data Provided. Expecting numeric in J1520  R1520C10 got No Data Provided. Expecting numeric in K1520  R1520C11 got No Data Provided. Expecting numeric in L1520  R1520C12 got No Data Provided. Expecting numeric in M1520  R1520C13 got No Data Provided. Expecting numeric in P1520  R1520C16 got No Data Provided. Expecting numeric in Q1520  R1520C17 got No Data Provided. Expecting numeric in R1520  R1520C18 got No Data Provided. Expecting numeric in S1520  R1520C19 got No Data Provided. Expecting numeric in AD1520  R1520C30 got No Data Provided. Expecting numeric in AE1520  R1520C31 got No Data Provided. Expecting numeric in AF1520  R1520C32 got No Data Provided. Expecting numeric in AG1520  R1520C33 got No Data Provided. Expecting numeric in AH1520  R1520C34 got No Data Provided. Expecting numeric in AP1520  R1520C42 got No Data Provided. Expecting numeric in AQ1520  R1520C43 got No Data Provided. Expecting numeric in AR1520  R1520C44 got No Data Provided. Expecting numeric in AS1520  R1520C45 got No Data Provided. Expecting numeric in AT1520  R1520C46 got No Data Provided. Expecting numeric in AU1520  R1520C47 got No Data Provided. Expecting numeric in AV1520  R1520C48 got No Data Provided. Expecting numeric in AW1520  R1520C49 got No Data Provided. Expecting numeric in AX1520  R1520C50 got No Data Provided. Expecting numeric in AY1520  R1520C51 got No Data Provided. Expecting numeric in AZ1520  R1520C52 got No Data Provided. Expecting numeric in BA1520  R1520C53 got No Data Provided. Expecting numeric in BB1520  R1520C54 got No Data Provided. Expecting numeric in BC1520  R1520C55 got No Data Provided. Expecting numeric in BR1520  R1520C70 got Not Calculated. Expecting numeric in BS1520  R1520C71 got Not Calculated. Expecting numeric in BT1520  R1520C72 got Not Calculated. Expecting numeric|
+eric_09_15_filepath|stem|5b1eec3c42eb3e2f|345f8af369b36472|ef46db3751d8e999|1325341766|data/sql_eric_09_15.csv|t19772.3580554214s|e6f54c3226946ec4|21445793|file|local|vector|||0||
+eric_10|stem|4777720aa9ea1265|dbc8894a9c6caee6|5597e63e68854ed2|1499998040||t19773.6644605409s|001aae908b9286cf|12681|rds|local|vector|||0.75|Expecting numeric in H1520  R1520C8 got No Data Provided. Expecting numeric in I1520  R1520C9 got No Data Provided. Expecting numeric in J1520  R1520C10 got No Data Provided. Expecting numeric in K1520  R1520C11 got No Data Provided. Expecting numeric in L1520  R1520C12 got No Data Provided. Expecting numeric in M1520  R1520C13 got No Data Provided. Expecting numeric in P1520  R1520C16 got No Data Provided. Expecting numeric in Q1520  R1520C17 got No Data Provided. Expecting numeric in R1520  R1520C18 got No Data Provided. Expecting numeric in S1520  R1520C19 got No Data Provided. Expecting numeric in AD1520  R1520C30 got No Data Provided. Expecting numeric in AE1520  R1520C31 got No Data Provided. Expecting numeric in AF1520  R1520C32 got No Data Provided. Expecting numeric in AG1520  R1520C33 got No Data Provided. Expecting numeric in AH1520  R1520C34 got No Data Provided. Expecting numeric in AP1520  R1520C42 got No Data Provided. Expecting numeric in AQ1520  R1520C43 got No Data Provided. Expecting numeric in AR1520  R1520C44 got No Data Provided. Expecting numeric in AS1520  R1520C45 got No Data Provided. Expecting numeric in AT1520  R1520C46 got No Data Provided. Expecting numeric in AU1520  R1520C47 got No Data Provided. Expecting numeric in AV1520  R1520C48 got No Data Provided. Expecting numeric in AW1520  R1520C49 got No Data Provided. Expecting numeric in AX1520  R1520C50 got No Data Provided. Expecting numeric in AY1520  R1520C51 got No Data Provided. Expecting numeric in AZ1520  R1520C52 got No Data Provided. Expecting numeric in BA1520  R1520C53 got No Data Provided. Expecting numeric in BB1520  R1520C54 got No Data Provided. Expecting numeric in BC1520  R1520C55 got No Data Provided. Expecting numeric in BR1520  R1520C70 got Not Calculated. Expecting numeric in BS1520  R1520C71 got Not Calculated. Expecting numeric in BT1520  R1520C72 got Not Calculated. Expecting numeric|
+eric_16_23_filepath|stem|c950f61f9ffd4596|4608b598c8bfbe63|ef46db3751d8e999|755877872|data/sql_eric_16_23.csv|t19772.3580585025s|6fa7bfa7abbaa39e|32062019|file|local|vector|||0||
+eric_udal|stem|935a92b0d8c83655|7f5f6e5515fead51|60127ae33c302600|822961856||t19774.3784183555s|58f41ff7e1616366|4587029|rds|local|vector|||4.16|There were 2 warnings in dplyrmutate.The first warning wasℹ In argument acrosscontainsSingle, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 1 remaining warning.. There was 1 warning in mutate.ℹ In argument value  as.numericvalue.Caused by warning NAs introduced by coercion|
 find_single_bedroom_matches|function|14d18307caea912d|||||||||||||||
+formatted_bed_occupancy|stem|b9dc72ecda20c840|5e7d378f98d2c7cd|d507ee8992291457|-822180046||t19774.3783552214s|4e2234c95dc92b83|415587|rds|local|vector|||0.54|There was 1 warning in mutate.ℹ In argument bed_occupancy  as.numericbed_occupancy.Caused by warning NAs introduced by coercion|
+formatted_eric|stem|f817caa32bd8a87c|558b8e902d4f5809|7ca85c1891c7010c|2124298853||t19773.6715564241s|8372686368d0468a|1084490|rds|local|vector|||0.94||
+formatted_shmi|stem|7b4c55efc8e0a0e0|37393faf860bd192|8b2d2ffd43d6455d|705336005||t19774.3781414869s|eb34e4a63ed9ce26|567536|rds|local|vector|||0.79|There were 4 warnings in mutate.The first warning wasℹ In argument acrosscshmi_value, observed, expected, spells, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 3 remaining warnings.|
+formatted_turnover|stem|d56ac1bbad9cd472|6125eae0c851bce8|0802022e50a846d5|-1634795337||t19774.3768334209s|b0396fb5ff674295|5869991|rds|local|vector|||5.6||
+formatted_workforce|stem|b0c7926c39a7e967|b5855b4c0532bb69|c0af2afd34176353|260864125||t19774.5820554874s|55ce0b5c425598e9|5991596|rds|local|vector|||59.43|There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.|
 friends_and_family_scores_data_formatting|function|c5c8fced101a1441|||||||||||||||
 fun_bedday_plot|function|421d1f0d1639f28e|||||||||||||||
 fun_load_beddays|function|383145c30f14cd11|||||||||||||||
@@ -14,16 +27,30 @@ fun_load_sus_apcs|function|e46349089a0fe37e|||||||||||||||
 fun_load_sus_cost_mth|function|abc1680e772f18d9|||||||||||||||
 fun_load_sus_cost_yr|function|abc1680e772f18d9|||||||||||||||
 get_available_beds_by_organisation|function|25be6e180b892669|||||||||||||||
+get_bed_occupancy_from_udal|function|6155a6abebaa5976|||||||||||||||
+get_eric_data_from_udal|function|02bc5236ef4f2391|||||||||||||||
 get_percentage_single_bedrooms|function|69c3a070e1733a9a|||||||||||||||
+get_shmi_from_udal|function|057b23cd36ebca6c|||||||||||||||
 get_single_bedrooms|function|6637e6eac78acc38|||||||||||||||
 get_single_bedrooms_for_2009_10|function|a53020b16132e81d|||||||||||||||
-get_workforce|function|856155dd10689f65|||||||||||||||
+get_workforce|function|98c365c5654a7f57|||||||||||||||
 hcai_formatting|function|e14bb5eb7417db9f|||||||||||||||
 read_sql_output|function|b80b79c7b465e3c4|||||||||||||||
 scrape_csv|function|79bbd783185b40d8|||||||||||||||
 scrape_xls|function|87a6ba427a90fbd4|||||||||||||||
-single_bedroom_matches|stem|f266d7756c9e71e7|ad837afaaf6f5b3b|c0ea28f03f828497|-819551377||t19773.6479057201s|05d75c292bf21118|2512|rds|local|vector|||0.19||
-single_bedrooms|stem|b79eda4d449f2c15|dcf6853e1be6048b|e7e520be02979769|-232301579||t19773.6479033099s|30d9c51b66f8088f|54286|rds|local|vector|||0.44||
+shmi_filepath|stem|52528ccbdb437ef3|347b5eec9d19b56a|ef46db3751d8e999|-2047203215|Data/sql_shmi.csv|t19772.3580587552s|82eb41dfc7a6d8e7|2444270|file|local|vector|||0||
+single_bedroom_matches|stem|0f8e8d0532b9457d|ad837afaaf6f5b3b|0ed3227e2c259bd9|-819551377||t19773.667694439s|cc1af453201c801b|2525|rds|local|vector|||0.19||
+single_bedrooms|stem|78546b0500382b3b|7926bac5aae5e4ff|67e40bd5c8522793|-232301579||t19773.6715574043s|67af426e6d3e4061|54096|rds|local|vector|||0.03||
 staff_sickness_absence_formatting|function|66a52089760736a8|||||||||||||||
 standardise_staff_group|function|bc9fdfa1eedf45f6|||||||||||||||
-wrangle_workforce|function|3cfe1bfe1dee2c51|||||||||||||||
+turnover_filepath|stem|7c2cd78fa7ccc415|d220e0e4b99f02cd|ef46db3751d8e999|420258589|Data/sql_turnover.csv|t19772.3580630741s|7405a42fe7350c11|38820373|file|local|vector|||0||
+workforce_links|stem|a491c8ead5bb7b03|a4f957217dbbb5ea|7d345a5628b43aaf|1119332858||t19774.3822879487s|a744f0f8f0be9d70|1156|rds|local|vector|||0.03||
+workforce_links_filepath|stem|86e1cd4ce1f6aac1|2d9a6eff04121488|ef46db3751d8e999|758256672|Data/links_workforce.xlsx|t19772.3580515562s|83e8c682822a8172|11502|file|local|vector|||0.04||
+workforce_udal|stem|d4e22eb152e063d6|e59501c226ae3a0d|138b45fd32e3af53|-895121005||t19774.3823159877s|b6df63dea58910d8|4895103|rds|local|vector|||1.39||
+workforce_udal_filepath|stem|a513ba7e0da620a3|c27ae88b332f30b0|ef46db3751d8e999|71129574|Data/sql_workforce.csv|t19772.3580669744s|62ffe41673fa0738|36428093|file|local|vector|||0||
+wrangle_bed_occupance|function|6155a6abebaa5976|||||||||||||||
+wrangle_bed_occupancy|function|6155a6abebaa5976|||||||||||||||
+wrangle_eric|function|02bc5236ef4f2391|||||||||||||||
+wrangle_shmi|function|057b23cd36ebca6c|||||||||||||||
+wrangle_turnover|function|cd4687ee76af6ad9|||||||||||||||
+wrangle_workforce|function|98c365c5654a7f57|||||||||||||||

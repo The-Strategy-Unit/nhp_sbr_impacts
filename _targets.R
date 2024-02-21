@@ -9,7 +9,7 @@ library(targets)
 
 # Set target options:
 tar_option_set(
-  packages = c("tibble") # Packages that your targets need for their tasks.
+  packages = c("dplyr", "janitor", "readxl", "stringr", "tidyr") # Packages that your targets need for their tasks.
 )
 
 # Run the R scripts in the R/ folder with your custom functions:
@@ -18,21 +18,87 @@ tar_source()
 
 # Replace the target list below with your own:
 list(
+#-----------------------------------------------------------------------------#
+ #### Data Wrangling ####
+  
+  # Bed occupancy data
+  tar_target(bed_occupancy_filepath, "Data/sql_bed_occupancy.csv", 
+             format = "file"
+             ),
+  
+  tar_target(
+    formatted_bed_occupancy,
+    wrangle_bed_occupancy(bed_occupancy_filepath)
+  ), 
+ 
+  # ERIC data
+  tar_target(eric_09_15_filepath, "data/sql_eric_09_15.csv", format = "file"),
+  tar_target(eric_16_23_filepath, "data/sql_eric_16_23.csv", format = "file"),
+  
+  tar_target(
+    eric_udal,
+    wrangle_eric(eric_09_15_filepath, eric_16_23_filepath)
+  ),
+  tar_target(
+    eric_09,
+    get_single_bedrooms_for_2009_10(2009)
+  ),
+  tar_target(
+    eric_10,
+    get_single_bedrooms_for_2009_10(2010)
+  ),
+  tar_target(
+    formatted_eric,
+    combine_eric_data(eric_udal, eric_09, eric_10)
+  ),
+  
+ # SHMI data
+ tar_target(shmi_filepath, "Data/sql_shmi.csv", format = "file"),
+ 
+ tar_target(
+   formatted_shmi,
+   wrangle_shmi(shmi_filepath)
+ ),
+  
+ # Turnover
+ tar_target(turnover_filepath, "Data/sql_turnover.csv", format = "file"),
+ 
+ tar_target(
+   formatted_turnover,
+   wrangle_turnover(turnover_filepath)
+ ),
+ 
+ # Workforce
+ tar_target(workforce_udal_filepath, "Data/sql_workforce.csv", 
+            format = "file"
+            ),
+ 
+ tar_target(workforce_udal, read.csv(workforce_udal_filepath)),
+ 
+ tar_target(workforce_links_filepath, "Data/links_workforce.xlsx", 
+            format = "file"
+            ),
+ tar_target(workforce_links, read_excel(workforce_links_filepath)),
+ 
+ tar_target(formatted_workforce, 
+            combine_workforce(workforce_udal, workforce_links)),
+ 
+ #-----------------------------------------------------------------------------#
+ 
+ #### Selecting controls #### 
   
   # Finding similar matches for single bedrooms
   tar_target(
-    name = available_beds,
-    command = read.csv("data/formatted_bed_occupancy.csv") |>
-      get_available_beds_by_organisation()
-    # format = "qs" # Efficient storage for general data objects.
+    available_beds,
+    get_available_beds_by_organisation(formatted_bed_occupancy)
   ),
   tar_target(
-    name = single_bedrooms,
-    command = read.csv("data/formatted_eric.csv") |>
+    single_bedrooms,
+    formatted_eric |>
       get_percentage_single_bedrooms(available_beds)
   ),
   tar_target(
-    name = single_bedroom_matches,
-    command = combine_single_bedroom_matches(single_bedrooms)
+    single_bedroom_matches,
+    combine_single_bedroom_matches(single_bedrooms)
   )
 )

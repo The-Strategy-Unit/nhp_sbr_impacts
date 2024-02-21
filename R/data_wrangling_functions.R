@@ -62,7 +62,34 @@ standardise_staff_group <- function(staff_group) {
 
 #-----------------------------------------------------------------------------#
 
+#### Bed Occupancy functions ####
+wrangle_bed_occupancy <- function(bed_occupancy_file) {
+  
+  data <- read_sql_output(bed_occupancy_file) |>
+    mutate(bed_occupancy = as.numeric(bed_occupancy))
+  
+  return(data)
+  
+}
+
+#-----------------------------------------------------------------------------#
+
 #### ERIC functions ####
+# To wrangle the eric data from sql and combine the two files:
+wrangle_eric <- function(eric_09_15, eric_16_23) {
+  
+  data <- read.csv(eric_09_15) |>
+    bind_rows(read.csv(eric_16_23)) |>
+    get_single_bedrooms() |>
+    mutate(value = as.numeric(value),
+           effective_snapshot_date = as.Date(effective_snapshot_date, 
+                                             format = "%d/%m/%Y"
+           )
+    )
+  
+  return(data)
+}
+
 # To calculate the total number of single bedrooms in eric UDAL data.
 get_single_bedrooms <- function(data) {
   
@@ -126,39 +153,137 @@ get_single_bedrooms_for_2009_10 <- function(year) {
   
 }
 
+# To combine the eric data from sql/UDAL with the data from NHS-Digital:
+combine_eric_data <- function(eric_udal, eric_09, eric_10) {
+  
+  data <- eric_udal |>
+    bind_rows(eric_09,
+              eric_10
+    ) |>
+    mutate(site_type = str_replace_all(site_type, "[:digit:]. ", "") |> 
+             str_to_lower(),
+           organisation_type = str_to_lower(organisation_type)
+    ) |>
+    pivot_wider(names_from = "measure", values_from = "value") |>
+    clean_names()
+  
+  return(data)
+  
+}
+
+#-----------------------------------------------------------------------------#
+
+#### SHMI functions ####
+# To wrangle the SHMI data from sql:
+wrangle_shmi <- function(shmi_file) {
+  
+  data <- read_sql_output(shmi_file) |>
+    mutate(across(c(shmi_value, observed, expected, spells), as.numeric)) |>
+    rename("organisation_code" = provider_code)
+  
+  return(data)
+  
+}
+
+#-----------------------------------------------------------------------------#
+
+#### Turnover functions ####
+# To wrangle the turnover data from sql:
+wrangle_turnover <- function(turnover_file) {
+  
+  data <- read_sql_output("Data/sql_turnover.csv") |>
+    rename("organisation_code" = org_code,
+           "turnover_headcount" = head_count,
+           "turnover_fte" = fte
+    ) |>
+    mutate(staff_group = standardise_staff_group(staff_group))
+  
+  
+  return(data)
+  
+}
+
 #-----------------------------------------------------------------------------#
 
 #### Workforce functions ####
-# To wrangle the workforce data: 
-wrangle_workforce <- function(month, sheetname_hc, sheetname_fte, skip = 6) { 
+# To wrangle the workforce data. Sheetnames and where data is kept in the Excel
+  # files changes over time, so contains an if statement to setup variables,
+  # before scraping and wrangling data.
+wrangle_workforce <- function(month, workforce_links){
   
-  sheetnumber <- substr(sheetname_hc, 1, 1) 
+  skip <- 6
   
-  if(missing(sheetname_fte)) {
+  if (month >= as.Date("2016-01-31") & month < as.Date("2016-05-31")) {
     
+    sheetname_hc <- "1. HEE Org Main Staff Gp HC"
+    sheetname_fte <- "2. HEE Org Main Staff Gp FTE "
+    skip <- 3
+    
+  } else if (month == as.Date("2016-05-31")) {
+    
+    sheetname_hc <- "1. HEE Org Main Staff Gp HC"
+    sheetnumber <- substr(sheetname_hc, 1, 1) 
     sheetname_fte <- stringr::str_replace_all(sheetname_hc,
-                                     c("HC" = "FTE",
-                                       "[[:digit:]]" = 
-                                         as.numeric(sheetnumber) + 1
-                                     )
+                                              c("HC" = "FTE",
+                                                "[[:digit:]]" = 
+                                                  as.numeric(sheetnumber) + 1
+                                              )
     )
+    skip <- 4
+    
+  } else if (month == as.Date("2016-06-30")) {
+    
+    sheetname_hc <- "1. HEE Org Main Staff Gp HC "
+    sheetname_fte <- "2. HEE Org Main Staff Gp FTE"
+    skip <- 4
+    
+  } else if (month >= as.Date("2016-07-31") & month < as.Date("2017-03-31")) {
+    
+    sheetname_hc <- "1. HEE Org Main Staff Gp HC "
+    sheetname_fte <- "2. HEE Org Main Staff Gp FTE"
+    
+  } else if (month >= as.Date("2017-03-31") & month < as.Date("2019-03-31")) {
+    
+    sheetname_hc <- "1. HEE Org Main Staff Gp HC"
+    sheetnumber <- substr(sheetname_hc, 1, 1) 
+    sheetname_fte <- stringr::str_replace_all(sheetname_hc,
+                                              c("HC" = "FTE",
+                                                "[[:digit:]]" = 
+                                                  as.numeric(sheetnumber) + 1
+                                              )
+    )
+    
+  } else if (month >= as.Date("2019-03-31") & month < as.Date("2019-07-31")) {
+  
+   sheetname_hc <- "2. HEE, Org & SG - HC"
+   sheetnumber <- substr(sheetname_hc, 1, 1) 
+   sheetname_fte <- stringr::str_replace_all(sheetname_hc,
+                                             c("HC" = "FTE",
+                                               "[[:digit:]]" = 
+                                                 as.numeric(sheetnumber) + 1
+                                             )
+   )
+    
+  } else {
+    
+    print("Please enter a month end between 2016-01-31 and 2019-06-30.")
     
   }
   
-  url <- workforce_links |>
+   url <- workforce_links |>
     dplyr::filter(date == as.Date(month)) |>
     dplyr::pull(url)
   
   data_hc <- scrape_xls(url,
                         sheet = sheetname_hc,
                         skip = skip
-                        ) |>
+  ) |>
     dplyr::mutate(data_type = "HC")
   
   data_fte <- scrape_xls(url,
                          sheet = sheetname_fte, 
                          skip = skip
-                         ) |>
+  ) |>
     dplyr::mutate(data_type = "FTE")
   
   data <- data_hc |>
@@ -170,7 +295,7 @@ wrangle_workforce <- function(month, sheetname_hc, sheetname_fte, skip = 6) {
     tidyr::pivot_longer(names_to = "staff_group",
                         values_to = "total",
                         cols = -c(org_code, data_type)
-                        ) |>
+    ) |>
     dplyr::mutate(effective_snapshot_date = as.Date(month)
     )
   
@@ -178,61 +303,70 @@ wrangle_workforce <- function(month, sheetname_hc, sheetname_fte, skip = 6) {
   
 }
 
-# To provide the different arguments needed for the wrangle_workforce function, 
-  # since the format of workforce files from NHS-Digital varies over time:
-get_workforce <- function(month){
+# To combine and finish formatting the workforce data:
+combine_workforce <- function(workforce_udal, workforce_links) {
   
-  if (month >= as.Date("2016-01-31") & month < as.Date("2016-05-31")) {
-    
-    wrangle_workforce(month = month,
-                             sheetname_hc = "1. HEE Org Main Staff Gp HC",
-                             sheetname_fte = "2. HEE Org Main Staff Gp FTE ",
-                             skip = 3
-    )
-    
-  } else if (month == as.Date("2016-05-31")) {
-    
-    wrangle_workforce(month = month,
-                             sheetname_hc = "1. HEE Org Main Staff Gp HC",
-                             skip = 4
-    )
-    
-  } else if (month == as.Date("2016-06-30")) {
-    
-    wrangle_workforce(month = month,
-                             "1. HEE Org Main Staff Gp HC ",
-                             "2. HEE Org Main Staff Gp FTE",
-                             skip = 4
-    )
-    
-  } else if (month >= as.Date("2016-07-31") & month < as.Date("2017-03-31")) {
-    
-    wrangle_workforce(month = month,
-                             sheetname_hc = "1. HEE Org Main Staff Gp HC ",
-                             sheetname_fte = "2. HEE Org Main Staff Gp FTE"
-    )
-    
-  } else if (month >= as.Date("2017-03-31") & month < as.Date("2019-03-31")) {
-    
-    wrangle_workforce(month = month,
-                             sheetname_hc = "1. HEE Org Main Staff Gp HC"
-    )
-    
-    
-  } else if (month >= as.Date("2019-03-31") & month < as.Date("2019-07-31")) {
-    
-    wrangle_workforce(month = month,
-                             sheetname_hc = "2. HEE, Org & SG - HC"
-    )
-    
-  } else {
-    
-    print("Please enter a month end between 2016-01-31 and 2019-06-30.")
-    
-  }
+  workforce <- workforce_udal |>
+    mutate(effective_snapshot_date = as.Date(effective_snapshot_date, 
+                                             format = "%d/%m/%Y")
+           ) |>
+    bind_rows(wrangle_workforce("2016-01-31", workforce_links),
+              wrangle_workforce("2016-02-29", workforce_links),
+              wrangle_workforce("2016-03-31", workforce_links),
+              wrangle_workforce("2016-04-30", workforce_links),
+              wrangle_workforce("2016-05-31", workforce_links),
+              wrangle_workforce("2016-06-30", workforce_links),
+              wrangle_workforce("2016-07-31", workforce_links),
+              wrangle_workforce("2016-08-31", workforce_links),
+              # wrangle_workforce("2016-09-30", workforce_links), # Sept already available
+              wrangle_workforce("2016-10-31", workforce_links),
+              wrangle_workforce("2016-11-30", workforce_links),
+              wrangle_workforce("2016-12-31", workforce_links),
+              
+              wrangle_workforce("2017-01-31", workforce_links),
+              wrangle_workforce("2017-02-28", workforce_links),
+              
+              wrangle_workforce("2017-03-31", workforce_links),
+              wrangle_workforce("2017-04-30", workforce_links),
+              wrangle_workforce("2017-05-31", workforce_links),
+              wrangle_workforce("2017-06-30", workforce_links),
+              wrangle_workforce("2017-07-31", workforce_links),
+              wrangle_workforce("2017-08-31", workforce_links),
+              # wrangle_workforce("2017-09-30", workforce_links), # Sept already available
+              wrangle_workforce("2017-10-31", workforce_links),
+              wrangle_workforce("2017-11-30", workforce_links),
+              wrangle_workforce("2017-12-31", workforce_links),
+              
+              wrangle_workforce("2018-01-31", workforce_links),
+              wrangle_workforce("2018-02-28", workforce_links),
+              wrangle_workforce("2018-03-31", workforce_links),
+              wrangle_workforce("2018-04-30", workforce_links),
+              wrangle_workforce("2018-05-31", workforce_links),
+              wrangle_workforce("2018-06-30", workforce_links),
+              wrangle_workforce("2018-07-31", workforce_links),
+              wrangle_workforce("2018-08-31", workforce_links),
+              #  wrangle_workforce("2018-09-30", workforce_links), # Sept already available
+              wrangle_workforce("2018-10-31", workforce_links),
+              wrangle_workforce("2018-11-30", workforce_links),
+              wrangle_workforce("2018-12-31", workforce_links),
+              
+              wrangle_workforce("2019-01-31", workforce_links),
+              wrangle_workforce("2019-02-28", workforce_links),
+              wrangle_workforce("2019-03-31", workforce_links),
+              wrangle_workforce("2019-04-30", workforce_links),
+              wrangle_workforce("2019-05-31", workforce_links),
+              wrangle_workforce("2019-06-30", workforce_links)
+    ) |>
+    mutate(staff_group = standardise_staff_group(staff_group)) |>
+    pivot_wider(names_from = data_type, values_from = total) |>
+    rename("organisation_code" = org_code,
+           "workforce_headcount" = HC,
+           "workforce_fte" = FTE
+    ) 
   
 }
 
+#-----------------------------------------------------------------------------#
 ## Wrangling RTT waiting times 
 rtt_data_formatting<-function(data_file){  
   
@@ -384,7 +518,6 @@ rtt_data_formatting<-function(data_file){
   write.csv(formatted_rtt_data, "Data/formatted_rtt_data.csv", row.names=FALSE)
   
 }
-
 
 
 ## Wrangling friends and family inpatient scores

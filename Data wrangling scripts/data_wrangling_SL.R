@@ -8,22 +8,13 @@ library(zoo)
 library(lubridate)
 
 
+# RTT waiting times 
+rtt_data_formatting<-function(data_file){  
 
-# RTT Waiting times April 2011 to Oct 2023
-rtt_data_formatting<-function(data){
-  
-  rtt_data<-read.csv(data)|>
-  clean_names()|>
-    mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date 
-    mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
-  mutate(weeks=gsub("^>", "", number_of_weeks_since_referral) )|>
-  mutate(weeks=sub("\\-.*", "", weeks))|>
-  mutate(weeks=sub("\\+.*", "", weeks))|>
-  mutate(weeks=as.numeric(weeks))|>
-  select(-effective_snapshot_date)
 
-#Function to pull xls files for RTT waiting times prior to April 2011
-read_rtt<-function(url, name){
+#Functions to pull xls files for RTT waiting times prior to April 2011
+
+  read_rtt<-function(url, name){
   
   tmp = tempfile(fileext = "")
   
@@ -128,40 +119,51 @@ read_rtt2("https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020040mp_/ht
 
 # merge pre 2011 files together
 pre2011_rtt_data<-rbind(`Mar 2011`, `Feb 2011`, `Jan 2011`, `Dec 2010`, `Nov 2010`, `Oct 2010`, `Sep 2010`,`Aug 2010`,
-                       `Jul 2010`,`Jun 2010`, `May 2010`, `Apr 2010`,`Mar 2010`, `Feb 2010`, `Jan 2010`,`Dec 2009`,
-                       `Nov 2009`,`Oct 2009`, `Sep 2009`, `Aug 2009`,`Jul 2009`, `Jun 2009`, `May 2009`, `Apr 2009`,
+                        `Jul 2010`,`Jun 2010`, `May 2010`, `Apr 2010`,`Mar 2010`, `Feb 2010`, `Jan 2010`,`Dec 2009`,
+                        `Nov 2009`,`Oct 2009`, `Sep 2009`, `Aug 2009`,`Jul 2009`, `Jun 2009`, `May 2009`, `Apr 2009`,
                         `Mar 2009`, `Feb 2009`,`Jan 2009`, `Dec 2008`,`Nov 2008`,`Oct 2008`)
 
 pre2011_rtt_data<- pre2011_rtt_data|>
   mutate(month=zoo::as.yearmon(month,format ="%b %Y"))|> #Format date
-  mutate(month=as.Date(month,frac=0 )) #Format date to monthly
-  mutate(weeks=gsub("^>", "", number_of_weeks_since_referral) )|>
+  mutate(month=as.Date(month,frac=0 )) |>#Format date to monthly
+mutate(weeks=gsub("^>", "", number_of_weeks_since_referral) )|>
   mutate(weeks=sub("\\-.*", "", weeks))|>
   mutate(weeks=sub("\\plus.*", "", weeks))|>
   mutate(weeks=as.numeric(weeks))|>
   mutate(number_of_incomplete_pathways_with_dta=NA)|>
   mutate(treatment_function_code=gsub("^IP", "", treatment_function_code) )
 
+assign("pre2011_rtt_data", pre2011_rtt_data, envir=.GlobalEnv)
+
+# RTT Waiting times April 2011 to Oct 2023
+rtt_data<-read.csv(data_file)|>
+  clean_names()|>
+  mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date 
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  mutate(weeks=gsub("^>", "", number_of_weeks_since_referral) )|>
+  mutate(weeks=sub("\\-.*", "", weeks))|>
+  mutate(weeks=sub("\\+.*", "", weeks))|>
+  mutate(weeks=as.numeric(weeks))|>
+  select(-effective_snapshot_date)
+
+assign("rtt_data", rtt_data, envir=.GlobalEnv)
+
+
 formatted_rtt_data<-rbind(rtt_data, pre2011_rtt_data)|>
   filter(treatment_function_code=="999")|> #999 is the total for each provider
-group_by(month, organisation_code)|>
+  group_by(month, organisation_code)|>
   summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)), number_incomplete=sum(number_of_incomplete_pathways))|> #Median by month and provider 
   mutate(median_by_prov=ifelse(is.na(median_by_prov),0,median_by_prov))
 
 
-
 write.csv(formatted_rtt_data, "Data/formatted_rtt_data.csv", row.names=FALSE)
+
 }
 
-
-
-#remove individual files
-#rm(`Mar 2011`, `Feb 2011`, `Jan 2011`, `Dec 2010`, `Nov 2010`, `Oct 2010`, `Sep 2010`,`Aug 2010`,
- #  `Jul 2010`,`Jun 2010`, `May 2010`, `Apr 2010`,`Mar 2010`, `Feb 2010`, `Jan 2010`,`Dec 2009`,
- #  `Nov 2009`,`Oct 2009`, `Sep 2009`, `Aug 2009`,`Jul 2009`, `Jun 2009`, `May 2009`, `Apr 2009`,
- #  `Mar 2009`, `Feb 2009`,`Jan 2009`, `Dec 2008`,`Nov 2008`,`Oct 2008`)
-
 rtt_data_formatting("C:/Users/sarah.lucas/OneDrive - NHS/Documents/NHP Single Bed Accomodation/Data/rtt_waiting_times.csv")
+
+
+
 
 rtt_data<-read.csv("Data/formatted_rtt_data.csv")
 

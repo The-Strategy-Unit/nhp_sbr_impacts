@@ -7,9 +7,11 @@ options(scipen = 999)
 
 fun_load_beddays <- function(filepth){
   
-  read.csv(filepth) |> 
+  data <- read.csv(filepth) |> 
   clean_names() |> 
   mutate(yearmon = lubridate::ym(period))
+  
+  return(data)
 
 }
 
@@ -43,7 +45,7 @@ bd_plot
 
 fun_load_sus_apcs <- function(filepth){
   
-    read.csv(filepth) |> 
+    data <- read.csv(filepth) |> 
     clean_names() |>
     mutate(los = as.integer(str_replace(los, "NULL", "0"))
            ,mon2 = case_when(mth < 10 ~ paste0("0",as.factor(mth))
@@ -55,6 +57,8 @@ fun_load_sus_apcs <- function(filepth){
            ,avg_los = los/spells
            ,ff_rate = fall_fracs/beddays*1000
            ,death_rate = deaths/spells*100)
+    
+    return(data)
 }
 
 apcs <- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv")

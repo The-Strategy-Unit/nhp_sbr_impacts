@@ -83,6 +83,16 @@ list(
  tar_target(formatted_workforce, 
             combine_workforce(workforce_udal, workforce_links)),
  
+ # SUS various
+ tar_target(beddays, 
+            fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")),
+ tar_target(sus_apcs, 
+            fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv")),
+ tar_target(sus_cost_yr, 
+            fun_load_sus_cost_yr("Data/nhp_hospsite_costs_yr.csv")),
+ tar_target(sus_cost_mth, 
+            fun_load_sus_cost_mth("Data/nhp_hospsite_costs_mth.csv")),
+ 
  #-----------------------------------------------------------------------------#
  
  #### Selecting controls #### 

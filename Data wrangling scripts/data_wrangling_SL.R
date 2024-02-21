@@ -150,10 +150,7 @@ assign("rtt_data", rtt_data, envir=.GlobalEnv)
 
 
 formatted_rtt_data<-rbind(rtt_data, pre2011_rtt_data)|>
-  filter(treatment_function_code=="999")|> #999 is the total for each provider
-  group_by(month, organisation_code)|>
-  summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)), number_incomplete=sum(number_of_incomplete_pathways))|> #Median by month and provider 
-  mutate(median_by_prov=ifelse(is.na(median_by_prov),0,median_by_prov))
+  filter(treatment_function_code=="999") #999 is the total for each provider
 
 
 write.csv(formatted_rtt_data, "Data/formatted_rtt_data.csv", row.names=FALSE)

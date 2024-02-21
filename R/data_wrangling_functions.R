@@ -63,7 +63,7 @@ standardise_staff_group <- function(staff_group) {
 #-----------------------------------------------------------------------------#
 
 #### Bed Occupancy functions ####
-get_bed_occupancy_from_udal <- function(bed_occupancy_file) {
+wrangle_bed_occupancy <- function(bed_occupancy_file) {
   
   data <- read_sql_output(bed_occupancy_file) |>
     mutate(bed_occupancy = as.numeric(bed_occupancy))
@@ -75,7 +75,7 @@ get_bed_occupancy_from_udal <- function(bed_occupancy_file) {
 #-----------------------------------------------------------------------------#
 
 #### ERIC functions ####
-get_eric_data_from_udal <- function(eric_09_15, eric_16_23) {
+wrangle_eric <- function(eric_09_15, eric_16_23) {
   
   data <- read.csv(eric_09_15) |>
     bind_rows(read.csv(eric_16_23)) |>
@@ -171,11 +171,27 @@ get_single_bedrooms_for_2009_10 <- function(year) {
 #-----------------------------------------------------------------------------#
 
 #### SHMI functions ####
-get_shmi_from_udal <- function(shmi_file) {
+wrangle_shmi <- function(shmi_file) {
   
   data <- read_sql_output(shmi_file) |>
     mutate(across(c(shmi_value, observed, expected, spells), as.numeric)) |>
     rename("organisation_code" = provider_code)
+  
+  return(data)
+  
+}
+#-----------------------------------------------------------------------------#
+
+#### Turnover functions ####
+wrangle_turnover <- function(turnover_file) {
+  
+  data <- read_sql_output("Data/sql_turnover.csv") |>
+    rename("organisation_code" = org_code,
+           "turnover_headcount" = head_count,
+           "turnover_fte" = fte
+    ) |>
+    mutate(staff_group = standardise_staff_group(staff_group))
+  
   
   return(data)
   

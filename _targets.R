@@ -26,7 +26,7 @@ list(
   
   tar_target(
     formatted_bed_occupancy,
-    get_bed_occupancy_from_udal(bed_occupancy_filepath)
+    wrangle_bed_occupancy(bed_occupancy_filepath)
   ), 
  
   # ERIC data
@@ -35,7 +35,7 @@ list(
   
   tar_target(
     eric_udal,
-    get_eric_data_from_udal(eric_09_15_filepath, eric_16_23_filepath)
+    wrangle_eric(eric_09_15_filepath, eric_16_23_filepath)
   ),
   tar_target(
     eric_09,
@@ -50,15 +50,24 @@ list(
     combine_eric_data(eric_udal, eric_09, eric_10)
   ),
   
-  # SHMI data
+ # SHMI data
  tar_target(shmi_filepath, "Data/sql_shmi.csv", format = "file"),
-
+ 
  tar_target(
    formatted_shmi,
-   get_shmi_from_udal(shmi_filepath)
+   wrangle_shmi(shmi_filepath)
  ),
   
+ # Turnover
+ tar_target(turnover_filepath, "Data/sql_turnover.csv", format = "file"),
+ 
+ tar_target(
+   formatted_turnover,
+   wrangle_turnover(turnover_filepath)
+ ),
+ 
  #-----------------------------------------------------------------------------#
+ 
  #### Selecting controls #### 
   
   # Finding similar matches for single bedrooms

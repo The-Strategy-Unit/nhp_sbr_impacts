@@ -622,5 +622,54 @@ hcai_formatting<-function(cdiff_pre_2018, cdiff, ecoli, kleb, mssa, mrsa, p_aeru
   write.csv(HCAI_data, "Data/formatted_HCAI_data.csv", row.names=FALSE)
 }
 
+##load the beddays csv file
 
+fun_load_beddays <- function(filepth){
+  
+  data <- read.csv(filepth) |> 
+    clean_names() |> 
+    mutate(yearmon = lubridate::ym(period))
+  
+  return(data)
+  
+}
 
+##load the inpatient activity csv file, clean and calculate row variables
+
+fun_load_sus_apcs <- function(filepth){
+  
+  data <- read.csv(filepth) |> 
+    clean_names() |>
+    mutate(los = as.integer(str_replace(los, "NULL", "0"))
+           ,mon2 = case_when(mth < 10 ~ paste0("0",as.factor(mth))
+                             ,TRUE ~ as.factor(mth))
+           ,yearmon = lubridate::ym(paste0(as.factor(yr),mon2))) |> 
+    select(-mon2) |> 
+    left_join(beddays |> select(der_provider_site_code, yearmon, beddays), by = c("der_provider_site_code", "yearmon")) |> 
+    mutate(beddays = if_else(beddays < 0, 0, beddays)
+           ,avg_los = los/spells
+           ,ff_rate = fall_fracs/beddays*1000
+           ,death_rate = deaths/spells*100)
+  
+  return(data)
+}
+
+##load the cost file yearly csv
+
+fun_load_sus_cost_yr <- function(filepth){
+  
+  data <- read.csv(filepth) |> 
+    clean_names()
+  
+  return(data)
+}
+
+##load the cost file monthly csv
+
+fun_load_sus_cost_mth <- function(filepth){
+  
+  data <- read.csv(filepth) |> 
+    clean_names()
+  
+  return(data)
+}

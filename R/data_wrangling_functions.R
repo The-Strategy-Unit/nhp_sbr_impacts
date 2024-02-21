@@ -168,7 +168,18 @@ get_single_bedrooms_for_2009_10 <- function(year) {
   return(data)
   
 }
+#-----------------------------------------------------------------------------#
 
+#### SHMI functions ####
+get_shmi_from_udal <- function(shmi_file) {
+  
+  data <- read_sql_output(shmi_file) |>
+    mutate(across(c(shmi_value, observed, expected, spells), as.numeric)) |>
+    rename("organisation_code" = provider_code)
+  
+  return(data)
+  
+}
 #-----------------------------------------------------------------------------#
 
 #### Workforce functions ####

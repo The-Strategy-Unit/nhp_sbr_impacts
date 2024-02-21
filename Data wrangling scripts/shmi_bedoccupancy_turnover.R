@@ -8,9 +8,9 @@ library(dplyr)
 library(tidyr)
 
 #### Wrangle shmi ####
-shmi <- read_sql_output("Data/sql_shmi.csv") |>
-  mutate(across(c(shmi_value, observed, expected, spells), as.numeric)) |>
-  rename("organisation_code" = provider_code)
+# shmi <- read_sql_output("Data/sql_shmi.csv") |>
+#   mutate(across(c(shmi_value, observed, expected, spells), as.numeric)) |>
+#   rename("organisation_code" = provider_code)
 
 #### Checks for shmi ####
 summary(shmi)
@@ -38,7 +38,7 @@ ggplotly(
   )
 
 #### Saving shmi output ####
-write.csv(shmi, "Data/formatted_shmi.csv", row.names = FALSE)
+#write.csv(shmi, "Data/formatted_shmi.csv", row.names = FALSE)
 
 #-----------------------------------------------------------------------------#
 

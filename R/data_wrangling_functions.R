@@ -368,7 +368,7 @@ combine_workforce <- function(workforce_udal, workforce_links) {
 
 #-----------------------------------------------------------------------------#
 ## Wrangling RTT waiting times 
-rtt_data_formatting<-function(data_file){  
+rtt_data_formatting<-function(zip_file, data_file){  
   
   
   #Functions to pull xls files for RTT waiting times prior to April 2011
@@ -495,7 +495,7 @@ rtt_data_formatting<-function(data_file){
   assign("pre2011_rtt_data", pre2011_rtt_data, envir=.GlobalEnv)
   
   # RTT Waiting times April 2011 to Oct 2023
-  rtt_data<-read_csv(data_file)|>
+  rtt_data<-read.table(unz(zip_file, data_file), header=T, quote="\"", sep=",")|>
     clean_names()|>
     mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date 
     mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
@@ -518,10 +518,10 @@ rtt_data_formatting<-function(data_file){
 
 
 ## Wrangling friends and family inpatient scores
-friends_and_family_scores_data_formatting<-function(data1, data2){
+friends_and_family_scores_data_formatting<-function(zip_file, data_file, data2){
   
   #pre 2022-07 data
-  friends_and_family_scores_data1<-read_csv(data1)|>
+  friends_and_family_scores_data1<-read.table(unz(zip_file, data_file), header=T, quote="\"", sep=",")|>
     clean_names()|>
     mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date
     mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
@@ -548,7 +548,7 @@ friends_and_family_scores_data_formatting<-function(data1, data2){
   friends_and_family_scores_data<-rbind(friends_and_family_scores_data1,friends_and_family_scores_data2)
   
   
-  return(friends_and_family_scores_data) 
+  write.csv(formatted_rtt_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE)
   
   
 }

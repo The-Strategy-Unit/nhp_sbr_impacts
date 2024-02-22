@@ -633,7 +633,7 @@ fun_load_beddays <- function(filepth){
 
 ##load the inpatient activity csv file, clean and calculate row variables
 
-fun_load_sus_apcs <- function(filepth){
+fun_load_sus_apcs <- function(filepth, beddays){
   
   data <- read.csv(filepth) |> 
     clean_names() |>

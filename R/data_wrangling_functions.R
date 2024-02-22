@@ -495,7 +495,7 @@ rtt_data_formatting<-function(data_file){
   assign("pre2011_rtt_data", pre2011_rtt_data, envir=.GlobalEnv)
   
   # RTT Waiting times April 2011 to Oct 2023
-  rtt_data<-read.csv(data_file)|>
+  rtt_data<-read_csv(data_file)|>
     clean_names()|>
     mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date 
     mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
@@ -521,7 +521,7 @@ rtt_data_formatting<-function(data_file){
 friends_and_family_scores_data_formatting<-function(data1, data2){
   
   #pre 2022-07 data
-  friends_and_family_scores_data1<-read.csv(data1)|>
+  friends_and_family_scores_data1<-read_csv(data1)|>
     clean_names()|>
     mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date
     mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly

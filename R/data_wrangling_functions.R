@@ -548,7 +548,7 @@ friends_and_family_scores_data_formatting<-function(zip_file, data_file, data2){
   friends_and_family_scores_data<-rbind(friends_and_family_scores_data1,friends_and_family_scores_data2)
   
   
-  write.csv(formatted_rtt_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE)
+  write.csv( friends_and_family_scores_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE)
   
   
 }

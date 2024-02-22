@@ -97,44 +97,47 @@ list(
  
  #### Selecting controls #### 
   
-  # Finding similar matches for single bedrooms
+  # Finding similar matches for single bedrooms and accounting for cancer and
+    # cardiac sites,
   tar_target(
     available_beds,
     get_available_beds_by_organisation(formatted_bed_occupancy)
-  ),
+    ),
+ 
   tar_target(
     single_bedrooms,
     formatted_eric |>
       get_percentage_single_bedrooms(available_beds)
-  ),
+    ),
  
- 
- tar_target(ref_org_sites_filepath,
-            "data/ref_organisations_sites.csv"),
+ # to add in org/site names
+  tar_target(ref_org_sites_filepath, 
+            "data/ref_organisations_sites.csv"
+            ),
  
  tar_target(
    ref_org_sites,
    read.csv(ref_org_sites_filepath) |>
      clean_names() |>
      select(-last_refreshed)
- ) , 
- 
- tar_target(cancer_centres_filepath,
-            "data/ref_cancer_centres.csv"),
+   ) , 
+
+ # clatterbridge should be matched to cancer centres: 
+ tar_target(cancer_centres_filepath, 
+            "data/ref_cancer_centres.csv"
+            ),
  
  tar_target(
    cancer_centres,
    get_cancer_centre_site_codes(cancer_centres_filepath)
- ) ,
- 
+   ) ,
  
  tar_target(
    clatterbridge_matches,
    get_clatterbridge_matches(single_bedrooms, ref_org_sites, cancer_centres)
- ) ,
+   ) ,
  
- 
- 
+ # royal papworth should be matched to cardiac sites:
  tar_target(cardiac_site_filepath,
             "data/ref_cardiac_sites.csv"
             ),
@@ -142,22 +145,20 @@ list(
  tar_target(
    cardiac_sites,
    get_cardiac_site_codes(cardiac_site_filepath)
- ) ,
+   ) ,
  
  tar_target(
    royal_papworth_matches,
-   get_royal_papworth_matches(single_bedrooms, ref_org_sites, cardiac_sites) #######
- ) ,
+   get_royal_papworth_matches(single_bedrooms, ref_org_sites, cardiac_sites) 
+   ) ,
  
- 
- 
- 
- 
- 
- 
- 
+ # all single bedroom matches accounting for cancer and cardiac filters:
   tar_target(
     single_bedroom_matches,
-    combine_single_bedroom_matches(single_bedrooms, clatterbridge_matches, royal_papworth_matches, ref_org_sites)
-  )
+    combine_single_bedroom_matches(single_bedrooms, 
+                                   clatterbridge_matches, 
+                                   royal_papworth_matches, 
+                                   ref_org_sites
+                                   )
+    )
 )

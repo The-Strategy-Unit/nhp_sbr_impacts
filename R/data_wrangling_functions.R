@@ -548,7 +548,7 @@ friends_and_family_scores_data_formatting<-function(data1, data2){
   friends_and_family_scores_data<-rbind(friends_and_family_scores_data1,friends_and_family_scores_data2)
   
   
-  write.csv(friends_and_family_scores_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE) 
+  return(friends_and_family_scores_data) 
   
   
 }
@@ -568,7 +568,7 @@ staff_sickness_absence_formatting<-function(data){
     mutate(fte_days_available=ifelse(is.na(fte_days_available),0, fte_days_available))|>
     mutate(percent=(fte_days_sick/fte_days_available)*100)
   
-  write.csv(sickness_absence_data,"Data/formatted_staff_sickness_absence.csv", row.names=FALSE )
+ return(sickness_absence_data)
   
 }
 
@@ -616,7 +616,7 @@ hcai_formatting<-function(cdiff_pre_2018, cdiff, ecoli, kleb, mssa, mrsa, p_aeru
     select(-effective_snapshot_date, -organisation_type, -metric)|>
     rbind(hai_cdiff_pre_2018_data)
   
-  write.csv(HCAI_data, "Data/formatted_HCAI_data.csv", row.names=FALSE)
+  return(HCAI_data)
 }
 
 ##load the beddays csv file

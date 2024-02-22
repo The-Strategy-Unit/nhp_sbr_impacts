@@ -9,7 +9,7 @@ library(targets)
 
 # Set target options:
 tar_option_set(
-  packages = c("dplyr", "janitor", "readxl", "stringr", "tidyr") # Packages that your targets need for their tasks.
+  packages = c("dplyr", "janitor", "readxl", "stringr", "tidyr", "tsibble","zoo","lubridate" ) # Packages that your targets need for their tasks.
 )
 
 # Run the R scripts in the R/ folder with your custom functions:
@@ -92,6 +92,30 @@ list(
             fun_load_sus_cost_yr("Data/nhp_hospsite_costs_yr.csv")),
  tar_target(sus_cost_mth, 
             fun_load_sus_cost_mth("Data/nhp_hospsite_costs_mth.csv")),
+ 
+ 
+ # rtt waiting times
+ tar_target(formatted_rtt_data, 
+            rtt_data_formatting("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt_waiting_times.csv")),
+ 
+ #Friends and family test scores
+ tar_target(formatted_friends_and_family_data, 
+            friends_and_family_scores_data_formatting("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/friends_and_family_inpatient_scores.csv",
+                                                      "Data/friend_and_family_inpatient_scores_post_Jul2022.csv")),
+ 
+ #Healthcare acquired infections
+ tar_target(formatted_HCAI_data, 
+            hcai_formatting("Data/hai_cdiff_pre_2018.csv", 
+                            "Data/hai_cdiff.csv",
+                            "Data/hai_ecoli.csv",
+                            "Data/hai_klebsiella.csv",
+                            "Data/hai_mssa.csv",
+                            "Data/hai_mrsa.csv",
+                            "Data/hai_p_aeruginosa.csv")),
+ 
+ # Staff sickness
+ tar_target(formatted_staff_sickness_absence, 
+            staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")),
  
  #-----------------------------------------------------------------------------#
  

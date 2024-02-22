@@ -1,0 +1,430 @@
+---
+title: "Causal Impact Analysis"
+format: html
+editor: visual
+---
+
+REMRQ - Royal Liverpool
+
+REM21 - Aintree University
+
+RBN01 - Whiston
+
+REMBG - Warrington
+
+RVY01 - Southport & Formby
+
+RVY02 - Ormskirk & District
+
+RJR05 - Countess of Chester
+
+# Extra data wrangling
+
+
+```{r}
+library(tidyverse)
+library(MarketMatching)
+library(tsibble)
+library(targets)
+library(janitor)
+library(readxl)
+library(zoo)
+library(lubridate)
+
+ 
+
+
+#Functions 
+merge_sites<-function(data){
+ data|>
+  mutate(site_code=ifelse((site_code=="REMRQ"|site_code=="RQ617"), "REMRQ", site_code))|> #merge historical Royal Liverpool codes
+    mutate(site_code=ifelse((site_code=="RGM22"|site_code=="RGM21"), "RGM22", site_code))|> #merge Papworth site codes
+     mutate(site_code=ifelse((site_code=="RVJ01"|site_code=="RVJ20"), "RVJ01", site_code))|> #merge Southmead site codes
+   mutate(site_code=ifelse((site_code=="RGN80"|site_code=="RGN42"), "RGN80", site_code))|> #merge Peterborough site codes
+    mutate(site_code=ifelse((site_code=="RWFTW"|site_code=="RWF01"|site_code=="RWF02"), "RWFTW", site_code)) #merge Tunbridge site codes
+}
+
+beddays_by_site<-fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")
+
+beddays_by_prov<-fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")|>
+  mutate(organisation_code=substr(der_provider_site_code, start = 1, stop = 3))|>#get organisation code
+    group_by(yearmon, organisation_code)|>
+    summarise(beddays=sum(beddays))
+
+```
+
+
+## Friends & Family
+```{r}
+friends_and_family_data<-read.csv("Data/formatted_friends_and_family_data.csv")|>
+    mutate(month=as.Date(month))|>
+ merge_sites()|>
+  group_by(month, site_code)|>
+ summarise(percent=mean(percent, na.rm=TRUE))|>
+  filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
+         site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
+
+```
+
+
+
+## Staff turnover
+```{r}
+workforce_udal<-read.csv("Data/sql_workforce.csv")
+workforce_links<-read_excel("Data/links_workforce.xlsx")
+workforce_data<-combine_workforce(workforce_udal,workforce_links)
+turnover<-wrangle_turnover("sql_turnover.csv")
+
+```
+
+
+
+
+
+
+
+## Staff sickness
+
+```{r}
+
+
+# staff_sickness
+staff_sickness<-staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")|>
+  mutate(month=as.Date(month))|>
+      mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
+    group_by(month, organisation_code)|>
+  summarise(fte_days_sick=sum(fte_days_sick), fte_days_available=sum(fte_days_available) )|> #regroup following merging the organisation codes
+  mutate(percent=(fte_days_sick/fte_days_available)*100)|>
+  filter(organisation_code=="REM"|organisation_code=="RBN"|organisation_code=="RVY"|
+          organisation_code=="RJR" )
+```
+
+## Healthcare acquired infections
+
+```{r}
+
+
+hcai_data_combined<-hcai_formatting("Data/hai_cdiff_pre_2018.csv", 
+                "Data/hai_cdiff.csv",
+                "Data/hai_ecoli.csv",
+                 "Data/hai_klebsiella.csv",
+                 "Data/hai_mssa.csv",
+                "Data/hai_mrsa.csv",
+                "Data/hai_p_aeruginosa.csv")|>
+  left_join(beddays_by_prov[,c("organisation_code", "yearmon", "beddays")], by=c("organisation_code", "month"="yearmon"))|>
+  mutate(rate=(count_of_cases/beddays)*10000)|> #cases per 10,000 beddays
+  group_by(month, organisation_code)|>
+summarise(combined_rate=sum(rate))|>#calculate combined rate for all infectiond
+  filter(month>="2018-03-01")|>
+  filter(organisation_code=="REM")|> #for Royal Liverpool
+    ggplot(aes(x = month, y =combined_rate) ) + 
+   geom_line(linewidth=1) 
+
+
+
+
+```
+## In-hospital Falls and Fractures
+
+```{r}
+
+falls_and_fractures<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>   rename(site_code=der_provider_site_code)|>
+  rename(month=yearmon)|>
+ merge_sites()|>
+  group_by(site_code, month)|>
+  summarise(fall_fracs=sum(fall_fracs), beddays=sum(beddays))|> #recalculate rate following merging sites
+  mutate(ff_rate=(fall_fracs/beddays)*1000) #rate per 1000 beddays
+ 
+
+```
+
+## MISSING VALUES Summary Hospital-Level Mortality Indicator
+```{r}
+shmi_data<-wrangle_shmi("Data/sql_shmi.csv")|>
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  filter(level=="Site")|> #Select only Site data (only available 2019 onwards)
+  merge_sites()|>
+  group_by(month, site_code)|>
+  summarise(observed=sum(observed), expected=sum(expected))|>
+  mutate(shmi=observed/expected)
+ # filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
+  #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05"|site_code=="RQ617")
+
+
+
+
+shmi_data|>
+  filter(organisation_code=="RGM")|>
+    ggplot(aes(x = month, y =expected) ) + 
+   geom_line(size=1) +
+   labs( title = "",y = "No. of cases", x="")+
+   theme( legend.position= c(0.25, 0.8))+
+   scale_y_continuous(limits=c(0, NA)) 
+
+
+friends_and_family_data|>
+  filter(site_code=="RVJ01")|>
+    ggplot(aes(x = month, y =percent) ) + 
+   geom_line(size=1) +
+   labs( title = "",y = "No. of cases", x="")+
+   theme( legend.position= c(0.25, 0.8))+
+   scale_y_continuous(limits=c(0, NA)) 
+
+#RGM21 no shmi
+#+RGM22 no f&f /shmi
+
+ #RGN42 - no f&f/shmi
+# RGN80
+
+ #RVJ01+
+ #  RVJ20 no shmi
+ 
+
+
+
+ 
+```
+
+
+
+## RTT waiting time
+```{r}
+rtt_data<-read.csv("Data/formatted_rtt_data.csv") |>
+    mutate(month=as.Date(month))|>
+    mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
+    group_by(month, organisation_code)|>
+  summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)), number_incomplete=sum(number_of_incomplete_pathways))|> #Median by month and provider 
+  mutate(median_by_prov=ifelse(is.na(median_by_prov),0,median_by_prov))|>
+    filter(organisation_code=="REM"|organisation_code=="RJR"|organisation_code=="RVY"|
+           organisation_code==  "RBN")
+
+
+```
+
+
+
+## Bed occupancy
+```{r}
+occupancy_data<-wrangle_bed_occupancy("Data/sql_bed_occupancy.csv")|>
+     mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date 
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  filter(report_period_length=="Quarterly")|>
+      mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
+  group_by(month, organisation_code)|>
+  summarise(available=sum(available), occupied=sum(occupied))|>
+  mutate(bed_occupancy=occupied/available)
+
+```
+
+## Length of Stay
+```{r}
+
+length_of_stay<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>
+  rename(site_code=der_provider_site_code)|>
+  rename(month=yearmon)|>
+ merge_sites()|>
+  group_by(site_code, month)|>
+  summarise(los=sum(los), spells=sum(spells))|> #recalculate following merge of sites
+  mutate(avg_los=los/spells) |>
+  filter(site_code=="RGM22")|> 
+    ggplot(aes(x = month, y =avg_los) ) + 
+   geom_line(linewidth=1) 
+
+
+```
+
+## TO DO Emergency readmissions
+
+
+# Other plots information
+
+## Cleaning staff
+```{r}
+cleaning_staff<-wrangle_eric("Data/sql_eric_09_15.csv", "Data/sql_eric_16_23.csv")|>
+  filter(measure=="Cleaning staff (WTE)")|>
+  filter(level=="Site")|>
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  left_join(beddays_by_site[,c("der_provider_site_code", "beddays", "yearmon")], 
+                   by=c("site_code"= "der_provider_site_code", "month"="yearmon"))|>
+ merge_sites()|>
+  mutate(rate=(value/beddays)*1000) #WTE per 1000 beddays
+
+
+
+```
+
+## C. Difficile rate over time
+```{r}
+
+#c.diff only as this goes back before 2017/2018
+hcai_formatting("Data/hai_cdiff_pre_2018.csv", 
+                "Data/hai_cdiff.csv",
+                "Data/hai_ecoli.csv",
+                 "Data/hai_klebsiella.csv",
+                 "Data/hai_mssa.csv",
+                "Data/hai_mrsa.csv",
+                "Data/hai_p_aeruginosa.csv")|>
+  left_join(beddays_by_prov[,c("organisation_code", "yearmon", "beddays")], by=c("organisation_code", "month"="yearmon"))|>
+  mutate(rate=(count_of_cases/beddays)*10000)|> #cases per 10,000 beddays
+filter(collection=="C.difficile")|>
+  filter(organisation_code=="REM")|> #for Royal Liverpool
+    ggplot(aes(x = month, y =rate) ) + 
+   geom_line(linewidth=1) 
+
+# C. difficile numbers are too small to use in CIA as so much variability.
+
+```
+
+# Causal Impact analysis
+
+## Staff sickness
+
+```{r, include=TRUE}
+
+
+# Find the best matches  
+mm <- MarketMatching::best_matches(data=staff_sickness,
+                   id_variable="organisation_code",
+                   date_variable="month",
+                   matching_variable="percent",
+                   parallel=FALSE,
+                   warping_limit=1, # warping limit=1
+                   dtw_emphasis=1, # rely only on dtw for pre-screening
+                   matches=2, # request 2 matches
+                   start_match_period="2017-04-01",
+                   end_match_period="2022-10-01")
+
+#View the best matches
+knitr::kable(head(mm$BestMatches))
+
+results <- MarketMatching::inference(matched_markets = mm,
+                                     analyze_betas=TRUE,
+                                     test_market = "REM",
+                                    end_post_period = "2023-10-01",
+                                    alpha=0.05, 
+                                    prior_level_sd=0.02,
+                                    nseasons=12)
+
+# Plot out actual vs expected
+results$PlotActualVersusExpected
+
+# Plot out cumulative effect
+results$PlotCumulativeEffect
+
+# Plot pointwise effect
+results$PlotPointEffect
+
+#Plot the actuals 
+results$PlotActuals
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- results$Coefficients
+knitr::kable(head(coeff))
+
+
+```
+
+```{r, include=FALSE}
+
+#Store predicted values in dataframe
+pred <- results$Predictions
+knitr::kable(head(pred))
+
+# Check out the DW and MAPE of the model
+results$PlotPriorLevelSdAnalysis
+
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = "REM", 
+                                      end_fake_post_period = "2023-10-01", 
+                                      prior_level_sd = 0.01, 
+                                      steps=10,
+                                      max_fake_lift=0.05)
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+power$ResultsGraph
+
+
+```
+
+## RTT Waiting time data- Number of incomplete pathways
+
+```{r}
+
+
+# Find the best matches  
+mm <- MarketMatching::best_matches(rtt_data,
+                   id_variable="organisation_code",
+                   date_variable="month",
+                   matching_variable="number_incomplete",
+                   parallel=FALSE,
+                   warping_limit=1, # warping limit=1
+                   dtw_emphasis=1, # rely only on dtw for pre-screening
+                   matches=2, # request 5 matches
+                   start_match_period="2017-04-01",
+                   end_match_period="2022-10-01")
+
+#View the best matches
+knitr::kable(head(mm$BestMatches))
+
+results <- MarketMatching::inference(matched_markets = mm,
+                                     analyze_betas=TRUE,
+                                     test_market = "REM",
+                                    end_post_period = "2023-10-01",
+                                    alpha=0.05, 
+                                    prior_level_sd=0.01,
+                                    nseasons=12)
+
+#Absolute Effect indicates an increase in the median of 0.94 relative to what we expected. The Relative Effect provides a standardized view, indicating a 0.94% increase in the median. Probability of a causal impact indicates that the likelihood of observing this effect by chance is high (e.g., 100 - 55.2). 
+
+# Plot out actual vs expected
+results$PlotActualVersusExpected
+
+# Plot out cumulative effect
+results$PlotCumulativeEffect
+
+# Plot pointwise effect
+results$PlotPointEffect
+
+#Plot the actuals 
+results$PlotActuals
+
+
+# See which hospital recieves the highest weight in determining the outcome
+coeff <- results$Coefficients
+knitr::kable(head(coeff))
+
+
+
+```
+
+```{r, include=FALSE}
+
+#Store predicted values in dataframe
+pred <- results$Predictions
+knitr::kable(head(pred))
+
+# Check out the DW and MAPE of the model
+results$PlotPriorLevelSdAnalysis
+
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = "REM", 
+                                      end_fake_post_period = "2023-10-01", 
+                                      prior_level_sd = 0.01, 
+                                      steps=10,
+                                      max_fake_lift=0.05)
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+power$ResultsGraph
+
+
+
+```
+
+
+
+
+
+
+

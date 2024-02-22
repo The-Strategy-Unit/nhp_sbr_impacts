@@ -108,54 +108,111 @@ find_single_bedroom_matches <- function(data,
   
 }
 
+
+# clatterbridge has special filter for cancer centres:
+get_clatterbridge_matches <- function(single_bedrooms, 
+                                      ref_org_sites, 
+                                      cancer_centres
+                                      ) {
+  
+  find_single_bedroom_matches(
+    single_bedrooms, 
+    "2020-03-31", 
+    "REN"
+  ) |>
+  left_join(ref_org_sites, by = c("matching_organisation_code" = "trust_code")) |>
+  inner_join(cancer_centres, "site_code")
+
+}
+
+# royal papworth has special filter for cardiac centres:
+get_royal_papworth_matches <- function(single_bedrooms, 
+                                       ref_org_sites, 
+                                       cardiac_sites
+                                       ) {
+  
+  find_single_bedroom_matches(single_bedrooms, 
+                              "2019-03-31", 
+                              "RGM"
+  ) |>
+    left_join(ref_org_sites, by = c("matching_organisation_code" = "trust_code")) |>
+    inner_join(cardiac_sites, "site_code") # brings back 0 because the cardiac sites codes are not in my ref table
+  
+}
+
 # To create a dataframe of all the sites with their matching sites for single
   # bedrooms.
-combine_single_bedroom_matches <- function(single_bedrooms) {
+combine_single_bedroom_matches <- function(single_bedrooms, clatterbridge_matches, royal_papworth_matches, ref_org_sites) {
   
   data <- rbind(
     #royal_liverpool_matches 
     find_single_bedroom_matches(single_bedrooms, 
                                 "2022-03-31", 
                                 "REM"
-                                ),
+                                )|>
+      left_join(ref_org_sites, by = c("matching_organisation_code" = "trust_code")),
     
     #clatterbridge_matches 
-    find_single_bedroom_matches(single_bedrooms, 
-                                "2020-03-31", 
-                                "REN"
-                                ),
+    clatterbridge_matches,
     
     #royal_papworth_matches 
-    find_single_bedroom_matches(single_bedrooms, 
-                                "2019-03-31", 
-                                "RGM"
-                                ),
+    royal_papworth_matches,
     
     #peterborough_matches 
     find_single_bedroom_matches(single_bedrooms, 
                                 "2010-03-31", 
                                 "RGN"
-                                ),
+                                )|>
+      left_join(ref_org_sites, by = c("matching_organisation_code" = "trust_code")),
     
     #chase_farm_matches 
     find_single_bedroom_matches(single_bedrooms, 
                                 "2018-03-31", 
                                 "RAL"
-                                ),
+                                )|>
+      left_join(ref_org_sites, by = c("matching_organisation_code" = "trust_code")),
     
     #southmead_matches 
     find_single_bedroom_matches(single_bedrooms, 
                                 "2014-03-31", 
                                 "RVJ"
-                                ), 
+                                )|>
+      left_join(ref_org_sites, by = c("matching_organisation_code" = "trust_code")), 
     
     #tunbridge_wells_matches 
     find_single_bedroom_matches(single_bedrooms, 
                                 "2011-03-31", 
                                 "RWF"
-                                )
+                                )|>
+      left_join(ref_org_sites, by = c("matching_organisation_code" = "trust_code"))
   )
   
   return(data)
   
 }
+
+
+
+
+
+get_cancer_centre_site_codes <- function(cancer_centres_filepath) {
+  
+  read.csv(cancer_centres_filepath) |> 
+    clean_names() |>
+    pivot_longer(cols = contains("site_code"), names_to = "number", values_to = "site_code") |>
+    select(site_code) |>
+    na.omit()
+  
+}
+
+
+
+get_cardiac_site_codes <- function(cardiac_site_filepath) {
+  
+  read.csv(cardiac_site_filepath) |> 
+    clean_names() |>
+    select("site_code" = org_site_code) |>
+    na.omit()
+  
+}
+

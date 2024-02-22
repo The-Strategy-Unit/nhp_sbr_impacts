@@ -107,8 +107,57 @@ list(
     formatted_eric |>
       get_percentage_single_bedrooms(available_beds)
   ),
+ 
+ 
+ tar_target(ref_org_sites_filepath,
+            "data/ref_organisations_sites.csv"),
+ 
+ tar_target(
+   ref_org_sites,
+   read.csv(ref_org_sites_filepath) |>
+     clean_names() |>
+     select(-last_refreshed)
+ ) , 
+ 
+ tar_target(cancer_centres_filepath,
+            "data/ref_cancer_centres.csv"),
+ 
+ tar_target(
+   cancer_centres,
+   get_cancer_centre_site_codes(cancer_centres_filepath)
+ ) ,
+ 
+ 
+ tar_target(
+   clatterbridge_matches,
+   get_clatterbridge_matches(single_bedrooms, ref_org_sites, cancer_centres)
+ ) ,
+ 
+ 
+ 
+ tar_target(cardiac_site_filepath,
+            "data/ref_cardiac_sites.csv"
+            ),
+ 
+ tar_target(
+   cardiac_sites,
+   get_cardiac_site_codes(cardiac_site_filepath)
+ ) ,
+ 
+ tar_target(
+   royal_papworth_matches,
+   get_royal_papworth_matches(single_bedrooms, ref_org_sites, cardiac_sites) #######
+ ) ,
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   tar_target(
     single_bedroom_matches,
-    combine_single_bedroom_matches(single_bedrooms)
+    combine_single_bedroom_matches(single_bedrooms, clatterbridge_matches, royal_papworth_matches, ref_org_sites)
   )
 )

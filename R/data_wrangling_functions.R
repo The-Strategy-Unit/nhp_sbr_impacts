@@ -368,7 +368,7 @@ combine_workforce <- function(workforce_udal, workforce_links) {
 
 #-----------------------------------------------------------------------------#
 ## Wrangling RTT waiting times 
-rtt_data_formatting<-function(data_file){  
+rtt_data_formatting<-function(zip_file, data_file){  
   
   
   #Functions to pull xls files for RTT waiting times prior to April 2011
@@ -495,7 +495,7 @@ rtt_data_formatting<-function(data_file){
   assign("pre2011_rtt_data", pre2011_rtt_data, envir=.GlobalEnv)
   
   # RTT Waiting times April 2011 to Oct 2023
-  rtt_data<-read.csv(data_file)|>
+  rtt_data<-read.table(unz(zip_file, data_file), header=T, quote="\"", sep=",")|>
     clean_names()|>
     mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date 
     mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
@@ -518,10 +518,10 @@ rtt_data_formatting<-function(data_file){
 
 
 ## Wrangling friends and family inpatient scores
-friends_and_family_scores_data_formatting<-function(data1, data2){
+friends_and_family_scores_data_formatting<-function(zip_file, data_file, data2){
   
   #pre 2022-07 data
-  friends_and_family_scores_data1<-read.csv(data1)|>
+  friends_and_family_scores_data1<-read.table(unz(zip_file, data_file), header=T, quote="\"", sep=",")|>
     clean_names()|>
     mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date
     mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
@@ -548,7 +548,7 @@ friends_and_family_scores_data_formatting<-function(data1, data2){
   friends_and_family_scores_data<-rbind(friends_and_family_scores_data1,friends_and_family_scores_data2)
   
   
-  write.csv(friends_and_family_scores_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE) 
+  write.csv( friends_and_family_scores_data, "Data/formatted_friends_and_family_data.csv", row.names=FALSE)
   
   
 }
@@ -568,7 +568,7 @@ staff_sickness_absence_formatting<-function(data){
     mutate(fte_days_available=ifelse(is.na(fte_days_available),0, fte_days_available))|>
     mutate(percent=(fte_days_sick/fte_days_available)*100)
   
-  write.csv(sickness_absence_data,"Data/formatted_staff_sickness_absence.csv", row.names=FALSE )
+ return(sickness_absence_data)
   
 }
 
@@ -616,7 +616,7 @@ hcai_formatting<-function(cdiff_pre_2018, cdiff, ecoli, kleb, mssa, mrsa, p_aeru
     select(-effective_snapshot_date, -organisation_type, -metric)|>
     rbind(hai_cdiff_pre_2018_data)
   
-  write.csv(HCAI_data, "Data/formatted_HCAI_data.csv", row.names=FALSE)
+  return(HCAI_data)
 }
 
 ##load the beddays csv file

@@ -3,7 +3,7 @@ apcs|object|9a1eac0c34a7e2d5|||||||||||||||
 available_beds|stem|ffa34aa027aa8768|aacddd32df4293bc|e0094a48365378c1|-493241494||t19773.671534691s|4a507ede665e881b|56863|rds|local|vector|||0.06||
 bd_plot|object|cde5afd7671240d3|||||||||||||||
 bed_occupancy_filepath|stem|4d70bf72f2eb9a99|eb86079296fca518|ef46db3751d8e999|1552112817|Data/sql_bed_occupancy.csv|t19772.3580531591s|6aa465b7419212e3|2947470|file|local|vector|||0||
-beddays|object|c466589030203cc9|||||||||||||||
+beddays|stem|15d4758cd8460c46|1868ad88d175b7d4|ffd10096d532772e|-902021018||t19775.3459185602s|baa6826491b7faf8|574061|rds|local|vector|||0.82||
 combine_eric_data|function|2465fb1f3fed63d8|||||||||||||||
 combine_single_bedroom_matches|function|a2a6abfc3c3a97ac|||||||||||||||
 combine_workforce|function|6859511f48875446|||||||||||||||
@@ -22,10 +22,10 @@ formatted_turnover|stem|d56ac1bbad9cd472|6125eae0c851bce8|0802022e50a846d5|-1634
 formatted_workforce|stem|b0c7926c39a7e967|b5855b4c0532bb69|c0af2afd34176353|260864125||t19774.5820554874s|55ce0b5c425598e9|5991596|rds|local|vector|||59.43|There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.|
 friends_and_family_scores_data_formatting|function|c5c8fced101a1441|||||||||||||||
 fun_bedday_plot|function|421d1f0d1639f28e|||||||||||||||
-fun_load_beddays|function|383145c30f14cd11|||||||||||||||
-fun_load_sus_apcs|function|e46349089a0fe37e|||||||||||||||
-fun_load_sus_cost_mth|function|abc1680e772f18d9|||||||||||||||
-fun_load_sus_cost_yr|function|abc1680e772f18d9|||||||||||||||
+fun_load_beddays|function|235e7c85b2604131|||||||||||||||
+fun_load_sus_apcs|function|595d06259d138984|||||||||||||||
+fun_load_sus_cost_mth|function|d539fb199a7cc0a7|||||||||||||||
+fun_load_sus_cost_yr|function|d539fb199a7cc0a7|||||||||||||||
 get_available_beds_by_organisation|function|25be6e180b892669|||||||||||||||
 get_bed_occupancy_from_udal|function|6155a6abebaa5976|||||||||||||||
 get_eric_data_from_udal|function|02bc5236ef4f2391|||||||||||||||
@@ -36,6 +36,7 @@ get_single_bedrooms_for_2009_10|function|a53020b16132e81d|||||||||||||||
 get_workforce|function|98c365c5654a7f57|||||||||||||||
 hcai_formatting|function|e14bb5eb7417db9f|||||||||||||||
 read_sql_output|function|b80b79c7b465e3c4|||||||||||||||
+rtt_data_formatting|function|15c98b8aaf410b87|||||||||||||||
 scrape_csv|function|79bbd783185b40d8|||||||||||||||
 scrape_xls|function|87a6ba427a90fbd4|||||||||||||||
 shmi_filepath|stem|52528ccbdb437ef3|347b5eec9d19b56a|ef46db3751d8e999|-2047203215|Data/sql_shmi.csv|t19772.3580587552s|82eb41dfc7a6d8e7|2444270|file|local|vector|||0||
@@ -43,6 +44,9 @@ single_bedroom_matches|stem|0f8e8d0532b9457d|ad837afaaf6f5b3b|0ed3227e2c259bd9|-
 single_bedrooms|stem|78546b0500382b3b|7926bac5aae5e4ff|67e40bd5c8522793|-232301579||t19773.6715574043s|67af426e6d3e4061|54096|rds|local|vector|||0.03||
 staff_sickness_absence_formatting|function|66a52089760736a8|||||||||||||||
 standardise_staff_group|function|bc9fdfa1eedf45f6|||||||||||||||
+sus_apcs|stem|c0a3e3407ae93ac1|4fc51587f858412d|56e3a16f53c87b52|-915354209||t19775.3479648341s|b96e3a92121f6503|2844893|rds|local|vector|||0.91||
+sus_cost_mth|stem|97fbd0ba1108bcec|a3e60b549ee769e9|e4070eb7009b8d13|730171039||t19775.3459038998s|6af871e5af98f87c|1836279|rds|local|vector|||1.13||
+sus_cost_yr|stem|4064dc3a80d9b253|8e74f0c4dab1f5f9|0b512c86c2ebd567|-1669511941||t19775.3459212398s|2cb418d19bb470b4|246344|rds|local|vector|||0.05||
 turnover_filepath|stem|7c2cd78fa7ccc415|d220e0e4b99f02cd|ef46db3751d8e999|420258589|Data/sql_turnover.csv|t19772.3580630741s|7405a42fe7350c11|38820373|file|local|vector|||0||
 workforce_links|stem|a491c8ead5bb7b03|a4f957217dbbb5ea|7d345a5628b43aaf|1119332858||t19774.3822879487s|a744f0f8f0be9d70|1156|rds|local|vector|||0.03||
 workforce_links_filepath|stem|86e1cd4ce1f6aac1|2d9a6eff04121488|ef46db3751d8e999|758256672|Data/links_workforce.xlsx|t19772.3580515562s|83e8c682822a8172|11502|file|local|vector|||0.04||

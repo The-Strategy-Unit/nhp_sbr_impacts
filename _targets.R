@@ -97,7 +97,7 @@ list(
  # rtt waiting times
  tar_target(formatted_rtt_data, 
             rtt_data_formatting("Data/rtt_waiting_times.zip", 
-                                "rtt_waiting_times.csv",)),
+                                "rtt_waiting_times.csv")),
  
  #Friends and family test scores
  tar_target(formatted_friends_and_family_data, 

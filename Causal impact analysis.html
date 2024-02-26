@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Causal Impact Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Causal impact analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Causal impact analysis_files/libs/quarto-html/quarto.js"></script>
+<script src="Causal impact analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="Causal impact analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Causal impact analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Causal impact analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Causal impact analysis_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Causal impact analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Causal impact analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Causal impact analysis_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Causal Impact Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>REMRQ - Royal Liverpool</p>
+<p>REM21 - Aintree University</p>
+<p>RBN01 - Whiston</p>
+<p>REMBG - Warrington</p>
+<p>RVY01 - Southport &amp; Formby</p>
+<p>RVY02 - Ormskirk &amp; District</p>
+<p>RJR05 - Countess of Chester</p>
+<section id="causal-impact-analysis" class="level1">
+<h1>Causal Impact analysis</h1>
+<section id="staff-sickness" class="level2">
+<h2 class="anchored" data-anchor-id="staff-sickness">Staff sickness</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the best matches  </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mm <span class="ot">&lt;-</span> MarketMatching<span class="sc">::</span><span class="fu">best_matches</span>(<span class="at">data=</span>staff_sickness,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">id_variable=</span><span class="st">"organisation_code"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">date_variable=</span><span class="st">"month"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">matching_variable=</span><span class="st">"percent"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel=</span><span class="cn">FALSE</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">warping_limit=</span><span class="dv">1</span>, <span class="co"># warping limit=1</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dtw_emphasis=</span><span class="dv">1</span>, <span class="co"># rely only on dtw for pre-screening</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">matches=</span><span class="dv">2</span>, <span class="co"># request 2 matches</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">start_match_period=</span><span class="st">"2016-09-01"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">end_match_period=</span><span class="st">"2022-10-01"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#View the best matches</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(mm<span class="sc">$</span>BestMatches))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 3%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">organisation_code</th>
+<th style="text-align: left;">BestControl</th>
+<th style="text-align: right;">RelativeDistance</th>
+<th style="text-align: right;">Correlation</th>
+<th style="text-align: right;">Length</th>
+<th style="text-align: right;">SUMTEST</th>
+<th style="text-align: right;">SUMCNTL</th>
+<th style="text-align: right;">RAWDIST</th>
+<th style="text-align: right;">Correlation_of_logs</th>
+<th style="text-align: left;">MatchingStartDate</th>
+<th style="text-align: left;">MatchingEndDate</th>
+<th style="text-align: right;">rank</th>
+<th style="text-align: right;">NORMDIST</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">RBN</td>
+<td style="text-align: left;">RJR</td>
+<td style="text-align: right;">0.5155463</td>
+<td style="text-align: right;">0.3767695</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">251.4878</td>
+<td style="text-align: right;">326.6750</td>
+<td style="text-align: right;">129.65359</td>
+<td style="text-align: right;">0.4150070</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.4485020</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RBN</td>
+<td style="text-align: left;">REM</td>
+<td style="text-align: right;">1.0788911</td>
+<td style="text-align: right;">0.8490472</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">251.4878</td>
+<td style="text-align: right;">409.4219</td>
+<td style="text-align: right;">271.32795</td>
+<td style="text-align: right;">0.8364240</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.8210743</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REM</td>
+<td style="text-align: left;">RVY</td>
+<td style="text-align: right;">0.1568002</td>
+<td style="text-align: right;">0.8728655</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">409.4219</td>
+<td style="text-align: right;">444.9895</td>
+<td style="text-align: right;">64.19745</td>
+<td style="text-align: right;">0.8650805</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.1502729</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">REM</td>
+<td style="text-align: left;">RJR</td>
+<td style="text-align: right;">0.3164235</td>
+<td style="text-align: right;">0.5512596</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">409.4219</td>
+<td style="text-align: right;">326.6750</td>
+<td style="text-align: right;">129.55070</td>
+<td style="text-align: right;">0.5708586</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.3519936</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RJR</td>
+<td style="text-align: left;">REM</td>
+<td style="text-align: right;">0.3965736</td>
+<td style="text-align: right;">0.5512596</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">326.6750</td>
+<td style="text-align: right;">409.4219</td>
+<td style="text-align: right;">129.55070</td>
+<td style="text-align: right;">0.5708586</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3519936</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RJR</td>
+<td style="text-align: left;">RBN</td>
+<td style="text-align: right;">0.3968886</td>
+<td style="text-align: right;">0.3767695</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">326.6750</td>
+<td style="text-align: right;">251.4878</td>
+<td style="text-align: right;">129.65359</td>
+<td style="text-align: right;">0.4150070</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.4485020</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> MarketMatching<span class="sc">::</span><span class="fu">inference</span>(<span class="at">matched_markets =</span> mm,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">analyze_betas=</span><span class="cn">TRUE</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">test_market =</span> <span class="st">"REM"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">end_post_period =</span> <span class="st">"2023-10-01"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">alpha=</span><span class="fl">0.05</span>, </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">prior_level_sd=</span><span class="fl">0.01</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">nseasons=</span><span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    ------------- Inputs -------------
+    Market ID: organisation_code
+    Date Variable: month
+    Matching Metric: percent
+
+    Test Market: REM
+    Control Market 1: RJR
+    Control Market 2: RVY
+
+    Matching (pre) Period Start Date: 2016-09-01
+    Matching (pre) Period End Date: 2022-10-01
+    Post Period Start Date: 2022-11-01
+    Post Period End Date: 2023-05-01
+
+    bsts parameters: 
+      nseasons: 12
+      prior.level.sd: 0.01
+    Posterior Intervals Tail Area: 95%
+
+    ------------- Model Stats -------------
+    Matching (pre) Period MAPE: 6.32%
+    Beta 1 [RJR]: 0.261
+    Beta 2 [RVY]: 0.7823
+    DW: 0.7
+
+    ------------- Effect Analysis -------------
+    Absolute Effect: 1.8 [-1.21, 4.93]
+    Relative Effect: 4.1% [-2.56%, 11.95%]
+    Probability of a causal impact: 85.8639%</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out actual vs expected</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActualVersusExpected</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out cumulative effect</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotCumulativeEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot pointwise effect</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotPointEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot the actuals </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># See which hospital receives the highest weight in determining the outcome</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>coeff <span class="ot">&lt;-</span> results<span class="sc">$</span>Coefficients</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(coeff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Market</th>
+<th style="text-align: right;">AverageBeta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">RJR</td>
+<td style="text-align: right;">0.2609562</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RVY</td>
+<td style="text-align: right;">0.7822920</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="rtt-waiting-time-data--median-waiting-time-in-weeks" class="level2">
+<h2 class="anchored" data-anchor-id="rtt-waiting-time-data--median-waiting-time-in-weeks">RTT Waiting time data- Median waiting time (in weeks)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the best matches  </span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>mm <span class="ot">&lt;-</span> MarketMatching<span class="sc">::</span><span class="fu">best_matches</span>(rtt_data,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">id_variable=</span><span class="st">"organisation_code"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">date_variable=</span><span class="st">"month"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">matching_variable=</span><span class="st">"median_by_prov"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel=</span><span class="cn">FALSE</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">warping_limit=</span><span class="dv">1</span>, <span class="co"># warping limit=1</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dtw_emphasis=</span><span class="dv">1</span>, <span class="co"># rely only on dtw for pre-screening</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">matches=</span><span class="dv">2</span>, <span class="co"># request 5 matches</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">start_match_period=</span><span class="st">"2016-09-01"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">end_match_period=</span><span class="st">"2022-10-01"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#View the best matches</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(mm<span class="sc">$</span>BestMatches))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 10%">
+<col style="width: 3%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">organisation_code</th>
+<th style="text-align: left;">BestControl</th>
+<th style="text-align: right;">RelativeDistance</th>
+<th style="text-align: right;">Correlation</th>
+<th style="text-align: right;">Length</th>
+<th style="text-align: right;">SUMTEST</th>
+<th style="text-align: right;">SUMCNTL</th>
+<th style="text-align: right;">RAWDIST</th>
+<th style="text-align: right;">Correlation_of_logs</th>
+<th style="text-align: left;">MatchingStartDate</th>
+<th style="text-align: left;">MatchingEndDate</th>
+<th style="text-align: right;">rank</th>
+<th style="text-align: right;">NORMDIST</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">RBN</td>
+<td style="text-align: left;">RVY</td>
+<td style="text-align: right;">0.2141372</td>
+<td style="text-align: right;">0.9101248</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">481</td>
+<td style="text-align: right;">401</td>
+<td style="text-align: right;">103</td>
+<td style="text-align: right;">0.9082553</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.2335601</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RBN</td>
+<td style="text-align: left;">REM</td>
+<td style="text-align: right;">0.6673597</td>
+<td style="text-align: right;">0.9424921</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">481</td>
+<td style="text-align: right;">681</td>
+<td style="text-align: right;">321</td>
+<td style="text-align: right;">0.9560623</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.5524957</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">REM</td>
+<td style="text-align: left;">RJR</td>
+<td style="text-align: right;">0.3609130</td>
+<td style="text-align: right;">0.9309250</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">701</td>
+<td style="text-align: right;">856</td>
+<td style="text-align: right;">253</td>
+<td style="text-align: right;">0.9542236</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3249839</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">REM</td>
+<td style="text-align: left;">RBN</td>
+<td style="text-align: right;">0.4713656</td>
+<td style="text-align: right;">0.9424921</td>
+<td style="text-align: right;">67</td>
+<td style="text-align: right;">681</td>
+<td style="text-align: right;">481</td>
+<td style="text-align: right;">321</td>
+<td style="text-align: right;">0.9560623</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.5524957</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RJR</td>
+<td style="text-align: left;">REM</td>
+<td style="text-align: right;">0.2955607</td>
+<td style="text-align: right;">0.9309250</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">856</td>
+<td style="text-align: right;">701</td>
+<td style="text-align: right;">253</td>
+<td style="text-align: right;">0.9542236</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.3249839</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RJR</td>
+<td style="text-align: left;">RBN</td>
+<td style="text-align: right;">0.7472119</td>
+<td style="text-align: right;">0.8573951</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">807</td>
+<td style="text-align: right;">464</td>
+<td style="text-align: right;">603</td>
+<td style="text-align: right;">0.9060513</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.9488592</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> MarketMatching<span class="sc">::</span><span class="fu">inference</span>(<span class="at">matched_markets =</span> mm,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">analyze_betas=</span><span class="cn">TRUE</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">test_market =</span> <span class="st">"REM"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">end_post_period =</span> <span class="st">"2023-10-01"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">alpha=</span><span class="fl">0.05</span>, </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">prior_level_sd=</span><span class="fl">0.01</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">nseasons=</span><span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    ------------- Inputs -------------
+    Market ID: organisation_code
+    Date Variable: month
+    Matching Metric: median_by_prov
+
+    Test Market: REM
+    Control Market 1: RBN
+    Control Market 2: RJR
+
+    Matching (pre) Period Start Date: 2016-09-01
+    Matching (pre) Period End Date: 2022-10-01
+    Post Period Start Date: 2022-11-01
+    Post Period End Date: 2023-10-01
+
+    bsts parameters: 
+      nseasons: 12
+      prior.level.sd: 0.01
+    Posterior Intervals Tail Area: 95%
+
+    ------------- Model Stats -------------
+    Matching (pre) Period MAPE: 7.77%
+    Beta 1 [RBN]: 0.5059
+    Beta 2 [RJR]: 0.4782
+    DW: 0.9
+
+    ------------- Effect Analysis -------------
+    Absolute Effect: -6.32 [-24.59, 11.49]
+    Relative Effect: -2.92% [-10.95%, 6.09%]
+    Probability of a causal impact: 76.2%</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Absolute Effect indicates an increase in the median of 0.94 relative to what we expected. The Relative Effect provides a standardized view, indicating a 0.94% increase in the median. Probability of a causal impact indicates that the likelihood of observing this effect by chance is high (e.g., 100 - 55.2). </span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out actual vs expected</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActualVersusExpected</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out cumulative effect</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotCumulativeEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot pointwise effect</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotPointEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot the actuals </span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># See which hospital recieves the highest weight in determining the outcome</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>coeff <span class="ot">&lt;-</span> results<span class="sc">$</span>Coefficients</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(coeff))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Market</th>
+<th style="text-align: right;">AverageBeta</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">RBN</td>
+<td style="text-align: right;">0.5059143</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RJR</td>
+<td style="text-align: right;">0.4781971</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

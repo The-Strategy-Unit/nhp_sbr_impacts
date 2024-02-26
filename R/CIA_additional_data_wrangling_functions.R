@@ -21,6 +21,22 @@ friends_and_family_cia_formatting<-function(formatted_data){
   summarise(percent=mean(percent, na.rm=TRUE))
 }
 
+
+# Staff turnover - Nurses
+staff_turnover_cia_formatting<-function(data){
+  
+  data|>
+filter(staff_group=="nurses_health_visitors")|>
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
+  group_by(month, organisation_code, type)|>
+  summarise(turnover_fte=sum(turnover_fte))|>
+  pivot_wider(names_from = type, values_from = turnover_fte)|>
+  mutate(leaving_rate=(Leavers/Denoms)*100)
+
+}
+
+
 # Staff sickness additional formatting
 staff_sickness_cia_formatting<-function(data){
   
@@ -92,6 +108,7 @@ mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #F
   group_by(month, organisation_code)|>
   summarise(available=sum(available), occupied=sum(occupied))|>
   mutate(bed_occupancy=occupied/available)
+}
   
   # Length of Stay additional formatting
   length_of_stay_cia_formatting<-function(data){

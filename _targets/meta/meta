@@ -22,10 +22,14 @@ eric_udal|stem|935a92b0d8c83655|7f5f6e5515fead51|60127ae33c302600|822961856||t19
 find_single_bedroom_matches|function|14d18307caea912d|||||||||||||||
 formatted_bed_occupancy|stem|b9dc72ecda20c840|5e7d378f98d2c7cd|d507ee8992291457|-822180046||t19774.3783552214s|4e2234c95dc92b83|415587|rds|local|vector|||0.54|There was 1 warning in mutate.ℹ In argument bed_occupancy  as.numericbed_occupancy.Caused by warning NAs introduced by coercion|
 formatted_eric|stem|f817caa32bd8a87c|558b8e902d4f5809|7ca85c1891c7010c|2124298853||t19773.6715564241s|8372686368d0468a|1084490|rds|local|vector|||0.94||
+formatted_friends_and_family_data|stem|d31eedc8ba1385f4|3638291a05e249e9|2fca2a247df9c42d|1150943780||t19779.6719083457s|a1c456b03adbfbf8|44|rds|local|vector|||43.88|There was 1 warning in mutate.ℹ In argument percent  as.numericmeasure_value  100.Caused by warning NAs introduced by coercion|
+formatted_HCAI_data|stem|1ee39484f38a4df0|6c109bc3fda3e2af|bd81ad44c75e0a21|83395204||t19779.6663080003s|d594a36dc019d3b9|349225|rds|local|vector|||7.57||
+formatted_rtt_data|stem|d31eedc8ba1385f4|0cbac8f6c941abf7|5dc413cf9f664a32|1242114572||t19779.6713867983s|a1c456b03adbfbf8|44|rds|local|vector|||438.66|Expecting numeric in BI4347  R4347C61 got . Expecting numeric in BI4348  R4348C61 got . Expecting numeric in BI4349  R4349C61 got . Expecting numeric in BI4350  R4350C61 got . Expecting numeric in BI4351  R4351C61 got . Expecting numeric in BI4352  R4352C61 got . Expecting numeric in BI4353  R4353C61 got . Expecting numeric in BI4354  R4354C61 got . Expecting numeric in BI4355  R4355C61 got . Expecting numeric in BI4356  R4356C61 got . Expecting numeric in BI4357  R4357C61 got . Expecting numeric in BI4358  R4358C61 got . Expecting numeric in BI4359  R4359C61 got . Expecting numeric in BI4360  R4360C61 got . Expecting numeric in BI4361  R4361C61 got . Expecting numeric in BI4362  R4362C61 got . Expecting numeric in BI4363  R4363C61 got . Expecting numeric in BI4364  R4364C61 got . Expecting numeric in BI4365  R4365C61 got . Expecting numeric in BI4366  R4366C61 got|
 formatted_shmi|stem|7b4c55efc8e0a0e0|37393faf860bd192|8b2d2ffd43d6455d|705336005||t19774.3781414869s|eb34e4a63ed9ce26|567536|rds|local|vector|||0.79|There were 4 warnings in mutate.The first warning wasℹ In argument acrosscshmi_value, observed, expected, spells, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 3 remaining warnings.|
+formatted_staff_sickness_absence|stem|1988b1b66e7df3c8|5d5b33e7cc78efdd|8ab7867fd76dfa01|-1464692808||t19779.6714002206s|0eb57e5b2bc72164|1349903|rds|local|vector|||1.03|There was 1 warning in mutate.ℹ In argument fte_days_sick  as.numericfte_days_sick.Caused by warning NAs introduced by coercion. There was 1 warning in mutate.ℹ In argument fte_days_available  as.numericfte_days_available.Caused by warning NAs introduced by coercion|
 formatted_turnover|stem|d56ac1bbad9cd472|6125eae0c851bce8|0802022e50a846d5|-1634795337||t19774.3768334209s|b0396fb5ff674295|5869991|rds|local|vector|||5.6||
 formatted_workforce|stem|b0c7926c39a7e967|b5855b4c0532bb69|c0af2afd34176353|260864125||t19774.5820554874s|55ce0b5c425598e9|5991596|rds|local|vector|||59.43|There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.. There were 27 warnings in dplyrmutate.The first warning wasℹ In argument acrosscorg_code, data_type, as.numeric.Caused by warning NAs introduced by coercionℹ Run dplyrlast_dplyr_warnings to see the 26 remaining warnings.|
-friends_and_family_scores_data_formatting|function|c5c8fced101a1441|||||||||||||||
+friends_and_family_scores_data_formatting|function|29287dd6a07439b1|||||||||||||||
 fun_bedday_plot|function|421d1f0d1639f28e|||||||||||||||
 fun_load_beddays|function|235e7c85b2604131|||||||||||||||
 fun_load_sus_apcs|function|595d06259d138984|||||||||||||||
@@ -43,18 +47,18 @@ get_shmi_from_udal|function|057b23cd36ebca6c|||||||||||||||
 get_single_bedrooms|function|6637e6eac78acc38|||||||||||||||
 get_single_bedrooms_for_2009_10|function|a53020b16132e81d|||||||||||||||
 get_workforce|function|98c365c5654a7f57|||||||||||||||
-hcai_formatting|function|e14bb5eb7417db9f|||||||||||||||
+hcai_formatting|function|d870b2a0c5c0d972|||||||||||||||
 read_sql_output|function|b80b79c7b465e3c4|||||||||||||||
 ref_org_sites|stem|cd2140da405ddad5|91242aba86e03b36|69af4e7dde1fdd22|872576298||t19775.4469174237s|af51989c7af372b8|887746|rds|local|vector|||0.19||
 ref_org_sites_filepath|stem|a0957819b947ecfd|3d44e682e409e09c|ef46db3751d8e999|131281496||t19775.4217896063s|0e696b453c03de61|85|rds|local|vector|||0.58||
 royal_papworth_matches|stem|8980ef8ff1d1e01b|0e5db25c2957e151|ccbb751ae2f3f0a6|-480960105||t19775.447572427s|6c2290e39f8dcfd8|699|rds|local|vector|||0.1||
-rtt_data_formatting|function|15c98b8aaf410b87|||||||||||||||
+rtt_data_formatting|function|e4809aaf6b6447d6|||||||||||||||
 scrape_csv|function|79bbd783185b40d8|||||||||||||||
 scrape_xls|function|87a6ba427a90fbd4|||||||||||||||
 shmi_filepath|stem|52528ccbdb437ef3|347b5eec9d19b56a|ef46db3751d8e999|-2047203215|Data/sql_shmi.csv|t19772.3580587552s|82eb41dfc7a6d8e7|2444270|file|local|vector|||0||
 single_bedroom_matches|stem|8e5f7c64e1759b2d|4d4cce09a9d7ec12|3392a7f93d88ccd4|-819551377||t19775.4498664058s|0dd00ff2977712f8|169593|rds|local|vector|||0.18||
 single_bedrooms|stem|78546b0500382b3b|7926bac5aae5e4ff|67e40bd5c8522793|-232301579||t19773.6715574043s|67af426e6d3e4061|54096|rds|local|vector|||0.03||
-staff_sickness_absence_formatting|function|66a52089760736a8|||||||||||||||
+staff_sickness_absence_formatting|function|a6bdca7d088a789e|||||||||||||||
 standardise_staff_group|function|bc9fdfa1eedf45f6|||||||||||||||
 sus_apcs|stem|c0a3e3407ae93ac1|4fc51587f858412d|56e3a16f53c87b52|-915354209||t19775.3479648341s|b96e3a92121f6503|2844893|rds|local|vector|||0.91||
 sus_cost_mth|stem|97fbd0ba1108bcec|a3e60b549ee769e9|e4070eb7009b8d13|730171039||t19775.3459038998s|6af871e5af98f87c|1836279|rds|local|vector|||1.13||

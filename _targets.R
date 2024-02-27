@@ -9,7 +9,16 @@ library(targets)
 
 # Set target options:
 tar_option_set(
-  packages = c("dplyr", "janitor", "readxl", "stringr", "tidyr", "tsibble","zoo","lubridate" ) # Packages that your targets need for their tasks.
+  packages = c(
+    "dplyr",
+    "janitor",
+    "readxl",
+    "stringr",
+    "tidyr",
+    "tsibble",
+    "zoo",
+    "lubridate"
+  ) # Packages that your targets need for their tasks.
 )
 
 # Run the R scripts in the R/ folder with your custom functions:
@@ -18,19 +27,21 @@ tar_source()
 
 # Replace the target list below with your own:
 list(
-#-----------------------------------------------------------------------------#
- #### Data Wrangling ####
+  #----------------------------------------------------------------------------#
+  #### Data Wrangling ####
   
   # Bed occupancy data
-  tar_target(bed_occupancy_filepath, "Data/sql_bed_occupancy.csv", 
-             format = "file"
-             ),
+  tar_target(
+    bed_occupancy_filepath,
+    "Data/sql_bed_occupancy.csv",
+    format = "file"
+  ),
   
   tar_target(
     formatted_bed_occupancy,
     wrangle_bed_occupancy(bed_occupancy_filepath)
-  ), 
- 
+  ),
+  
   # ERIC data
   tar_target(eric_09_15_filepath, "data/sql_eric_09_15.csv", format = "file"),
   tar_target(eric_16_23_filepath, "data/sql_eric_16_23.csv", format = "file"),
@@ -39,152 +50,163 @@ list(
     eric_udal,
     wrangle_eric(eric_09_15_filepath, eric_16_23_filepath)
   ),
-  tar_target(
-    eric_09,
-    get_single_bedrooms_for_2009_10(2009)
-  ),
-  tar_target(
-    eric_10,
-    get_single_bedrooms_for_2009_10(2010)
-  ),
+  tar_target(eric_09,
+             get_single_bedrooms_for_2009_10(2009)),
+  tar_target(eric_10,
+             get_single_bedrooms_for_2009_10(2010)),
   tar_target(
     formatted_eric,
     combine_eric_data(eric_udal, eric_09, eric_10)
   ),
   
- # SHMI data
- tar_target(shmi_filepath, "Data/sql_shmi.csv", format = "file"),
- 
- tar_target(
-   formatted_shmi,
-   wrangle_shmi(shmi_filepath)
- ),
+  # SHMI data
+  tar_target(shmi_filepath, "Data/sql_shmi.csv", format = "file"),
   
- # Turnover
- tar_target(turnover_filepath, "Data/sql_turnover.csv", format = "file"),
- 
- tar_target(
-   formatted_turnover,
-   wrangle_turnover(turnover_filepath)
- ),
- 
- # Workforce
- tar_target(workforce_udal_filepath, "Data/sql_workforce.csv", 
-            format = "file"
-            ),
- 
- tar_target(workforce_udal, read.csv(workforce_udal_filepath)),
- 
- tar_target(workforce_links_filepath, "Data/links_workforce.xlsx", 
-            format = "file"
-            ),
- tar_target(workforce_links, read_excel(workforce_links_filepath)),
- 
- tar_target(formatted_workforce, 
-            combine_workforce(workforce_udal, workforce_links)),
- 
- # SUS various
- tar_target(beddays, 
-            fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")),
- tar_target(sus_apcs, 
-            fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)),
- tar_target(sus_cost_yr, 
-            fun_load_sus_cost_yr("Data/nhp_hospsite_costs_yr.csv")),
- tar_target(sus_cost_mth, 
-            fun_load_sus_cost_mth("Data/nhp_hospsite_costs_mth.csv")),
- 
- 
- # rtt waiting times
- tar_target(formatted_rtt_data, 
-            rtt_data_formatting("Data/rtt_waiting_times.zip", 
-                                "rtt_waiting_times.csv")),
- 
- #Friends and family test scores
- tar_target(formatted_friends_and_family_data, 
-            friends_and_family_scores_data_formatting("Data/friends_and_family_inpatient_scores.zip", 
-                                                      "friends_and_family_inpatient_scores.csv",
-                                                      "Data/friend_and_family_inpatient_scores_post_Jul2022.csv")),
- 
- #Healthcare acquired infections
- tar_target(formatted_HCAI_data, 
-            hcai_formatting("Data/hai_cdiff_pre_2018.csv", 
-                            "Data/hai_cdiff.csv",
-                            "Data/hai_ecoli.csv",
-                            "Data/hai_klebsiella.csv",
-                            "Data/hai_mssa.csv",
-                            "Data/hai_mrsa.csv",
-                            "Data/hai_p_aeruginosa.csv")),
- 
- # Staff sickness
- tar_target(formatted_staff_sickness_absence, 
-            staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")),
- 
- #-----------------------------------------------------------------------------#
- 
- #### Selecting controls #### 
+  tar_target(formatted_shmi,
+             wrangle_shmi(shmi_filepath)),
+  
+  # Turnover
+  tar_target(turnover_filepath, "Data/sql_turnover.csv", format = "file"),
+  
+  tar_target(formatted_turnover,
+             wrangle_turnover(turnover_filepath)),
+  
+  # Workforce
+  tar_target(workforce_udal_filepath, "Data/sql_workforce.csv",
+             format = "file"),
+  
+  tar_target(workforce_udal, read.csv(workforce_udal_filepath)),
+  
+  tar_target(
+    workforce_links_filepath,
+    "Data/links_workforce.xlsx",
+    format = "file"
+  ),
+  tar_target(workforce_links, read_excel(workforce_links_filepath)),
+  
+  tar_target(
+    formatted_workforce,
+    combine_workforce(workforce_udal, workforce_links)
+  ),
+  
+  # SUS various
+  tar_target(
+    beddays,
+    fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")
+  ),
+  tar_target(
+    sus_apcs,
+    fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)
+  ),
+  tar_target(
+    sus_cost_yr,
+    fun_load_sus_cost_yr("Data/nhp_hospsite_costs_yr.csv")
+  ),
+  tar_target(
+    sus_cost_mth,
+    fun_load_sus_cost_mth("Data/nhp_hospsite_costs_mth.csv")
+  ),
+  
+  
+  # rtt waiting times
+  tar_target(
+    formatted_rtt_data,
+    rtt_data_formatting("Data/rtt_waiting_times.zip",
+                        "rtt_waiting_times.csv")
+  ),
+  
+  #Friends and family test scores
+  tar_target(
+    formatted_friends_and_family_data,
+    friends_and_family_scores_data_formatting(
+      "Data/friends_and_family_inpatient_scores.zip",
+      "friends_and_family_inpatient_scores.csv",
+      "Data/friend_and_family_inpatient_scores_post_Jul2022.csv"
+    )
+  ),
+  
+  #Healthcare acquired infections
+  tar_target(
+    formatted_HCAI_data,
+    hcai_formatting(
+      "Data/hai_cdiff_pre_2018.csv",
+      "Data/hai_cdiff.csv",
+      "Data/hai_ecoli.csv",
+      "Data/hai_klebsiella.csv",
+      "Data/hai_mssa.csv",
+      "Data/hai_mrsa.csv",
+      "Data/hai_p_aeruginosa.csv"
+    )
+  ),
+  
+  # Staff sickness
+  tar_target(
+    formatted_staff_sickness_absence,
+    staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")
+  ),
+  
+  #----------------------------------------------------------------------------#
+  
+  
+  #### Selecting controls ####
   
   # Finding similar matches for single bedrooms and accounting for cancer and
-    # cardiac sites,
+  # cardiac sites,
   tar_target(
     available_beds,
     get_available_beds_by_organisation(formatted_bed_occupancy)
-    ),
- 
+  ),
+  
   tar_target(
     single_bedrooms,
     formatted_eric |>
       get_percentage_single_bedrooms(available_beds)
-    ),
- 
- # to add in org/site names
-  tar_target(ref_org_sites_filepath, 
-            "data/ref_organisations_sites.csv"
-            ),
- 
- tar_target(
-   ref_org_sites,
-   read.csv(ref_org_sites_filepath) |>
-     clean_names() |>
-     select(-last_refreshed)
-   ) , 
-
- # clatterbridge should be matched to cancer centres: 
- tar_target(cancer_centres_filepath, 
-            "data/ref_cancer_centres.csv"
-            ),
- 
- tar_target(
-   cancer_centres,
-   get_cancer_centre_site_codes(cancer_centres_filepath)
-   ) ,
- 
- tar_target(
-   clatterbridge_matches,
-   get_clatterbridge_matches(single_bedrooms, ref_org_sites, cancer_centres)
-   ) ,
- 
- # royal papworth should be matched to cardiac sites:
- tar_target(cardiac_site_filepath,
-            "data/ref_cardiac_sites.csv"
-            ),
- 
- tar_target(
-   cardiac_sites,
-   get_cardiac_site_codes(cardiac_site_filepath)
-   ) ,
- 
- tar_target(
-   royal_papworth_matches,
-   get_royal_papworth_matches(single_bedrooms, ref_org_sites, cardiac_sites) 
-   ) ,
- 
- # all single bedroom matches accounting for cancer and cardiac filters:
+  ),
+  
+  # to add in org/site names
+  tar_target(ref_org_sites_filepath,
+             "data/ref_organisations_sites.csv"),
+  
+  tar_target(
+    ref_org_sites,
+    read.csv(ref_org_sites_filepath) |>
+      clean_names() |>
+      select(-last_refreshed)
+  ) ,
+  
+  # clatterbridge should be matched to cancer centres:
+  tar_target(cancer_centres_filepath,
+             "data/ref_cancer_centres.csv"),
+  
+  tar_target(
+    cancer_centres,
+    get_cancer_centre_site_codes(cancer_centres_filepath)
+  ) ,
+  
+  # royal papworth should be matched to cardiac sites:
+  tar_target(cardiac_site_filepath,
+             "data/ref_cardiac_sites.csv"),
+  
+  tar_target(
+    cardiac_sites,
+    get_cardiac_site_codes(cardiac_site_filepath)
+  ) ,
+  
+  # other hospitals should be matched to general acute hospitals: 
+  tar_target(
+    general_acute_sites,
+    get_general_acute_site_codes(formatted_eric)
+  ) ,
+  
+  # all single bedroom matches accounting for cancer and cardiac filters:
   tar_target(
     single_bedroom_matches,
-    combine_single_bedroom_matches(single_bedrooms, 
-                                   clatterbridge_matches, 
-                                   royal_papworth_matches, 
-                                   ref_org_sites
-                                   )
+    combine_single_bedroom_matches(
+      single_bedrooms,
+      ref_org_sites, 
+      general_acute_sites, 
+      cancer_centres, 
+      cardiac_sites
     )
+  )
 )

@@ -145,11 +145,10 @@ list(
     staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")
   ),
   
-  #-----------------------------------------------------------------------------#
+  #----------------------------------------------------------------------------#
   
   
   #### Selecting controls ####
-  
   
   # Finding similar matches for single bedrooms and accounting for cancer and
   # cardiac sites,

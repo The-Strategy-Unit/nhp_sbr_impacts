@@ -223,9 +223,53 @@ list(
 # Staff turnover - Nurses
  tar_target(
    staff_turnover_cia_format,
-   staff_turnover_cia_format(formatted_turnover)
- )
+   staff_turnover_cia_formatting(formatted_turnover)
+ ),
   
+# Staff sickness additional formatting
+tar_target(
+  staff_sickness_cia_format,
+  staff_sickness_cia_formatting(formatted_staff_sickness_absence)
+),
+
+
+# Healthcare acquired infections additional formatting
+tar_target(
+  hcai_cia_format,
+  hcai_cia_formatting(formatted_HCAI_data)
+),
+
+
+#Falls and fractures additional formatting
+tar_target(
+  falls_and_fractures_cia_format,
+  falls_and_fractures_cia_formatting(sus_apcs)
+),
+
+# Hospital death rate additional formatting
+tar_target(
+  sus_deaths_cia_format,
+  sus_deaths_cia_formatting(sus_apcs)
+),
+
+
+#rtt waiting time additional formatting 
+tar_target(
+  rtt_waiting_time_cia_format,
+  rtt_waiting_time_cia_formatting(formatted_rtt_data)
+),
+
+# Bed occupancy additional formatting
+tar_target(
+  bed_occupancy_cia_format,
+  bed_occupancy_cia_formatting(formatted_bed_occupancy)
+),
+
+# Length of Stay additional formatting
+tar_target(
+  length_of_stay_cia_format,
+  length_of_stay_cia_formatting(sus_apcs)
+),
 
  
 )

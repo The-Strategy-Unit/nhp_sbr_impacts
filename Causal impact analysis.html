@@ -114,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel=</span><span class="cn">FALSE</span>,</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">warping_limit=</span><span class="dv">1</span>, <span class="co"># warping limit=1</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dtw_emphasis=</span><span class="dv">1</span>, <span class="co"># rely only on dtw for pre-screening</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">matches=</span><span class="dv">2</span>, <span class="co"># request 2 matches</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">matches=</span><span class="dv">3</span>, <span class="co"># request 3 matches</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">start_match_period=</span><span class="st">"2016-09-01"</span>,</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">end_match_period=</span><span class="st">"2022-10-01"</span>)</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
@@ -186,6 +186,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">0.8210743</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">RBN</td>
+<td style="text-align: left;">RVY</td>
+<td style="text-align: right;">1.3404723</td>
+<td style="text-align: right;">0.8729486</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">251.4878</td>
+<td style="text-align: right;">444.9895</td>
+<td style="text-align: right;">337.11242</td>
+<td style="text-align: right;">0.8595696</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.9680499</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">REM</td>
 <td style="text-align: left;">RVY</td>
 <td style="text-align: right;">0.1568002</td>
@@ -200,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0.1502729</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">REM</td>
 <td style="text-align: left;">RJR</td>
 <td style="text-align: right;">0.3164235</td>
@@ -215,35 +230,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">0.3519936</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">RJR</td>
-<td style="text-align: left;">REM</td>
-<td style="text-align: right;">0.3965736</td>
-<td style="text-align: right;">0.5512596</td>
-<td style="text-align: right;">74</td>
-<td style="text-align: right;">326.6750</td>
-<td style="text-align: right;">409.4219</td>
-<td style="text-align: right;">129.55070</td>
-<td style="text-align: right;">0.5708586</td>
-<td style="text-align: left;">2016-09-01</td>
-<td style="text-align: left;">2022-10-01</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.3519936</td>
-</tr>
 <tr class="even">
-<td style="text-align: left;">RJR</td>
+<td style="text-align: left;">REM</td>
 <td style="text-align: left;">RBN</td>
-<td style="text-align: right;">0.3968886</td>
-<td style="text-align: right;">0.3767695</td>
+<td style="text-align: right;">0.6627100</td>
+<td style="text-align: right;">0.8490472</td>
 <td style="text-align: right;">74</td>
-<td style="text-align: right;">326.6750</td>
+<td style="text-align: right;">409.4219</td>
 <td style="text-align: right;">251.4878</td>
-<td style="text-align: right;">129.65359</td>
-<td style="text-align: right;">0.4150070</td>
+<td style="text-align: right;">271.32795</td>
+<td style="text-align: right;">0.8364240</td>
 <td style="text-align: left;">2016-09-01</td>
 <td style="text-align: left;">2022-10-01</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0.4485020</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.8210743</td>
 </tr>
 </tbody>
 </table>
@@ -262,8 +262,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     Matching Metric: percent
 
     Test Market: REM
-    Control Market 1: RJR
-    Control Market 2: RVY
+    Control Market 1: RBN
+    Control Market 2: RJR
+    Control Market 3: RVY
 
     Matching (pre) Period Start Date: 2016-09-01
     Matching (pre) Period End Date: 2022-10-01
@@ -276,33 +277,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     Posterior Intervals Tail Area: 95%
 
     ------------- Model Stats -------------
-    Matching (pre) Period MAPE: 6.32%
-    Beta 1 [RJR]: 0.261
-    Beta 2 [RVY]: 0.7823
-    DW: 0.7
+    Matching (pre) Period MAPE: 5.45%
+    Beta 1 [RBN]: 0.421
+    Beta 2 [RJR]: 0.254
+    Beta 3 [RVY]: 0.4354
+    DW: 0.65
 
     ------------- Effect Analysis -------------
-    Absolute Effect: 1.8 [-1.21, 4.93]
-    Relative Effect: 4.1% [-2.56%, 11.95%]
-    Probability of a causal impact: 85.8639%</code></pre>
+    Absolute Effect: 1.75 [-1.36, 4.77]
+    Relative Effect: 4.09% [-2.85%, 11.52%]
+    Probability of a causal impact: 86.742%</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out actual vs expected</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActualVersusExpected</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot the actuals </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out cumulative effect</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotCumulativeEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out actual vs expected</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActualVersusExpected</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot pointwise effect</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotPointEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out cumulative effect</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotCumulativeEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot the actuals </span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot pointwise effect</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotPointEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid" width="672"></p>
 </div>
@@ -319,12 +321,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">RJR</td>
-<td style="text-align: right;">0.2609562</td>
+<td style="text-align: left;">RBN</td>
+<td style="text-align: right;">0.4210049</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">RJR</td>
+<td style="text-align: right;">0.2540240</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">RVY</td>
-<td style="text-align: right;">0.7822920</td>
+<td style="text-align: right;">0.4353703</td>
 </tr>
 </tbody>
 </table>
@@ -342,7 +348,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">parallel=</span><span class="cn">FALSE</span>,</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">warping_limit=</span><span class="dv">1</span>, <span class="co"># warping limit=1</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dtw_emphasis=</span><span class="dv">1</span>, <span class="co"># rely only on dtw for pre-screening</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">matches=</span><span class="dv">2</span>, <span class="co"># request 5 matches</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">matches=</span><span class="dv">3</span>, <span class="co"># request 3 matches</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">start_match_period=</span><span class="st">"2016-09-01"</span>,</span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">end_match_period=</span><span class="st">"2022-10-01"</span>)</span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
@@ -414,6 +420,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">0.5524957</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">RBN</td>
+<td style="text-align: left;">RJR</td>
+<td style="text-align: right;">1.2995690</td>
+<td style="text-align: right;">0.8573951</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">464</td>
+<td style="text-align: right;">807</td>
+<td style="text-align: right;">603</td>
+<td style="text-align: right;">0.9060513</td>
+<td style="text-align: left;">2016-09-01</td>
+<td style="text-align: left;">2022-10-01</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.9488592</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">REM</td>
 <td style="text-align: left;">RJR</td>
 <td style="text-align: right;">0.3609130</td>
@@ -428,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0.3249839</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">REM</td>
 <td style="text-align: left;">RBN</td>
 <td style="text-align: right;">0.4713656</td>
@@ -443,35 +464,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">0.5524957</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">RJR</td>
-<td style="text-align: left;">REM</td>
-<td style="text-align: right;">0.2955607</td>
-<td style="text-align: right;">0.9309250</td>
-<td style="text-align: right;">72</td>
-<td style="text-align: right;">856</td>
-<td style="text-align: right;">701</td>
-<td style="text-align: right;">253</td>
-<td style="text-align: right;">0.9542236</td>
-<td style="text-align: left;">2016-09-01</td>
-<td style="text-align: left;">2022-10-01</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">0.3249839</td>
-</tr>
 <tr class="even">
-<td style="text-align: left;">RJR</td>
-<td style="text-align: left;">RBN</td>
-<td style="text-align: right;">0.7472119</td>
-<td style="text-align: right;">0.8573951</td>
-<td style="text-align: right;">65</td>
-<td style="text-align: right;">807</td>
-<td style="text-align: right;">464</td>
-<td style="text-align: right;">603</td>
-<td style="text-align: right;">0.9060513</td>
+<td style="text-align: left;">REM</td>
+<td style="text-align: left;">RVY</td>
+<td style="text-align: right;">0.6950549</td>
+<td style="text-align: right;">0.8387414</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">728</td>
+<td style="text-align: right;">431</td>
+<td style="text-align: right;">506</td>
+<td style="text-align: right;">0.8625599</td>
 <td style="text-align: left;">2016-09-01</td>
 <td style="text-align: left;">2022-10-01</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0.9488592</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.8731665</td>
 </tr>
 </tbody>
 </table>
@@ -492,11 +498,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     Test Market: REM
     Control Market 1: RBN
     Control Market 2: RJR
+    Control Market 3: RVY
 
     Matching (pre) Period Start Date: 2016-09-01
     Matching (pre) Period End Date: 2022-10-01
     Post Period Start Date: 2022-11-01
-    Post Period End Date: 2023-10-01
+    Post Period End Date: 2023-06-01
 
     bsts parameters: 
       nseasons: 12
@@ -504,35 +511,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     Posterior Intervals Tail Area: 95%
 
     ------------- Model Stats -------------
-    Matching (pre) Period MAPE: 7.77%
-    Beta 1 [RBN]: 0.5059
-    Beta 2 [RJR]: 0.4782
-    DW: 0.9
+    Matching (pre) Period MAPE: 7.53%
+    Beta 1 [RBN]: 0.4688
+    Beta 2 [RJR]: 0.5238
+    Beta 3 [RVY]: 0.2381
+    DW: 0.93
 
     ------------- Effect Analysis -------------
-    Absolute Effect: -6.32 [-24.59, 11.49]
-    Relative Effect: -2.92% [-10.95%, 6.09%]
-    Probability of a causal impact: 76.2%</code></pre>
+    Absolute Effect: 1.03 [-14.89, 15.85]
+    Relative Effect: 1.04% [-9.8%, 13.08%]
+    Probability of a causal impact: 56.4565%</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Absolute Effect indicates an increase in the median of 0.94 relative to what we expected. The Relative Effect provides a standardized view, indicating a 0.94% increase in the median. Probability of a causal impact indicates that the likelihood of observing this effect by chance is high (e.g., 100 - 55.2). </span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out actual vs expected</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActualVersusExpected</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot the actuals </span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out cumulative effect</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotCumulativeEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out actual vs expected</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActualVersusExpected</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot pointwise effect</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotPointEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot out cumulative effect</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotCumulativeEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Plot the actuals </span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotActuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot pointwise effect</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>results<span class="sc">$</span>PlotPointEffect</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Causal-impact-analysis_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid" width="672"></p>
 </div>
@@ -550,11 +558,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">RBN</td>
-<td style="text-align: right;">0.5059143</td>
+<td style="text-align: right;">0.4688057</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">RJR</td>
-<td style="text-align: right;">0.4781971</td>
+<td style="text-align: right;">0.5238256</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">RVY</td>
+<td style="text-align: right;">0.2381450</td>
 </tr>
 </tbody>
 </table>

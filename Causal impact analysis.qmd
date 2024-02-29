@@ -54,7 +54,7 @@ library(lubridate)
 
 library(StrategyUnitTheme)
 library(extrafont)
-
+ 
 
 # Extra data wrangling
 
@@ -67,22 +67,21 @@ beddays_by_prov<-beddays|>
 
 
 ## Friends & Family
-friends_and_family_cia_format<-tar_read(formatted_friends_and_family_data)|>
-friends_and_family_cia_formatting()
+#delete friends_and_family_cia_format<-tar_read(formatted_friends_and_family_data)|>
+#delete friends_and_family_cia_formatting()
+
+friends_and_family<-tar_read(friends_and_family_cia_format)
 
   #filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
   #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
 
 
 ## Staff turnover
-turnover_cia_format<-tar_read(formatted_turnover)|>
+#deleteturnover_cia_format<-tar_read(formatted_turnover)|>
 staff_turnover_cia_formatting()
-tar_read(staff_turnover_cia_format)
 
- # filter(organisation_code=="RGM")|>
-#ggplot(aes(x = month, y =leaving_rate) ) + 
-#geom_line(linewidth=1)+
- # ylim(0,NA)
+staff_turnover<-tar_read(staff_turnover_cia_format)
+
   
 
 ## Staff sickness

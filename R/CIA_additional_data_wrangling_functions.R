@@ -67,9 +67,11 @@ staff_sickness_cia_formatting<-function(data){
 }
 
 # Healthcare acquired infections additional formatting
-hcai_cia_formatting<-function(data){
+hcai_cia_formatting<-function(bedday_data, hcai_data){
   
-  hcai_cia_format<- data|>
+  beddays_by_prov<-beddays_by_provider_function(bedday_data)
+  
+  hcai_cia_format<- hcai_data|>
     left_join(beddays_by_prov[,c("organisation_code", "yearmon", "beddays")], by=c("organisation_code", "month"="yearmon"))|>
     mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes 
     mutate(rate=(count_of_cases/beddays)*10000)|> #cases per 10,000 beddays

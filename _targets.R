@@ -212,13 +212,6 @@ list(
 
 #### Causal Impact Analysis additional formatting
 
-# Beddays by provider
-tar_target(
-  beddays_by_prov,
-    beddays_by_provider_function(beddays)
- ),
-
-
 # Friends and Family test additional formatting
  tar_target(
    friends_and_family_cia_format, 
@@ -239,10 +232,10 @@ tar_target(
 
 
 # Healthcare acquired infections additional formatting
-tar_target(
-  hcai_cia_format,
-  hcai_cia_formatting(formatted_HCAI_data)
-),
+ tar_target(
+    hcai_cia_format,
+    hcai_cia_formatting(beddays, formatted_HCAI_data)
+ ),
 
 
 #Falls and fractures additional formatting

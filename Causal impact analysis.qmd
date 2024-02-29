@@ -1,0 +1,669 @@
+---
+title: "Causal Impact Analysis"
+<<<<<<< HEAD
+editor: visual
+execute:
+  echo: false
+  message: false
+  warning: false
+  cache: false
+lang: en-GB
+author: Sarah Lucas
+date: last-modified
+date-format: "YYYY-MM-DD"
+title-block-banner: "#f9bf07"
+title-block-banner-color: "#333739"
+format:
+  html:
+    embed-resources: true
+    smooth-scroll: true
+    theme: cosmo
+    fontcolor: black
+    toc: true
+    toc-location: left
+    toc-title: Summary
+    toc-depth: 3
+css: styles.css
+=======
+format: html
+editor: visual
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+---
+
+REMRQ - Royal Liverpool
+
+REM21 - Aintree University
+
+RBN01 - Whiston
+
+REMBG - Warrington
+
+RVY01 - Southport & Formby
+
+RVY02 - Ormskirk & District
+
+RJR05 - Countess of Chester
+
+<<<<<<< HEAD
+tar_make()
+
+```{r, include=FALSE}
+=======
+# Extra data wrangling
+
+
+```{r}
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+library(tidyverse)
+library(MarketMatching)
+library(tsibble)
+library(targets)
+library(janitor)
+library(readxl)
+library(zoo)
+library(lubridate)
+
+<<<<<<< HEAD
+library(StrategyUnitTheme)
+library(extrafont)
+
+
+source("R/data_wrangling_functions.R")
+source("R/CIA_additional_data_wrangling_functions.R")
+source("_targets.R")
+
+# Extra data wrangling
+
+beddays<-tar_read(beddays)
+
+beddays_by_prov<-beddays|>
+=======
+ 
+
+beddays<-fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")
+
+beddays_by_prov<-fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")|>
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+  mutate(organisation_code=substr(der_provider_site_code, start = 1, stop = 3))|>#get organisation code
+    group_by(yearmon, organisation_code)|>
+    summarise(beddays=sum(beddays))
+
+<<<<<<< HEAD
+
+## Friends & Family
+friends_and_family_cia_format<-tar_read(formatted_friends_and_family_data)|>
+friends_and_family_cia_formatting()
+  #filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
+  #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
+
+
+## Staff turnover
+turnover_cia_format<-tar_read(formatted_turnover)|>
+staff_turnover_cia_formatting()
+
+
+ # filter(organisation_code=="RGM")|>
+#ggplot(aes(x = month, y =leaving_rate) ) + 
+#geom_line(linewidth=1)+
+ # ylim(0,NA)
+  
+
+## Staff sickness
+staff_sickness_cia_format<-tar_read(formatted_staff_sickness_absence)|>
+  staff_sickness_cia_formatting()|>
+  filter(organisation_code=="REM"|organisation_code=="RBN"|organisation_code=="RVY"| organisation_code=="RJR" )
+
+## Healthcare acquired infections - Infection rate per 10,000 bed days
+hcai_cia_format<-tar_read(formatted_HCAI_data)|>
+  hcai_cia_formatting()
+
+
+## In-hospital Falls and Fractures - Fall rate per 1000 bed days
+falls_and_fractures_cia_format<- tar_read(sus_apcs)|>   
+falls_and_fractures_cia_formatting()
+
+
+## Deaths/Summary Hospital-Level Mortality Indicator
+shmi_data<-tar_read(formatted_shmi)|>
+=======
+```
+
+
+## Friends & Family
+```{r}
+friends_and_family_data<-read.csv("Data/formatted_friends_and_family_data.csv")|>
+friends_and_family_cia_formatting()
+
+
+  #filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
+  #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
+
+```
+
+
+
+## TO DO Staff turnover
+```{r}
+workforce_udal<-read.csv("Data/sql_workforce.csv")
+workforce_links<-read_excel("Data/links_workforce.xlsx")
+workforce_data<-combine_workforce(workforce_udal,workforce_links)
+turnover<-wrangle_turnover("sql_turnover.csv")
+
+
+test<-turnover|>
+ filter(staff_group=="nurses_health_visitors")|>
+   mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+        mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
+    group_by(month, organisation_code, type)|>
+  summarise(turnover_fte=sum(turnover_fte))|>
+  pivot_wider(names_from = type, values_from = turnover_fte)|>
+  mutate(leaving_rate=(Leavers/Denoms)*100)|>
+  filter(organisation_code=="RGM")|>
+ggplot(aes(x = month, y =leaving_rate) ) + 
+geom_line(linewidth=1)+
+  ylim(0,NA)
+  
+
+
+
+```
+
+
+
+## Staff sickness
+
+```{r}
+
+
+# staff_sickness
+staff_sickness<-staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")|>
+  staff_sickness_cia_formatting()
+
+
+#  filter(organisation_code=="REM"|organisation_code=="RBN"|organisation_code=="RVY"|
+ #         organisation_code=="RJR" )
+```
+
+## Healthcare acquired infections
+
+```{r}
+
+#Infection rate per 10,000 bed days
+hcai_data_combined<-hcai_formatting("Data/hai_cdiff_pre_2018.csv", 
+                "Data/hai_cdiff.csv",
+                "Data/hai_ecoli.csv",
+                 "Data/hai_klebsiella.csv",
+                 "Data/hai_mssa.csv",
+                "Data/hai_mrsa.csv",
+                "Data/hai_p_aeruginosa.csv")|>
+  hcai_cia_formatting()
+
+
+
+
+
+```
+## In-hospital Falls and Fractures
+
+```{r}
+#Fall rate per 1000 bed days
+falls_and_fractures<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>   
+falls_and_fractures_cia_formatting()
+
+```
+
+## Deaths/Summary Hospital-Level Mortality Indicator
+```{r, include=FALSE}
+
+
+shmi_data<-wrangle_shmi("Data/sql_shmi.csv")|>
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  filter(level=="Site")|> #Select only Site data (only available 2019 onwards)
+  merge_sites()|>
+  group_by(month, site_code)|>
+  summarise(observed=sum(observed), expected=sum(expected))|>
+<<<<<<< HEAD
+<<<<<<< HEAD
+  mutate(shmi=observed/expected)|>
+  filter(site_code=="RGM21"|site_code=="RGM22")
+  
+
+shmi_data<-tar_read(formatted_shmi)|>
+=======
+  mutate(shmi=observed/expected)|>
+  filter(site_code=="RGM21"|site_code=="RGM22")
+  
+  
+
+shmi_data<-wrangle_shmi("Data/sql_shmi.csv")|>
+>>>>>>> 7da7bc5 (CIA additional formatting functions)
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  filter(level=="Trust")|> #Select only Site data (only available 2019 onwards)
+  mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
+  group_by(month, organisation_code)|>
+  summarise(observed=sum(observed), expected=sum(expected))|>
+  mutate(shmi=observed/expected)|>
+  filter(organisation_code=="RGM")
+
+# No deaths data for papworth
+
+# SUS death rate (deaths/1000 admissions)
+<<<<<<< HEAD
+sus_death_data_cia_format<- tar_read(sus_apcs)|>   
+sus_deaths_cia_formatting()
+
+=======
+sus_death_data<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>   
+sus_deaths_cia_formatting()
+
+
+>>>>>>> 7da7bc5 (CIA additional formatting functions)
+## filter(site_code=="RGM22")|>
+  #filter(month>"2017-04-01")|>
+# ggplot(aes(x = month, y =death_rate) ) + 
+ #  geom_line(linewidth=1)
+<<<<<<< HEAD
+=======
+  mutate(shmi=observed/expected)
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+=======
+>>>>>>> 7da7bc5 (CIA additional formatting functions)
+ # filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
+  #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05"|site_code=="RQ617")
+
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+## RTT waiting time
+rtt_waiting_time_cia_format<-tar_read(formatted_rtt_data) |>
+rtt_waiting_time_cia_formatting()|>
+ filter(organisation_code=="REM"|organisation_code=="RJR"|organisation_code=="RVY"|
+          organisation_code==  "RBN")
+
+## Bed occupancy
+bed_occupancy_cia_format<-tar_read(formatted_bed_occupancy)|>
+bed_occupancy_cia_formatting()
+
+## Length of Stay
+length_of_stay_cia_format<- tar_read(sus_apcs)|>
+    length_of_stay_cia_formatting()
+#  filter(site_code=="RGM22")|> 
+#    ggplot(aes(x = month, y =avg_los) ) + 
+#   geom_line(linewidth=1) 
+
+
+## TO DO Emergency readmissions
+
+```
+
+```{r, include= FALSE}
+
+# Plots for information
+
+## Cleaning staff
+
+
+cleaning_staff<-tar_read(eric_udal)|>
+  filter(measure=="Cleaning staff (WTE)")|>
+  filter(level=="Site")|>
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  left_join(beddays[,c("der_provider_site_code", "beddays", "yearmon")], 
+=======
+
+
+shmi_data|>
+  filter(organisation_code=="RGM")|>
+    ggplot(aes(x = month, y =expected) ) + 
+   geom_line(size=1) +
+   labs( title = "",y = "No. of cases", x="")+
+   theme( legend.position= c(0.25, 0.8))+
+   scale_y_continuous(limits=c(0, NA)) 
+
+
+friends_and_family_data|>
+  filter(site_code=="RVJ01")|>
+    ggplot(aes(x = month, y =percent) ) + 
+   geom_line(size=1) +
+   labs( title = "",y = "No. of cases", x="")+
+   theme( legend.position= c(0.25, 0.8))+
+   scale_y_continuous(limits=c(0, NA)) 
+
+#RGM21 no shmi
+#+RGM22 no f&f /shmi
+
+ #RGN42 - no f&f/shmi
+# RGN80
+
+ #RVJ01+
+ #  RVJ20 no shmi
+ 
+
+
+
+ 
+=======
+>>>>>>> 7da7bc5 (CIA additional formatting functions)
+```
+
+
+
+## RTT waiting time
+```{r}
+rtt_data<-read.csv("Data/formatted_rtt_data.csv") |>
+rtt_waiting_time_cia_formatting()
+
+
+  # filter(organisation_code=="REM"|organisation_code=="RJR"|organisation_code=="RVY"|
+  #         organisation_code==  "RBN")
+
+
+```
+
+
+
+## Bed occupancy
+```{r}
+occupancy_data<-wrangle_bed_occupancy("Data/sql_bed_occupancy.csv")|>
+bed_occupancy_cia_formatting()
+```
+
+## Length of Stay
+```{r}
+
+length_of_stay<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>
+    length_of_stay_cia_formatting()
+
+
+
+#  filter(site_code=="RGM22")|> 
+#    ggplot(aes(x = month, y =avg_los) ) + 
+#   geom_line(linewidth=1) 
+
+
+```
+
+## TO DO Emergency readmissions
+
+
+# Other plots information
+
+## Cleaning staff
+```{r}
+cleaning_staff<-wrangle_eric("Data/sql_eric_09_15.csv", "Data/sql_eric_16_23.csv")|>
+  filter(measure=="Cleaning staff (WTE)")|>
+  filter(level=="Site")|>
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  left_join(beddays_by_site[,c("der_provider_site_code", "beddays", "yearmon")], 
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+                   by=c("site_code"= "der_provider_site_code", "month"="yearmon"))|>
+ merge_sites()|>
+  mutate(rate=(value/beddays)*1000) #WTE per 1000 beddays
+
+
+
+<<<<<<< HEAD
+## C. Difficile rate over time - hcai where recording goes back before 2017/2018
+=======
+```
+
+## C. Difficile rate over time
+```{r}
+
+#c.diff only as this goes back before 2017/2018
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+hcai_formatting("Data/hai_cdiff_pre_2018.csv", 
+                "Data/hai_cdiff.csv",
+                "Data/hai_ecoli.csv",
+                 "Data/hai_klebsiella.csv",
+                 "Data/hai_mssa.csv",
+                "Data/hai_mrsa.csv",
+                "Data/hai_p_aeruginosa.csv")|>
+  left_join(beddays_by_prov[,c("organisation_code", "yearmon", "beddays")], by=c("organisation_code", "month"="yearmon"))|>
+  mutate(rate=(count_of_cases/beddays)*10000)|> #cases per 10,000 beddays
+filter(collection=="C.difficile")|>
+  filter(organisation_code=="REM")|> #for Royal Liverpool
+    ggplot(aes(x = month, y =rate) ) + 
+   geom_line(linewidth=1) 
+
+<<<<<<< HEAD
+# C. Difficile numbers are too small to use in CIA as so much variability.
+
+```
+
+```{r, fig.height=4, fig.width=10}
+
+
+  measure<-c("friends and family test", "staff turnover", "staff sickness", "healthcare acquired infections", "falls and fractures", "hospital deaths", "rtt waiting times", "bed occupancy", "length of stay" )
+    start_date<-c(min(friends_and_family_cia_format$month), min(turnover_cia_format$month), min(staff_sickness_cia_format$month), min(hcai_cia_format$month), min(falls_and_fractures_cia_format$month), min(sus_death_data_cia_format$month), min(rtt_waiting_time_cia_format$month), min(bed_occupancy_cia_format$month), min(length_of_stay_cia_format$month))
+      end_date<-c(max(friends_and_family_cia_format$month), max(turnover_cia_format$month), max(staff_sickness_cia_format$month), max(hcai_cia_format$month), max(falls_and_fractures_cia_format$month), max(sus_death_data_cia_format$month), max(rtt_waiting_time_cia_format$month), max(bed_occupancy_cia_format$month), max(length_of_stay_cia_format$month))
+  
+indicators<- data.frame(measure, start_date, end_date) |>
+ # gather(key="start_end", value="month", -measure)
+
+name<-c("Royal Liverpool", "Clatterbridge", "Papworth", "Peterborough", "Chase Farm", "Southmead", "Tunbridge Wells")
+date<-c('2022-10-01', '2020-06-01', '2019-05-01', '2010-11-01', '2018-09-01', '2014-05-01', '2011-01-01' )
+
+sites<-data.frame(name, date)|>
+  mutate(date=as.Date(date))
+
+ggplot() +
+  geom_segment(data=indicators, aes(x=measure, y=start_date, yend=end_date),lineend = "round", color="#ABDDA4", linewidth=3)+
+labs(y=NULL, x=NULL)+
+  su_theme()+
+  theme(axis.text.y = element_text(size=12),axis.text.x = element_text(size=11))+
+  geom_vline(data=sites, aes(xintercept = date), linetype="dashed", color="#2c2825") +
+  geom_text(data=sites, aes(x=date, label=name, y=12), colour="#2c2825", angle=45, text=element_text(size=11))+
+  scale_x_date(date_breaks = "1 year",date_labels = "%Y")
+=======
+# C. difficile numbers are too small to use in CIA as so much variability.
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+
+```
+
+# Causal Impact analysis
+
+## Staff sickness
+
+```{r, include=TRUE}
+
+
+# Find the best matches  
+<<<<<<< HEAD
+mm <- MarketMatching::best_matches(data=staff_sickness_cia_format,
+=======
+mm <- MarketMatching::best_matches(data=staff_sickness,
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+                   id_variable="organisation_code",
+                   date_variable="month",
+                   matching_variable="percent",
+                   parallel=FALSE,
+                   warping_limit=1, # warping limit=1
+                   dtw_emphasis=1, # rely only on dtw for pre-screening
+<<<<<<< HEAD
+                   matches=3, # request 3 matches
+                   start_match_period="2016-08-01",
+                   end_match_period="2022-09-01")
+=======
+                   matches=2, # request 2 matches
+                   start_match_period="2017-04-01",
+                   end_match_period="2022-10-01")
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+
+#View the best matches
+knitr::kable(head(mm$BestMatches))
+
+results <- MarketMatching::inference(matched_markets = mm,
+                                     analyze_betas=TRUE,
+                                     test_market = "REM",
+                                    end_post_period = "2023-10-01",
+                                    alpha=0.05, 
+<<<<<<< HEAD
+                                    prior_level_sd=0.01,
+                                    nseasons=12)
+
+#Plot the actuals 
+results$PlotActuals+
+  su_theme()
+
+# Plot out actual vs expected
+results$PlotActualVersusExpected+
+  su_theme()
+=======
+                                    prior_level_sd=0.02,
+                                    nseasons=12)
+
+# Plot out actual vs expected
+results$PlotActualVersusExpected
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+
+# Plot out cumulative effect
+results$PlotCumulativeEffect
+
+# Plot pointwise effect
+results$PlotPointEffect
+
+<<<<<<< HEAD
+=======
+#Plot the actuals 
+results$PlotActuals
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- results$Coefficients
+knitr::kable(head(coeff))
+
+
+```
+
+```{r, include=FALSE}
+
+#Store predicted values in dataframe
+pred <- results$Predictions
+knitr::kable(head(pred))
+
+# Check out the DW and MAPE of the model
+results$PlotPriorLevelSdAnalysis
+
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = "REM", 
+                                      end_fake_post_period = "2023-10-01", 
+                                      prior_level_sd = 0.01, 
+                                      steps=10,
+                                      max_fake_lift=0.05)
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+power$ResultsGraph
+
+
+```
+
+<<<<<<< HEAD
+## RTT Waiting time data- Median waiting time (in weeks)
+=======
+## RTT Waiting time data- Number of incomplete pathways
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+
+```{r}
+
+
+# Find the best matches  
+mm <- MarketMatching::best_matches(rtt_data,
+                   id_variable="organisation_code",
+                   date_variable="month",
+<<<<<<< HEAD
+                   matching_variable="median_by_prov",
+                   parallel=FALSE,
+                   warping_limit=1, # warping limit=1
+                   dtw_emphasis=1, # rely only on dtw for pre-screening
+                   matches=3, # request 3 matches
+                   start_match_period="2016-08-01",
+                   end_match_period="2022-09-01")
+=======
+                   matching_variable="number_incomplete",
+                   parallel=FALSE,
+                   warping_limit=1, # warping limit=1
+                   dtw_emphasis=1, # rely only on dtw for pre-screening
+                   matches=2, # request 5 matches
+                   start_match_period="2017-04-01",
+                   end_match_period="2022-10-01")
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+
+#View the best matches
+knitr::kable(head(mm$BestMatches))
+
+results <- MarketMatching::inference(matched_markets = mm,
+                                     analyze_betas=TRUE,
+                                     test_market = "REM",
+                                    end_post_period = "2023-10-01",
+                                    alpha=0.05, 
+                                    prior_level_sd=0.01,
+                                    nseasons=12)
+
+#Absolute Effect indicates an increase in the median of 0.94 relative to what we expected. The Relative Effect provides a standardized view, indicating a 0.94% increase in the median. Probability of a causal impact indicates that the likelihood of observing this effect by chance is high (e.g., 100 - 55.2). 
+
+<<<<<<< HEAD
+#Plot the actuals 
+results$PlotActuals
+
+=======
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+# Plot out actual vs expected
+results$PlotActualVersusExpected
+
+# Plot out cumulative effect
+results$PlotCumulativeEffect
+
+# Plot pointwise effect
+results$PlotPointEffect
+
+<<<<<<< HEAD
+
+=======
+#Plot the actuals 
+results$PlotActuals
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+
+
+# See which hospital recieves the highest weight in determining the outcome
+coeff <- results$Coefficients
+knitr::kable(head(coeff))
+
+
+
+```
+
+```{r, include=FALSE}
+
+#Store predicted values in dataframe
+pred <- results$Predictions
+knitr::kable(head(pred))
+
+# Check out the DW and MAPE of the model
+results$PlotPriorLevelSdAnalysis
+
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = "REM", 
+                                      end_fake_post_period = "2023-10-01", 
+                                      prior_level_sd = 0.01, 
+                                      steps=10,
+                                      max_fake_lift=0.05)
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+power$ResultsGraph
+
+
+
+```
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+>>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)

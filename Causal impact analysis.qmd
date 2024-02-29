@@ -54,16 +54,7 @@ library(lubridate)
 
 library(StrategyUnitTheme)
 library(extrafont)
- 
 
-# Extra data wrangling
-
-beddays<-tar_read(beddays)
-
-beddays_by_prov<-beddays|>
-  mutate(organisation_code=substr(der_provider_site_code, start = 1, stop = 3))|>#get organisation code
-    group_by(yearmon, organisation_code)|>
-    summarise(beddays=sum(beddays))
 
 ## Friends & Family
 friends_and_family<-tar_read(friends_and_family_cia_format)

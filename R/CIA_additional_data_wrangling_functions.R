@@ -13,7 +13,7 @@ merge_sites<-function(data){
 # Beddays by provider
 beddays_by_provider_function<-function(data){
  
-  data|>
+  beddays_by_prov<-data|>
   mutate(organisation_code=substr(der_provider_site_code, start = 1, stop = 3))|>#get organisation code
   group_by(yearmon, organisation_code)|>
   summarise(beddays=sum(beddays))

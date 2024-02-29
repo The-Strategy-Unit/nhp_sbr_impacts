@@ -10,6 +10,16 @@ merge_sites<-function(data){
     mutate(site_code=ifelse((site_code=="RWFTW"|site_code=="RWF01"|site_code=="RWF02"), "RWFTW", site_code)) #merge Tunbridge site codes
 }
 
+# Beddays by provider
+beddays_by_provider_function<-function(beddays){
+ 
+  beddays|>
+  mutate(organisation_code=substr(der_provider_site_code, start = 1, stop = 3))|>#get organisation code
+  group_by(yearmon, organisation_code)|>
+  summarise(beddays=sum(beddays))
+  
+  return(beddays_by_prov)
+}
 
 # Friends and Family test additional formatting
 friends_and_family_cia_formatting<-function(data){

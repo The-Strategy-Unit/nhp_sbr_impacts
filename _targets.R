@@ -212,6 +212,13 @@ list(
 
 #### Causal Impact Analysis additional formatting
 
+# Beddays by provider
+tar_target(
+  beddays_by_prov,
+    beddays_by_provider_function(beddays)
+ ),
+
+
 # Friends and Family test additional formatting
  tar_target(
    friends_and_family_cia_format, 

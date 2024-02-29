@@ -1,7 +1,28 @@
 ---
 title: "Causal Impact Analysis"
-format: html
 editor: visual
+execute:
+  echo: false
+  message: false
+  warning: false
+  cache: false
+lang: en-GB
+author: Sarah Lucas
+date: last-modified
+date-format: "YYYY-MM-DD"
+title-block-banner: "#f9bf07"
+title-block-banner-color: "#333739"
+format:
+  html:
+    embed-resources: true
+    smooth-scroll: true
+    theme: cosmo
+    fontcolor: black
+    toc: true
+    toc-location: left
+    toc-title: Summary
+    toc-depth: 3
+css: styles.css
 ---
 
 REMRQ - Royal Liverpool
@@ -200,11 +221,6 @@ labs(y=NULL, x=NULL)+
   scale_x_date(date_breaks = "1 year",date_labels = "%Y")
 
 ```
-
-
-
-
-
 
 # Causal Impact analysis
 

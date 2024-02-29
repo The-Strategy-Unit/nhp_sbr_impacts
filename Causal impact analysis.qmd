@@ -65,65 +65,41 @@ beddays_by_prov<-beddays|>
     group_by(yearmon, organisation_code)|>
     summarise(beddays=sum(beddays))
 
-
 ## Friends & Family
-#delete friends_and_family_cia_format<-tar_read(formatted_friends_and_family_data)|>
-#delete friends_and_family_cia_formatting()
-
 friends_and_family<-tar_read(friends_and_family_cia_format)
-
   #filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
   #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
 
-
 ## Staff turnover
-#deleteturnover_cia_format<-tar_read(formatted_turnover)|>
-staff_turnover_cia_formatting()
-
 staff_turnover<-tar_read(staff_turnover_cia_format)
 
-  
 
 ## Staff sickness
-staff_sickness_cia_format<-tar_read(formatted_staff_sickness_absence)|>
-  staff_sickness_cia_formatting()|>
+staff_sickness<-tar_read(staff_sickness_cia_format)|>
   filter(organisation_code=="REM"|organisation_code=="RBN"|organisation_code=="RVY"| organisation_code=="RJR" )
 
 ## Healthcare acquired infections - Infection rate per 10,000 bed days
-hcai_cia_format<-tar_read(formatted_HCAI_data)|>
-  hcai_cia_formatting()
-
+hcai<-tar_read(hcai_cia_format)
 
 ## In-hospital Falls and Fractures - Fall rate per 1000 bed days
-falls_and_fractures_cia_format<- tar_read(sus_apcs)|>   
-falls_and_fractures_cia_formatting()
-
-
-## Deaths/Summary Hospital-Level Mortality Indicator
-shmi_data<-tar_read(formatted_shmi)
+falls_and_fractures<- tar_read(falls_and_fractures_cia_format)
 
 # SUS death rate (deaths/1000 admissions)
-sus_death_data_cia_format<- tar_read(sus_apcs)|>   
-sus_deaths_cia_formatting()
-
+sus_deaths<- tar_read(sus_death_data_cia_format)
 
 ## RTT waiting time
-rtt_waiting_time_cia_format<-tar_read(formatted_rtt_data) |>
-rtt_waiting_time_cia_formatting()|>
+rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
  filter(organisation_code=="REM"|organisation_code=="RJR"|organisation_code=="RVY"|
           organisation_code==  "RBN")
 
 ## Bed occupancy
-bed_occupancy_cia_format<-tar_read(formatted_bed_occupancy)|>
-bed_occupancy_cia_formatting()
+bed_occupancy<-tar_read(bed_occupancy_cia_format)
 
 ## Length of Stay
-length_of_stay_cia_format<- tar_read(sus_apcs)|>
-    length_of_stay_cia_formatting()
+length_of_stay<- tar_read(length_of_stay_cia_format)
 #  filter(site_code=="RGM22")|> 
 #    ggplot(aes(x = month, y =avg_los) ) + 
 #   geom_line(linewidth=1) 
-
 
 ## TO DO Emergency readmissions
 

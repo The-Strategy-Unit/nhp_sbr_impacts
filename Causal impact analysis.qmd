@@ -80,18 +80,7 @@ beddays_by_prov<-beddays|>
 =======
  
 
-
-#Functions 
-merge_sites<-function(data){
- data|>
-  mutate(site_code=ifelse((site_code=="REMRQ"|site_code=="RQ617"), "REMRQ", site_code))|> #merge historical Royal Liverpool codes
-    mutate(site_code=ifelse((site_code=="RGM22"|site_code=="RGM21"), "RGM22", site_code))|> #merge Papworth site codes
-     mutate(site_code=ifelse((site_code=="RVJ01"|site_code=="RVJ20"), "RVJ01", site_code))|> #merge Southmead site codes
-   mutate(site_code=ifelse((site_code=="RGN80"|site_code=="RGN42"), "RGN80", site_code))|> #merge Peterborough site codes
-    mutate(site_code=ifelse((site_code=="RWFTW"|site_code=="RWF01"|site_code=="RWF02"), "RWFTW", site_code)) #merge Tunbridge site codes
-}
-
-beddays_by_site<-fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")
+beddays<-fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")
 
 beddays_by_prov<-fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")|>
 >>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
@@ -143,29 +132,41 @@ shmi_data<-tar_read(formatted_shmi)|>
 ## Friends & Family
 ```{r}
 friends_and_family_data<-read.csv("Data/formatted_friends_and_family_data.csv")|>
-    mutate(month=as.Date(month))|>
- merge_sites()|>
-  group_by(month, site_code)|>
- summarise(percent=mean(percent, na.rm=TRUE))|>
-  filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
-         site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
+friends_and_family_cia_formatting()
+
+
+  #filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
+  #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
 
 ```
 
 
 
-## Staff turnover
+## TO DO Staff turnover
 ```{r}
 workforce_udal<-read.csv("Data/sql_workforce.csv")
 workforce_links<-read_excel("Data/links_workforce.xlsx")
 workforce_data<-combine_workforce(workforce_udal,workforce_links)
 turnover<-wrangle_turnover("sql_turnover.csv")
 
+
+test<-turnover|>
+ filter(staff_group=="nurses_health_visitors")|>
+   mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+        mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
+    group_by(month, organisation_code, type)|>
+  summarise(turnover_fte=sum(turnover_fte))|>
+  pivot_wider(names_from = type, values_from = turnover_fte)|>
+  mutate(leaving_rate=(Leavers/Denoms)*100)|>
+  filter(organisation_code=="RGM")|>
+ggplot(aes(x = month, y =leaving_rate) ) + 
+geom_line(linewidth=1)+
+  ylim(0,NA)
+  
+
+
+
 ```
-
-
-
-
 
 
 
@@ -176,20 +177,18 @@ turnover<-wrangle_turnover("sql_turnover.csv")
 
 # staff_sickness
 staff_sickness<-staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")|>
-  mutate(month=as.Date(month))|>
-      mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
-    group_by(month, organisation_code)|>
-  summarise(fte_days_sick=sum(fte_days_sick), fte_days_available=sum(fte_days_available) )|> #regroup following merging the organisation codes
-  mutate(percent=(fte_days_sick/fte_days_available)*100)|>
-  filter(organisation_code=="REM"|organisation_code=="RBN"|organisation_code=="RVY"|
-          organisation_code=="RJR" )
+  staff_sickness_cia_formatting()
+
+
+#  filter(organisation_code=="REM"|organisation_code=="RBN"|organisation_code=="RVY"|
+ #         organisation_code=="RJR" )
 ```
 
 ## Healthcare acquired infections
 
 ```{r}
 
-
+#Infection rate per 10,000 bed days
 hcai_data_combined<-hcai_formatting("Data/hai_cdiff_pre_2018.csv", 
                 "Data/hai_cdiff.csv",
                 "Data/hai_ecoli.csv",
@@ -197,14 +196,8 @@ hcai_data_combined<-hcai_formatting("Data/hai_cdiff_pre_2018.csv",
                  "Data/hai_mssa.csv",
                 "Data/hai_mrsa.csv",
                 "Data/hai_p_aeruginosa.csv")|>
-  left_join(beddays_by_prov[,c("organisation_code", "yearmon", "beddays")], by=c("organisation_code", "month"="yearmon"))|>
-  mutate(rate=(count_of_cases/beddays)*10000)|> #cases per 10,000 beddays
-  group_by(month, organisation_code)|>
-summarise(combined_rate=sum(rate))|>#calculate combined rate for all infectiond
-  filter(month>="2018-03-01")|>
-  filter(organisation_code=="REM")|> #for Royal Liverpool
-    ggplot(aes(x = month, y =combined_rate) ) + 
-   geom_line(linewidth=1) 
+  hcai_cia_formatting()
+
 
 
 
@@ -213,19 +206,16 @@ summarise(combined_rate=sum(rate))|>#calculate combined rate for all infectiond
 ## In-hospital Falls and Fractures
 
 ```{r}
-
-falls_and_fractures<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>   rename(site_code=der_provider_site_code)|>
-  rename(month=yearmon)|>
- merge_sites()|>
-  group_by(site_code, month)|>
-  summarise(fall_fracs=sum(fall_fracs), beddays=sum(beddays))|> #recalculate rate following merging sites
-  mutate(ff_rate=(fall_fracs/beddays)*1000) #rate per 1000 beddays
- 
+#Fall rate per 1000 bed days
+falls_and_fractures<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>   
+falls_and_fractures_cia_formatting()
 
 ```
 
-## MISSING VALUES Summary Hospital-Level Mortality Indicator
-```{r}
+## Deaths/Summary Hospital-Level Mortality Indicator
+```{r, include=FALSE}
+
+
 shmi_data<-wrangle_shmi("Data/sql_shmi.csv")|>
 >>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
   mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
@@ -234,11 +224,20 @@ shmi_data<-wrangle_shmi("Data/sql_shmi.csv")|>
   group_by(month, site_code)|>
   summarise(observed=sum(observed), expected=sum(expected))|>
 <<<<<<< HEAD
+<<<<<<< HEAD
   mutate(shmi=observed/expected)|>
   filter(site_code=="RGM21"|site_code=="RGM22")
   
 
 shmi_data<-tar_read(formatted_shmi)|>
+=======
+  mutate(shmi=observed/expected)|>
+  filter(site_code=="RGM21"|site_code=="RGM22")
+  
+  
+
+shmi_data<-wrangle_shmi("Data/sql_shmi.csv")|>
+>>>>>>> 7da7bc5 (CIA additional formatting functions)
   mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
   filter(level=="Trust")|> #Select only Site data (only available 2019 onwards)
   mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
@@ -250,20 +249,31 @@ shmi_data<-tar_read(formatted_shmi)|>
 # No deaths data for papworth
 
 # SUS death rate (deaths/1000 admissions)
+<<<<<<< HEAD
 sus_death_data_cia_format<- tar_read(sus_apcs)|>   
 sus_deaths_cia_formatting()
 
+=======
+sus_death_data<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>   
+sus_deaths_cia_formatting()
+
+
+>>>>>>> 7da7bc5 (CIA additional formatting functions)
 ## filter(site_code=="RGM22")|>
   #filter(month>"2017-04-01")|>
 # ggplot(aes(x = month, y =death_rate) ) + 
  #  geom_line(linewidth=1)
+<<<<<<< HEAD
 =======
   mutate(shmi=observed/expected)
 >>>>>>> 19611e9 (extra data wrangling for CIA and trial CIA)
+=======
+>>>>>>> 7da7bc5 (CIA additional formatting functions)
  # filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
   #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05"|site_code=="RQ617")
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ## RTT waiting time
 rtt_waiting_time_cia_format<-tar_read(formatted_rtt_data) |>
@@ -332,6 +342,8 @@ friends_and_family_data|>
 
 
  
+=======
+>>>>>>> 7da7bc5 (CIA additional formatting functions)
 ```
 
 
@@ -339,13 +351,11 @@ friends_and_family_data|>
 ## RTT waiting time
 ```{r}
 rtt_data<-read.csv("Data/formatted_rtt_data.csv") |>
-    mutate(month=as.Date(month))|>
-    mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
-    group_by(month, organisation_code)|>
-  summarise(median_by_prov = median(rep(weeks,number_of_incomplete_pathways)), number_incomplete=sum(number_of_incomplete_pathways))|> #Median by month and provider 
-  mutate(median_by_prov=ifelse(is.na(median_by_prov),0,median_by_prov))|>
-    filter(organisation_code=="REM"|organisation_code=="RJR"|organisation_code=="RVY"|
-           organisation_code==  "RBN")
+rtt_waiting_time_cia_formatting()
+
+
+  # filter(organisation_code=="REM"|organisation_code=="RJR"|organisation_code=="RVY"|
+  #         organisation_code==  "RBN")
 
 
 ```
@@ -355,29 +365,20 @@ rtt_data<-read.csv("Data/formatted_rtt_data.csv") |>
 ## Bed occupancy
 ```{r}
 occupancy_data<-wrangle_bed_occupancy("Data/sql_bed_occupancy.csv")|>
-     mutate(effective_snapshot_date=as.Date(effective_snapshot_date,"%Y-%m-%d"))|> #Format date 
-  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
-  filter(report_period_length=="Quarterly")|>
-      mutate(organisation_code=ifelse((organisation_code=="REM"|organisation_code=="RQ6"), "REM", organisation_code))|> #merge historical Royal Liverpool codes
-  group_by(month, organisation_code)|>
-  summarise(available=sum(available), occupied=sum(occupied))|>
-  mutate(bed_occupancy=occupied/available)
-
+bed_occupancy_cia_formatting()
 ```
 
 ## Length of Stay
 ```{r}
 
 length_of_stay<- fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)|>
-  rename(site_code=der_provider_site_code)|>
-  rename(month=yearmon)|>
- merge_sites()|>
-  group_by(site_code, month)|>
-  summarise(los=sum(los), spells=sum(spells))|> #recalculate following merge of sites
-  mutate(avg_los=los/spells) |>
-  filter(site_code=="RGM22")|> 
-    ggplot(aes(x = month, y =avg_los) ) + 
-   geom_line(linewidth=1) 
+    length_of_stay_cia_formatting()
+
+
+
+#  filter(site_code=="RGM22")|> 
+#    ggplot(aes(x = month, y =avg_los) ) + 
+#   geom_line(linewidth=1) 
 
 
 ```

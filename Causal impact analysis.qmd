@@ -56,10 +56,6 @@ library(StrategyUnitTheme)
 library(extrafont)
 
 
-source("R/data_wrangling_functions.R")
-source("R/CIA_additional_data_wrangling_functions.R")
-source("_targets.R")
-
 # Extra data wrangling
 
 beddays<-tar_read(beddays)
@@ -73,6 +69,7 @@ beddays_by_prov<-beddays|>
 ## Friends & Family
 friends_and_family_cia_format<-tar_read(formatted_friends_and_family_data)|>
 friends_and_family_cia_formatting()
+
   #filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
   #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
 
@@ -80,7 +77,7 @@ friends_and_family_cia_formatting()
 ## Staff turnover
 turnover_cia_format<-tar_read(formatted_turnover)|>
 staff_turnover_cia_formatting()
-
+tar_read(staff_turnover_cia_format)
 
  # filter(organisation_code=="RGM")|>
 #ggplot(aes(x = month, y =leaving_rate) ) + 
@@ -168,6 +165,8 @@ filter(collection=="C.difficile")|>
 
 ```
 
+tar_make()
+
 ```{r, fig.height=4, fig.width=10}
 
 
@@ -175,7 +174,7 @@ filter(collection=="C.difficile")|>
     start_date<-c(min(friends_and_family_cia_format$month), min(turnover_cia_format$month), min(staff_sickness_cia_format$month), min(hcai_cia_format$month), min(falls_and_fractures_cia_format$month), min(sus_death_data_cia_format$month), min(rtt_waiting_time_cia_format$month), min(bed_occupancy_cia_format$month), min(length_of_stay_cia_format$month))
       end_date<-c(max(friends_and_family_cia_format$month), max(turnover_cia_format$month), max(staff_sickness_cia_format$month), max(hcai_cia_format$month), max(falls_and_fractures_cia_format$month), max(sus_death_data_cia_format$month), max(rtt_waiting_time_cia_format$month), max(bed_occupancy_cia_format$month), max(length_of_stay_cia_format$month))
   
-indicators<- data.frame(measure, start_date, end_date) |>
+indicators<- data.frame(measure, start_date, end_date) #|>
  # gather(key="start_end", value="month", -measure)
 
 name<-c("Royal Liverpool", "Clatterbridge", "Papworth", "Peterborough", "Chase Farm", "Southmead", "Tunbridge Wells")
@@ -206,7 +205,10 @@ labs(y=NULL, x=NULL)+
 
 # Find the best matches  
 
-mm <- MarketMatching::best_matches(data=staff_sickness_cia_format,
+test<-staff_sickness_cia_format|>
+  filter(month!='2022-10-01')
+
+mm <- MarketMatching::best_matches(data=test,
                    id_variable="organisation_code",
                    date_variable="month",
                    matching_variable="percent",
@@ -219,6 +221,8 @@ mm <- MarketMatching::best_matches(data=staff_sickness_cia_format,
 
 #View the best matches
 knitr::kable(head(mm$BestMatches))
+
+
 
 results <- MarketMatching::inference(matched_markets = mm,
                                      analyze_betas=TRUE,
@@ -233,9 +237,7 @@ results$PlotActuals+
   su_theme()
 
 # Plot out actual vs expected
-results$PlotActualVersusExpected+
-  su_theme()
-
+results$PlotActualVersusExpected
 
 # Plot out actual vs expected
 results$PlotActualVersusExpected

@@ -239,10 +239,10 @@ tar_target(
 
 
 # Healthcare acquired infections additional formatting
-tar_target(
-  hcai_cia_format,
-  hcai_cia_formatting(formatted_HCAI_data)
-),
+#tar_target(
+#  hcai_cia_format,
+#  hcai_cia_formatting(formatted_HCAI_data)
+#),
 
 
 #Falls and fractures additional formatting

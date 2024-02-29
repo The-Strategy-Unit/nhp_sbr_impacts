@@ -208,6 +208,29 @@ list(
       cancer_centres, 
       cardiac_sites
     )
-  )
-)
+  ),
+ 
+#----------------------------------------------------------------------------#
 
+#### Causal Impact Analysis additional formatting
+
+# Friends and Family test additional formatting
+ tar_target(
+   friends_and_family_cia_format, 
+    friends_and_family_cia_formatting(formatted_friends_and_family_data)
+   ),
+
+# Staff turnover - Nurses
+ tar_target(
+   staff_turnover_cia_format,
+   staff_turnover_cia_format(formatted_turnover)
+ )
+  
+
+ 
+)
+ 
+ 
+ 
+ 
+ 

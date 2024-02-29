@@ -39,7 +39,6 @@ RVY02 - Ormskirk & District
 
 RJR05 - Countess of Chester
 
-
 ```{r, include=FALSE}
 
 # Extra data wrangling
@@ -134,11 +133,10 @@ length_of_stay_cia_format<- tar_read(sus_apcs)|>
 
 ```
 
-
-
 # Other plots information
 
 ## Cleaning staff
+
 ```{r}
 cleaning_staff<-tar_read(eric_udal)|>
   filter(measure=="Cleaning staff (WTE)")|>
@@ -153,6 +151,7 @@ cleaning_staff<-tar_read(eric_udal)|>
 ```
 
 ## C. Difficile rate over time
+
 ```{r}
 
 #c.diff only as this goes back before 2017/2018
@@ -279,7 +278,6 @@ power$ResultsGraph
 
 ```
 
-
 ## RTT Waiting time data- Median waiting time (in weeks)
 
 ```{r}
@@ -355,4 +353,3 @@ power$ResultsGraph
 
 
 ```
-

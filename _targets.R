@@ -269,7 +269,7 @@ tar_target(
 tar_target(
   length_of_stay_cia_format,
   length_of_stay_cia_formatting(sus_apcs)
-),
+)
 
  
 )

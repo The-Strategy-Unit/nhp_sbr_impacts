@@ -111,17 +111,15 @@ list(
   # rtt waiting times
   tar_target(
     formatted_rtt_data,
-    rtt_data_formatting("Data/rtt_waiting_times.zip",
-                        "rtt_waiting_times.csv")
+    rtt_data_formatting("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt_waiting_times.csv")
   ),
   
   #Friends and family test scores
   tar_target(
     formatted_friends_and_family_data,
     friends_and_family_scores_data_formatting(
-      "Data/friends_and_family_inpatient_scores.zip",
-      "friends_and_family_inpatient_scores.csv",
-      "Data/friend_and_family_inpatient_scores_post_Jul2022.csv"
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/friends_and_family_inpatient_scores.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/friend_and_family_inpatient_scores_post_Jul2022.csv"
     )
   ),
   

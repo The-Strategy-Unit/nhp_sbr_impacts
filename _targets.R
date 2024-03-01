@@ -11,13 +11,15 @@ library(targets)
 tar_option_set(
   packages = c(
     "dplyr",
+    "geomtextpath",
+    "ggplot2",
     "janitor",
+    "lubridate",
     "readxl",
     "stringr",
     "tidyr",
     "tsibble",
-    "zoo",
-    "lubridate"
+    "zoo"
   ) # Packages that your targets need for their tasks.
 )
 
@@ -111,7 +113,9 @@ list(
   # rtt waiting times
   tar_target(
     formatted_rtt_data,
-    rtt_data_formatting("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt_waiting_times.csv")
+    rtt_data_formatting(
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt_waiting_times.csv"
+    )
   ),
   
   #Friends and family test scores
@@ -190,7 +194,7 @@ list(
     get_cardiac_site_codes(cardiac_site_filepath)
   ) ,
   
-  # other hospitals should be matched to general acute hospitals: 
+  # other hospitals should be matched to general acute hospitals:
   tar_target(
     general_acute_sites,
     get_general_acute_site_codes(formatted_eric)
@@ -201,78 +205,211 @@ list(
     single_bedroom_matches,
     combine_single_bedroom_matches(
       single_bedrooms,
-      ref_org_sites, 
-      general_acute_sites, 
-      cancer_centres, 
+      ref_org_sites,
+      general_acute_sites,
+      cancer_centres,
       cardiac_sites
     )
   ),
- 
-#----------------------------------------------------------------------------#
-
-#### Causal Impact Analysis additional formatting
-
-# Friends and Family test additional formatting
- tar_target(
-   friends_and_family_cia_format, 
-    friends_and_family_cia_formatting(formatted_friends_and_family_data)
-   ),
-
-# Staff turnover - Nurses
- tar_target(
-   staff_turnover_cia_format,
-   staff_turnover_cia_formatting(formatted_turnover)
- ),
   
-# Staff sickness additional formatting
-tar_target(
-  staff_sickness_cia_format,
-  staff_sickness_cia_formatting(formatted_staff_sickness_absence)
-),
-
-
-# Healthcare acquired infections additional formatting
- tar_target(
+  #----------------------------------------------------------------------------#
+  
+  #### Causal Impact Analysis additional formatting
+  
+  # Friends and Family test additional formatting
+  tar_target(
+    friends_and_family_cia_format,
+    friends_and_family_cia_formatting(formatted_friends_and_family_data)
+  ),
+  
+  # Staff turnover - Nurses
+  tar_target(
+    staff_turnover_cia_format,
+    staff_turnover_cia_formatting(formatted_turnover)
+  ),
+  
+  # Staff sickness additional formatting
+  tar_target(
+    staff_sickness_cia_format,
+    staff_sickness_cia_formatting(formatted_staff_sickness_absence)
+  ),
+  
+  
+  # Healthcare acquired infections additional formatting
+  tar_target(
     hcai_cia_format,
     hcai_cia_formatting(beddays, formatted_HCAI_data)
- ),
-
-
-#Falls and fractures additional formatting
-tar_target(
-  falls_and_fractures_cia_format,
-  falls_and_fractures_cia_formatting(sus_apcs)
-),
-
-# Hospital death rate additional formatting
-tar_target(
-  sus_deaths_cia_format,
-  sus_deaths_cia_formatting(sus_apcs)
-),
-
-
-#rtt waiting time additional formatting 
-tar_target(
-  rtt_waiting_time_cia_format,
-  rtt_waiting_time_cia_formatting(formatted_rtt_data)
-),
-
-# Bed occupancy additional formatting
-tar_target(
-  bed_occupancy_cia_format,
-  bed_occupancy_cia_formatting(formatted_bed_occupancy)
-),
-
-# Length of Stay additional formatting
-tar_target(
-  length_of_stay_cia_format,
-  length_of_stay_cia_formatting(sus_apcs)
+  ),
+  
+  
+  #Falls and fractures additional formatting
+  tar_target(
+    falls_and_fractures_cia_format,
+    falls_and_fractures_cia_formatting(sus_apcs)
+  ),
+  
+  # Hospital death rate additional formatting
+  tar_target(sus_deaths_cia_format,
+             sus_deaths_cia_formatting(sus_apcs)),
+  
+  
+  #rtt waiting time additional formatting
+  tar_target(
+    rtt_waiting_time_cia_format,
+    rtt_waiting_time_cia_formatting(formatted_rtt_data)
+  ),
+  
+  # Bed occupancy additional formatting
+  tar_target(
+    bed_occupancy_cia_format,
+    bed_occupancy_cia_formatting(formatted_bed_occupancy)
+  ),
+  
+  # Length of Stay additional formatting
+  tar_target(
+    length_of_stay_cia_format,
+    length_of_stay_cia_formatting(sus_apcs)
+  ),
+  
+  #----------------------------------------------------------------------------#
+  #### Standard charts ####
+  tar_target(
+    hospitals,
+    data.frame(
+      "name" = c(
+        "Royal Liverpool",
+        "Clatterbridge Cancer Centre",
+        "Royal Papworth",
+        "Peterborough (district) Hospital",
+        "Chase Farm Hospital",
+        "Southmead Hospital",
+        "Tunbridge Wells"
+      ),
+      "organisation_code" = c("REM",
+                              "REN",
+                              "RGM",
+                              "RGN",
+                              "RAL",
+                              "RVJ",
+                              "RWF"),
+      "site_code" = c("REMRQ",
+                      "REN22",
+                      "RGM22",
+                      "RGN80",
+                      "RALC7",
+                      "RVJ01",
+                      "RWFTW"),
+      "date_sbr" = c(
+        as.Date("2022-10-31"),
+        as.Date("2022-06-30"),
+        as.Date("2019-05-31"),
+        as.Date("2010-11-30"),
+        as.Date("2018-09-30"),
+        as.Date("2014-05-30"),
+        as.Date("2011-01-31")
+      )
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_bed_occupancy,
+    get_indicator_organisation_level_plot(
+      "RWF",
+      hospitals,
+      single_bedroom_matches,
+      bed_occupancy_cia_format  |>
+        mutate(occupancy = occupied / available * 100),
+      "occupancy"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_turnover,
+    get_indicator_organisation_level_plot(
+      "RWF",
+      hospitals,
+      single_bedroom_matches,
+      staff_turnover_cia_format,
+      "leaving_rate"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_staff_sickness_absence,
+    get_indicator_organisation_level_plot(
+      "RWF",
+      hospitals,
+      single_bedroom_matches,
+      staff_sickness_cia_format,
+      "staff_sickness_percent"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_cleaning_staff,
+    get_indicator_site_level_plot(
+      "RWFTW",
+      hospitals,
+      single_bedroom_matches,
+      formatted_eric,
+      "cleaning_staff_wte"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_friends_and_family,
+    get_indicator_site_level_plot(
+      "RWFTW",
+      hospitals,
+      single_bedroom_matches,
+      friends_and_family_cia_format,
+      "friends_and_family_percent"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_hcai,
+    get_indicator_organisation_level_plot(
+      "RWF",
+      hospitals,
+      single_bedroom_matches,
+      hcai_cia_format,
+      "combined_rate"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_falls_and_fractures,
+    get_indicator_site_level_plot(
+      "RWFTW",
+      hospitals,
+      single_bedroom_matches,
+      falls_and_fractures_cia_format,
+      "ff_rate"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_sus_deaths,
+    get_indicator_site_level_plot(
+      "RWFTW",
+      hospitals,
+      single_bedroom_matches,
+      sus_deaths_cia_format,
+      "death_rate"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_rtt_waiting_time,
+    get_indicator_organisation_level_plot(
+      "RWF",
+      hospitals,
+      single_bedroom_matches,
+      rtt_waiting_time_cia_format,
+      "median_by_prov"
+    )
+  ),
+  tar_target(
+    plot_tunbridge_wells_length_of_stay,
+    get_indicator_site_level_plot(
+      "RWFTW",
+      hospitals,
+      single_bedroom_matches,
+      length_of_stay_cia_format,
+      "avg_los"
+    )
+  )
+  
 )
-
- 
-)
- 
- 
- 
- 
- 

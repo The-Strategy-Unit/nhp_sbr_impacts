@@ -292,7 +292,7 @@ list(
         "peterborough",
         "chase_farm",
         "southmead",
-        "tunbridge"
+        "tunbridge_wells"
       ),
       "organisation_code" = c("REM",
                               "REN",
@@ -328,7 +328,7 @@ list(
         "peterborough",
         "chase_farm",
         "southmead",
-        "tunbridge"
+        "tunbridge_wells"
       )
     ),
     tar_target(
@@ -351,11 +351,11 @@ list(
         "peterborough",
         "chase_farm",
         "southmead",
-        "tunbridge"
+        "tunbridge_wells"
       )
     ),
     tar_target(
-      plot_staf_turnover,
+      plot_staff_turnover,
       get_indicator_organisation_level_plot(
         hospital_of_interest,
         hospitals,
@@ -374,7 +374,7 @@ tarchetypes::tar_map(
       "peterborough",
       "chase_farm",
       "southmead",
-      "tunbridge"
+      "tunbridge_wells"
     )
   ),
   tar_target(
@@ -397,7 +397,7 @@ tarchetypes::tar_map(
         "peterborough",
         "chase_farm",
         "southmead",
-        "tunbridge"
+        "tunbridge_wells"
       )
     ),
     tar_target(
@@ -423,7 +423,7 @@ tarchetypes::tar_map(
       "peterborough",
       "chase_farm",
       "southmead",
-      "tunbridge"
+      "tunbridge_wells"
     )
   ),
   tar_target(
@@ -446,7 +446,7 @@ tarchetypes::tar_map(
       "peterborough",
       "chase_farm",
       "southmead",
-      "tunbridge"
+      "tunbridge_wells"
     )
   ),
   tar_target(
@@ -469,7 +469,7 @@ tarchetypes::tar_map(
       "peterborough",
       "chase_farm",
       "southmead",
-      "tunbridge"
+      "tunbridge_wells"
     )
   ),
   tar_target(
@@ -492,7 +492,7 @@ tarchetypes::tar_map(
       "peterborough",
       "chase_farm",
       "southmead",
-      "tunbridge"
+      "tunbridge_wells"
     )
   ),
   tar_target(
@@ -515,7 +515,7 @@ tarchetypes::tar_map(
         "peterborough",
         "chase_farm",
         "southmead",
-        "tunbridge"
+        "tunbridge_wells"
       )
     ),
     tar_target(
@@ -538,7 +538,7 @@ tarchetypes::tar_map(
         "peterborough",
         "chase_farm",
         "southmead",
-        "tunbridge"
+        "tunbridge_wells"
       )
     ),
     tar_target(

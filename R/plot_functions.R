@@ -56,73 +56,78 @@ plot_indicator <- function(site_of_interest,
                           ggplot2::aes(month,
                                        !!sym(plotting_variable))) +
     ggplot2::geom_line() +
-    ggplot2::geom_line(
-      data = controls,
-      ggplot2::aes(
-        month,
-        !!sym(plotting_variable),
-        group = !!sym(grouping)
-      ),
-      alpha = 0.1
-    ) +
+    ggplot2::geom_line(data = controls,
+                       ggplot2::aes(month,
+                                    !!sym(plotting_variable),
+                                    group = !!sym(grouping)),
+                       alpha = 0.1) +
     ggplot2::theme_bw() +
     ggplot2::ylab(get_y_axis_for_indicator_plots(plotting_variable)) +
     ggplot2::xlab("Month") +
-    geomtextpath::geom_textvline(
-      label = "SBR",
-      xintercept = as.Date(sbr_date),
-      vjust = 1.3,
-      hjust = 0,
-      col = "purple"
+    ggplot2::geom_vline(
+      xintercept = as.numeric(as.Date(sbr_date)),
+      col = "purple",
+      linetype = "dotted"
     ) +
-    geomtextpath::geom_textvline(
+    ggplot2::geom_vline(
+      xintercept = as.numeric(as.Date("2020-03-01")),
+      col = "blue",
+      linetype = "dotted"
+    ) +
+    ggplot2::geom_text(aes(
+      x = as.Date(sbr_date),
+      label = "SBR",
+      y = 0
+    ),
+    hjust = "bottom",
+    col = "purple") +
+    ggplot2::geom_text(aes(
+      x = as.Date("2020-03-01"),
       label = "COVID-19",
-      xintercept = as.Date("2020-03-31"),
-      vjust = 1.3,
-      hjust = 0,
-      col = "blue"
-    )
+      y = 0
+    ),
+    col = "blue")
   
   return(plot)
   
 }
 
 # To get the plot for an indicator that is at organisation level:
-get_indicator_organisation_level_plot <- function(hospital_of_interest,
-                                                  hospitals,
-                                                  controls,
-                                                  indicator,
-                                                  plotting_variable) {
-  
-  org_code_of_interest <- hospitals |>
-    dplyr::filter(alias == hospital_of_interest) |>
-    dplyr::pull(organisation_code)
-  
-  sbr_date <- hospitals |>
-    dplyr::filter(organisation_code == org_code_of_interest) |>
-    dplyr::pull(date_sbr)
-  
-  site_of_interest <- indicator |>
-    dplyr::filter(organisation_code == org_code_of_interest)
-  
-  controls <- controls |>
-    dplyr::filter(organisation_code == org_code_of_interest) |>
-    dplyr::select(site_code, matching_organisation_code) |>
-    unique() |>
-    dplyr::left_join(indicator,
-                     c("matching_organisation_code" = "organisation_code"))
-  
-  plot <- plot_indicator(
-    site_of_interest,
-    controls,
-    plotting_variable,
-    "matching_organisation_code",
-    sbr_date
-  )
-  
-  return(plot)
-  
-}
+get_indicator_organisation_level_plot <-
+  function(hospital_of_interest,
+           hospitals,
+           controls,
+           indicator,
+           plotting_variable) {
+    org_code_of_interest <- hospitals |>
+      dplyr::filter(alias == hospital_of_interest) |>
+      dplyr::pull(organisation_code)
+    
+    sbr_date <- hospitals |>
+      dplyr::filter(organisation_code == org_code_of_interest) |>
+      dplyr::pull(date_sbr)
+    
+    site_of_interest <- indicator |>
+      dplyr::filter(organisation_code == org_code_of_interest)
+    
+    controls <- controls |>
+      dplyr::filter(organisation_code == org_code_of_interest) |>
+      dplyr::select(site_code, matching_organisation_code) |>
+      unique() |>
+      dplyr::left_join(indicator,
+                       c("matching_organisation_code" = "organisation_code"))
+    
+    plot <- plot_indicator(
+      site_of_interest,
+      controls,
+      plotting_variable,
+      "matching_organisation_code",
+      sbr_date
+    )
+    
+    return(plot)
+    
+  }
 
 # To get the plot for an indicator that is at site level:
 get_indicator_site_level_plot <- function(hospital_of_interest,
@@ -130,11 +135,10 @@ get_indicator_site_level_plot <- function(hospital_of_interest,
                                           controls,
                                           indicator,
                                           plotting_variable) {
-  
   site_code_of_interest <- hospitals |>
     dplyr::filter(alias == hospital_of_interest) |>
     dplyr::pull(site_code)
-    
+  
   sbr_date <- hospitals |>
     dplyr::filter(site_code == site_code_of_interest) |>
     dplyr::pull(date_sbr)

@@ -628,52 +628,53 @@ rtt_data_formatting <- function(data) {
 
 
 ## Wrangling friends and family inpatient scores
-friends_and_family_scores_data_formatting <- function(data1, data2) {
-  #pre 2022-07 data
-  friends_and_family_scores_data1 <- read.csv(data1) |>
-    clean_names() |>
-    mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
-    mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
-    mutate(count = ifelse(count == "NULL", 0, count)) |>
-    mutate(count = as.numeric(count)) |>
-    mutate(
-      positive_responses = ifelse(
-        likely_to_recommend == "Very Good" | likely_to_recommend == "Good" |
-          likely_to_recommend == "Likely" |
-          likely_to_recommend == "Extremely Likely" ,
-        "yes",
-        "no"
-      )
-    ) |> #flag those that are +ive responses
-    filter(grouped_by == "Site") |>
-    group_by(month, site_code) |>
-    mutate(percent = round(((count / sum(
-      count
-    )) * 100), 1)) |> #calculate %
-    filter(positive_responses == "yes") |>
-    summarise(percent = sum(percent)) #calculate %
-  
-  #Post 2022-07 data
-  friends_and_family_scores_data2 <- read.csv(data2) |>
-    clean_names() |>
-    mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%d/%m/%Y")) |> #Format date
-    mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
-    filter(measure_category == "Percentage Positive") |>
-    mutate(percent = as.numeric(measure_value) * 100) |>
-    select(-effective_snapshot_date,
-           -measure_category,
-           -measure_value,
-           -measure_name) |>
-    filter(month >= '2022-08-01')
-  
-  friends_and_family_scores_data <-
-    rbind(friends_and_family_scores_data1,
-          friends_and_family_scores_data2)
-  
-  return(friends_and_family_scores_data)
-  
-  
-}
+friends_and_family_scores_data_formatting <-
+  function(data1, data2) {
+    #pre 2022-07 data
+    friends_and_family_scores_data1 <- read.csv(data1) |>
+      clean_names() |>
+      mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
+      mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
+      mutate(count = ifelse(count == "NULL", 0, count)) |>
+      mutate(count = as.numeric(count)) |>
+      mutate(
+        positive_responses = ifelse(
+          likely_to_recommend == "Very Good" | likely_to_recommend == "Good" |
+            likely_to_recommend == "Likely" |
+            likely_to_recommend == "Extremely Likely" ,
+          "yes",
+          "no"
+        )
+      ) |> #flag those that are +ive responses
+      filter(grouped_by == "Site") |>
+      group_by(month, site_code) |>
+      mutate(percent = round(((count / sum(
+        count
+      )) * 100), 1)) |> #calculate %
+      filter(positive_responses == "yes") |>
+      summarise(percent = sum(percent)) #calculate %
+    
+    #Post 2022-07 data
+    friends_and_family_scores_data2 <- read.csv(data2) |>
+      clean_names() |>
+      mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%d/%m/%Y")) |> #Format date
+      mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
+      filter(measure_category == "Percentage Positive") |>
+      mutate(percent = as.numeric(measure_value) * 100) |>
+      select(-effective_snapshot_date,
+             -measure_category,
+             -measure_value,
+             -measure_name) |>
+      filter(month >= '2022-08-01')
+    
+    friends_and_family_scores_data <-
+      rbind(friends_and_family_scores_data1,
+            friends_and_family_scores_data2)
+    
+    return(friends_and_family_scores_data)
+    
+    
+  }
 
 
 ## Wrangling staff sickness data
@@ -733,15 +734,14 @@ hcai_formatting <-
       mutate(Effective_Snapshot_Date = as.Date(Effective_Snapshot_Date, "%d/%m/%Y")) #Format date
     
     
-    HCAI_data <-
-      rbind(
-        hai_cdiff_data,
-        hai_klebsiella_data,
-        hai_ecoli_data,
-        hai_mssa_data,
-        hai_mrsa_data ,
-        hai_p_aeruginosa_data
-      ) |>
+    HCAI_data <- rbind(
+      hai_cdiff_data,
+      hai_klebsiella_data,
+      hai_ecoli_data,
+      hai_mssa_data,
+      hai_mrsa_data ,
+      hai_p_aeruginosa_data
+    ) |>
       clean_names() |>
       mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |>
       #Format date

@@ -148,7 +148,11 @@ sus_deaths_cia_formatting <- function(data) {
     rename(site_code = der_provider_site_code) |>
     rename(month = yearmon) |>
     merge_sites() |>
-    summarise(deaths = sum(deaths), spells = sum(spells), .by = c(site_code, month)) |> #recalculate rate following merging sites
+    summarise(
+      deaths = sum(deaths),
+      spells = sum(spells),
+      .by = c(site_code, month)
+    ) |> #recalculate rate following merging sites
     mutate(death_rate = (deaths / spells) * 1000) #deaths/1000 spells
   
   return(sus_deaths_cia_format)
@@ -159,12 +163,14 @@ sus_deaths_cia_formatting <- function(data) {
 
 rtt_waiting_time_cia_formatting <- function(formatted_data) {
   rtt_waiting_time_cia_format <- formatted_data |>
-    mutate(month = as.Date(month),
-           organisation_code = ifelse((organisation_code == "REM" |
-                                         organisation_code == "RQ6"),
-                                      "REM",
-                                      organisation_code
-    )) |> #merge historical Royal Liverpool codes
+    mutate(
+      month = as.Date(month),
+      organisation_code = ifelse((organisation_code == "REM" |
+                                    organisation_code == "RQ6"),
+                                 "REM",
+                                 organisation_code
+      )
+    ) |> #merge historical Royal Liverpool codes
     summarise(
       median_by_prov = median(rep(weeks, number_of_incomplete_pathways)),
       number_incomplete = sum(number_of_incomplete_pathways),
@@ -206,8 +212,11 @@ length_of_stay_cia_formatting <- function(data) {
     rename(site_code = der_provider_site_code) |>
     rename(month = yearmon) |>
     merge_sites() |>
-    summarise(los = sum(los), spells = sum(spells),
-              .by = c(site_code, month)) |> #recalculate following merge of sites
+    summarise(
+      los = sum(los),
+      spells = sum(spells),
+      .by = c(site_code, month)
+    ) |> #recalculate following merge of sites
     mutate(avg_los = los / spells)
   
   return(length_of_stay_cia_format)

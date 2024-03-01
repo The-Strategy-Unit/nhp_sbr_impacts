@@ -2,7 +2,7 @@
 
 # To give nicer y axis labels for the indicator plots:
 get_y_axis_for_indicator_plots <- function(plotting_variable) {
-  if (plotting_variable == "occupancy") {
+  if (plotting_variable == "bed_occupancy") {
     y_axis <- "Bed Occupancy (%)"
   }
   
@@ -88,20 +88,25 @@ plot_indicator <- function(site_of_interest,
 }
 
 # To get the plot for an indicator that is at organisation level:
-get_indicator_organisation_level_plot <- function(org_code,
+get_indicator_organisation_level_plot <- function(hospital_of_interest,
                                                   hospitals,
                                                   controls,
                                                   indicator,
                                                   plotting_variable) {
+  
+  org_code_of_interest <- hospitals |>
+    dplyr::filter(alias == hospital_of_interest) |>
+    dplyr::pull(organisation_code)
+  
   sbr_date <- hospitals |>
-    dplyr::filter(organisation_code == org_code) |>
+    dplyr::filter(organisation_code == org_code_of_interest) |>
     dplyr::pull(date_sbr)
   
   site_of_interest <- indicator |>
-    dplyr::filter(organisation_code == org_code)
+    dplyr::filter(organisation_code == org_code_of_interest)
   
   controls <- controls |>
-    dplyr::filter(organisation_code == org_code) |>
+    dplyr::filter(organisation_code == org_code_of_interest) |>
     dplyr::select(site_code, matching_organisation_code) |>
     unique() |>
     dplyr::left_join(indicator,
@@ -120,21 +125,26 @@ get_indicator_organisation_level_plot <- function(org_code,
 }
 
 # To get the plot for an indicator that is at site level:
-get_indicator_site_level_plot <- function(given_site_code,
+get_indicator_site_level_plot <- function(hospital_of_interest,
                                           hospitals,
                                           controls,
                                           indicator,
                                           plotting_variable) {
+  
+  site_code_of_interest <- hospitals |>
+    dplyr::filter(alias == hospital_of_interest) |>
+    dplyr::pull(site_code)
+    
   sbr_date <- hospitals |>
-    dplyr::filter(site_code == given_site_code) |>
+    dplyr::filter(site_code == site_code_of_interest) |>
     dplyr::pull(date_sbr)
   
   site_of_interest <- indicator |>
-    dplyr::filter(site_code == given_site_code)
+    dplyr::filter(site_code == site_code_of_interest)
   
   controls <- controls |>
     dplyr::filter(organisation_code ==
-                    stringr::str_sub(given_site_code, 1, 3)) |>
+                    stringr::str_sub(site_code_of_interest, 1, 3)) |>
     dplyr::select(site_code) |>
     unique() |>
     dplyr::left_join(indicator, "site_code")

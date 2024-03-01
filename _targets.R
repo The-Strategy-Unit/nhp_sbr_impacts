@@ -285,6 +285,15 @@ list(
         "Southmead Hospital",
         "Tunbridge Wells"
       ),
+      "alias" = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge"
+      ),
       "organisation_code" = c("REM",
                               "REN",
                               "RGM",
@@ -310,106 +319,239 @@ list(
       )
     )
   ),
-  tar_target(
-    plot_tunbridge_wells_bed_occupancy,
-    get_indicator_organisation_level_plot(
-      "RWF",
-      hospitals,
-      single_bedroom_matches,
-      bed_occupancy_cia_format  |>
-        mutate(occupancy = occupied / available * 100),
-      "occupancy"
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge"
+      )
+    ),
+    tar_target(
+      plot_bed_occupancy,
+      get_indicator_organisation_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        bed_occupancy_cia_format,
+        "bed_occupancy"
+      )
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge"
+      )
+    ),
+    tar_target(
+      plot_staf_turnover,
+      get_indicator_organisation_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        staff_turnover_cia_format,
+        "leaving_rate"
+      )
+    )
+  ),
+tarchetypes::tar_map(
+  list(
+    hospital_of_interest = c(
+      "royal_liverpool",
+      "clatterbridge",
+      "royal_papworth",
+      "peterborough",
+      "chase_farm",
+      "southmead",
+      "tunbridge"
     )
   ),
   tar_target(
-    plot_tunbridge_wells_turnover,
+    plot_staff_sickness,
     get_indicator_organisation_level_plot(
-      "RWF",
-      hospitals,
-      single_bedroom_matches,
-      staff_turnover_cia_format,
-      "leaving_rate"
-    )
-  ),
-  tar_target(
-    plot_tunbridge_wells_staff_sickness_absence,
-    get_indicator_organisation_level_plot(
-      "RWF",
+      hospital_of_interest,
       hospitals,
       single_bedroom_matches,
       staff_sickness_cia_format,
       "staff_sickness_percent"
     )
+  )
+),
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge"
+      )
+    ),
+    tar_target(
+      plot_hcai,
+      get_indicator_organisation_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        hcai_cia_format,
+        "combined_rate"
+      )
+    )
+  ), 
+  
+
+  # site code plots
+tarchetypes::tar_map(
+  list(
+    hospital_of_interest = c(
+      "royal_liverpool",
+      "clatterbridge",
+      "royal_papworth",
+      "peterborough",
+      "chase_farm",
+      "southmead",
+      "tunbridge"
+    )
   ),
   tar_target(
-    plot_tunbridge_wells_cleaning_staff,
+    plot_cleaning_staff,
     get_indicator_site_level_plot(
-      "RWFTW",
+      hospital_of_interest,
       hospitals,
       single_bedroom_matches,
       formatted_eric,
       "cleaning_staff_wte"
     )
+  )
+),
+tarchetypes::tar_map(
+  list(
+    hospital_of_interest = c(
+      "royal_liverpool",
+      "clatterbridge",
+      "royal_papworth",
+      "peterborough",
+      "chase_farm",
+      "southmead",
+      "tunbridge"
+    )
   ),
   tar_target(
-    plot_tunbridge_wells_friends_and_family,
+    plot_friends_and_family,
     get_indicator_site_level_plot(
-      "RWFTW",
+      hospital_of_interest,
       hospitals,
       single_bedroom_matches,
       friends_and_family_cia_format,
       "friends_and_family_percent"
     )
-  ),
-  tar_target(
-    plot_tunbridge_wells_hcai,
-    get_indicator_organisation_level_plot(
-      "RWF",
-      hospitals,
-      single_bedroom_matches,
-      hcai_cia_format,
-      "combined_rate"
+  )
+),
+tarchetypes::tar_map(
+  list(
+    hospital_of_interest = c(
+      "royal_liverpool",
+      "clatterbridge",
+      "royal_papworth",
+      "peterborough",
+      "chase_farm",
+      "southmead",
+      "tunbridge"
     )
   ),
   tar_target(
-    plot_tunbridge_wells_falls_and_fractures,
+    plot_falls_and_fractures,
     get_indicator_site_level_plot(
-      "RWFTW",
+      hospital_of_interest,
       hospitals,
       single_bedroom_matches,
       falls_and_fractures_cia_format,
       "ff_rate"
     )
+  )
+),
+tarchetypes::tar_map(
+  list(
+    hospital_of_interest = c(
+      "royal_liverpool",
+      "clatterbridge",
+      "royal_papworth",
+      "peterborough",
+      "chase_farm",
+      "southmead",
+      "tunbridge"
+    )
   ),
   tar_target(
-    plot_tunbridge_wells_sus_deaths,
+    plot_sus_deaths,
     get_indicator_site_level_plot(
-      "RWFTW",
+      hospital_of_interest,
       hospitals,
       single_bedroom_matches,
       sus_deaths_cia_format,
       "death_rate"
     )
-  ),
-  tar_target(
-    plot_tunbridge_wells_rtt_waiting_time,
-    get_indicator_organisation_level_plot(
-      "RWF",
-      hospitals,
-      single_bedroom_matches,
-      rtt_waiting_time_cia_format,
-      "median_by_prov"
+  )
+),
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge"
+      )
+    ),
+    tar_target(
+      plot_rtt_waiting_time,
+      get_indicator_organisation_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        rtt_waiting_time_cia_format,
+        "median_by_prov"
+      )
     )
   ),
-  tar_target(
-    plot_tunbridge_wells_length_of_stay,
-    get_indicator_site_level_plot(
-      "RWFTW",
-      hospitals,
-      single_bedroom_matches,
-      length_of_stay_cia_format,
-      "avg_los"
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge"
+      )
+    ),
+    tar_target(
+      plot_length_of_stay,
+      get_indicator_site_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        length_of_stay_cia_format,
+        "avg_los"
+      )
     )
+    
   )
   
 )

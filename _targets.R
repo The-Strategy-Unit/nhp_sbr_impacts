@@ -271,6 +271,12 @@ list(
     length_of_stay_cia_formatting(sus_apcs)
   ),
   
+  # Cleaning staff additional formatting
+  tar_target(
+    cleaning_staff_cia_format,
+    cleaning_staff_cia_formatting(formatted_eric)
+  ),
+  
   #----------------------------------------------------------------------------#
   #### Standard charts ####
   tar_target(
@@ -432,7 +438,7 @@ tarchetypes::tar_map(
       hospital_of_interest,
       hospitals,
       single_bedroom_matches,
-      formatted_eric,
+      cleaning_staff_cia_format,
       "cleaning_staff_wte"
     )
   )

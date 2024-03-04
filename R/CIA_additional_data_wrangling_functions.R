@@ -222,3 +222,13 @@ length_of_stay_cia_formatting <- function(data) {
   return(length_of_stay_cia_format)
   
 }
+
+cleaning_staff_cia_formatting <- function(data) {
+  cleaning_staff_cia_format <- data |>
+    merge_sites() |>
+    summarise(cleaning_staff_wte = sum(as.numeric(cleaning_staff_wte), 
+                                       na.rm = TRUE), 
+              .by = c(site_code, month))
+  
+  return(cleaning_staff_cia_format)
+}

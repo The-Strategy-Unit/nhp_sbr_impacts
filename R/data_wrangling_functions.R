@@ -73,7 +73,7 @@ wrangle_eric <- function(eric_09_15, eric_16_23) {
       value = as.numeric(value),
       effective_snapshot_date = as.Date(effective_snapshot_date,
                                         format = "%d/%m/%Y")
-    )
+    )  
   
   return(data)
 }

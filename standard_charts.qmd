@@ -18,7 +18,7 @@ For all the charts below:
 -   The black line is the trend for the hospital of interest
 -   The grey lines are the trends for each control for the hospital of interest
 -   The blue line is for the onset of COVID-19
--   The purple line is for the month where the hospital of interest introduced 
+-   The orange line is for the month where the hospital of interest introduced 
 single bedrooms
 
 ::: panel-tabset
@@ -75,9 +75,9 @@ tar_read(plot_bed_occupancy_tunbridge_wells) |>
   ggplotly()
 ```
 
-## Cleaning costs
+## Cleaning service costs
 
-These are the charts for cleaning costs, taken from the annual [Estates 
+These are the charts for cleaning service costs, taken from the annual [Estates 
 Returns Information Collection](https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection).
 
 ### Royal Liverpool
@@ -626,6 +626,7 @@ tar_read(plot_rtt_waiting_time_tunbridge_wells) |>
 -   COVID-19 has affected all measures
 -   We do not have enough/any data pre SBR for some sites
 -   Code for bed occupancy excludes the annual groups
+-   Clatterbridge not in eric data before 2021
 -   For turnover, should we look at joiners as well as leavers?
 -   Friends and family and falls and fractures have NaN, probably because of 
 zero denominators

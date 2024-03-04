@@ -225,6 +225,7 @@ length_of_stay_cia_formatting <- function(data) {
 
 cleaning_staff_cia_formatting <- function(data) {
   cleaning_staff_cia_format <- data |>
+    filter(month >= "2015-03-01") |>
     merge_sites() |>
     summarise(cleaning_staff_wte = sum(as.numeric(cleaning_staff_wte), 
                                        na.rm = TRUE), 
@@ -235,6 +236,7 @@ cleaning_staff_cia_formatting <- function(data) {
 
 cleaning_costs_cia_formatting <- function(data) {
   cleaning_costs_cia_format <- data |>
+    filter(month >= "2015-03-01") |>
     merge_sites() |>
     summarise(cleaning_service_cost = sum(as.numeric(cleaning_service_cost), 
                                        na.rm = TRUE), 

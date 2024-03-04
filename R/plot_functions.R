@@ -56,6 +56,11 @@ plot_indicator <- function(site_of_interest,
                            plotting_variable,
                            grouping,
                            sbr_date) {
+  covid_date <- as.Date("2020-03-01")
+  
+  colour_covid <- "blue"
+  colour_sbr <- "orange"
+  
   plot <- ggplot2::ggplot(site_of_interest,
                           ggplot2::aes(month,
                                        !!sym(plotting_variable))) +
@@ -70,12 +75,12 @@ plot_indicator <- function(site_of_interest,
     ggplot2::xlab("Month") +
     ggplot2::geom_vline(
       xintercept = as.numeric(as.Date(sbr_date)),
-      col = "purple",
+      col = colour_sbr,
       linetype = "dotted"
     ) +
     ggplot2::geom_vline(
-      xintercept = as.numeric(as.Date("2020-03-01")),
-      col = "blue",
+      xintercept = as.numeric(covid_date),
+      col = colour_covid,
       linetype = "dotted"
     ) +
     ggplot2::geom_text(aes(
@@ -84,13 +89,14 @@ plot_indicator <- function(site_of_interest,
       y = 0
     ),
     hjust = "bottom",
-    col = "purple") +
+    col = colour_sbr) +
     ggplot2::geom_text(aes(
-      x = as.Date("2020-03-01"),
+      x = covid_date,
       label = "COVID-19",
       y = 0
     ),
-    col = "blue")
+    col = colour_covid) +
+    xlim(as.Date("2008-03-01"), NA)
   
   return(plot)
   

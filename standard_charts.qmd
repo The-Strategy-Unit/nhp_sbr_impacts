@@ -75,6 +75,60 @@ tar_read(plot_bed_occupancy_tunbridge_wells) |>
   ggplotly()
 ```
 
+## Cleaning costs
+
+These are the charts for cleaning costs, taken from the annual [Estates 
+Returns Information Collection](https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection).
+
+### Royal Liverpool
+
+```{r}
+tar_read(plot_cleaning_costs_royal_liverpool) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r}
+tar_read(plot_cleaning_costs_clatterbridge) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r}
+tar_read(plot_cleaning_costs_royal_papworth) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r}
+tar_read(plot_cleaning_costs_peterborough) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r}
+tar_read(plot_cleaning_costs_chase_farm) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r}
+tar_read(plot_cleaning_costs_southmead) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r}
+tar_read(plot_cleaning_costs_tunbridge_wells) |> 
+  ggplotly()
+```
+
 ## Cleaning staff
 
 These are the charts for cleaning staff WTE, taken from the annual [Estates 

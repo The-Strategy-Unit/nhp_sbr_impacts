@@ -14,6 +14,10 @@ get_y_axis_for_indicator_plots <- function(plotting_variable) {
     y_axis <- "Cleaning Staff WTE"
   }
   
+  if (plotting_variable == "cleaning_service_cost") {
+    y_axis <- "Cleaning Service Costs (£)"
+  }
+  
   if (plotting_variable == "staff_sickness_percent") {
     y_axis <- "Staff sickness absence (%)"
   }

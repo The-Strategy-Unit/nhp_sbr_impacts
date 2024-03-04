@@ -277,6 +277,12 @@ list(
     cleaning_staff_cia_formatting(formatted_eric)
   ),
   
+  # Cleaning costs additional formatting
+  tar_target(
+    cleaning_costs_cia_format,
+    cleaning_costs_cia_formatting(formatted_eric)
+  ),
+  
   #----------------------------------------------------------------------------#
   #### Standard charts ####
   tar_target(
@@ -440,6 +446,29 @@ tarchetypes::tar_map(
       single_bedroom_matches,
       cleaning_staff_cia_format,
       "cleaning_staff_wte"
+    )
+  )
+),
+tarchetypes::tar_map(
+  list(
+    hospital_of_interest = c(
+      "royal_liverpool",
+      "clatterbridge",
+      "royal_papworth",
+      "peterborough",
+      "chase_farm",
+      "southmead",
+      "tunbridge_wells"
+    )
+  ),
+  tar_target(
+    plot_cleaning_costs,
+    get_indicator_site_level_plot(
+      hospital_of_interest,
+      hospitals,
+      single_bedroom_matches,
+      cleaning_costs_cia_format,
+      "cleaning_service_cost"
     )
   )
 ),

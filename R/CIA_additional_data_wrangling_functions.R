@@ -232,3 +232,13 @@ cleaning_staff_cia_formatting <- function(data) {
   
   return(cleaning_staff_cia_format)
 }
+
+cleaning_costs_cia_formatting <- function(data) {
+  cleaning_costs_cia_format <- data |>
+    merge_sites() |>
+    summarise(cleaning_service_cost = sum(as.numeric(cleaning_service_cost), 
+                                       na.rm = TRUE), 
+              .by = c(site_code, month))
+  
+  return(cleaning_costs_cia_format)
+}

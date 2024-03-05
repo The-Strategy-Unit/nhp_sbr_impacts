@@ -108,7 +108,10 @@ list(
     sus_cost_mth,
     fun_load_sus_cost_mth("Data/nhp_hospsite_costs_mth.csv")
   ),
-  
+  tar_target(
+    sus_readmit,
+    fun_load_sus_readmit("Data/nhp_sbr_readmit.csv")
+  ),
   
   # rtt waiting times
   tar_target(

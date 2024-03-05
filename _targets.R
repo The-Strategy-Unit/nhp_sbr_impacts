@@ -112,6 +112,10 @@ list(
     sus_readmit,
     fun_load_sus_readmit("Data/nhp_sbr_readmit.csv")
   ),
+  tar_target(
+    sus_los,
+    fun_load_sus_los("Data/nhp_sbr_los.csv")
+  ),
   
   # rtt waiting times
   tar_target(

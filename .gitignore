@@ -59,4 +59,4 @@ rsconnect/
 *.png
 
 #targets meta
-_targets/meta/meta
+_targets/

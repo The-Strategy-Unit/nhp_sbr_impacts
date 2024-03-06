@@ -25,21 +25,8 @@ format:
 css: styles.css
 ---
 
-REMRQ - Royal Liverpool
-
-REM21 - Aintree University
-
-RBN01 - Whiston
-
-REMBG - Warrington
-
-RVY01 - Southport & Formby
-
-RVY02 - Ormskirk & District
-
-RJR05 - Countess of Chester
-
 ```{r, include=FALSE}
+
 
 # Extra data wrangling
 
@@ -51,6 +38,9 @@ library(janitor)
 library(readxl)
 library(zoo)
 library(lubridate)
+library(ggrepel)
+library(flextable)
+library(egg)
 
 library(StrategyUnitTheme)
 library(extrafont)
@@ -65,8 +55,7 @@ staff_turnover<-tar_read(staff_turnover_cia_format)
 
 
 ## Staff sickness
-staff_sickness<-tar_read(staff_sickness_cia_format)|>
-  filter(organisation_code=="REM"|organisation_code=="RBN"|organisation_code=="RVY"| organisation_code=="RJR" )
+staff_sickness<-tar_read(staff_sickness_cia_format)
 
 ## Healthcare acquired infections - Infection rate per 10,000 bed days
 hcai<-tar_read(hcai_cia_format)
@@ -75,7 +64,7 @@ hcai<-tar_read(hcai_cia_format)
 falls_and_fractures<- tar_read(falls_and_fractures_cia_format)
 
 # SUS death rate (deaths/1000 admissions)
-sus_deaths<- tar_read(sus_death_data_cia_format)
+sus_deaths<- tar_read(sus_deaths_cia_format)
 
 ## RTT waiting time
 rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
@@ -93,54 +82,100 @@ length_of_stay<- tar_read(length_of_stay_cia_format)
 
 ## TO DO Emergency readmissions
 
+
+# Find the best matches and run causal impact analysis  
+select_matches<-function(organisation, data, switch_month, variable, prior_sd){
+  
+matches<-tar_read(single_bedroom_matches)|>
+   filter(organisation_code==organisation)
+ 
+ dataset<-data|>
+   filter(organisation_code==organisation | organisation_code %in% matches$matching_organisation_code)|>
+   left_join(matches[,c("matching_organisation_code", "trust_name")],    by=c("organisation_code"="matching_organisation_code"))|> # Add name of matched sites
+      distinct()|>
+   filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+ 
+ # Find best matches
+ mm <- MarketMatching::best_matches(data=dataset,
+                   id_variable="organisation_code",
+                   date_variable="month",
+                   matching_variable={{variable}},
+                   parallel=FALSE,
+                   warping_limit=1, 
+                   dtw_emphasis=1, 
+                   matches=5, 
+                   start_match_period=(as.Date(switch_month) %m-% months(72)),
+                   end_match_period=(as.Date(switch_month)))
+  
+ #View the best matches
+  value<-mm$BestMatches|>
+  filter(organisation_code==organisation)
+
+results <- MarketMatching::inference(matched_markets = mm,
+                                     analyze_betas=TRUE,
+                                     test_market = organisation,
+                                    end_post_period =(as.Date(switch_month) %m+% months(24)),
+                                    alpha=0.05, 
+                                    prior_level_sd=prior_sd)
+
+return(results)
+return(mm)
+}
+
+cia_summary_plots<-function(results, title, ylab, switch_date){
+
+# Plot out actual vs expected
+a<-results$PlotActualVersusExpected+
+  su_theme()+
+  labs(title=title, y=ylab)+
+  theme(axis.text = element_text(size=12), 
+        axis.title = element_text(size=14), 
+        legend.title =element_blank(),
+        legend.text=element_text(size=12))+
+ annotate(geom="text", x=as.Date(switch_date),  y=0.1, hjust=1.05, label="SBR switch", color="#ec6555")+
+   geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.8, color="#ec6555")+
+  scale_color_manual(values=c("#f9bf07","#2c2825" ))+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  scale_y_continuous(limits=c(0,NA))+ 
+  guides(colour = guide_legend(reverse=T))
+
+# Plot pointwise effect
+b<-results$PlotPointEffect+
+  su_theme()+
+  theme(axis.text = element_text(size=12), axis.title = element_text(size=14))+
+  geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
+  geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.8, color="#ec6555")+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")
+
+# Plot out cumulative effect
+c<-results$PlotCumulativeEffect+
+  su_theme()+
+    theme(axis.text = element_text(size=12), axis.title = element_text(size=14))+
+  geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
+  geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.8, color="#ec6555")+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")
+
+figure<-ggarrange(a,b,c, ncol=1)
+}
+
+
+
 ```
 
-# Other plots information
+# Availability of indicators by site
 
-## Cleaning staff
-
-```{r}
-cleaning_staff<-tar_read(eric_udal)|>
-  filter(measure=="Cleaning staff (WTE)")|>
-  filter(level=="Site")|>
-  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
-  left_join(beddays[,c("der_provider_site_code", "beddays", "yearmon")], by=c("site_code"="der_provider_site_code", "month"="yearmon")) |>
-  merge_sites()|>
-  group_by(month, site_code)|>
-  summarise(value=sum(value), beddays=sum(beddays))|>
-  mutate(rate=(value/beddays)*1000) #WTE per 1000 beddays
-
-```
-
-## C. Difficile rate over time
-
-```{r}
-
-#c.diff only as this goes back before 2017/2018
-tar_read(formatted_HCAI_data)|>
-  left_join(beddays_by_prov[,c("organisation_code", "yearmon", "beddays")], by=c("organisation_code", "month"="yearmon"))|>
-  mutate(rate=(count_of_cases/beddays)*10000)|> #cases per 10,000 beddays
-filter(collection=="C.difficile")|>
-  filter(organisation_code=="REM")|> #for Royal Liverpool
-    ggplot(aes(x = month, y =rate) ) + 
-   geom_line(linewidth=1) 
-
-
-# C. Difficile numbers are too small to use in CIA as so much variability.
-
-```
-
-tar_make()
-
-```{r, fig.height=4, fig.width=10}
+```{r, fig.height=5, fig.width=10}
 
 
   measure<-c("friends and family test", "staff turnover", "staff sickness", "healthcare acquired infections", "falls and fractures", "hospital deaths", "rtt waiting times", "bed occupancy", "length of stay" )
     start_date<-c(min(friends_and_family_cia_format$month), min(turnover_cia_format$month), min(staff_sickness_cia_format$month), min(hcai_cia_format$month), min(falls_and_fractures_cia_format$month), min(sus_death_data_cia_format$month), min(rtt_waiting_time_cia_format$month), min(bed_occupancy_cia_format$month), min(length_of_stay_cia_format$month))
       end_date<-c(max(friends_and_family_cia_format$month), max(turnover_cia_format$month), max(staff_sickness_cia_format$month), max(hcai_cia_format$month), max(falls_and_fractures_cia_format$month), max(sus_death_data_cia_format$month), max(rtt_waiting_time_cia_format$month), max(bed_occupancy_cia_format$month), max(length_of_stay_cia_format$month))
-  
-indicators<- data.frame(measure, start_date, end_date) #|>
- # gather(key="start_end", value="month", -measure)
+
+
+indicators<- data.frame(measure, start_date, end_date)|>
+ gather(key=type, value=range, -measure)|>
+    mutate(range=as.Date(range))
+
 
 name<-c("Royal Liverpool", "Clatterbridge", "Papworth", "Peterborough", "Chase Farm", "Southmead", "Tunbridge Wells")
 date<-c('2022-10-01', '2020-06-01', '2019-05-01', '2010-11-01', '2018-09-01', '2014-05-01', '2011-01-01' )
@@ -148,102 +183,195 @@ date<-c('2022-10-01', '2020-06-01', '2019-05-01', '2010-11-01', '2018-09-01', '2
 sites<-data.frame(name, date)|>
   mutate(date=as.Date(date))
 
-ggplot() +
-  geom_segment(data=indicators, aes(x=measure, y=start_date, yend=end_date),lineend = "round", color="#ABDDA4", linewidth=3)+
+
+
+ggplot(data=indicators,aes(y=measure, x=range))+
+ geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
 labs(y=NULL, x=NULL)+
-  su_theme()+
-  theme(axis.text.y = element_text(size=12),axis.text.x = element_text(size=11))+
-  geom_vline(data=sites, aes(xintercept = date), linetype="dashed", color="#2c2825") +
-  geom_text(data=sites, aes(x=date, label=name, y=12), colour="#2c2825", angle=45, text=element_text(size=11))+
-  scale_x_date(date_breaks = "1 year",date_labels = "%Y")
+ su_theme()+
+  theme(axis.text.y = element_text(size=12.5),axis.text.x = element_text(size=11),
+        plot.margin = unit(c(4.5,1,1,1), "lines"))+
+ geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
+ geom_text(data=sites|>filter(name!= "Peterborough" & name!="Tunbridge Wells"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0, vjust=-0.2, text=element_text(size=11.5))+
+  geom_text(data=sites|>filter(name== "Peterborough"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0.1, vjust=-0.4, text=element_text(size=11))+
+  geom_text(data=sites|>filter(name=="Tunbridge Wells"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0, vjust=0.6, text=element_text(size=11))+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  coord_cartesian(clip = 'off') 
+
 
 
 
 ```
 
-# Causal Impact analysis
+```{r}
+
+
+indicator_availability_by_site<-indicators|>
+  cross_join(sites)|>
+  filter(type=="start_date")|>
+   mutate(difference=as.numeric(date-range))|> #difference in days
+  mutate(sufficient_baseline=ifelse(difference>=730, "yes", "no"))|>
+  select(-difference, -date, -range, -type)|>
+  pivot_wider( names_from = name, values_from=sufficient_baseline)
+
+ colormatrix<-ifelse(indicator_availability_by_site=="no","#FBE0DC", 
+                     ifelse(indicator_availability_by_site=="yes", "#d5eed1", "#FFFFFF"  ))
+    
+  
+indicator_availability_by_site|>
+  flextable() |>
+  align(part = "header", align = "center")|>
+    align(part = "body", align = "center")|>
+  bg(bg = "#f9bf07", part = "header") |>
+  bg(j=1:8, bg=colormatrix)|>
+  bold(bold = TRUE, part="header")|>
+   fontsize(size = 12, part = "all")|>
+   padding(padding = 2, part = "all", padding.top=NULL) |>
+ autofit()|>
+      htmltools_value(ft.align = "left") 
+
+
+
+
+
+```
+
+# Patient and Staff Experience
+
+## Patient experience - Friends and Family scores
+
+Liverpool Clatterbridge Papworth Chase Farm
+
+## Staff turnover
+
+Liverpool
 
 ## Staff sickness
 
-```{r, include=TRUE}
+Chase Farm Southmead
 
-
-# Find the best matches  
-
-test<-staff_sickness_cia_format|>
-  filter(month!='2022-10-01')
-
-mm <- MarketMatching::best_matches(data=test,
-                   id_variable="organisation_code",
-                   date_variable="month",
-                   matching_variable="percent",
-                   parallel=FALSE,
-                   warping_limit=1, # warping limit=1
-                   dtw_emphasis=1, # rely only on dtw for pre-screening
-                   matches=3, # request 3 matches
-                   start_match_period="2016-08-01",
-                   end_match_period="2022-09-01")
-
-#View the best matches
-knitr::kable(head(mm$BestMatches))
-
-
-
-results <- MarketMatching::inference(matched_markets = mm,
-                                     analyze_betas=TRUE,
-                                     test_market = "REM",
-                                    end_post_period = "2023-10-01",
-                                    alpha=0.05, 
-                            prior_level_sd=0.01,
-                                    nseasons=12)
-
-#Plot the actuals 
-results$PlotActuals+
-  su_theme()
-
-# Plot out actual vs expected
-results$PlotActualVersusExpected
-
-# Plot out actual vs expected
-results$PlotActualVersusExpected
-
-
-# Plot out cumulative effect
-results$PlotCumulativeEffect
-
-# Plot pointwise effect
-results$PlotPointEffect
-
-
-# See which hospital receives the highest weight in determining the outcome
-coeff <- results$Coefficients
-knitr::kable(head(coeff))
-
-
-```
+#### Royal Liverpool (REM)
 
 ```{r, include=FALSE}
 
+staff_sickness_REM<-select_matches("REM", staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05)
+
+
+#Plot the actuals 
+staff_sickness_REM$PlotActuals+
+  su_theme()
+
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- staff_sickness_REM$Coefficients
+
 #Store predicted values in dataframe
-pred <- results$Predictions
-knitr::kable(head(pred))
+pred <- staff_sickness_REM$Predictions
 
 # Check out the DW and MAPE of the model
-results$PlotPriorLevelSdAnalysis
+staff_sickness_REM$PlotPriorLevelSdAnalysis
 
 #Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
 
 power <- MarketMatching::test_fake_lift(matched_markets = mm, 
                                       test_market = "REM", 
                                       end_fake_post_period = "2023-10-01", 
-                                      prior_level_sd = 0.01, 
+                                      prior_level_sd = 0.02, 
                                       steps=10,
-                                      max_fake_lift=0.05)
+                                      max_fake_lift=0.1)
 #And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
 power$ResultsGraph
 
 
 ```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_REM, "Study site: Royal Liverpool, REM","Sickness Rate (%)", "2022-10-01")
+
+```
+
+#### Clatterbridge (REN)
+
+```{r, include=FALSE}
+
+staff_sickness_REN<-select_matches("REN", staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05)
+
+#Plot the actuals 
+staff_sickness_REN$PlotActuals+
+  su_theme()
+
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- staff_sickness_REN$Coefficients
+
+#Store predicted values in dataframe
+pred <- staff_sickness_REN$Predictions
+
+# Check out the DW and MAPE of the model
+staff_sickness_REN$PlotPriorLevelSdAnalysis
+
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = "REN", 
+                                      end_fake_post_period = "2022-07-01", 
+                                      prior_level_sd = 0.02, 
+                                      steps=10,
+                                      max_fake_lift=0.10)
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+power$ResultsGraph
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_REN, "Study site: Clatterbridge, REN","Sickness Rate (%)", "2020-06-01")
+
+```
+
+#### Papworth (RGM)
+
+```{r, include=FALSE}
+
+staff_sickness_RGM<-select_matches("RGM", staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05)
+
+
+#Plot the actuals 
+staff_sickness_RGM$PlotActuals+
+  su_theme()
+
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- staff_sickness_RGM$Coefficients
+
+
+#Store predicted values in dataframe
+pred <- staff_sickness_RGM$Predictions
+
+# Check out the DW and MAPE of the model
+staff_sickness_RGM$PlotPriorLevelSdAnalysis
+
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = "RGM", 
+                                      end_fake_post_period = "2023-10-01", 
+                                      prior_level_sd = 0.02, 
+                                      steps=10,
+                                      max_fake_lift=0.1)
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+power$ResultsGraph
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_RGM, "Study site: Papworth, RGM","Sickness Rate (%)", "2019-05-01")
+```
+
+# Productivity and Efficiency
 
 ## RTT Waiting time data- Median waiting time (in weeks)
 
@@ -278,17 +406,18 @@ results <- MarketMatching::inference(matched_markets = mm,
 
 
 #Plot the actuals 
-results$PlotActuals
+a<-results$PlotActuals
 
 # Plot out actual vs expected
-results$PlotActualVersusExpected
-
-# Plot out cumulative effect
-results$PlotCumulativeEffect
+b<-results$PlotActualVersusExpected
 
 # Plot pointwise effect
-results$PlotPointEffect
+c<-results$PlotPointEffect
 
+# Plot out cumulative effect
+d<-results$PlotCumulativeEffect
+
+figure<-ggarrange(a,b,c,d, ncol=1)
 
 # See which hospital recieves the highest weight in determining the outcome
 coeff <- results$Coefficients
@@ -318,5 +447,41 @@ power <- MarketMatching::test_fake_lift(matched_markets = mm,
 power$ResultsGraph
 
 
+
+```
+
+```{r}
+# Other plots information
+
+## Cleaning staff
+
+
+
+cleaning_staff<-tar_read(eric_udal)|>
+  filter(measure=="Cleaning staff (WTE)")|>
+  filter(level=="Site")|>
+  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+  left_join(beddays[,c("der_provider_site_code", "beddays", "yearmon")], by=c("site_code"="der_provider_site_code", "month"="yearmon")) |>
+  merge_sites()|>
+  group_by(month, site_code)|>
+  summarise(value=sum(value), beddays=sum(beddays))|>
+  mutate(rate=(value/beddays)*1000) #WTE per 1000 beddays
+
+```
+
+```{r}
+## C. Difficile rate over time
+
+#c.diff only as this goes back before 2017/2018
+tar_read(formatted_HCAI_data)|>
+  left_join(beddays_by_prov[,c("organisation_code", "yearmon", "beddays")], by=c("organisation_code", "month"="yearmon"))|>
+  mutate(rate=(count_of_cases/beddays)*10000)|> #cases per 10,000 beddays
+filter(collection=="C.difficile")|>
+  filter(organisation_code=="REM")|> #for Royal Liverpool
+    ggplot(aes(x = month, y =rate) ) + 
+   geom_line(linewidth=1) 
+
+
+# C. Difficile numbers are too small to use in CIA as so much variability.
 
 ```

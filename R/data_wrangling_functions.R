@@ -820,3 +820,21 @@ fun_load_sus_cost_mth <- function(filepth) {
   
   return(data)
 }
+
+##load the readmissions monthly csv
+
+fun_load_sus_readmit <- function(filepth) {
+  data <- read.csv(filepth) |>
+    clean_names()
+  
+  return(data)
+}
+
+##load the separate LoS monthly csv
+
+fun_load_sus_los <- function(filepth) {
+  data <- read.csv(filepth) |>
+    clean_names()
+  
+  return(data)
+}

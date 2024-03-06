@@ -4,7 +4,7 @@ available_beds|stem|ffa34aa027aa8768|aacddd32df4293bc|e0094a48365378c1|-49324149
 bd_plot|object|cde5afd7671240d3|||||||||||||||
 bed_occupancy_cia_format|stem|0fbadbd0e1253767|318784546442dc00|89725227463401b4|546703205||t19788.3298211323s|05fc74471bf70344|195606|rds|local|vector|||0.14||
 bed_occupancy_cia_formatting|function|d09397a2542d95a6|||||||||||||||
-bed_occupancy_filepath|stem|4d70bf72f2eb9a99|eb86079296fca518|ef46db3751d8e999|1552112817|Data/sql_bed_occupancy.csv|t19772.3580531591s|6aa465b7419212e3|2947470|file|local|vector|||0||
+bed_occupancy_filepath|stem|4d70bf72f2eb9a99|eb86079296fca518|ef46db3751d8e999|1552112817|Data/sql_bed_occupancy.csv|t19788.3331424215s|6aa465b7419212e3|2947470|file|local|vector|||0||
 beddays|stem|15d4758cd8460c46|1868ad88d175b7d4|ffd10096d532772e|-902021018||t19775.3459185602s|baa6826491b7faf8|574061|rds|local|vector|||0.82||
 beddays_by_provider_function|function|38f80cc7d37653e2|||||||||||||||
 cancer_centres|stem|4dab77527e7ee5af|7019fa504ddf26ed|75184001e2c70b01|862374927||t19780.3778371702s|e5bbbe2c72f528d1|618|rds|local|vector|||0.08||
@@ -45,6 +45,8 @@ fun_load_beddays|function|235e7c85b2604131|||||||||||||||
 fun_load_sus_apcs|function|595d06259d138984|||||||||||||||
 fun_load_sus_cost_mth|function|d539fb199a7cc0a7|||||||||||||||
 fun_load_sus_cost_yr|function|d539fb199a7cc0a7|||||||||||||||
+fun_load_sus_los|function|d539fb199a7cc0a7|||||||||||||||
+fun_load_sus_readmit|function|d539fb199a7cc0a7|||||||||||||||
 general_acute_sites|stem|1f0ba4b94335bc02|a31020c151da2781|107e1f3c4eec049d|-2011810264||t19783.4040722821s|62f1d1bd6d4f494f|1675|rds|local|vector|||0||
 get_available_beds_by_organisation|function|25be6e180b892669|||||||||||||||
 get_bed_occupancy_from_udal|function|6155a6abebaa5976|||||||||||||||
@@ -156,7 +158,7 @@ rtt_waiting_time_cia_format|stem|4bf890ab419c634d|144c71b4e822fcd8|7ceef456d6aa0
 rtt_waiting_time_cia_formatting|function|4980e970a749d03f|||||||||||||||
 scrape_csv|function|79bbd783185b40d8|||||||||||||||
 scrape_xls|function|87a6ba427a90fbd4|||||||||||||||
-shmi_filepath|stem|52528ccbdb437ef3|347b5eec9d19b56a|ef46db3751d8e999|-2047203215|Data/sql_shmi.csv|t19772.3580587552s|82eb41dfc7a6d8e7|2444270|file|local|vector|||0||
+shmi_filepath|stem|52528ccbdb437ef3|347b5eec9d19b56a|ef46db3751d8e999|-2047203215|Data/sql_shmi.csv|t19788.3331428153s|82eb41dfc7a6d8e7|2444270|file|local|vector|||0||
 single_bedroom_matches|stem|826320e2c4693424|57c5cc38836f45e6|78eead9bb7395ab6|-819551377||t19780.3878081363s|63b98a036acca29e|7445|rds|local|vector|||0.34||
 single_bedrooms|stem|78546b0500382b3b|7926bac5aae5e4ff|95bdacb0b5b29239|-232301579||t19786.5581424006s|67af426e6d3e4061|54096|rds|local|vector|||0.03||
 site_type_filter|function|46ada0375cd4a80a|||||||||||||||
@@ -171,6 +173,8 @@ sus_cost_mth|stem|97fbd0ba1108bcec|a3e60b549ee769e9|e4070eb7009b8d13|730171039||
 sus_cost_yr|stem|4064dc3a80d9b253|8e74f0c4dab1f5f9|0b512c86c2ebd567|-1669511941||t19775.3459212398s|2cb418d19bb470b4|246344|rds|local|vector|||0.05||
 sus_deaths_cia_format|stem|6aaeaa52698e5317|d058c14ee5da7b4c|4f940409796eb8d6|-1001137650||t19783.4280955016s|49916ed25858b01f|782966|rds|local|vector|||1.19||
 sus_deaths_cia_formatting|function|7d964356232454af|||||||||||||||
+sus_los|stem|230572929b840dc5|042605a1bd11eddd|1bc4b0c9846a5673|-897509964||t19788.3334444501s|62358a382a43a2ea|1566352|rds|local|vector|||0.44||
+sus_readmit|stem|5d0c9feb909a4fa3|8f47d1906087bdae|7d260480b495fb4a|-348528648||t19788.3334350211s|617d59093b20359b|612611|rds|local|vector|||3.43||
 turnover_filepath|stem|7c2cd78fa7ccc415|d220e0e4b99f02cd|ef46db3751d8e999|420258589|Data/sql_turnover.csv|t19772.3580630741s|7405a42fe7350c11|38820373|file|local|vector|||0||
 workforce_links|stem|a491c8ead5bb7b03|a4f957217dbbb5ea|7d345a5628b43aaf|1119332858||t19774.3822879487s|a744f0f8f0be9d70|1156|rds|local|vector|||0.03||
 workforce_links_filepath|stem|86e1cd4ce1f6aac1|2d9a6eff04121488|ef46db3751d8e999|758256672|Data/links_workforce.xlsx|t19772.3580515562s|83e8c682822a8172|11502|file|local|vector|||0.04||

@@ -350,7 +350,8 @@ list(
         hospitals,
         single_bedroom_matches,
         bed_occupancy_cia_format,
-        "bed_occupancy"
+        "bed_occupancy",
+        "quarter"
       )
     )
   ),
@@ -373,7 +374,8 @@ list(
         hospitals,
         single_bedroom_matches,
         staff_turnover_cia_format,
-        "leaving_rate"
+        "leaving_rate",
+        "month"
       )
     )
   ),
@@ -396,7 +398,8 @@ tarchetypes::tar_map(
       hospitals,
       single_bedroom_matches,
       staff_sickness_cia_format,
-      "staff_sickness_percent"
+      "staff_sickness_percent",
+      "month"
     )
   )
 ),
@@ -419,11 +422,12 @@ tarchetypes::tar_map(
         hospitals,
         single_bedroom_matches,
         hcai_cia_format,
-        "combined_rate"
+        "combined_rate",
+        "month"
       )
     )
-  ), 
-  
+  ),
+
 
   # site code plots
 tarchetypes::tar_map(
@@ -445,7 +449,8 @@ tarchetypes::tar_map(
       hospitals,
       single_bedroom_matches,
       cleaning_staff_cia_format,
-      "cleaning_staff_wte"
+      "cleaning_staff_wte",
+      "year"
     )
   )
 ),
@@ -468,7 +473,8 @@ tarchetypes::tar_map(
       hospitals,
       single_bedroom_matches,
       cleaning_costs_cia_format,
-      "cleaning_service_cost"
+      "cleaning_service_cost",
+      "year"
     )
   )
 ),
@@ -491,7 +497,8 @@ tarchetypes::tar_map(
       hospitals,
       single_bedroom_matches,
       friends_and_family_cia_format,
-      "friends_and_family_percent"
+      "friends_and_family_percent",
+      "month"
     )
   )
 ),
@@ -514,7 +521,8 @@ tarchetypes::tar_map(
       hospitals,
       single_bedroom_matches,
       falls_and_fractures_cia_format,
-      "ff_rate"
+      "ff_rate",
+      "month"
     )
   )
 ),
@@ -537,7 +545,8 @@ tarchetypes::tar_map(
       hospitals,
       single_bedroom_matches,
       sus_deaths_cia_format,
-      "death_rate"
+      "death_rate",
+      "month"
     )
   )
 ),
@@ -560,7 +569,8 @@ tarchetypes::tar_map(
         hospitals,
         single_bedroom_matches,
         rtt_waiting_time_cia_format,
-        "median_by_prov"
+        "median_by_prov",
+        "month"
       )
     )
   ),
@@ -583,7 +593,8 @@ tarchetypes::tar_map(
         hospitals,
         single_bedroom_matches,
         length_of_stay_cia_format,
-        "avg_los"
+        "avg_los",
+        "month"
       )
     )
     

@@ -195,7 +195,7 @@ bed_occupancy_cia_formatting <- function(data) {
                                  organisation_code #merge historical Royal Liverpool codes
       )
     ) |>
-    filter(report_period_length == "Quarterly") |>
+    filter(month >= as.Date("2010-03-01")) |>
     summarise(
       available = sum(available),
       occupied = sum(occupied),

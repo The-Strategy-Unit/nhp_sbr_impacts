@@ -55,29 +55,44 @@ plot_indicator <- function(site_of_interest,
                            controls,
                            plotting_variable,
                            grouping,
-                           sbr_date) {
+                           sbr_date,
+                           frequency) {
   covid_date <- as.Date("2020-03-01")
   
   colour_covid <- "blue"
   colour_sbr <- "orange"
   
+  if (grouping == "site_code") {
+    level <- "site \n level"
+  } else {
+    level <- "provider \n level"
+  }
+  
+  max_y <- controls |> 
+   # rbind(site_of_interest) |> 
+    summarise(max(!!sym(plotting_variable), na.rm = TRUE)) |>
+    pull()
+  
   plot <- ggplot2::ggplot(site_of_interest,
                           ggplot2::aes(month,
                                        !!sym(plotting_variable))) +
     ggplot2::geom_line() +
+    
+    # controls
     ggplot2::geom_line(data = controls,
                        ggplot2::aes(month,
                                     !!sym(plotting_variable),
                                     group = !!sym(grouping)),
                        alpha = 0.1) +
-    ggplot2::theme_bw() +
+    
+    # labels
     ggplot2::ylab(get_y_axis_for_indicator_plots(plotting_variable)) +
     ggplot2::xlab("Month") +
-    ggplot2::geom_vline(
-      xintercept = as.numeric(as.Date(sbr_date)),
-      col = colour_sbr,
-      linetype = "dotted"
-    ) +
+    
+    # covid and sbr annotations
+    ggplot2::geom_vline(xintercept = as.numeric(as.Date(sbr_date)),
+                        col = colour_sbr,
+                        linetype = "dotted") +
     ggplot2::geom_vline(
       xintercept = as.numeric(covid_date),
       col = colour_covid,
@@ -88,27 +103,37 @@ plot_indicator <- function(site_of_interest,
       label = "SBR",
       y = 0
     ),
-    hjust = "bottom",
     col = colour_sbr) +
-    ggplot2::geom_text(aes(
-      x = covid_date,
-      label = "COVID-19",
-      y = 0
-    ),
-    col = colour_covid) +
-    xlim(as.Date("2008-03-01"), NA)
-  
+    ggplot2::geom_text(aes(x = covid_date,
+                           label = "COVID-19",
+                           y = 0),
+                       col = colour_covid) +
+    
+    # level annotation
+    annotate("text", x = as.Date("2023-01-01"), y = max_y, label = level) + 
+    
+    # general format
+    ggplot2::scale_x_date(breaks = seq.Date(as.Date("2008-03-01"),
+                                            as.Date("2023-10-01"),
+                                            "year"),
+                          # minor_breaks = seq.Date(as.Date("2008-03-01"),
+                          #                   as.Date("2023-10-01"),
+                          #                   frequency),
+                          date_labels = "%b%y") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(axis.text.x = element_text(angle = 90))
+
   return(plot)
   
 }
 
 # To get the plot for an indicator that is at organisation level:
-get_indicator_organisation_level_plot <-
-  function(hospital_of_interest,
+get_indicator_organisation_level_plot <- function(hospital_of_interest,
            hospitals,
            controls,
            indicator,
-           plotting_variable) {
+           plotting_variable,
+           frequency) {
     org_code_of_interest <- hospitals |>
       dplyr::filter(alias == hospital_of_interest) |>
       dplyr::pull(organisation_code)
@@ -132,7 +157,8 @@ get_indicator_organisation_level_plot <-
       controls,
       plotting_variable,
       "matching_organisation_code",
-      sbr_date
+      sbr_date,
+      frequency
     )
     
     return(plot)
@@ -144,7 +170,8 @@ get_indicator_site_level_plot <- function(hospital_of_interest,
                                           hospitals,
                                           controls,
                                           indicator,
-                                          plotting_variable) {
+                                          plotting_variable,
+                                          frequency) {
   site_code_of_interest <- hospitals |>
     dplyr::filter(alias == hospital_of_interest) |>
     dplyr::pull(site_code)
@@ -167,7 +194,9 @@ get_indicator_site_level_plot <- function(hospital_of_interest,
                          controls,
                          plotting_variable,
                          "site_code",
-                         sbr_date)
+                         sbr_date,
+                         frequency
+                         )
   
   return(plot)
   

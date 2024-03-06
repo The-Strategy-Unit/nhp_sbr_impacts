@@ -625,7 +625,6 @@ tar_read(plot_rtt_waiting_time_tunbridge_wells) |>
 
 -   COVID-19 has affected all measures
 -   We do not have enough/any data pre SBR for some sites
--   Code for bed occupancy excludes the annual groups
 -   Clatterbridge not in eric data before 2021
 -   For turnover, should we look at joiners as well as leavers?
 -   Friends and family and falls and fractures have NaN, probably because of 

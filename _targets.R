@@ -116,6 +116,10 @@ list(
     sus_los,
     fun_load_sus_los("Data/nhp_sbr_los.csv")
   ),
+  tar_target(
+    sus_falls,
+    fun_load_sus_falls("Data/nhp_sbr_falls.csv")
+  ),
   
   # rtt waiting times
   tar_target(

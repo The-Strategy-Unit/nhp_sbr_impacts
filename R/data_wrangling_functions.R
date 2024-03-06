@@ -838,3 +838,12 @@ fun_load_sus_los <- function(filepth) {
   
   return(data)
 }
+
+##load the falls and injuries data
+
+fun_load_sus_falls <- function(filepth) {
+  data <- read.csv(filepth) |>
+    clean_names()
+  
+  return(data)
+}

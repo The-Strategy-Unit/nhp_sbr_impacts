@@ -43,7 +43,6 @@ library(flextable)
 library(egg)
 
 library(StrategyUnitTheme)
-library(extrafont)
 
 ## Friends & Family
 friends_and_family<-tar_read(friends_and_family_cia_format)
@@ -81,10 +80,13 @@ length_of_stay<- tar_read(length_of_stay_cia_format)
 #   geom_line(linewidth=1) 
 
 ## TO DO Emergency readmissions
+```
 
+#Functions
+```{r}
 
-# Find the best matches and run causal impact analysis  
-select_matches<-function(organisation, data, switch_month, variable, prior_sd){
+# Function to find the best matches
+select_matches<-function(organisation, data, switch_month, variable){
   
 matches<-tar_read(single_bedroom_matches)|>
    filter(organisation_code==organisation)
@@ -106,20 +108,66 @@ matches<-tar_read(single_bedroom_matches)|>
                    matches=5, 
                    start_match_period=(as.Date(switch_month) %m-% months(72)),
                    end_match_period=(as.Date(switch_month)))
-  
+
+ return(mm)
+
+}
+
+# Function to run the CIA   
+cia_analysis<-function(organisation,data, switch_month, variable, prior_sd){
+
+  mm<-select_matches(organisation, data, switch_month, variable)
+
  #View the best matches
   value<-mm$BestMatches|>
   filter(organisation_code==organisation)
 
+  # Run the causal impact analysis
 results <- MarketMatching::inference(matched_markets = mm,
                                      analyze_betas=TRUE,
                                      test_market = organisation,
                                     end_post_period =(as.Date(switch_month) %m+% months(24)),
                                     alpha=0.05, 
-                                    prior_level_sd=prior_sd)
+                                    prior_level_sd= prior_sd)
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- results$Coefficients
+
+#Store predicted values in dataframe
+pred <- results$Predictions
 
 return(results)
-return(mm)
+
+}
+
+
+evaluating_model<-function(organisation, data, switch_month, variable, prior_sd, model){
+  
+mm<-  select_matches(organisation, data, switch_month, variable)
+  
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = organisation, 
+                                      end_fake_post_period = (as.Date(switch_month) %m+% months(24)), 
+                                      prior_level_sd = prior_sd, 
+                                      steps=10,
+                                      max_fake_lift=0.1)
+
+#Plot the actuals 
+a<-model$PlotActuals+
+  su_theme()
+
+# Check out the DW and MAPE of the model
+b<-model$PlotPriorLevelSdAnalysis+
+  su_theme()
+
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+c<-power$ResultsGraph+
+  su_theme()
+
+figure<-ggarrange(a,b,c,
+                  ncol=1)
+
 }
 
 cia_summary_plots<-function(results, title, ylab, switch_date){
@@ -133,7 +181,7 @@ a<-results$PlotActualVersusExpected+
         legend.title =element_blank(),
         legend.text=element_text(size=12))+
  annotate(geom="text", x=as.Date(switch_date),  y=0.1, hjust=1.05, label="SBR switch", color="#ec6555")+
-   geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.8, color="#ec6555")+
+   geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.6, color="#ec6555")+
   scale_color_manual(values=c("#f9bf07","#2c2825" ))+
 scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
   scale_y_continuous(limits=c(0,NA))+ 
@@ -144,7 +192,7 @@ b<-results$PlotPointEffect+
   su_theme()+
   theme(axis.text = element_text(size=12), axis.title = element_text(size=14))+
   geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
-  geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.8, color="#ec6555")+
+  geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.6, color="#ec6555")+
 scale_x_date(date_breaks = "1 year",date_labels = "%Y")
 
 # Plot out cumulative effect
@@ -152,7 +200,7 @@ c<-results$PlotCumulativeEffect+
   su_theme()+
     theme(axis.text = element_text(size=12), axis.title = element_text(size=14))+
   geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
-  geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.8, color="#ec6555")+
+  geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.6, color="#ec6555")+
 scale_x_date(date_breaks = "1 year",date_labels = "%Y")
 
 figure<-ggarrange(a,b,c, ncol=1)
@@ -162,14 +210,16 @@ figure<-ggarrange(a,b,c, ncol=1)
 
 ```
 
+
+
 # Availability of indicators by site
 
 ```{r, fig.height=5, fig.width=10}
 
 
   measure<-c("friends and family test", "staff turnover", "staff sickness", "healthcare acquired infections", "falls and fractures", "hospital deaths", "rtt waiting times", "bed occupancy", "length of stay" )
-    start_date<-c(min(friends_and_family_cia_format$month), min(turnover_cia_format$month), min(staff_sickness_cia_format$month), min(hcai_cia_format$month), min(falls_and_fractures_cia_format$month), min(sus_death_data_cia_format$month), min(rtt_waiting_time_cia_format$month), min(bed_occupancy_cia_format$month), min(length_of_stay_cia_format$month))
-      end_date<-c(max(friends_and_family_cia_format$month), max(turnover_cia_format$month), max(staff_sickness_cia_format$month), max(hcai_cia_format$month), max(falls_and_fractures_cia_format$month), max(sus_death_data_cia_format$month), max(rtt_waiting_time_cia_format$month), max(bed_occupancy_cia_format$month), max(length_of_stay_cia_format$month))
+    start_date<-c(min(friends_and_family$month), min(staff_turnover$month), min(staff_sickness$month), min(hcai$month), min(falls_and_fractures$month), min(sus_deaths$month), min(rtt_waiting_time$month), min(bed_occupancy$month), min(length_of_stay$month))
+      end_date<-c(max(friends_and_family$month), max(staff_turnover$month), max(staff_sickness$month), max(hcai$month), max(falls_and_fractures$month), max(sus_deaths$month), max(rtt_waiting_time$month), max(bed_occupancy$month), max(length_of_stay$month))
 
 
 indicators<- data.frame(measure, start_date, end_date)|>
@@ -240,7 +290,10 @@ indicator_availability_by_site|>
 
 ## Patient experience - Friends and Family scores
 
-Liverpool Clatterbridge Papworth Chase Farm
+Liverpool 
+Clatterbridge 
+Papworth 
+Chase Farm
 
 ## Staff turnover
 
@@ -248,39 +301,15 @@ Liverpool
 
 ## Staff sickness
 
-Chase Farm Southmead
-
 #### Royal Liverpool (REM)
 
-```{r, include=FALSE}
+```{r, fig.height=8, fig.width=8}
 
-staff_sickness_REM<-select_matches("REM", staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05)
-
-
-#Plot the actuals 
-staff_sickness_REM$PlotActuals+
-  su_theme()
+staff_sickness_REM<-cia_analysis("REM",  staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05)
 
 
-# See which hospital receives the highest weight in determining the outcome
-coeff <- staff_sickness_REM$Coefficients
+evaluating_model("REM", staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM)
 
-#Store predicted values in dataframe
-pred <- staff_sickness_REM$Predictions
-
-# Check out the DW and MAPE of the model
-staff_sickness_REM$PlotPriorLevelSdAnalysis
-
-#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
-
-power <- MarketMatching::test_fake_lift(matched_markets = mm, 
-                                      test_market = "REM", 
-                                      end_fake_post_period = "2023-10-01", 
-                                      prior_level_sd = 0.02, 
-                                      steps=10,
-                                      max_fake_lift=0.1)
-#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
-power$ResultsGraph
 
 
 ```
@@ -293,33 +322,11 @@ cia_summary_plots(staff_sickness_REM, "Study site: Royal Liverpool, REM","Sickne
 
 #### Clatterbridge (REN)
 
-```{r, include=FALSE}
+```{r, include=TRUE, fig.width=8, fig.height=8}
 
-staff_sickness_REN<-select_matches("REN", staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05)
+staff_sickness_REN<-cia_analysis("REN", staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05)
 
-#Plot the actuals 
-staff_sickness_REN$PlotActuals+
-  su_theme()
-
-
-# See which hospital receives the highest weight in determining the outcome
-coeff <- staff_sickness_REN$Coefficients
-
-#Store predicted values in dataframe
-pred <- staff_sickness_REN$Predictions
-
-# Check out the DW and MAPE of the model
-staff_sickness_REN$PlotPriorLevelSdAnalysis
-
-#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
-power <- MarketMatching::test_fake_lift(matched_markets = mm, 
-                                      test_market = "REN", 
-                                      end_fake_post_period = "2022-07-01", 
-                                      prior_level_sd = 0.02, 
-                                      steps=10,
-                                      max_fake_lift=0.10)
-#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
-power$ResultsGraph
+evaluating_model("REN", staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN )
 
 
 ```
@@ -332,36 +339,11 @@ cia_summary_plots(staff_sickness_REN, "Study site: Clatterbridge, REN","Sickness
 
 #### Papworth (RGM)
 
-```{r, include=FALSE}
+```{r, include=TRUE, fig.width=8, fig.height=8}
 
-staff_sickness_RGM<-select_matches("RGM", staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05)
+staff_sickness_RGM<-cia_analysis("RGM", staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05)
 
-
-#Plot the actuals 
-staff_sickness_RGM$PlotActuals+
-  su_theme()
-
-
-# See which hospital receives the highest weight in determining the outcome
-coeff <- staff_sickness_RGM$Coefficients
-
-
-#Store predicted values in dataframe
-pred <- staff_sickness_RGM$Predictions
-
-# Check out the DW and MAPE of the model
-staff_sickness_RGM$PlotPriorLevelSdAnalysis
-
-#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
-
-power <- MarketMatching::test_fake_lift(matched_markets = mm, 
-                                      test_market = "RGM", 
-                                      end_fake_post_period = "2023-10-01", 
-                                      prior_level_sd = 0.02, 
-                                      steps=10,
-                                      max_fake_lift=0.1)
-#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
-power$ResultsGraph
+evaluating_model("RGM", staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05, staff_sickness_RGM)
 
 
 ```
@@ -371,86 +353,54 @@ power$ResultsGraph
 cia_summary_plots(staff_sickness_RGM, "Study site: Papworth, RGM","Sickness Rate (%)", "2019-05-01")
 ```
 
+#### Chase Farm Hospital (RAL)
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+staff_sickness_RAL<-cia_analysis("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05)
+
+
+evaluating_model("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05, staff_sickness_RAL)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_RAL, "Study site: Chase Farm Hospital, RAL","Sickness Rate (%)", "2018-09-01")
+```
+
+#### Southmead (RVJ)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_RVJ<-cia_analysis("RVJ", staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05)
+
+evaluating_model("RVJ", staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_RVJ, "Study site: Southmead, RVJ","Sickness Rate (%)", "2014-05-01")
+```
+
 # Productivity and Efficiency
 
 ## RTT Waiting time data- Median waiting time (in weeks)
 
 ```{r}
 
+```
 
-# Find the best matches  
-mm <- MarketMatching::best_matches(rtt_data_cia_format,
-                   id_variable="organisation_code",
-                   date_variable="month",
-                   matching_variable="median_by_prov",
-                   parallel=FALSE,
-                   warping_limit=1, # warping limit=1
-                   dtw_emphasis=1, # rely only on dtw for pre-screening
-                   matches=3, # request 3 matches
-                   start_match_period="2016-08-01",
-                   end_match_period="2022-09-01")
+```{r, include=FALSE}
 
-
-#View the best matches
-knitr::kable(head(mm$BestMatches))
-
-results <- MarketMatching::inference(matched_markets = mm,
-                                     analyze_betas=TRUE,
-                                     test_market = "REM",
-                                    end_post_period = "2023-10-01",
-                                    alpha=0.05, 
-                                    prior_level_sd=0.01,
-                                    nseasons=12)
-
-#Absolute Effect indicates an increase in the median of 0.94 relative to what we expected. The Relative Effect provides a standardized view, indicating a 0.94% increase in the median. Probability of a causal impact indicates that the likelihood of observing this effect by chance is high (e.g., 100 - 55.2). 
-
-
-#Plot the actuals 
-a<-results$PlotActuals
-
-# Plot out actual vs expected
-b<-results$PlotActualVersusExpected
-
-# Plot pointwise effect
-c<-results$PlotPointEffect
-
-# Plot out cumulative effect
-d<-results$PlotCumulativeEffect
-
-figure<-ggarrange(a,b,c,d, ncol=1)
-
-# See which hospital recieves the highest weight in determining the outcome
-coeff <- results$Coefficients
-knitr::kable(head(coeff))
 
 
 ```
 
 ```{r, include=FALSE}
-
-#Store predicted values in dataframe
-pred <- results$Predictions
-knitr::kable(head(pred))
-
-# Check out the DW and MAPE of the model
-results$PlotPriorLevelSdAnalysis
-
-#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
-
-power <- MarketMatching::test_fake_lift(matched_markets = mm, 
-                                      test_market = "REM", 
-                                      end_fake_post_period = "2023-10-01", 
-                                      prior_level_sd = 0.01, 
-                                      steps=10,
-                                      max_fake_lift=0.05)
-#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
-power$ResultsGraph
-
-
-
-```
-
-```{r}
 # Other plots information
 
 ## Cleaning staff
@@ -469,7 +419,7 @@ cleaning_staff<-tar_read(eric_udal)|>
 
 ```
 
-```{r}
+```{r, include=FALSE}
 ## C. Difficile rate over time
 
 #c.diff only as this goes back before 2017/2018

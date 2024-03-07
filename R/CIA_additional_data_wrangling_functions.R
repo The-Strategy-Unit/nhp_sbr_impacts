@@ -133,6 +133,8 @@ falls_and_fractures_cia_formatting <- function(data) {
   falls_and_fractures_cia_format<-data|>
     rename(site_code=der_provider_site_code)|>
     rename(month = yr_mth) |>
+    mutate(month=paste0(month,"-01"))|>
+    mutate(month=as.Date(month))|> #Format date
     merge_sites() |>
     mutate(fall_spell_los=as.numeric(fall_spell_los),
            all_spell_los=as.numeric(all_spell_los))|>
@@ -219,6 +221,8 @@ length_of_stay_cia_formatting <- function(data) {
   length_of_stay_cia_format <- data |>
     rename(site_code = der_provider_site_code) |>
     rename(month = yr_mth) |>
+    mutate(month=paste0(month,"-01"))|> # Format date
+    mutate(month=as.Date(month))|>
     merge_sites() |>
     summarise(
       los = sum(total_los),
@@ -260,6 +264,8 @@ emergency_readmissions_cia_formatting <- function(data) {
   emergency_readmissions_cia_format <- data |>
     rename(site_code = der_provider_site_code) |>
     rename(month = yr_mth) |>
+    mutate(month=paste0(month,"-01"))|>
+    mutate(month=as.Date(month))|>#Format date
     merge_sites() |>
     summarise(
       admits = sum(admits),

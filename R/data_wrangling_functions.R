@@ -825,7 +825,8 @@ fun_load_sus_cost_mth <- function(filepth) {
 
 fun_load_sus_readmit <- function(filepth) {
   data <- read.csv(filepth) |>
-    clean_names()
+    clean_names() |> 
+    mutate(perc = readmits/admits*100)
   
   return(data)
 }
@@ -842,6 +843,15 @@ fun_load_sus_los <- function(filepth) {
 ##load the falls and injuries data
 
 fun_load_sus_falls <- function(filepth) {
+  data <- read.csv(filepth) |>
+    clean_names()
+  
+  return(data)
+}
+
+##load the ages data for potential matching
+
+fun_load_sus_ages <- function(filepth) {
   data <- read.csv(filepth) |>
     clean_names()
   

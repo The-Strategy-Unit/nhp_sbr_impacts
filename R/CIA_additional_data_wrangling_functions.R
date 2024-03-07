@@ -58,7 +58,7 @@ friends_and_family_cia_formatting <- function(data) {
 staff_turnover_cia_formatting <- function(data) {
   staff_turnover_cia_format <-  data |>
     filter(staff_group == "nurses_health_visitors") |>
-    mutate(turnover_fte=ifelse(organisation_code=="RQ6"& effective_snapshot_date>='2019-09-01' & effective_snapshot_date<='2020-08-01', NA, turnover_fte))|>
+    mutate(turnover_fte=ifelse(organisation_code=="RQ6"& effective_snapshot_date>='2019-09-01' & effective_snapshot_date<'2020-09-01', 0, turnover_fte))|>
     # REM and RQ6 trusts merged so remove all the RQ6 leavers who transferred to REM
     mutate(
       month = floor_date(effective_snapshot_date, "month"),

@@ -58,7 +58,7 @@ friends_and_family_cia_formatting <- function(data) {
 staff_turnover_cia_formatting <- function(data) {
   staff_turnover_cia_format <-  data |>
     filter(staff_group == "nurses_health_visitors") |>
-    mutate(turnover_fte=ifelse(organisation_code=="RQ6"& effective_snapshot_date>='2019-09-01' & effective_snapshot_date<='2020-08-01', NA, turnover_fte))|>
+    mutate(turnover_fte=ifelse(organisation_code=="RQ6"& effective_snapshot_date>='2019-09-01' & effective_snapshot_date<'2020-09-01', 0, turnover_fte))|>
     # REM and RQ6 trusts merged so remove all the RQ6 leavers who transferred to REM
     mutate(
       month = floor_date(effective_snapshot_date, "month"),
@@ -225,6 +225,7 @@ length_of_stay_cia_formatting <- function(data) {
   
 }
 
+# Cleaning staff/costs
 cleaning_staff_cia_formatting <- function(data) {
   cleaning_staff_cia_format <- data |>
     filter(month >= "2015-03-01") |>
@@ -246,3 +247,21 @@ cleaning_costs_cia_formatting <- function(data) {
   
   return(cleaning_costs_cia_format)
 }
+
+# Emergency readmissions
+emergency_readmissions_formatting <- function(data) {
+  emergency_readmissions_cia_format <- data |>
+    rename(site_code = der_provider_site_code) |>
+    rename(month = yr_mth) |>
+    merge_sites() |>
+    summarise(
+      admits = sum(admits),
+      readmits = sum(readmits),
+      .by = c(site_code, month)
+    ) |> #recalculate rate following merging sites
+    mutate(perc = (readmits/ admits) * 100) # % of readmissions 
+  
+  return(emergency_readmissions_cia_format)
+}
+
+

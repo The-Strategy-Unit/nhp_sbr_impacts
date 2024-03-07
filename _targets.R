@@ -260,7 +260,7 @@ list(
   #Falls and fractures additional formatting
   tar_target(
     falls_and_fractures_cia_format,
-    falls_and_fractures_cia_formatting(sus_apcs)
+    falls_and_fractures_cia_formatting(sus_falls)
   ),
   
   # Hospital death rate additional formatting
@@ -283,7 +283,7 @@ list(
   # Length of Stay additional formatting
   tar_target(
     length_of_stay_cia_format,
-    length_of_stay_cia_formatting(sus_apcs)
+    length_of_stay_cia_formatting(sus_los)
   ),
   
   # Cleaning staff additional formatting
@@ -296,6 +296,12 @@ list(
   tar_target(
     cleaning_costs_cia_format,
     cleaning_costs_cia_formatting(formatted_eric)
+  ),
+  
+  # Emergency readmissions
+  tar_target(
+    emergency_readmissions_cia_format,
+    emergency_readmissions_cia_formatting(sus_readmit)
   ),
   
   #----------------------------------------------------------------------------#

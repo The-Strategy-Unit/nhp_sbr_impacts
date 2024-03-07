@@ -253,7 +253,8 @@ cleaning_costs_cia_formatting <- function(data) {
 }
 
 # Emergency readmissions
-emergency_readmissions_formatting <- function(data) {
+emergency_readmissions_cia_formatting <- function(data) {
+  
   emergency_readmissions_cia_format <- data |>
     rename(site_code = der_provider_site_code) |>
     rename(month = yr_mth) |>

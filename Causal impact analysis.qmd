@@ -86,7 +86,6 @@ length_of_stay<- tar_read(length_of_stay_cia_format)
 emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
 
 
-
 ```
 
 #Functions

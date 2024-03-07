@@ -85,6 +85,31 @@ length_of_stay<- tar_read(length_of_stay_cia_format)
 ## Emergency readmissions
 emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
 
+
+
+test<-tar_read(sus_falls)
+
+
+falls_and_fractures_cia_format<-tar_read(sus_falls)|>
+    rename(site_code=der_provider_site_code)|>
+    rename(month = yr_mth) |>
+    merge_sites() |>
+    mutate(fall_spell_los=as.numeric(fall_spell_los),
+           all_spell_los=as.numeric(all_spell_los))|>
+    summarise(
+      fall_spells = sum(fall_spells),
+      all_spells = sum(all_spells),
+      all_spell_los = sum(all_spell_los),
+      fall_spell_los = sum( fall_spell_los),
+      .by = c(site_code, month)
+    ) |> #recalculate rate following merging sites
+    mutate(ff_rate = (fall_spells/ all_spells) * 100) |> # % of spells with a fall 
+    mutate(ff_los = (fall_spell_los/ all_spell_los) * 100) # % of los associated with fall  
+  
+
+
+
+
 ```
 
 #Functions

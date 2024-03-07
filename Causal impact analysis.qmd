@@ -45,12 +45,14 @@ library(egg)
 library(StrategyUnitTheme)
 
 ## Friends & Family
-friends_and_family<-tar_read(friends_and_family_cia_format)
-  #filter(site_code=="REMRQ"|site_code=="REM21"|site_code=="RBN01"|site_code=="REMBG"|
-  #       site_code=="RVY01"|site_code=="RVY02"|site_code=="RJR05")
+friends_and_family<-tar_read(friends_and_family_cia_format)|>
+  filter(!is.na(friends_and_family_percent))
+
+
 
 ## Staff turnover
-staff_turnover<-tar_read(staff_turnover_cia_format)
+staff_turnover<-tar_read(staff_turnover_cia_format)|>
+  mutate(leaving_rate=ifelse(is.na(Leavers), 0, leaving_rate))
 
 
 ## Staff sickness
@@ -113,8 +115,12 @@ matches<-tar_read(single_bedroom_matches)|>
 
 }
 
+
+
+
+
 # Function to run the CIA   
-cia_analysis<-function(organisation,data, switch_month, variable, prior_sd){
+cia_analysis<-function(organisation, data, switch_month, variable, prior_sd){
 
   mm<-select_matches(organisation, data, switch_month, variable)
 
@@ -170,6 +176,96 @@ figure<-ggarrange(a,b,c,
 
 }
 
+# Function to find the best matches FOR SITES
+select_matches_sites<-function(organisation, site, data, switch_month, variable){
+  
+matches<-tar_read(single_bedroom_matches)|>
+   filter(organisation_code==organisation)
+ 
+ dataset<-data|>
+   filter(site_code==site | site_code %in% matches$site_code)|>
+   left_join(matches[,c("site_code", "trust_name")], by=c("site_code"))|> # Add name of matched sites
+      distinct()|>
+   filter(month!=switch_month |site_code!=site) #remove month of switch
+ 
+ # Find best matches
+ mm <- MarketMatching::best_matches(data=dataset,
+                   id_variable="site_code",
+                   date_variable="month",
+                   matching_variable={{variable}},
+                   parallel=FALSE,
+                   warping_limit=1, 
+                   dtw_emphasis=1, 
+                   matches=5, 
+                   start_match_period=(as.Date(switch_month) %m-% months(72)),
+                   end_match_period=(as.Date(switch_month)))
+
+ return(mm)
+
+}
+
+
+
+# Function to run the CIA FOR SITES   
+cia_analysis_sites<-function(organisation, site, data, switch_month, variable, prior_sd){
+
+  mm<-select_matches_sites(organisation, site, data, switch_month, variable)
+
+ #View the best matches
+  value<-mm$BestMatches|>
+  filter(site_code==site)
+
+  # Run the causal impact analysis
+results <- MarketMatching::inference(matched_markets = mm,
+                                     analyze_betas=TRUE,
+                                     test_market = site,
+                                    end_post_period =(as.Date(switch_month) %m+% months(24)),
+                                    alpha=0.05, 
+                                    prior_level_sd= prior_sd)
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- results$Coefficients
+
+#Store predicted values in dataframe
+pred <- results$Predictions
+
+return(results)
+
+}
+
+# Evaluating the model FOR SITES
+evaluating_model_sites<-function(organisation, site, data, switch_month, variable, prior_sd, model){
+  
+mm<-  select_matches_sites(organisation, site, data, switch_month, variable)
+  
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = site, 
+                                      end_fake_post_period = (as.Date(switch_month) %m+% months(24)), 
+                                      prior_level_sd = prior_sd, 
+                                      steps=10,
+                                      max_fake_lift=0.1)
+
+#Plot the actuals 
+a<-model$PlotActuals+
+  su_theme()
+
+# Check out the DW and MAPE of the model
+b<-model$PlotPriorLevelSdAnalysis+
+  su_theme()
+
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+c<-power$ResultsGraph+
+  su_theme()
+
+figure<-ggarrange(a,b,c,
+                  ncol=1)
+
+}
+
+
+
+
 cia_summary_plots<-function(results, title, ylab, switch_date){
 
 # Plot out actual vs expected
@@ -184,7 +280,6 @@ a<-results$PlotActualVersusExpected+
    geom_vline(aes(xintercept =as.Date(switch_date)), y=0,  linetype="dashed", linewidth=0.6, color="#ec6555")+
   scale_color_manual(values=c("#f9bf07","#2c2825" ))+
 scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  scale_y_continuous(limits=c(0,NA))+ 
   guides(colour = guide_legend(reverse=T))
 
 # Plot pointwise effect
@@ -217,13 +312,14 @@ figure<-ggarrange(a,b,c, ncol=1)
 ```{r, fig.height=5, fig.width=10}
 
 
-  measure<-c("friends and family test", "staff turnover", "staff sickness", "healthcare acquired infections", "falls and fractures", "hospital deaths", "rtt waiting times", "bed occupancy", "length of stay" )
+  measure<-c("Patient experience-\nfriends and family test", "Staff turnover", "Staff sickness", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "RTT waiting times", "Bed occupancy", "Length of stay" )
+level<-c("site", "trust", "trust", "trust", "site", "site", "trust", "trust", "site")
     start_date<-c(min(friends_and_family$month), min(staff_turnover$month), min(staff_sickness$month), min(hcai$month), min(falls_and_fractures$month), min(sus_deaths$month), min(rtt_waiting_time$month), min(bed_occupancy$month), min(length_of_stay$month))
       end_date<-c(max(friends_and_family$month), max(staff_turnover$month), max(staff_sickness$month), max(hcai$month), max(falls_and_fractures$month), max(sus_deaths$month), max(rtt_waiting_time$month), max(bed_occupancy$month), max(length_of_stay$month))
 
 
-indicators<- data.frame(measure, start_date, end_date)|>
- gather(key=type, value=range, -measure)|>
+indicators<- data.frame(measure, level,start_date, end_date)|>
+ gather(key=type, value=range, -measure, -level)|>
     mutate(range=as.Date(range))
 
 
@@ -270,10 +366,12 @@ indicator_availability_by_site<-indicators|>
   
 indicator_availability_by_site|>
   flextable() |>
+  set_header_labels(measure= "Variable",
+                    level="Level")|>
   align(part = "header", align = "center")|>
     align(part = "body", align = "center")|>
   bg(bg = "#f9bf07", part = "header") |>
-  bg(j=1:8, bg=colormatrix)|>
+  bg(j=1:9, bg=colormatrix)|>
   bold(bold = TRUE, part="header")|>
    fontsize(size = 12, part = "all")|>
    padding(padding = 2, part = "all", padding.top=NULL) |>
@@ -290,14 +388,91 @@ indicator_availability_by_site|>
 
 ## Patient experience - Friends and Family scores
 
-Liverpool 
-Clatterbridge 
-Papworth 
-Chase Farm
+#### Royal Liverpool (REMRQ)
 
-## Staff turnover
+```{r, fig.height=8, fig.width=8}
 
-Liverpool
+friends_and_family_REMRQ<-cia_analysis_sites("REM","REMRQ",  friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05)
+
+evaluating_model_sites("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REMRQ)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(friends_and_family_REMRQ, "Study site: Royal Liverpool, REMRQ","Positive responses (%)", "2022-10-01")
+
+test<-friends_and_family|>
+  filter(site_code=="REMRQ")
+
+pred<-friends_and_family_REMRQ$Predictions
+
+# Large amount of data missing in the two years prior due to gap over covid. One of the control sites doesn't go back far enough for it is causing the data to be cut off. Think I need to have less matches for this one. But would still have a disturbed pre switch period due to COVID
+
+```
+
+#### Clatterbridge (REN)
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+
+friends_and_family_REN22<-cia_analysis_sites("REN", "REN22",friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05)
+
+evaluating_model_sites("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN22 )
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(friends_and_family_REN22, "Study site: Clatterbridge, REN22","Positive responses (%)", "2020-06-01")
+
+test<-friends_and_family|>
+  filter(site_code=="REN22")
+
+#Last data point prior to switch was about 4 months prior then no data for 8 months after, as switch came during COVID
+
+```
+
+#### Papworth (RGM)
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+friends_and_family_RGM21<-cia_analysis_sites("RGM", "RGM21", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05)
+
+# No data for Papworth at all
+
+evaluating_model_sites("RGM", "RGM21", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM21)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(friends_and_family_RGM21, "Study site: Papworth, RGM21","Positive responses (%)", "2019-05-01")
+```
+
+#### Chase Farm Hospital (RAL)
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+friends_and_family_RALC7<-cia_analysis_sites("RAL", "RALC7", friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05)
+
+
+evaluating_model_sites("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RALC7)
+
+test<- friends_and_family|>
+  filter(site_code=="RALC7")
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(friends_and_family_RALC7, "Study site: Chase Farm Hospital, RALC7","Positive responses (%)", "2018-09-01")
+```
+
+
+
 
 ## Staff sickness
 
@@ -399,6 +574,44 @@ cia_summary_plots(staff_sickness_RVJ, "Study site: Southmead, RVJ","Sickness Rat
 
 
 ```
+
+
+
+
+```{r, fig.height=8, fig.width=8}
+
+## Staff turnover
+
+#### Royal Liverpool (REM)
+
+staff_turnover_REM<-cia_analysis("REM",  staff_turnover,"2022-10-01", "leaving_rate", 0.05)
+
+
+evaluating_model("REM", staff_turnover,"2022-10-01", "leaving_rate", 0.05, staff_turnover_REM)
+
+test<-staff_turnover|>
+  filter(organisation_code=="REM")
+# denominator appears to remain constant but for 12 months between Sept 2019 to Aug 2020, the numbers of leavers and joiners recorded is approx. 6 times higher than usual.
+
+cia_summary_plots(staff_turnover_REM, "Study site: Royal Liverpool, REM","Leaving Rate (%)", "2022-10-01")
+
+
+
+
+
+
+```
+
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+
+
+```
+
+
+
+
 
 ```{r, include=FALSE}
 # Other plots information

@@ -225,6 +225,7 @@ length_of_stay_cia_formatting <- function(data) {
   
 }
 
+# Cleaning staff/costs
 cleaning_staff_cia_formatting <- function(data) {
   cleaning_staff_cia_format <- data |>
     filter(month >= "2015-03-01") |>
@@ -246,3 +247,21 @@ cleaning_costs_cia_formatting <- function(data) {
   
   return(cleaning_costs_cia_format)
 }
+
+# Emergency readmissions
+emergency_readmissions_formatting <- function(data) {
+  emergency_readmissions_cia_format <- data |>
+    rename(site_code = der_provider_site_code) |>
+    rename(month = yr_mth) |>
+    merge_sites() |>
+    summarise(
+      admits = sum(admits),
+      readmits = sum(readmits),
+      .by = c(site_code, month)
+    ) |> #recalculate rate following merging sites
+    mutate(perc = (readmits/ admits) * 100) # % of readmissions 
+  
+  return(emergency_readmissions_cia_format)
+}
+
+

@@ -62,7 +62,8 @@ staff_sickness<-tar_read(staff_sickness_cia_format)
 hcai<-tar_read(hcai_cia_format)
 
 ## In-hospital Falls and Fractures - Fall rate per 1000 bed days
-falls_and_fractures<- tar_read(falls_and_fractures_cia_format)
+falls_and_fractures<- tar_read(falls_and_fractures_cia_format)|>
+  mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))
 
 # SUS death rate (deaths/1000 admissions)
 sus_deaths<- tar_read(sus_deaths_cia_format)
@@ -81,10 +82,13 @@ length_of_stay<- tar_read(length_of_stay_cia_format)
 #    ggplot(aes(x = month, y =avg_los) ) + 
 #   geom_line(linewidth=1) 
 
-## TO DO Emergency readmissions
+## Emergency readmissions
+emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
+
 ```
 
 #Functions
+
 ```{r}
 
 # Function to find the best matches
@@ -305,8 +309,6 @@ figure<-ggarrange(a,b,c, ncol=1)
 
 ```
 
-
-
 # Availability of indicators by site
 
 ```{r, fig.height=5, fig.width=10}
@@ -471,9 +473,6 @@ test<- friends_and_family|>
 cia_summary_plots(friends_and_family_RALC7, "Study site: Chase Farm Hospital, RALC7","Positive responses (%)", "2018-09-01")
 ```
 
-
-
-
 ## Staff sickness
 
 #### Royal Liverpool (REM)
@@ -575,9 +574,6 @@ cia_summary_plots(staff_sickness_RVJ, "Study site: Southmead, RVJ","Sickness Rat
 
 ```
 
-
-
-
 ```{r, fig.height=8, fig.width=8}
 
 ## Staff turnover
@@ -602,16 +598,11 @@ cia_summary_plots(staff_turnover_REM, "Study site: Royal Liverpool, REM","Leavin
 
 ```
 
-
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
 
 
 ```
-
-
-
-
 
 ```{r, include=FALSE}
 # Other plots information

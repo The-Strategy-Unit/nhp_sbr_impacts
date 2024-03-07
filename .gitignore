@@ -57,3 +57,6 @@ rsconnect/
 
 # images
 *.png
+
+#targets meta
+_targets/

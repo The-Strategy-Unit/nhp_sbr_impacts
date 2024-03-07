@@ -58,6 +58,8 @@ friends_and_family_cia_formatting <- function(data) {
 staff_turnover_cia_formatting <- function(data) {
   staff_turnover_cia_format <-  data |>
     filter(staff_group == "nurses_health_visitors") |>
+    mutate(turnover_fte=ifelse(organisation_code=="RQ6"& effective_snapshot_date>='2019-09-01' & effective_snapshot_date<='2020-08-01', NA, turnover_fte))|>
+    # REM and RQ6 trusts merged so remove all the RQ6 leavers who transferred to REM
     mutate(
       month = floor_date(effective_snapshot_date, "month"),
       #Format date to monthly
@@ -195,7 +197,7 @@ bed_occupancy_cia_formatting <- function(data) {
                                  organisation_code #merge historical Royal Liverpool codes
       )
     ) |>
-    filter(report_period_length == "Quarterly") |>
+    filter(month >= as.Date("2010-03-01")) |>
     summarise(
       available = sum(available),
       occupied = sum(occupied),
@@ -221,4 +223,26 @@ length_of_stay_cia_formatting <- function(data) {
   
   return(length_of_stay_cia_format)
   
+}
+
+cleaning_staff_cia_formatting <- function(data) {
+  cleaning_staff_cia_format <- data |>
+    filter(month >= "2015-03-01") |>
+    merge_sites() |>
+    summarise(cleaning_staff_wte = sum(as.numeric(cleaning_staff_wte), 
+                                       na.rm = TRUE), 
+              .by = c(site_code, month))
+  
+  return(cleaning_staff_cia_format)
+}
+
+cleaning_costs_cia_formatting <- function(data) {
+  cleaning_costs_cia_format <- data |>
+    filter(month >= "2015-03-01") |>
+    merge_sites() |>
+    summarise(cleaning_service_cost = sum(as.numeric(cleaning_service_cost), 
+                                       na.rm = TRUE), 
+              .by = c(site_code, month))
+  
+  return(cleaning_costs_cia_format)
 }

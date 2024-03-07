@@ -85,28 +85,21 @@ length_of_stay<- tar_read(length_of_stay_cia_format)
 ## Emergency readmissions
 emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
 
+survey<-read_csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")
 
-
-test<-tar_read(sus_falls)
-
-
-falls_and_fractures_cia_format<-tar_read(sus_falls)|>
-    rename(site_code=der_provider_site_code)|>
-    rename(month = yr_mth) |>
-    merge_sites() |>
-    mutate(fall_spell_los=as.numeric(fall_spell_los),
-           all_spell_los=as.numeric(all_spell_los))|>
-    summarise(
-      fall_spells = sum(fall_spells),
-      all_spells = sum(all_spells),
-      all_spell_los = sum(all_spell_los),
-      fall_spell_los = sum( fall_spell_los),
-      .by = c(site_code, month)
-    ) |> #recalculate rate following merging sites
-    mutate(ff_rate = (fall_spells/ all_spells) * 100) |> # % of spells with a fall 
-    mutate(ff_los = (fall_spell_los/ all_spell_los) * 100) # % of los associated with fall  
+test<-survey|>
+  clean_names()|>
+      mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
+    mutate(month = floor_date(effective_snapshot_date, "month"))|>  #Format date to monthly
+  filter( str_detect(breakdown_category,"Registered Nurses & Midwives:")|
+        breakdown_category=="Nursing auxiliary / Nursing assistant / Healthcare assistant") |>
+    filter(target_variable=="q21c")
+  
   
 
+
+
+ # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
 
 
 
@@ -339,11 +332,15 @@ figure<-ggarrange(a,b,c, ncol=1)
 ```{r, fig.height=5, fig.width=10}
 
 
-  measure<-c("Patient experience-\nfriends and family test", "Staff turnover", "Staff sickness", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "RTT waiting times", "Bed occupancy", "Length of stay" )
-level<-c("site", "trust", "trust", "trust", "site", "site", "trust", "trust", "site")
-    start_date<-c(min(friends_and_family$month), min(staff_turnover$month), min(staff_sickness$month), min(hcai$month), min(falls_and_fractures$month), min(sus_deaths$month), min(rtt_waiting_time$month), min(bed_occupancy$month), min(length_of_stay$month))
-      end_date<-c(max(friends_and_family$month), max(staff_turnover$month), max(staff_sickness$month), max(hcai$month), max(falls_and_fractures$month), max(sus_deaths$month), max(rtt_waiting_time$month), max(bed_occupancy$month), max(length_of_stay$month))
+  measure<-c("Patient experience-\nfriends and family test", "Staff turnover", "Staff sickness", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "RTT waiting times", "Bed occupancy", "Length of stay", "Emergency readmissions" )
+level<-c("site", "trust", "trust", "trust", "site", "site", "trust", "trust", "site", "site")
+    start_date<-c(min(friends_and_family$month), min(staff_turnover$month), min(staff_sickness$month), min(hcai$month), min(falls_and_fractures$month), min(sus_deaths$month), min(rtt_waiting_time$month), min(bed_occupancy$month), min(length_of_stay$month), min(emergency_readmissions$month))
+      end_date<-c(max(friends_and_family$month), max(staff_turnover$month), max(staff_sickness$month), max(hcai$month), max(falls_and_fractures$month), max(sus_deaths$month), max(rtt_waiting_time$month), max(bed_occupancy$month), max(length_of_stay$month), max(emergency_readmissions$month))
+      
 
+    rename(site_code=der_provider_site_code)|>
+  #  mutate(month = as.Date(yr_mth), format="%Y-%m")|>
+    mutate(month = floor_date(yr_mth, "month"))
 
 indicators<- data.frame(measure, level,start_date, end_date)|>
  gather(key=type, value=range, -measure, -level)|>

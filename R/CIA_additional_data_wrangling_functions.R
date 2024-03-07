@@ -129,6 +129,9 @@ hcai_cia_formatting <- function(bedday_data, hcai_data) {
 
 #Falls and fractures additional formatting
 falls_and_fractures_cia_formatting <- function(data) {
+  
+  falls_and_fractures_cia_format<-data|>
+    rename(site_code=der_provider_site_code)|>
     rename(month = yr_mth) |>
     merge_sites() |>
     mutate(fall_spell_los=as.numeric(fall_spell_los),

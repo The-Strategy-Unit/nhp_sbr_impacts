@@ -52,7 +52,7 @@ friends_and_family<-tar_read(friends_and_family_cia_format)|>
 
 ## Staff turnover
 staff_turnover<-tar_read(staff_turnover_cia_format)|>
-  mutate(leaving_rate=ifelse(is.na(Leavers), 0, leaving_rate))
+  mutate(leaving_rate=ifelse(is.na(leaving_rate), 0, leaving_rate))
 
 
 ## Staff sickness
@@ -439,18 +439,18 @@ test<-friends_and_family|>
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
-friends_and_family_RGM21<-cia_analysis_sites("RGM", "RGM21", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05)
+#friends_and_family_RGM21<-cia_analysis_sites("RGM", "RGM21", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05)
 
 # No data for Papworth at all
 
-evaluating_model_sites("RGM", "RGM21", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM21)
+#evaluating_model_sites("RGM", "RGM21", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM21)
 
 
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
-cia_summary_plots(friends_and_family_RGM21, "Study site: Papworth, RGM21","Positive responses (%)", "2019-05-01")
+#cia_summary_plots(friends_and_family_RGM21, "Study site: Papworth, RGM21","Positive responses (%)", "2019-05-01")
 ```
 
 #### Chase Farm Hospital (RAL)

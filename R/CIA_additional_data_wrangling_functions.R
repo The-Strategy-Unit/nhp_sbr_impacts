@@ -129,16 +129,20 @@ hcai_cia_formatting <- function(bedday_data, hcai_data) {
 
 #Falls and fractures additional formatting
 falls_and_fractures_cia_formatting <- function(data) {
-  falls_and_fractures_cia_format <-  data |>
-    rename(site_code = der_provider_site_code) |>
-    rename(month = yearmon) |>
+  rename(site_code = der_provider_site_code) |>
+    rename(month = yr_mth) |>
     merge_sites() |>
+    mutate(fall_spell_los=as.numeric(fall_spell_los),
+           all_spell_los=as.numeric(all_spell_los))|>
     summarise(
-      fall_fracs = sum(fall_fracs),
-      beddays = sum(beddays),
+      fall_spells = sum(fall_spells),
+      all_spells = sum(all_spells),
+      all_spell_los = sum(all_spell_los),
+      fall_spell_los = sum( fall_spell_los),
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
-    mutate(ff_rate = (fall_fracs / beddays) * 1000) #rate per 1000 beddays
+    mutate(ff_rate = (fall_spells/ all_spells) * 100) |> # % of spells with a fall 
+    mutate(ff_los = (fall_spell_los/ all_spell_los) * 100) # % of los associated with fall  
   
   return(falls_and_fractures_cia_format)
   
@@ -212,10 +216,10 @@ bed_occupancy_cia_formatting <- function(data) {
 length_of_stay_cia_formatting <- function(data) {
   length_of_stay_cia_format <- data |>
     rename(site_code = der_provider_site_code) |>
-    rename(month = yearmon) |>
+    rename(month = yr_mth) |>
     merge_sites() |>
     summarise(
-      los = sum(los),
+      los = sum(total_los),
       spells = sum(spells),
       .by = c(site_code, month)
     ) |> #recalculate following merge of sites

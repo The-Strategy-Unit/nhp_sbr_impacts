@@ -124,6 +124,10 @@ list(
     sus_ages,
     fun_load_sus_ages("Data/nhp_sbr_admit_age.csv")
   ),
+  tar_target(
+    sus_deaths,
+    fun_load_sus_deaths("Data/nhp_sbr_deaths.csv")
+  ),
   
   # rtt waiting times
   tar_target(

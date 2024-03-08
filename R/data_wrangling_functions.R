@@ -857,3 +857,14 @@ fun_load_sus_ages <- function(filepth) {
   
   return(data)
 }
+
+##load the sus-ons linked deaths data
+
+fun_load_sus_deaths <- function(filepth) {
+  data <- read.csv(filepth) |>
+    clean_names() |> 
+    mutate(hosp_rate_1000 = death_hosp/discharges*1000
+           ,all_rate_1000 = (death_hosp + death_30days)/discharges*1000)
+  
+  return(data)
+}

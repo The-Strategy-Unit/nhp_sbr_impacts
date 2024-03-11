@@ -619,6 +619,59 @@ tar_read(plot_rtt_waiting_time_southmead) |>
 tar_read(plot_rtt_waiting_time_tunbridge_wells) |> 
   ggplotly()
 ```
+
+## Single Bed Rooms
+
+These are the charts for the percentage of total beds being single room beds by year.
+
+### Royal Liverpool
+
+```{r}
+tar_read(plot_sbr_percent_royal_liverpool) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r}
+tar_read(plot_sbr_percent_clatterbridge) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r}
+tar_read(plot_sbr_percent_royal_papworth) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r}
+tar_read(plot_sbr_percent_peterborough) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r}
+tar_read(plot_sbr_percent_chase_farm) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r}
+tar_read(plot_sbr_percent_southmead) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r}
+tar_read(plot_sbr_percent_tunbridge_wells) |> 
+  ggplotly()
+```
 :::
 
 ## Overall Notes
@@ -630,3 +683,4 @@ tar_read(plot_rtt_waiting_time_tunbridge_wells) |>
 -   Friends and family and falls and fractures have NaN, probably because of 
 zero denominators
 -   Missing Readmissions
+-   SBR available at provider only due to KH03 not being at site level for the denominator

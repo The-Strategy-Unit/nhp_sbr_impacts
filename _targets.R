@@ -269,7 +269,7 @@ list(
   
   # Hospital death rate additional formatting
   tar_target(sus_deaths_cia_format,
-             sus_deaths_cia_formatting(sus_apcs)),
+             sus_deaths_cia_formatting(sus_deaths)),
   
   
   #rtt waiting time additional formatting

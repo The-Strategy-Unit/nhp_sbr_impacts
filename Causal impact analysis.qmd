@@ -41,14 +41,11 @@ library(lubridate)
 library(ggrepel)
 library(flextable)
 library(egg)
-
 library(StrategyUnitTheme)
 
 ## Friends & Family
 friends_and_family<-tar_read(friends_and_family_cia_format)|>
   filter(!is.na(friends_and_family_percent))
-
-
 
 ## Staff turnover
 staff_turnover<-tar_read(staff_turnover_cia_format)|>
@@ -94,13 +91,8 @@ emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
 #  filter( str_detect(breakdown_category,"Registered Nurses & Midwives:")|
  #       breakdown_category=="Nursing auxiliary / Nursing assistant / Healthcare assistant") |>
  #   
-  
-  
-
-
 
  # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
-
 
 
 ```

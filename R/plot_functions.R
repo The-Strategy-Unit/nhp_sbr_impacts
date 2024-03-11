@@ -46,6 +46,10 @@ get_y_axis_for_indicator_plots <- function(plotting_variable) {
     y_axis <- "Average Length of Stay"
   }
   
+  if (plotting_variable == "percentage_single_bedrooms") {
+    y_axis <- "Single beds as % of all"
+  }
+  
   return(y_axis)
   
 }

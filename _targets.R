@@ -308,6 +308,12 @@ list(
     emergency_readmissions_cia_formatting(sus_readmit)
   ),
   
+  # Single bed rooms
+  tar_target(
+    sbr_percent_cia_format,
+    sbr_percent_cia_formatting(single_bedrooms)
+  ),
+  
   #----------------------------------------------------------------------------#
   #### Standard charts ####
   tar_target(
@@ -623,6 +629,29 @@ tarchetypes::tar_map(
       )
     )
     
+  ),
+tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge_wells"
+      )
+    ),
+    tar_target(
+      plot_sbr_percent,
+      get_indicator_organisation_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        sbr_percent_cia_format,
+        "percentage_single_bedrooms",
+        "year"
+      )
+    )
   )
-  
 )

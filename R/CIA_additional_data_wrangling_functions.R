@@ -281,4 +281,26 @@ emergency_readmissions_cia_formatting <- function(data) {
   return(emergency_readmissions_cia_format)
 }
 
+# SBR percentages
+sbr_percent_cia_formatting <- function(data) {
+  sbr_percent_cia_format <-  data |>
+    mutate(percentage_single_bedrooms=ifelse(organisation_code=="RQ6"& effective_snapshot_date>='2019-09-01' & effective_snapshot_date<'2020-09-01', 0, percentage_single_bedrooms))|>
+    # REM and RQ6 trusts merged so remove all the RQ6 leavers who transferred to REM
+    mutate(
+      month = floor_date(effective_snapshot_date, "month"),
+      #Format date to monthly
+      organisation_code = ifelse((organisation_code == "REM" |
+                                    organisation_code == "RQ6"),
+                                 "REM",
+                                 organisation_code
+      )
+    ) |> #merge historical Royal Liverpool codes
+    summarise(
+      percentage_single_bedrooms = sum(total_single_bedrooms)/sum(total_available)*100,
+      .by = c(month, organisation_code)
+    )
+  
+  return(sbr_percent_cia_format)
+}
+
 

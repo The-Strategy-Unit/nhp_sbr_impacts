@@ -570,7 +570,7 @@ tarchetypes::tar_map(
       hospitals,
       single_bedroom_matches,
       sus_deaths_cia_format,
-      "death_rate",
+      "hosp_rate_1000",
       "month"
     )
   )

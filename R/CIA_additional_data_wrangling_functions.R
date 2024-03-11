@@ -156,14 +156,18 @@ falls_and_fractures_cia_formatting <- function(data) {
 sus_deaths_cia_formatting <- function(data) {
   sus_deaths_cia_format <- data |>
     rename(site_code = der_provider_site_code) |>
-    rename(month = yearmon) |>
+    rename(month = yr_mth) |>
+    mutate(month=paste0(month,"-01"))|>
+    mutate(month=as.Date(month))|> #Format date
     merge_sites() |>
     summarise(
-      deaths = sum(deaths),
-      spells = sum(spells),
+      discharges= sum(discharges),
+      death_hosp = sum(death_hosp),
+      death_30days = sum(death_30days),
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
-    mutate(death_rate = (deaths / spells) * 1000) #deaths/1000 spells
+    mutate(hosp_rate_1000 = (death_hosp / discharges) * 1000)|> #in hospital deaths/1000 discharges
+    mutate(all_rate_1000 = ((death_hosp+death_30days) / discharges) * 1000) #all deaths/1000 discharges
   
   return(sus_deaths_cia_format)
   

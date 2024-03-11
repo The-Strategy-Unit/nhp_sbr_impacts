@@ -34,7 +34,7 @@ get_y_axis_for_indicator_plots <- function(plotting_variable) {
     y_axis <- "Rate of falls and fractures over beddays"
   }
   
-  if (plotting_variable == "death_rate") {
+  if (plotting_variable == "hosp_rate_1000") {
     y_axis <- "Number of Hospital Deaths per 1000 Admissions"
   }
   

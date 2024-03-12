@@ -151,7 +151,7 @@ Conclusive findings were difficult to ascertain, though the review noted that pa
 
 ## Literature review update
 
-The NHSE innovations team (@ Joanne Wood) have created a 'living review' of evidence on this topic recently updated in January 2024 as well as specific reviews on e.g. Maternity admissions. No novel impacts have been identified although there may be important sub-groups to consider in the analysis including Neonate, Oncology, ICU and Frailty. As such, given the significant overlap, we feel there is no need for a comprehensive update to literature in support of this analysis.
+The NHSE innovations team (\@ Joanne Wood) have created a 'living review' of evidence on this topic recently updated in January 2024 as well as specific reviews on e.g. Maternity admissions. No novel impacts have been identified although there may be important sub-groups to consider in the analysis including Neonate, Oncology, ICU and Frailty. As such, given the significant overlap, we feel there is no need for a comprehensive update to literature in support of this analysis.
 
 However; there are still potentially a couple of gaps in respect of identifying other impacts for us to measure in our study or locating evaluative grey literature that may enhance validation of our findings. Identifying mitigating actions was discussed as another gap, however we believe is out of scope (or haven't resourced it within this plan) and should be considered as a follow-on exercise and/or separate commission.
 
@@ -258,9 +258,10 @@ The following represent a summary of the metrics that we believe to me most rele
 
 ## Current proposed measures:
 
-:::{.r-stack}
+::: r-stack
 **Health & Safety**
 :::
+
 ```{r current_measures_HS}
 
 measures |> 
@@ -275,9 +276,10 @@ measures |>
 
 ```
 
-:::{.r-stack}
+::: r-stack
 **Productivity & Efficiency**
 :::
+
 ```{r current_measures_PE}
 
 measures |> 
@@ -292,9 +294,10 @@ measures |>
 
 ```
 
-:::{.r-stack}
+::: r-stack
 **Patient & Staff Experience**
 :::
+
 ```{r current_measures_PSE}
 
 measures |> 

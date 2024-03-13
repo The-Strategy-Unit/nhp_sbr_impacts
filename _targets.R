@@ -128,6 +128,10 @@ list(
     sus_deaths,
     fun_load_sus_deaths("Data/nhp_sbr_deaths.csv")
   ),
+  tar_target(
+    ods_sites,
+    fun_load_ods_sites("Data/ods_geocoded.csv")
+  ),
   
   # rtt waiting times
   tar_target(

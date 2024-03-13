@@ -869,3 +869,15 @@ fun_load_sus_deaths <- function(filepth) {
   
   return(data)
 }
+
+##load the ods data for mapping
+
+fun_load_ods_sites <- function(filepth) {
+  data <- read.csv(filepth) |>
+    clean_names() |> 
+    mutate(effective_to = na_if(effective_to, "NULL")) |> 
+    mutate(effective_from = ymd(effective_from)
+           ,effective_to = ymd(effective_to))
+  
+  return(data)
+}

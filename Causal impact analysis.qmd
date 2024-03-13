@@ -45,6 +45,8 @@ library(flextable)
 library(egg)
 library(StrategyUnitTheme)
 
+rtt<-tar_read(formatted_rtt_data)
+
 
 survey_data <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")|>
     clean_names()|>

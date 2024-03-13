@@ -619,7 +619,7 @@ rtt_data_formatting <- function(data) {
   
   
   formatted_rtt_data <- rbind(rtt_data, pre2011_rtt_data) |>
-    summarise(number_of_incomplete_pathways=sum(number_of_incomplete_pathways), 
+    summarise(number_of_incomplete_pathways=sum(number_of_incomplete_pathways, na.rm=TRUE), 
               .by=c(organisation_code, month, number_of_weeks_since_referral, weeks) )
   
   return(formatted_rtt_data)

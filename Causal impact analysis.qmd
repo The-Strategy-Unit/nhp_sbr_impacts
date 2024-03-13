@@ -45,6 +45,20 @@ library(flextable)
 library(egg)
 library(StrategyUnitTheme)
 
+
+survey_data <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")|>
+    clean_names()|>
+  filter(str_detect(breakdown,"Registered Nurses & Midwives:"))|>
+  mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
+  mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
+filter((str_detect(month,"2022") & target_variable="q23c")|
+         (str_detect(month,"2021") & target_variable="q21c")|
+         (str_detect(month,"2020") & target_variable="q18c")|
+         (str_detect(month,"2019") & target_variable="q21c")|
+         (str_detect(month,"2018") & target_variable="q21c"))
+
+
+
 ## Friends & Family
 friends_and_family<-tar_read(friends_and_family_cia_format)|>
   filter(!is.na(friends_and_family_percent))
@@ -68,7 +82,11 @@ falls_and_fractures<- tar_read(falls_and_fractures_cia_format)|>
 sus_deaths<- tar_read(sus_deaths_cia_format)
 
 ## RTT waiting time
-rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) 
+rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
+  filter(organisation_code!="R1H") #&
+        # organisation_code!="RX1" &
+        # organisation_code!="RHQ" &
+        # organisation_code!="RA9") #Removing poss control due to data issues
 
 ## Bed occupancy
 bed_occupancy<-tar_read(bed_occupancy_cia_format)|>
@@ -92,10 +110,8 @@ emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
 
  # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
 
-
+matches<-tar_read(single_bedroom_matches)
 ```
-
-
 
 ```{r}
 
@@ -108,8 +124,8 @@ matches<-tar_read(single_bedroom_matches)|>
  dataset<-data|>
    filter(organisation_code==organisation | organisation_code %in% matches$matching_organisation_code)|>
    left_join(matches[,c("matching_organisation_code", "trust_name")],    by=c("organisation_code"="matching_organisation_code"))|> # Add name of matched sites
-      distinct()|>
-   filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+      distinct()
+  # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
  
  # Find best matches
  mm <- MarketMatching::best_matches(data=dataset,
@@ -117,17 +133,17 @@ matches<-tar_read(single_bedroom_matches)|>
                    date_variable="month",
                    matching_variable={{variable}},
                    parallel=FALSE,
-                   warping_limit=1, 
+                   warping_limit=2, 
                    dtw_emphasis=1, 
                    matches=5, 
-                   start_match_period=(as.Date(switch_month) %m-% months(72)),
+                   start_match_period=(as.Date(switch_month) %m-% months(120)),
                    end_match_period=(as.Date(switch_month)))
+ 
+  # start_match_period=(as.Date(min(data$month))),
 
  return(mm)
 
 }
-
-
 
 
 
@@ -139,6 +155,7 @@ cia_analysis<-function(organisation, data, switch_month, variable, prior_sd){
  #View the best matches
   value<-mm$BestMatches|>
   filter(organisation_code==organisation)
+  
 
   # Run the causal impact analysis
 results <- MarketMatching::inference(matched_markets = mm,
@@ -197,8 +214,8 @@ matches<-tar_read(single_bedroom_matches)|>
  dataset<-data|>
    filter(site_code==site | site_code %in% matches$site_code)|>
    left_join(matches[,c("site_code", "trust_name")], by=c("site_code"))|> # Add name of matched sites
-      distinct()|>
-   filter(month!=switch_month |site_code!=site) #remove month of switch
+      distinct()
+ #  filter(month!=switch_month |site_code!=site) #remove month of switch
  
  # Find best matches
  mm <- MarketMatching::best_matches(data=dataset,
@@ -206,11 +223,13 @@ matches<-tar_read(single_bedroom_matches)|>
                    date_variable="month",
                    matching_variable={{variable}},
                    parallel=FALSE,
-                   warping_limit=1, 
+                   warping_limit=2, 
                    dtw_emphasis=1, 
                    matches=5, 
-                   start_match_period=(as.Date(switch_month) %m-% months(72)),
+                     start_match_period=(as.Date(switch_month) %m-% months(120)),
                    end_match_period=(as.Date(switch_month)))
+ 
+    # start_match_period=(as.Date(min(data$month))),
 
  return(mm)
 
@@ -274,7 +293,6 @@ figure<-ggarrange(a,b,c,
                   ncol=1)
 
 }
-
 
 
 
@@ -439,6 +457,7 @@ indicator_availability_by_site<-indicators|>
                     level="Level")|>
   align(part = "header", align = "center")|>
     align(part = "body", align = "center")|>
+      align(j=1:2,  align = "left")|>
   bg(bg = "#f9bf07", part = "header") |>
   bg(i=2:5, part="body", bg=colormatrix1)|>
       bg(i=7:9, bg=colormatrix2)|>
@@ -457,17 +476,13 @@ indicator_availability_by_site<-indicators|>
 
 ```
 
-
 # Productivity and Efficiency
 
 ## Waiting time data- Median waiting time (in weeks)
 
-Seems to be some change in data reporting around 2011. 
-Also have numbers predicted to be negative, so need to look at transforming the data first.
+Seems to be some change in data reporting around 2011. Also have numbers predicted to be negative, so need to look at transforming the data first.
 
-
-
-#### Royal Liverpool 
+#### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -483,8 +498,8 @@ evaluating_model("REM",  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05,
 cia_summary_plots(waiting_time_median_REM, "Study site: Royal Liverpool, REM","Median waiting time (wks)", "2022-10-01")
 ```
 
+#### Clatterbridge
 
-#### Clatterbridge 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_median_REN<-cia_analysis("REN", rtt_waiting_time,"2020-06-01", "median_by_prov", 0.05)
@@ -499,7 +514,7 @@ evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05,
 cia_summary_plots(waiting_time_median_REN, "Study site: Clatterbridge, REN","Median waiting time (wks)", "2020-06-01")
 ```
 
-#### Papworth 
+#### Papworth
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -515,8 +530,8 @@ evaluating_model("RGM",  rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05,
 cia_summary_plots(waiting_time_median_RGM, "Study site: Papworth, RGM","Median waiting time (wks)", "2019-05-01")
 ```
 
+#### Peterborough
 
-#### Peterborough 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_median_RGN<-cia_analysis("RGN", rtt_waiting_time,"2010-11-01", "median_by_prov", 0.05)
@@ -531,11 +546,10 @@ evaluating_model("RGN",  rtt_waiting_time, "2010-11-01", "median_by_prov", 0.05,
 cia_summary_plots(waiting_time_median_RGN, "Study site: Peterborough, RGN","Median waiting time (wks)", "2010-11-01")
 ```
 
-
-
 #### Chase Farm
 
 Missing data in 2019 and 2020
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_median_RAL<-cia_analysis("RAL", rtt_waiting_time,"2018-09-01", "median_by_prov", 0.05)
@@ -551,9 +565,7 @@ test<-rtt_waiting_time|>
 cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median waiting time (wks)", "2018-09-01")
 ```
 
-
-
-#### Southmead 
+#### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -569,9 +581,8 @@ evaluating_model("RVJ",  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05,
 cia_summary_plots(waiting_time_median_RVJ, "Study site: Southmead, RVJ","Median waiting time (wks)", "2014-05-01")
 ```
 
-
-
 #### Tunbridge Wells
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_median_RWF<-cia_analysis("RWF", rtt_waiting_time,"2011-01-01", "median_by_prov", 0.01)
@@ -586,11 +597,9 @@ evaluating_model("RWF",  rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01,
 cia_summary_plots(waiting_time_median_RWF, "Study site: Tunbridge Wells, RWF","Median waiting time (wks)", "2011-01-01")
 ```
 
-
-
 ## Waiting time data- Total numbers waiting
 
-#### Royal Liverpool 
+#### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -606,14 +615,16 @@ evaluating_model("REM",  rtt_waiting_time, "2022-10-01", "number_incomplete", 0.
 cia_summary_plots(waiting_time_number_REM, "Study site: Royal Liverpool, REM","Number waiting", "2022-10-01")
 ```
 
+#### Clatterbridge
 
-#### Clatterbridge 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_number_REN<-cia_analysis("REN", rtt_waiting_time,"2020-06-01","number_incomplete", 0.05)
 
 evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN)
 
+test<-rtt_waiting_time|>
+  filter(organisation_code=="REN")
 
 ```
 
@@ -622,7 +633,7 @@ evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "number_incomplete", 0.
 cia_summary_plots(waiting_time_number_REN, "Study site: Clatterbridge, REN","Number waiting", "2020-06-01")
 ```
 
-#### Papworth 
+#### Papworth
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -638,8 +649,8 @@ evaluating_model("RGM",  rtt_waiting_time, "2019-05-01", "number_incomplete", 0.
 cia_summary_plots(waiting_time_number_RGM, "Study site: Papworth, RGM","Number waiting", "2019-05-01")
 ```
 
+#### Peterborough
 
-#### Peterborough 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_number_RGN<-cia_analysis("RGN", rtt_waiting_time,"2010-11-01", "number_incomplete", 0.05)
@@ -654,11 +665,10 @@ evaluating_model("RGN",  rtt_waiting_time, "2010-11-01","number_incomplete", 0.0
 cia_summary_plots(waiting_time_number_RGN, "Study site: Peterborough, RGN","Number waiting", "2010-11-01")
 ```
 
-
-
 #### Chase Farm
 
 Missing data in 2019 and 2020
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_number_RAL<-cia_analysis("RAL", rtt_waiting_time,"2018-09-01", "number_incomplete", 0.05)
@@ -674,9 +684,7 @@ test<-rtt_waiting_time|>
 cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number waiting", "2018-09-01")
 ```
 
-
-
-#### Southmead 
+#### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -692,9 +700,8 @@ evaluating_model("RVJ",  rtt_waiting_time, "2014-05-01", "number_incomplete", 0.
 cia_summary_plots(waiting_time_number_RVJ, "Study site: Southmead, RVJ","Number waiting", "2014-05-01")
 ```
 
-
-
 #### Tunbridge Wells
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_number_RWF<-cia_analysis("RWF", rtt_waiting_time,"2011-01-01","number_incomplete", 0.01)
@@ -711,7 +718,7 @@ cia_summary_plots(waiting_time_number_RWF, "Study site: Tunbridge Wells, RWF","N
 
 ## Length of stay
 
-#### Royal Liverpool 
+#### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -727,16 +734,15 @@ evaluating_model_sites("REM", "REMRQ",  length_of_stay, "2022-10-01", "avg_los",
 cia_summary_plots(LoS_REM, "Study site: Royal Liverpool, REM","Average LoS (days)", "2022-10-01")
 ```
 
-
 #### Clatterbridge
- Missing data from the end of 2020
+
+Missing data from the end of 2020
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 LoS_REN<-cia_analysis_sites("REN", "REN22",length_of_stay,"2020-06-01","avg_los", 0.05)
 
 evaluating_model_sites("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.05, LoS_REN)
-
 
 ```
 
@@ -746,9 +752,12 @@ cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)"
 
 test<-length_of_stay|>
   filter(site_code=="REN22")
+
+test2<-length_of_stay|>
+  filter(site_code=="REN20")
 ```
 
-#### Papworth 
+#### Papworth
 
 COVID-19 spikes in the post switch period are impacting LoS.
 
@@ -766,8 +775,8 @@ evaluating_model_sites("RGM", "RGM22", length_of_stay, "2019-05-01", "avg_los", 
 cia_summary_plots(LoS_RGM, "Study site: Papworth, RGM","Average LoS (days)", "2019-05-01")
 ```
 
+#### Peterborough
 
-#### Peterborough 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 LoS_RGN<-cia_analysis_sites("RGN", "RGN80",length_of_stay,"2010-11-01", "avg_los", 0.05)
@@ -782,11 +791,10 @@ evaluating_model_sites("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 
 cia_summary_plots(LoS_RGN, "Study site: Peterborough, RGN","Average LoS (days)", "2010-11-01")
 ```
 
-
-
 #### Chase Farm
 
 Missing data in 2019 and 2020
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 LoS_RAL<-cia_analysis_sites("RAL", "RALC7", length_of_stay,"2018-09-01", "avg_los", 0.05)
@@ -804,9 +812,7 @@ test<-length_of_stay|>
 cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "2018-09-01")
 ```
 
-
-
-#### Southmead 
+#### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -822,9 +828,8 @@ evaluating_model_sites("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 
 cia_summary_plots(LoS_RVJ, "Study site: Southmead, RVJ","Average LoS (days)", "2014-05-01")
 ```
 
-
-
 #### Tunbridge Wells
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 LoS_RWF<-cia_analysis_sites("RWF", "RWFTW", length_of_stay,"2011-01-01","avg_los", 0.05)
@@ -839,10 +844,9 @@ evaluating_model_sites("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los",
 cia_summary_plots(LoS_RWF, "Study site: Tunbridge Wells, RWF","Average LoS (days)", "2011-01-01")
 ```
 
-
 ## Emergency Readmissions
 
-#### Royal Liverpool 
+#### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -858,9 +862,7 @@ evaluating_model_sites("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "p
 cia_summary_plots(emergency_readmissions_REM, "Study site: Royal Liverpool, REM","% readmissions", "2022-10-01")
 ```
 
-
 #### Clatterbridge
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -879,9 +881,7 @@ test<-length_of_stay|>
   filter(site_code=="REN22")
 ```
 
-#### Papworth 
-
-COVID-19 spikes in the post switch period are impacting LoS.
+#### Papworth
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -897,8 +897,8 @@ evaluating_model_sites("RGM", "RGM22", emergency_readmissions, "2019-05-01", "pe
 cia_summary_plots(emergency_readmissions_RGM, "Study site: Papworth, RGM","% readmissions", "2019-05-01")
 ```
 
+#### Peterborough
 
-#### Peterborough 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 emergency_readmissions_RGN<-cia_analysis_sites("RGN", "RGN80",emergency_readmissions,"2010-11-01", "perc", 0.05)
@@ -913,11 +913,10 @@ evaluating_model_sites("RGN",  "RGN80", emergency_readmissions, "2010-11-01","pe
 cia_summary_plots(emergency_readmissions_RGN, "Study site: Peterborough, RGN","% readmissions", "2010-11-01")
 ```
 
-
-
 #### Chase Farm
 
 Missing data in 2019 and 2020
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 emergency_readmissions_RAL<-cia_analysis_sites("RAL", "RALC7", emergency_readmissions,"2018-09-01", "perc", 0.05)
@@ -935,9 +934,7 @@ test<-length_of_stay|>
 cia_summary_plots(emergency_readmissions_RAL, "Study site: Chase Farm, RAL","% readmissions", "2018-09-01")
 ```
 
-
-
-#### Southmead 
+#### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -953,9 +950,8 @@ evaluating_model_sites("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","per
 cia_summary_plots(emergency_readmissions_RVJ, "Study site: Southmead, RVJ","% readmissions", "2014-05-01")
 ```
 
-
-
 #### Tunbridge Wells
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 emergency_readmissions_RWF<-cia_analysis_sites("RWF", "RWFTW", emergency_readmissions,"2011-01-01","perc", 0.05)
@@ -972,7 +968,7 @@ cia_summary_plots(emergency_readmissions_RWF, "Study site: Tunbridge Wells, RWF"
 
 ## Bed Occupancy
 
-#### Royal Liverpool 
+#### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -988,8 +984,8 @@ evaluating_model("REM",  bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed
 cia_summary_plots(bed_occupancy_REM, "Study site: Royal Liverpool, REM","Percentage", "2022-10-01")
 ```
 
+#### Clatterbridge
 
-#### Clatterbridge 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 bed_occupancy_REN<-cia_analysis("REN", bed_occupancy,"2020-06-01", "bed_occupancy", 0.05)
@@ -1004,7 +1000,7 @@ evaluating_model("REN",  bed_occupancy, "2020-06-01", "bed_occupancy", 0.05, bed
 cia_summary_plots(bed_occupancy_REN, "Study site: Clatterbridge, REN","Percentage", "2020-06-01")
 ```
 
-#### Papworth 
+#### Papworth
 
 Post switch period is impacted by COVID-19
 
@@ -1022,7 +1018,6 @@ evaluating_model("RGM", bed_occupancy, "2019-05-01", "bed_occupancy", 0.05, bed_
 cia_summary_plots(bed_occupancy_RGM, "Study site: Papworth, RGM","Percentage", "2019-05-01")
 ```
 
-
 #### Chase Farm
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -1039,9 +1034,7 @@ evaluating_model("RAL",  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed
 cia_summary_plots(bed_occupancy_RAL, "Study site: Chase Farm, RAL","Percentage", "2018-09-01")
 ```
 
-
-
-#### Southmead 
+#### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -1057,22 +1050,283 @@ evaluating_model("RVJ",  bed_occupancy, "2014-05-01", "bed_occupancy", 0.05, bed
 cia_summary_plots(bed_occupancy_RVJ, "Study site: Southmead, RVJ","Percentage", "2014-05-01")
 ```
 
-
-
 # Health and Safety
 
 ## Healthcare acquired infections
 
-Royal Liverpool Clatterbridge
+Combined rate per 10,000 beddays
 
-## In-hospital Falls and Fractures
+#### Royal Liverpool
 
-Royal Liverpool Clatterbridge Papworth Peterborough Chase Farm Southmead Tunbridge Wells 
+```{r, include=FALSE, fig.width=8, fig.height=8}
 
-## In-hospital deaths 
+hcai_REM<-cia_analysis("REM", hcai,"2022-10-01", "combined_rate", 0.05)
 
-Royal Liverpool Clatterbridge Papworth Peterborough Chase Farm Southmead Tunbridge Wells
+evaluating_model("REM",  hcai, "2022-10-01", "combined_rate", 0.05, hcai_REM)
 
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(hcai_REM, "Study site: Royal Liverpool, REM","Rate/10,000 beddays", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+hcai_REN<-cia_analysis("REN",hcai,"2020-06-01", "combined_rate", 0.05)
+
+evaluating_model("REN",  hcai, "2020-06-01", "combined_rate", 0.05, hcai_REN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(hcai_REN, "Study site: Clatterbridge, REN","Rate/10,000 beddays", "2020-06-01")
+```
+
+## Falls and Fractures in hospital
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_REM<-cia_analysis_sites("REM", "REMRQ", falls_and_fractures,"2022-10-01", "ff_rate", 0.05)
+
+evaluating_model_sites("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_REM, "Study site: Royal Liverpool, REM","% of spells", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_REN<-cia_analysis_sites("REN", "REN22",falls_and_fractures, "2020-06-01","ff_rate", 0.05)
+
+evaluating_model_sites("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_REN, "Study site: Clatterbridge, REN","% of spells", "2020-06-01")
+
+test<-falls_and_fractures|>
+  filter(site_code=="REN22")
+```
+
+#### Papworth
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RGM<-cia_analysis_sites("RGM", "RGM22",falls_and_fractures,"2019-05-01", "ff_rate", 0.05)
+
+evaluating_model_sites("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RGM, "Study site: Papworth, RGM","% of spells", "2019-05-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RGN<-cia_analysis_sites("RGN", "RGN80",falls_and_fractures,"2010-11-01", "ff_rate", 0.05)
+
+evaluating_model_sites("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.05, falls_and_fractures_RGN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RGN, "Study site: Peterborough, RGN","% of spells", "2010-11-01")
+```
+
+#### Chase Farm
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RAL<-cia_analysis_sites("RAL", "RALC7", falls_and_fractures,"2018-09-01", "ff_rate", 0.05)
+
+evaluating_model_sites("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL)
+
+test<-falls_and_fractures|>
+  filter(site_code=="RALC7")
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RAL, "Study site: Chase Farm, RAL","% of spells", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RVJ<-cia_analysis_sites("RVJ", "RVJ01",falls_and_fractures,"2014-05-01", "ff_rate", 0.05)
+
+evaluating_model_sites("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RVJ, "Study site: Southmead, RVJ","% of spells", "2014-05-01")
+```
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RWF<-cia_analysis_sites("RWF", "RWFTW", falls_and_fractures,"2011-01-01","ff_rate", 0.05)
+
+evaluating_model_sites("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RWF, "Study site: Tunbridge Wells, RWF","% of spells", "2011-01-01")
+```
+
+## Deaths in hospital
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_REM<-cia_analysis_sites("REM", "REMRQ", sus_deaths,"2022-10-01", "hosp_rate_1000", 0.05)
+
+evaluating_model_sites("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_REM, "Study site: Royal Liverpool, REM","No./per 1,000 discharges", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_REN<-cia_analysis_sites("REN", "REN22",sus_deaths, "2020-06-01","hosp_rate_1000", 0.05)
+
+evaluating_model_sites("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_REN, "Study site: Clatterbridge, REN","No./per 1,000 discharges", "2020-06-01")
+
+test<-length_of_stay|>
+  filter(site_code=="REN22")
+```
+
+#### Papworth
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RGM<-cia_analysis_sites("RGM", "RGM22",sus_deaths,"2019-05-01", "hosp_rate_1000", 0.05)
+
+evaluating_model_sites("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RGM, "Study site: Papworth, RGM","No./per 1,000 discharges", "2019-05-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RGN<-cia_analysis_sites("RGN", "RGN80",sus_deaths,"2010-11-01", "hosp_rate_1000", 0.05)
+
+evaluating_model_sites("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.05, sus_deaths_RGN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RGN, "Study site: Peterborough, RGN","No./per 1,000 discharges", "2010-11-01")
+```
+
+#### Chase Farm
+
+Missing data in 2019 and 2020
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RAL<-cia_analysis_sites("RAL", "RALC7", sus_deaths,"2018-09-01", "hosp_rate_1000", 0.05)
+
+evaluating_model_sites("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL)
+
+
+test<-length_of_stay|>
+  filter(site_code=="RALC7")
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RAL, "Study site: Chase Farm, RAL","No./per 1,000 discharges", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RVJ<-cia_analysis_sites("RVJ", "RVJ01",sus_deaths,"2014-05-01", "hosp_rate_1000", 0.05)
+
+evaluating_model_sites("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.05, sus_deaths_RVJ)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RVJ, "Study site: Southmead, RVJ","No./per 1,000 discharges", "2014-05-01")
+```
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RWF<-cia_analysis_sites("RWF", "RWFTW", sus_deaths,"2011-01-01","hosp_rate_1000", 0.05)
+
+evaluating_model_sites("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.05, sus_deaths_RWF)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RWF, "Study site: Tunbridge Wells, RWF","No./per 1,000 discharges", "2011-01-01")
+```
 
 # Patient and Staff Experience
 
@@ -1246,13 +1500,6 @@ evaluating_model("RVJ", staff_sickness,"2014-05-01", "staff_sickness_percent", 0
 cia_summary_plots(staff_sickness_RVJ, "Study site: Southmead, RVJ","Sickness Rate (%)", "2014-05-01")
 ```
 
-
-
-
-
-
-
-
 ```{r, fig.height=8, fig.width=8}
 
 ## Staff turnover
@@ -1282,17 +1529,6 @@ cia_summary_plots(staff_turnover_REM, "Study site: Royal Liverpool, REM","Leavin
 
 
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 ```{r, include=FALSE}
 # Other plots information

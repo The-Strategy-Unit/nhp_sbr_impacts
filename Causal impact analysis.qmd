@@ -32,6 +32,8 @@ css: styles.css
 
 ```{r, include=FALSE}
 
+
+
 library(tidyverse)
 library(MarketMatching)
 library(tsibble)
@@ -753,10 +755,14 @@ evaluating_model_sites("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 
 cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)", "2020-06-01")
 
 test<-length_of_stay|>
-  filter(site_code=="REN22")
+  filter(site_code=="REN22")|>
+  ggplot()+
+  geom_line(x=month, y=avg_los)
 
 test2<-length_of_stay|>
-  filter(site_code=="REN20")
+  filter(site_code=="REN20")|>
+  ggplot()+
+  geom_line(x=month, y=avg_los)
 ```
 
 #### Papworth

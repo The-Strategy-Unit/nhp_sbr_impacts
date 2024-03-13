@@ -618,8 +618,7 @@ rtt_data_formatting <- function(data) {
   assign("rtt_data", rtt_data, envir = .GlobalEnv)
   
   
-  formatted_rtt_data <- rbind(rtt_data, pre2011_rtt_data) |>
-    filter(treatment_function_code == "999")#999 is the total for each provider
+  formatted_rtt_data <- rbind(rtt_data, pre2011_rtt_data) 
   
   
   return(formatted_rtt_data)

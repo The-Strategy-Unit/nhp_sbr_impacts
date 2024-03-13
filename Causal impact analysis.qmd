@@ -32,8 +32,6 @@ css: styles.css
 
 ```{r, include=FALSE}
 
-
-
 library(tidyverse)
 library(MarketMatching)
 library(tsibble)
@@ -46,9 +44,6 @@ library(ggrepel)
 library(flextable)
 library(egg)
 library(StrategyUnitTheme)
-
-rtt<-tar_read(formatted_rtt_data)
-
 
 survey_data <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")|>
     clean_names()|>
@@ -87,7 +82,7 @@ sus_deaths<- tar_read(sus_deaths_cia_format)
 
 ## RTT waiting time
 rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
-  filter(organisation_code!="R1H") #&
+  filter( organisation_code!="RF4"  ) #&
         # organisation_code!="RX1" &
         # organisation_code!="RHQ" &
         # organisation_code!="RA9") #Removing poss control due to data issues
@@ -137,7 +132,7 @@ matches<-tar_read(single_bedroom_matches)|>
                    date_variable="month",
                    matching_variable={{variable}},
                    parallel=FALSE,
-                   warping_limit=2, 
+                   warping_limit=1, 
                    dtw_emphasis=1, 
                    matches=5, 
                    start_match_period=(as.Date(switch_month) %m-% months(120)),
@@ -227,7 +222,7 @@ matches<-tar_read(single_bedroom_matches)|>
                    date_variable="month",
                    matching_variable={{variable}},
                    parallel=FALSE,
-                   warping_limit=2, 
+                   warping_limit=1, 
                    dtw_emphasis=1, 
                    matches=5, 
                      start_match_period=(as.Date(switch_month) %m-% months(120)),

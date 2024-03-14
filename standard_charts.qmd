@@ -5,6 +5,9 @@ execute:
   echo: false
   warning: false
 embed-resources: true
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r}
@@ -12,19 +15,79 @@ library(targets)
 library(plotly)
 ```
 
+# The intervention sites and their control matches
 
-For all the charts below:
+The following maps demonstrate the location of the intervention sites
+across England and then, for each one individually, show where the
+current set of control sites are.
+
+```{r overview_map}
+tar_read(map_all)
+```
+
+\
+
+::: panel-tabset
+## Royal Liverpool
+
+```{r royal_liverpool_map}
+tar_read(map_royal_liverpool)
+```
+
+## Clatterbridge
+
+```{r clatterbridge_map}
+tar_read(map_clatterbridge)
+```
+
+## Royal Papworth
+
+```{r royal_papworth_map}
+tar_read(map_royal_papworth)
+```
+
+## Peterborough
+
+```{r peterborough_map}
+tar_read(map_peterborough)
+```
+
+## Chase Farm
+
+```{r chase_farm_map}
+tar_read(map_chase_farm)
+```
+
+## Southmead
+
+```{r southmead_map}
+tar_read(map_southmead)
+```
+
+## Tunbridge Wells
+
+```{r tunbridge_wells_map}
+tar_read(map_tunbridge_wells)
+```
+:::
+
+# The trends for each impact measure
+
+For all the indicator charts below:
 
 -   The black line is the trend for the hospital of interest
--   The grey lines are the trends for each control for the hospital of interest
+-   The grey lines are the trends for each control for the hospital of
+    interest
 -   The blue line is for the onset of COVID-19
--   The orange line is for the month where the hospital of interest introduced 
-single bedrooms
+-   The orange line is for the month where the hospital of interest
+    introduced single bedrooms
 
 ::: panel-tabset
 ## Bed occupancy
 
-These are the charts for bed occupancy percentage, taken from the quarterly [KH03 collection](https://www.england.nhs.uk/statistics/statistical-work-areas/bed-availability-and-occupancy/bed-availability-and-occupancy-kh03/).
+These are the charts for bed occupancy percentage, taken from the
+quarterly [KH03
+collection](https://www.england.nhs.uk/statistics/statistical-work-areas/bed-availability-and-occupancy/bed-availability-and-occupancy-kh03/).
 
 ### Royal Liverpool
 
@@ -77,8 +140,9 @@ tar_read(plot_bed_occupancy_tunbridge_wells) |>
 
 ## Cleaning service costs
 
-These are the charts for cleaning service costs, taken from the annual [Estates 
-Returns Information Collection](https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection).
+These are the charts for cleaning service costs, taken from the annual
+[Estates Returns Information
+Collection](https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection).
 
 ### Royal Liverpool
 
@@ -131,8 +195,9 @@ tar_read(plot_cleaning_costs_tunbridge_wells) |>
 
 ## Cleaning staff
 
-These are the charts for cleaning staff WTE, taken from the annual [Estates 
-Returns Information Collection](https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection).
+These are the charts for cleaning staff WTE, taken from the annual
+[Estates Returns Information
+Collection](https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection).
 
 ### Royal Liverpool
 
@@ -185,7 +250,8 @@ tar_read(plot_cleaning_staff_tunbridge_wells) |>
 
 ## Falls and Fractures
 
-These are the charts for the number of falls and fractures per 10000 beddays.
+These are the charts for the number of falls and fractures per 10000
+beddays.
 
 ### Royal Liverpool
 
@@ -238,9 +304,10 @@ tar_read(plot_falls_and_fractures_tunbridge_wells) |>
 
 ## HCAI
 
-These are the charts for the contributed rate of Healthcare associated 
-Infections (HCAI) over time. For each of the bacteria below a rate of the number
-of cases divided by the number of 10000 beddays was calculated:
+These are the charts for the contributed rate of Healthcare associated
+Infections (HCAI) over time. For each of the bacteria below a rate of
+the number of cases divided by the number of 10000 beddays was
+calculated:
 
 -   Clostridium difficile
 -   Klebsiella
@@ -302,8 +369,8 @@ tar_read(plot_hcai_tunbridge_wells) |>
 
 ## Length of Stay
 
-These are the charts for the average length of stay of all admissions in that 
-month.
+These are the charts for the average length of stay of all admissions in
+that month.
 
 ### Royal Liverpool
 
@@ -356,7 +423,8 @@ tar_read(plot_length_of_stay_tunbridge_wells) |>
 
 ## Mortality
 
-These are the charts for the number of deaths in hospital per 1000 admissions.
+These are the charts for the number of deaths in hospital per 1000
+admissions.
 
 ### Royal Liverpool
 
@@ -409,8 +477,8 @@ tar_read(plot_sus_deaths_tunbridge_wells) |>
 
 ## Patient experience
 
-These are the charts for the percentage of positive responses in the friends and
-family test.
+These are the charts for the percentage of positive responses in the
+friends and family test.
 
 ### Royal Liverpool
 
@@ -463,7 +531,8 @@ tar_read(plot_friends_and_family_tunbridge_wells) |>
 
 ## Staff turnover
 
-These are the charts for the number of staff leavers over the number of staff.
+These are the charts for the number of staff leavers over the number of
+staff.
 
 ### Royal Liverpool
 
@@ -516,7 +585,8 @@ tar_read(plot_staff_turnover_tunbridge_wells) |>
 
 ## Staff sickness absence
 
-These are the charts for the percentage of staff absences due to sickness.
+These are the charts for the percentage of staff absences due to
+sickness.
 
 ### Royal Liverpool
 
@@ -622,7 +692,10 @@ tar_read(plot_rtt_waiting_time_tunbridge_wells) |>
 
 ## Single Bed Rooms
 
-These are the charts for the percentage of total beds being single room beds by year.
+These are the charts for the percentage of total beds being single room
+beds by year. Please note that these are at provider level due to having
+to use KH03 as denominator for total bed numbers in some periods (not
+reported in ERIC).
 
 ### Royal Liverpool
 
@@ -680,7 +753,8 @@ tar_read(plot_sbr_percent_tunbridge_wells) |>
 -   We do not have enough/any data pre SBR for some sites
 -   Clatterbridge not in eric data before 2021
 -   For turnover, should we look at joiners as well as leavers?
--   Friends and family and falls and fractures have NaN, probably because of 
-zero denominators
+-   Friends and family and falls and fractures have NaN, probably
+    because of zero denominators
 -   Missing Readmissions
--   SBR available at provider only due to KH03 not being at site level for the denominator
+-   SBR available at provider only due to KH03 not being at site level
+    for the denominator

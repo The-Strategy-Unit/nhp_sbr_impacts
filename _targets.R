@@ -19,7 +19,11 @@ tar_option_set(
     "stringr",
     "tidyr",
     "tsibble",
-    "zoo"
+    "zoo",
+    "sf",
+    "leaflet",
+    "htmltools",
+    "oceanis"
   ) # Packages that your targets need for their tasks.
 )
 
@@ -657,5 +661,65 @@ tarchetypes::tar_map(
         "year"
       )
     )
-  )
+  ),
+
+#----------------------------------------------------------------------------#
+#### Maps ####
+
+    tar_target(
+      map_all,
+      map_all("Map of SBR intervention sites",
+              hospitals,
+              ods_sites)
+    ),
+    tar_target(
+      map_royal_liverpool,
+      map_controls("royal_liverpool",
+               hospitals,
+               single_bedroom_matches,
+               ods_sites)
+    ),
+    tar_target(
+     map_clatterbridge,
+     map_controls("clatterbridge",
+               hospitals,
+               single_bedroom_matches,
+               ods_sites)
+    ),
+    tar_target(
+      map_royal_papworth,
+      map_controls("royal_papworth",
+               hospitals,
+               single_bedroom_matches,
+               ods_sites)
+    ),
+    tar_target(
+      map_peterborough,
+      map_controls("peterborough",
+               hospitals,
+               single_bedroom_matches,
+               ods_sites)
+    ),
+    tar_target(
+      map_chase_farm,
+      map_controls("chase_farm",
+               hospitals,
+               single_bedroom_matches,
+               ods_sites)
+    ),
+    tar_target(
+      map_southmead,
+      map_controls("southmead",
+               hospitals,
+               single_bedroom_matches,
+               ods_sites)
+    ),
+    tar_target(
+      map_tunbridge_wells,
+      map_controls("tunbridge_wells",
+               hospitals,
+               single_bedroom_matches,
+               ods_sites)
+    )
+
 )

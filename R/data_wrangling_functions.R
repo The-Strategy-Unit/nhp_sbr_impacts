@@ -876,7 +876,8 @@ fun_load_ods_sites <- function(filepth) {
     clean_names() |> 
     mutate(effective_to = na_if(effective_to, "NULL")) |> 
     mutate(effective_from = ymd(effective_from)
-           ,effective_to = ymd(effective_to))
+           ,effective_to = ymd(effective_to)) |> 
+    filter(is.na(effective_to))
   
   return(data)
 }

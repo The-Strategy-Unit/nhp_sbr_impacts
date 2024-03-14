@@ -32,8 +32,6 @@ css: styles.css
 
 ```{r, include=FALSE}
 
-
-
 library(tidyverse)
 library(MarketMatching)
 library(tsibble)
@@ -47,30 +45,30 @@ library(flextable)
 library(egg)
 library(StrategyUnitTheme)
 
-rtt<-tar_read(formatted_rtt_data)
-
-
-survey_data <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")|>
-    clean_names()|>
-  filter(str_detect(breakdown,"Registered Nurses & Midwives:"))|>
-  mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
-  mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
-filter((str_detect(month,"2022") & target_variable="q23c")|
-         (str_detect(month,"2021") & target_variable="q21c")|
-         (str_detect(month,"2020") & target_variable="q18c")|
-         (str_detect(month,"2019") & target_variable="q21c")|
-         (str_detect(month,"2018") & target_variable="q21c"))
+#survey_data <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")|>
+ #   clean_names()|>
+#  filter(str_detect(breakdown,"Registered Nurses & Midwives:"))|>
+#  mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
+#  mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
+#filter((str_detect(month,"2022") & target_variable="q23c")|
+ #        (str_detect(month,"2021") & target_variable="q21c")|
+ #        (str_detect(month,"2020") & target_variable="q18c")|
+ #        (str_detect(month,"2019") & target_variable="q21c")|
+ #        (str_detect(month,"2018") & target_variable="q21c"))
 
 
 
 ## Friends & Family
 friends_and_family<-tar_read(friends_and_family_cia_format)|>
-  filter(!is.na(friends_and_family_percent))
+  filter(!is.na(friends_and_family_percent))|>
+  filter(site_code!="N6J7V" &
+         site_code!="E0A3H")
 
 ## Staff turnover
 staff_turnover<-tar_read(staff_turnover_cia_format)|>
-  mutate(leaving_rate=ifelse(is.na(leaving_rate), 0, leaving_rate))
-
+  mutate(leaving_rate=ifelse(is.na(leaving_rate), 0, leaving_rate))|>
+  filter(month>"2020-08-01" | organisation_code!="REM") |># Liverpool data issues before this point
+  filter(organisation_code!="RVY")
 
 ## Staff sickness
 staff_sickness<-tar_read(staff_sickness_cia_format)
@@ -87,7 +85,7 @@ sus_deaths<- tar_read(sus_deaths_cia_format)
 
 ## RTT waiting time
 rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
-  filter(organisation_code!="R1H") #&
+  filter( organisation_code!="RF4"  ) #&
         # organisation_code!="RX1" &
         # organisation_code!="RHQ" &
         # organisation_code!="RA9") #Removing poss control due to data issues
@@ -100,7 +98,11 @@ bed_occupancy<-tar_read(bed_occupancy_cia_format)|>
 length_of_stay<- tar_read(length_of_stay_cia_format)
 
 ## Emergency readmissions
-emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
+emergency_readmissions<-tar_read(emergency_readmissions_cia_format)|>
+  filter(site_code!="RXPCP" &
+         site_code!="RVY01" &
+         site_code!="RDEEB"&
+         site_code!="RPA02")
 
 #survey<-read_csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")
 
@@ -137,7 +139,7 @@ matches<-tar_read(single_bedroom_matches)|>
                    date_variable="month",
                    matching_variable={{variable}},
                    parallel=FALSE,
-                   warping_limit=2, 
+                   warping_limit=1, 
                    dtw_emphasis=1, 
                    matches=5, 
                    start_match_period=(as.Date(switch_month) %m-% months(120)),
@@ -227,7 +229,7 @@ matches<-tar_read(single_bedroom_matches)|>
                    date_variable="month",
                    matching_variable={{variable}},
                    parallel=FALSE,
-                   warping_limit=2, 
+                   warping_limit=1, 
                    dtw_emphasis=1, 
                    matches=5, 
                      start_match_period=(as.Date(switch_month) %m-% months(120)),
@@ -754,16 +756,43 @@ evaluating_model_sites("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 
 
 cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)", "2020-06-01")
 
-test<-length_of_stay|>
-  filter(site_code=="REN22")|>
-  ggplot()+
-  geom_line(x=month, y=avg_los)
 
-test2<-length_of_stay|>
-  filter(site_code=="REN20")|>
-  ggplot()+
-  geom_line(x=month, y=avg_los)
 ```
+
+```{r}
+
+#Believe REN22- the Liverpool site of interest is the only one with inpatient facilities
+
+length_of_stay|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=los, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+length_of_stay|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21")|>
+  ggplot()+
+  geom_line(aes(x=month, y=spells, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+length_of_stay|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21")|>
+  ggplot()+
+  geom_line(aes(x=month, y=avg_los, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+
+```
+
 
 #### Papworth
 
@@ -862,6 +891,8 @@ emergency_readmissions_REM<-cia_analysis_sites("REM", "REMRQ", emergency_readmis
 
 evaluating_model_sites("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM)
 
+test<-emergency_readmissions|>
+  filter(site_code=="RXPCP")
 
 ```
 
@@ -885,9 +916,39 @@ evaluating_model_sites("REN", "REN22", emergency_readmissions, "2020-06-01","per
 
 cia_summary_plots(emergency_readmissions_REN, "Study site: Clatterbridge, REN","% readmissions", "2020-06-01")
 
-test<-length_of_stay|>
-  filter(site_code=="REN22")
 ```
+
+```{r}
+
+emergency_readmissions|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=admits, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+emergency_readmissions|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21")|>
+  ggplot()+
+  geom_line(aes(x=month, y=readmits, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+emergency_readmissions|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21")|>
+  ggplot()+
+  geom_line(aes(x=month, y=perc, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+```
+
 
 #### Papworth
 
@@ -984,6 +1045,8 @@ bed_occupancy_REM<-cia_analysis("REM", bed_occupancy,"2022-10-01", "bed_occupanc
 
 evaluating_model("REM",  bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM)
 
+test<-bed_occupancy|>
+  filter(organisation_code=="REM")
 
 ```
 
@@ -1247,9 +1310,45 @@ evaluating_model_sites("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000"
 
 cia_summary_plots(sus_deaths_REN, "Study site: Clatterbridge, REN","No./per 1,000 discharges", "2020-06-01")
 
-test<-length_of_stay|>
+test<-sus_deaths|>
   filter(site_code=="REN22")
+
 ```
+
+```{r}
+
+sus_deaths|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=discharges, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+sus_deaths|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21")|>
+  ggplot()+
+  geom_line(aes(x=month, y=death_hosp, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+sus_deaths|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21")|>
+  ggplot()+
+  geom_line(aes(x=month, y=hosp_rate_1000, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+```
+
+
+
+
 
 #### Papworth
 
@@ -1373,6 +1472,8 @@ friends_and_family_REN22<-cia_analysis_sites("REN", "REN22",friends_and_family,"
 
 evaluating_model_sites("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN22 )
 
+test<-friends_and_family|>
+  filter(site_code=="REN22")
 
 ```
 

@@ -141,7 +141,7 @@ list(
   tar_target(
     formatted_rtt_data,
     rtt_data_formatting(
-      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt_waiting_times.csv"
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt_waiting_time_data.csv"
     )
   ),
   

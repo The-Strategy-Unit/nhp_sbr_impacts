@@ -1,0 +1,991 @@
+---
+title: "Causal Impact Analysis: Health and Safety and Patient and Staff experience"
+editor: visual
+execute:
+  echo: false
+  message: false
+  warning: false
+  cache: false
+lang: en-GB
+author: Sarah Lucas
+date: last-modified
+date-format: "YYYY-MM-DD"
+title-block-banner: "#f9bf07"
+title-block-banner-color: "#333739"
+format:
+  html:
+    embed-resources: true
+    smooth-scroll: true
+    theme: cosmo
+    fontcolor: black
+    toc: true
+    toc-location: left
+    toc-title: Summary
+    toc-depth: 3
+    grid:
+      sidebar-width: 250px
+      body-width: 1050px
+      margin-width: 0px
+      gutter-width: 1.5rem
+css: styles.css
+---
+
+```{r, include=FALSE}
+
+library(tidyverse)
+library(MarketMatching)
+library(tsibble)
+library(targets)
+library(janitor)
+library(readxl)
+library(zoo)
+library(lubridate)
+library(ggrepel)
+library(flextable)
+library(egg)
+library(StrategyUnitTheme)
+
+
+
+## Friends & Family
+friends_and_family<-tar_read(friends_and_family_cia_format)|>
+  filter(!is.na(friends_and_family_percent))|>
+  filter(site_code!="N6J7V" &
+         site_code!="E0A3H")
+
+## Staff turnover
+staff_turnover<-tar_read(staff_turnover_cia_format)|>
+  mutate(leaving_rate=ifelse(is.na(leaving_rate), 0, leaving_rate))|>
+  filter(month>"2020-08-01" | organisation_code!="REM") |># Liverpool data issues before this point
+  filter(organisation_code!="RVY")
+
+## Staff sickness
+staff_sickness<-tar_read(staff_sickness_cia_format)
+
+## Healthcare acquired infections - Infection rate per 10,000 bed days
+hcai<-tar_read(hcai_cia_format)
+
+## In-hospital Falls and Fractures - Fall rate per 1000 bed days
+falls_and_fractures<- tar_read(falls_and_fractures_cia_format)|>
+  mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))|>
+  filter(site_code!="RALC7"|month>'2014-03-01')
+
+# SUS death rate (deaths/1000 admissions)
+sus_deaths<- tar_read(sus_deaths_cia_format)
+
+## RTT waiting time
+rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
+  filter( organisation_code!="RF4" &  
+        organisation_code!="R1H" &
+         organisation_code!= "RJ2") #Removing poss control due to data issues
+
+## Bed occupancy
+bed_occupancy<-tar_read(bed_occupancy_cia_format)|>
+  mutate(bed_occupancy=bed_occupancy*100)|>
+  filter(organisation_code!="R0A" & organisation_code!="RNL") #remove controls for Chase Farm
+
+## Length of Stay
+length_of_stay<- tar_read(length_of_stay_cia_format)
+
+## Emergency readmissions
+emergency_readmissions<-tar_read(emergency_readmissions_cia_format)|>
+  filter(site_code!="RXPCP" &
+         site_code!="RVY01" &
+         site_code!="RDEEB"&
+         site_code!="RPA02")
+
+#survey<-read_csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")
+
+#test<-survey|>
+#  clean_names()|>
+#      mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
+#    mutate(month = floor_date(effective_snapshot_date, "month"))|>  #Format date to monthly
+#  filter( str_detect(breakdown_category,"Registered Nurses & Midwives:")|
+ #       breakdown_category=="Nursing auxiliary / Nursing assistant / Healthcare assistant") |>
+ #   
+
+ # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
+
+matches<-tar_read(single_bedroom_matches)
+
+
+rtt_test<-tar_read(rtt_waiting_time_cia_format)|>
+  filter(organisation_code=="REM")
+
+
+```
+
+```{r}
+
+# Function to find the best matches
+select_matches<-function(organisation, data, switch_month, variable){
+  
+matches<-tar_read(single_bedroom_matches)|>
+   filter(organisation_code==organisation)
+ 
+ dataset<-data|>
+   filter(organisation_code==organisation | organisation_code %in% matches$matching_organisation_code)|>
+   left_join(matches[,c("matching_organisation_code", "trust_name")],    by=c("organisation_code"="matching_organisation_code"))|> # Add name of matched sites
+      distinct()
+  # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+ 
+ # Find best matches
+ mm <- MarketMatching::best_matches(data=dataset,
+                   id_variable="organisation_code",
+                   date_variable="month",
+                   matching_variable={{variable}},
+                   parallel=FALSE,
+                   warping_limit=1, 
+                   dtw_emphasis=1, 
+                   matches=5, 
+                   start_match_period=(as.Date(switch_month) %m-% months(120)),
+                   end_match_period=(as.Date(switch_month)))
+ 
+  # start_match_period=(as.Date(min(data$month))),
+
+ return(mm)
+
+}
+
+
+
+# Function to run the CIA   
+cia_analysis<-function(organisation, data, switch_month, variable, prior_sd){
+
+  mm<-select_matches(organisation, data, switch_month, variable)
+
+ #View the best matches
+  value<-mm$BestMatches|>
+  filter(organisation_code==organisation)
+  
+
+  # Run the causal impact analysis
+results <- MarketMatching::inference(matched_markets = mm,
+                                     analyze_betas=TRUE,
+                                     test_market = organisation,
+                                    end_post_period =(as.Date(switch_month) %m+% months(24)),
+                                    alpha=0.05, 
+                                    prior_level_sd= prior_sd)
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- results$Coefficients
+
+#Store predicted values in dataframe
+pred <- results$Predictions
+
+return(results)
+
+}
+
+
+evaluating_model<-function(organisation, data, switch_month, variable, prior_sd, model){
+  
+mm<-  select_matches(organisation, data, switch_month, variable)
+  
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = organisation, 
+                                      end_fake_post_period = (as.Date(switch_month) %m+% months(24)), 
+                                      prior_level_sd = prior_sd, 
+                                      steps=10,
+                                      max_fake_lift=0.1)
+
+#Plot the actuals 
+a<-model$PlotActuals+
+  su_theme()
+
+# Check out the DW and MAPE of the model
+b<-model$PlotPriorLevelSdAnalysis+
+  su_theme()
+
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+c<-power$ResultsGraph+
+  su_theme()
+
+figure<-ggarrange(a,b,c,
+                  ncol=1)
+
+}
+
+# Function to find the best matches FOR SITES
+select_matches_sites<-function(organisation, site, data, switch_month, variable){
+  
+matches<-tar_read(single_bedroom_matches)|>
+   filter(organisation_code==organisation)
+ 
+ dataset<-data|>
+   filter(site_code==site | site_code %in% matches$site_code)|>
+   left_join(matches[,c("site_code", "trust_name")], by=c("site_code"))|> # Add name of matched sites
+      distinct()
+ #  filter(month!=switch_month |site_code!=site) #remove month of switch
+ 
+ # Find best matches
+ mm <- MarketMatching::best_matches(data=dataset,
+                   id_variable="site_code",
+                   date_variable="month",
+                   matching_variable={{variable}},
+                   parallel=FALSE,
+                   warping_limit=1, 
+                   dtw_emphasis=1, 
+                   matches=5, 
+                     start_match_period=(as.Date(switch_month) %m-% months(120)),
+                   end_match_period=(as.Date(switch_month)))
+ 
+    # start_match_period=(as.Date(min(data$month))),
+
+ return(mm)
+
+}
+
+
+
+# Function to run the CIA FOR SITES   
+cia_analysis_sites<-function(organisation, site, data, switch_month, variable, prior_sd){
+
+  mm<-select_matches_sites(organisation, site, data, switch_month, variable)
+
+ #View the best matches
+  value<-mm$BestMatches|>
+  filter(site_code==site)
+
+  # Run the causal impact analysis
+results <- MarketMatching::inference(matched_markets = mm,
+                                     analyze_betas=TRUE,
+                                     test_market = site,
+                                    end_post_period =(as.Date(switch_month) %m+% months(24)),
+                                    alpha=0.05, 
+                                    prior_level_sd= prior_sd)
+
+# See which hospital receives the highest weight in determining the outcome
+coeff <- results$Coefficients
+
+#Store predicted values in dataframe
+pred <- results$Predictions
+
+return(results)
+
+}
+
+# Evaluating the model FOR SITES
+evaluating_model_sites<-function(organisation, site, data, switch_month, variable, prior_sd, model){
+  
+mm<-  select_matches_sites(organisation, site, data, switch_month, variable)
+  
+#Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
+power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+                                      test_market = site, 
+                                      end_fake_post_period = (as.Date(switch_month) %m+% months(24)), 
+                                      prior_level_sd = prior_sd, 
+                                      steps=10,
+                                      max_fake_lift=0.1)
+
+#Plot the actuals 
+a<-model$PlotActuals+
+  su_theme()
+
+# Check out the DW and MAPE of the model
+b<-model$PlotPriorLevelSdAnalysis+
+  su_theme()
+
+#And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
+c<-power$ResultsGraph+
+  su_theme()
+
+figure<-ggarrange(a,b,c,
+                  ncol=1)
+
+}
+
+
+
+cia_summary_plots<-function(results, title, ylab, switch_date){
+
+# Plot out actual vs expected
+a<-results$PlotActualVersusExpected+
+  su_theme()+
+  labs(title=title, y=ylab)+
+  theme(axis.text = element_text(size=12), 
+        axis.title = element_text(size=14), 
+        legend.title =element_blank(),
+        legend.text=element_text(size=12))+
+ annotate(geom="text", x=as.Date(switch_date),  y=-Inf, vjust=-0.3, hjust=1.04, label="SBR switch", color="#ec6555")+
+   geom_vline(aes(xintercept =as.Date(switch_date)),  linetype="solid", linewidth=0.6, color="#ec6555")+
+  scale_color_manual(values=c("#f9bf07","#2c2825" ))+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  guides(colour = guide_legend(reverse=T))
+
+# Plot pointwise effect
+b<-results$PlotPointEffect+
+  su_theme()+
+  theme(axis.text = element_text(size=12), axis.title = element_text(size=14))+
+  geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
+  geom_vline(aes(xintercept =as.Date(switch_date)), linetype="solid", linewidth=0.6, color="#ec6555")+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")
+
+# Plot out cumulative effect
+c<-results$PlotCumulativeEffect+
+  su_theme()+
+    theme(axis.text = element_text(size=12), axis.title = element_text(size=14))+
+  geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
+  geom_vline(aes(xintercept =as.Date(switch_date)), linetype="solid", linewidth=0.6, color="#ec6555")+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")
+
+figure<-ggarrange(a,b,c, ncol=1)
+}
+
+
+
+```
+
+# Availability of indicators by site
+
+```{r, fig.height=6, fig.width=10}
+
+
+  measure<-c("Patient experience-\nfriends and family test", "Staff turnover", "Staff sickness", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "RTT waiting times", "Bed occupancy", "Length of stay", "Emergency readmissions" )
+level<-c("site", "trust", "trust", "trust", "site", "site", "trust", "trust", "site", "site")
+group<-c("Patient & Staff Experience", "Patient & Staff Experience", "Patient & Staff Experience", "Health & Safety", "Health & Safety", "Health & Safety", "Productivity & Efficiency", "Productivity & Efficiency", "Productivity & Efficiency", "Productivity & Efficiency")
+    start_date<-c(min(friends_and_family$month), min(staff_turnover$month), min(staff_sickness$month), min(hcai$month), min(falls_and_fractures$month), min(sus_deaths$month), min(rtt_waiting_time$month), min(bed_occupancy$month), min(length_of_stay$month), min(emergency_readmissions$month))
+      end_date<-c(max(friends_and_family$month), max(staff_turnover$month), max(staff_sickness$month), max(hcai$month), max(falls_and_fractures$month), max(sus_deaths$month), max(rtt_waiting_time$month), max(bed_occupancy$month), max(length_of_stay$month), max(emergency_readmissions$month))
+      
+
+indicators<- data.frame(group, measure, level, start_date, end_date)|>
+ gather(key=type, value=range, -group, -measure, -level)|>
+    mutate(range=as.Date(range))|>
+  mutate(measure=factor(measure, levels=c( "Staff turnover", "Staff sickness","Patient experience-\nfriends and family test", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "Emergency readmissions","Bed occupancy",  "RTT waiting times","Length of stay")))
+
+name<-c("Royal Liverpool", "Clatterbridge", "Papworth", "Peterborough", "Chase Farm", "Southmead", "Tunbridge Wells")
+date<-c('2022-10-01', '2020-06-01', '2019-05-01', '2010-11-01', '2018-09-01', '2014-05-01', '2011-01-01' )
+
+sites<-data.frame(name, date)|>
+  mutate(date=as.Date(date))
+
+
+a<-ggplot(data=(indicators|>filter(group=="Productivity & Efficiency")),aes(y=measure, x=range))+
+ geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
+labs(title="Productivity & Efficiency", y=NULL, x=NULL)+
+ su_theme()+
+  theme(axis.text.y = element_text(size=12.5),
+        plot.margin = unit(c(4.5,1,0,1), "lines"),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line.x=element_blank(),
+        plot.title = element_text(hjust = -0.45, colour="#5881c1"))+
+ geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
+ geom_text(data=sites|>filter(name!= "Peterborough" & name!="Tunbridge Wells"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0, vjust=-0.2, text=element_text(size=11.5))+
+  geom_text(data=sites|>filter(name== "Peterborough"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0.1, vjust=-0.4, text=element_text(size=11))+
+  geom_text(data=sites|>filter(name=="Tunbridge Wells"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0, vjust=0.6, text=element_text(size=11))+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  coord_cartesian(clip = 'off') 
+
+b<-ggplot(data=(indicators|>filter(group=="Health & Safety")),aes(y=measure, x=range))+
+ geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
+labs(title="Health & Safety", y=NULL, x=NULL)+
+ su_theme()+
+  theme(axis.text.y = element_text(size=12.5),
+        plot.margin = unit(c(0,1,0,1), "lines"),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.line.x=element_blank(),
+        plot.title = element_text(hjust = -0.4, colour="#5881c1"))+
+ geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
+  coord_cartesian(clip = 'off') 
+
+c<-ggplot(data=(indicators|>filter(group=="Patient & Staff Experience")),aes(y=measure, x=range))+
+ geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
+labs(title="Patient & Staff Experience", y=NULL, x=NULL)+
+ su_theme()+
+  theme(axis.text.y = element_text(size=12.5),axis.text.x = element_text(size=11),
+        plot.margin = unit(c(0,1,1,1), "lines"),
+        plot.title = element_text(hjust = -0.45, colour="#5881c1"))+
+ geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
+scale_x_date(date_breaks = "1 year",date_labels = "%Y",
+             limits = as.Date(c('2008-04-01','2023-11-01')))+
+  coord_cartesian(clip = 'off') 
+
+figure<-ggarrange(a, b,c, ncol=1)
+
+
+```
+
+```{r}
+
+
+indicator_availability_by_site<-indicators|>
+  cross_join(sites)|>
+  filter(type=="start_date")|>
+   mutate(difference=as.numeric(date-range))|> #difference in days
+  mutate(sufficient_baseline=ifelse(difference>=730, "yes", "no"))|>
+  select(-difference, -date, -range, -type)|>
+  pivot_wider( names_from = name, values_from=sufficient_baseline)|>
+  mutate(measure=factor(measure, levels=c( "Patient experience-\nfriends and family test", "Staff sickness","Staff turnover", "Hospital deaths", "Falls and fractures", "Healthcare acquired infections","Length of stay" ,"RTT waiting times","Bed occupancy",  "Emergency readmissions"))) |>
+  arrange(measure)|>
+  mutate(group=factor(group, levels=c("Productivity & Efficiency", "Health & Safety","Patient & Staff Experience")))|>
+  arrange(group)
+
+ colormatrix1<-ifelse(indicator_availability_by_site=="no","#FBE0DC", 
+                     ifelse(indicator_availability_by_site=="yes", "#d5eed1", "#FFFFFF"  )) |>
+   as.data.frame()|>
+   slice(1:4)|>
+   select(-group)|>
+   as.matrix()
+   
+    colormatrix2<-ifelse(indicator_availability_by_site=="no","#FBE0DC", 
+                     ifelse(indicator_availability_by_site=="yes", "#d5eed1", "#FFFFFF"  )) |>
+   as.data.frame()|>
+   slice(5:7)|>
+   select(-group)|>
+   as.matrix()
+   
+   
+   
+    colormatrix3<-ifelse(indicator_availability_by_site=="no","#FBE0DC", 
+                     ifelse(indicator_availability_by_site=="yes", "#d5eed1", "#FFFFFF"  )) |>
+   as.data.frame()|>
+   slice(8:10)|>
+   select(-group)|>
+   as.matrix()
+   
+#, level=c("Productivity & Efficiency","Health & Safety",  "Patient & Staff Experience")
+ #    
+   
+  as_grouped_data(indicator_availability_by_site, groups = "group")|>
+  as_flextable( hide_grouplabel = TRUE) |>
+  set_header_labels(measure= "Variable",
+                    level="Level")|>
+  align(part = "header", align = "center")|>
+    align(part = "body", align = "center")|>
+      align(j=1:2,  align = "left")|>
+  bg(bg = "#f9bf07", part = "header") |>
+  bg(i=2:5, part="body", bg=colormatrix1)|>
+      bg(i=7:9, bg=colormatrix2)|>
+      bg(i=11:13, bg=colormatrix3)|>
+      align(j = 1, i = ~ !is.na(group), part = "body", align="left" )|>
+  bold(j = 1, i = ~ !is.na(group), part = "body" )|>
+  bold(bold = TRUE, part="header")|>
+   fontsize(size = 12, part = "all")|>
+   padding(padding = 2, part = "all", padding.top=NULL) |>
+ autofit()|>
+      htmltools_value(ft.align = "left") 
+
+
+
+
+
+```
+
+
+# Health and Safety
+
+## Healthcare acquired infections
+
+Combined rate per 10,000 beddays
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+hcai_REM<-cia_analysis("REM", hcai,"2022-10-01", "combined_rate", 0.05)
+
+#evaluating_model("REM",  hcai, "2022-10-01", "combined_rate", 0.05, hcai_REM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(hcai_REM, "Study site: Royal Liverpool, REM","Rate/10,000 beddays", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+hcai_REN<-cia_analysis("REN",hcai,"2020-06-01", "combined_rate", 0.05)
+
+#evaluating_model("REN",  hcai, "2020-06-01", "combined_rate", 0.05, hcai_REN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(hcai_REN, "Study site: Clatterbridge, REN","Rate/10,000 beddays", "2020-06-01")
+```
+
+## Falls and Fractures in hospital
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_REM<-cia_analysis_sites("REM", "REMRQ", falls_and_fractures,"2022-10-01", "ff_rate", 0.05)
+
+#evaluating_model_sites("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_REM, "Study site: Royal Liverpool, REM","% of spells", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_REN<-cia_analysis_sites("REN", "REN22",falls_and_fractures, "2020-06-01","ff_rate", 0.05)
+
+#evaluating_model_sites("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_REN, "Study site: Clatterbridge, REN","% of spells", "2020-06-01")
+
+
+```
+
+#### Papworth
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RGM<-cia_analysis_sites("RGM", "RGM22",falls_and_fractures,"2019-05-01", "ff_rate", 0.05)
+
+#evaluating_model_sites("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RGM, "Study site: Papworth, RGM","% of spells", "2019-05-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RGN<-cia_analysis_sites("RGN", "RGN80",falls_and_fractures,"2010-11-01", "ff_rate", 0.05)
+
+#evaluating_model_sites("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.05, falls_and_fractures_RGN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RGN, "Study site: Peterborough, RGN","% of spells", "2010-11-01")
+```
+
+#### Chase Farm
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+#falls_and_fractures_RAL<-cia_analysis_sites("RAL", "RALC7", falls_and_fractures,"2018-09-01", "ff_rate", 0.05)
+
+#evaluating_model_sites("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+#cia_summary_plots(falls_and_fractures_RAL, "Study site: Chase Farm, RAL","% of spells", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RVJ<-cia_analysis_sites("RVJ", "RVJ01",falls_and_fractures,"2014-05-01", "ff_rate", 0.05)
+
+#evaluating_model_sites("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RVJ, "Study site: Southmead, RVJ","% of spells", "2014-05-01")
+```
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RWF<-cia_analysis_sites("RWF", "RWFTW", falls_and_fractures,"2011-01-01","ff_rate", 0.05)
+
+#evaluating_model_sites("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(falls_and_fractures_RWF, "Study site: Tunbridge Wells, RWF","% of spells", "2011-01-01")
+```
+
+## Deaths in hospital
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_REM<-cia_analysis_sites("REM", "REMRQ", sus_deaths,"2022-10-01", "hosp_rate_1000", 0.05)
+
+#evaluating_model_sites("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_REM, "Study site: Royal Liverpool, REM","No./per 1,000 discharges", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_REN<-cia_analysis_sites("REN", "REN22",sus_deaths, "2020-06-01","hosp_rate_1000", 0.05)
+
+#evaluating_model_sites("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_REN, "Study site: Clatterbridge, REN","No./per 1,000 discharges", "2020-06-01")
+
+```
+
+```{r, include=FALSE}
+
+sus_deaths|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=discharges, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+sus_deaths|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21")|>
+  ggplot()+
+  geom_line(aes(x=month, y=death_hosp, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+sus_deaths|>
+  filter(site_code=="REN22"|
+         site_code=="REN20"| 
+         site_code=="REN01"| 
+         site_code=="REN21")|>
+  ggplot()+
+  geom_line(aes(x=month, y=hosp_rate_1000, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+```
+
+#### Papworth
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RGM<-cia_analysis_sites("RGM", "RGM22",sus_deaths,"2019-05-01", "hosp_rate_1000", 0.05)
+
+#evaluating_model_sites("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RGM, "Study site: Papworth, RGM","No./per 1,000 discharges", "2019-05-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RGN<-cia_analysis_sites("RGN", "RGN80",sus_deaths,"2010-11-01", "hosp_rate_1000", 0.05)
+
+#evaluating_model_sites("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.05, sus_deaths_RGN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RGN, "Study site: Peterborough, RGN","No./per 1,000 discharges", "2010-11-01")
+```
+
+#### Chase Farm
+
+Missing data in 2019 and 2020
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RAL<-cia_analysis_sites("RAL", "RALC7", sus_deaths,"2018-09-01", "hosp_rate_1000", 0.05)
+
+#evaluating_model_sites("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RAL, "Study site: Chase Farm, RAL","No./per 1,000 discharges", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RVJ<-cia_analysis_sites("RVJ", "RVJ01",sus_deaths,"2014-05-01", "hosp_rate_1000", 0.05)
+
+#evaluating_model_sites("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.05, sus_deaths_RVJ)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RVJ, "Study site: Southmead, RVJ","No./per 1,000 discharges", "2014-05-01")
+```
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RWF<-cia_analysis_sites("RWF", "RWFTW", sus_deaths,"2011-01-01","hosp_rate_1000", 0.05)
+
+#evaluating_model_sites("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.05, sus_deaths_RWF)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(sus_deaths_RWF, "Study site: Tunbridge Wells, RWF","No./per 1,000 discharges", "2011-01-01")
+```
+
+# Patient and Staff Experience
+
+## Patient experience - Friends and Family scores
+
+#### Royal Liverpool (REMRQ)
+
+```{r, include=FALSE, fig.height=8, fig.width=8}
+
+friends_and_family_REMRQ<-cia_analysis_sites("REM","REMRQ",  friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05)
+
+#evaluating_model_sites("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REMRQ)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(friends_and_family_REMRQ, "Study site: Royal Liverpool, REMRQ","Positive responses (%)", "2022-10-01")
+
+
+# Large amount of data missing in the two years prior due to gap over covid. One of the control sites doesn't go back far enough for it is causing the data to be cut off. Think I need to have less matches for this one. But would still have a disturbed pre switch period due to COVID
+
+```
+
+#### Clatterbridge (REN)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+
+friends_and_family_REN22<-cia_analysis_sites("REN", "REN22",friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05)
+
+#evaluating_model_sites("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN22 )
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(friends_and_family_REN22, "Study site: Clatterbridge, REN22","Positive responses (%)", "2020-06-01")
+
+#Last data point prior to switch was about 4 months prior then no data for 8 months after, as switch came during COVID
+
+```
+
+#### Papworth (RGM)
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+friends_and_family_RGM22<-cia_analysis_sites("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05)
+
+#evaluating_model_sites("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM22)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(friends_and_family_RGM22, "Study site: Papworth, RGM22","Positive responses (%)", "2019-05-01")
+```
+
+#### Chase Farm Hospital (RAL)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+friends_and_family_RALC7<-cia_analysis_sites("RAL", "RALC7", friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05)
+
+
+#evaluating_model_sites("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RALC7)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(friends_and_family_RALC7, "Study site: Chase Farm Hospital, RALC7","Positive responses (%)", "2018-09-01")
+```
+
+## Staff sickness
+
+#### Royal Liverpool (REM)
+
+```{r, include=FALSE, fig.height=8, fig.width=8}
+
+staff_sickness_REM<-cia_analysis("REM",  staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05)
+
+
+#evaluating_model("REM", staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_REM, "Study site: Royal Liverpool, REM","Sickness Rate (%)", "2022-10-01")
+
+```
+
+#### Clatterbridge (REN)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_REN<-cia_analysis("REN", staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05)
+
+#evaluating_model("REN", staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN )
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_REN, "Study site: Clatterbridge, REN","Sickness Rate (%)", "2020-06-01")
+
+```
+
+#### Papworth (RGM)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_RGM<-cia_analysis("RGM", staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05)
+
+#evaluating_model("RGM", staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05, staff_sickness_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_RGM, "Study site: Papworth, RGM","Sickness Rate (%)", "2019-05-01")
+```
+
+#### Chase Farm Hospital (RAL)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_RAL<-cia_analysis("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05)
+
+
+#evaluating_model("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05, staff_sickness_RAL)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_RAL, "Study site: Chase Farm Hospital, RAL","Sickness Rate (%)", "2018-09-01")
+```
+
+#### Southmead (RVJ)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_RVJ<-cia_analysis("RVJ", staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05)
+
+#evaluating_model("RVJ", staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(staff_sickness_RVJ, "Study site: Southmead, RVJ","Sickness Rate (%)", "2014-05-01")
+```
+
+```{r, fig.height=8, fig.width=8}
+
+## Staff turnover
+
+#### Royal Liverpool (REM)
+
+staff_turnover_REM<-cia_analysis("REM",  staff_turnover,"2022-10-01", "leaving_rate", 0.05)
+
+
+#evaluating_model("REM", staff_turnover,"2022-10-01", "leaving_rate", 0.05, staff_turnover_REM)
+
+
+# denominator appears to remain constant but for 12 months between Sept 2019 to Aug 2020, the numbers of leavers and joiners recorded is approx. 6 times higher than usual.
+
+cia_summary_plots(staff_turnover_REM, "Study site: Royal Liverpool, REM","Leaving Rate (%)", "2022-10-01")
+
+
+```
+
+
+
+```{r, include=FALSE}
+# Other plots information
+
+## Cleaning staff
+
+
+
+#cleaning_staff<-tar_read(eric_udal)|>
+#  filter(measure=="Cleaning staff (WTE)")|>
+#  filter(level=="Site")|>
+#  mutate(month=floor_date(effective_snapshot_date, "month"))|> #Format date to monthly
+#  left_join(beddays[,c("der_provider_site_code", "beddays", "yearmon")], #by=c("site_code"="der_provider_site_code", "month"="yearmon")) |>
+#  merge_sites()|>
+#  group_by(month, site_code)|>
+#  summarise(value=sum(value), beddays=sum(beddays))|>
+#  mutate(rate=(value/beddays)*1000) #WTE per 1000 beddays
+
+```
+
+```{r, include=FALSE}
+## C. Difficile rate over time
+
+#c.diff only as this goes back before 2017/2018
+#tar_read(formatted_HCAI_data)|>
+#  left_join(beddays_by_prov[,c("organisation_code", "yearmon", "beddays")], by=c("organisation_code", "month"="yearmon"))|>
+#  mutate(rate=(count_of_cases/beddays)*10000)|> #cases per 10,000 beddays
+#filter(collection=="C.difficile")|>
+#  filter(organisation_code=="REM")|> #for Royal Liverpool
+#    ggplot(aes(x = month, y =rate) ) + 
+#   geom_line(linewidth=1) 
+
+
+# C. Difficile numbers are too small to use in CIA as so much variability.
+
+```

@@ -45,17 +45,6 @@ library(flextable)
 library(egg)
 library(StrategyUnitTheme)
 
-#survey_data <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")|>
- #   clean_names()|>
-#  filter(str_detect(breakdown,"Registered Nurses & Midwives:"))|>
-#  mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
-#  mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
-#filter((str_detect(month,"2022") & target_variable="q23c")|
- #        (str_detect(month,"2021") & target_variable="q21c")|
- #        (str_detect(month,"2020") & target_variable="q18c")|
- #        (str_detect(month,"2019") & target_variable="q21c")|
- #        (str_detect(month,"2018") & target_variable="q21c"))
-
 
 
 ## Friends & Family
@@ -761,7 +750,7 @@ cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)"
 
 ```{r}
 
-#Believe REN22- the Liverpool site of interest is the only one with inpatient facilities
+#Believe REN22- the Liverpool site of interest is currently the only one with inpatient facilities, but still have records REN20
 
 length_of_stay|>
   filter(site_code=="REN22"|
@@ -792,7 +781,6 @@ length_of_stay|>
 
 
 ```
-
 
 #### Papworth
 
@@ -847,6 +835,38 @@ test<-length_of_stay|>
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
 cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "2018-09-01")
+```
+
+```{r}
+length_of_stay|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=los, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+length_of_stay|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=spells, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+length_of_stay|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=avg_los, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+
+
 ```
 
 #### Southmead
@@ -948,7 +968,6 @@ emergency_readmissions|>
   scale_y_continuous(limits=c(0,NA))
 
 ```
-
 
 #### Papworth
 
@@ -1346,10 +1365,6 @@ sus_deaths|>
 
 ```
 
-
-
-
-
 #### Papworth
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -1401,6 +1416,37 @@ test<-length_of_stay|>
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
 cia_summary_plots(sus_deaths_RAL, "Study site: Chase Farm, RAL","No./per 1,000 discharges", "2018-09-01")
+```
+
+```{r}
+
+sus_deaths|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=discharges, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+sus_deaths|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=death_hosp, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+sus_deaths|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=hosp_rate_1000, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
 ```
 
 #### Southmead

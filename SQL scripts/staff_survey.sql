@@ -1,0 +1,8 @@
+SELECT [Trust]
+      ,[Breakdown]
+      ,[Target_Variable]
+      ,[Value]
+      ,[N]
+      ,[Breakdown_Category]
+      ,[Effective_Snapshot_Date]
+  FROM [UKHF_NHS_Staff_Surveys].[Local_Breakdown_Split_Breakdowns1_1]

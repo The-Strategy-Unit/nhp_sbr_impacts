@@ -557,6 +557,9 @@ waiting_time_median_RAL<-cia_analysis("RAL", rtt_waiting_time,"2018-09-01", "med
 
 evaluating_model("RAL",  rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL)
 
+test<-rtt_waiting_time|>
+  filter(organisation_code=="RAL")
+
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -572,7 +575,8 @@ waiting_time_median_RVJ<-cia_analysis("RVJ", rtt_waiting_time,"2014-05-01", "med
 
 evaluating_model("RVJ",  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05, waiting_time_median_RVJ)
 
-
+test<-rtt_waiting_time|>
+  filter(organisation_code=="RVJ")
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}

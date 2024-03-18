@@ -72,8 +72,13 @@ staff_turnover_cia_formatting <- function(data) {
                                     organisation_code == "RQ6"),
                                  "REM",
                                  organisation_code
-      )
-    ) |> #merge historical Royal Liverpool codes
+      ),  #merge historical Royal Liverpool codes
+    organisation_code = ifelse((organisation_code == "RAL" |
+                                  organisation_code == "RVL"),
+                               "RAL",
+                               organisation_code
+    ) 
+    ) |> #merge historical Chase Farm codes
     summarise(
       turnover_fte = sum(turnover_fte),
       .by = c(month, organisation_code, type)
@@ -96,8 +101,13 @@ staff_sickness_cia_formatting <- function(data) {
                                     organisation_code == "RQ6"),
                                  "REM",
                                  organisation_code
-      )
-    ) |> #merge historical Royal Liverpool codes
+      ),  #merge historical Royal Liverpool codes
+      organisation_code = ifelse((organisation_code == "RAL" |
+                                    organisation_code == "RVL"),
+                                 "RAL",
+                                 organisation_code
+      ) 
+    ) |> #merge historical Chase Farm codes
     summarise(
       fte_days_sick = sum(fte_days_sick),
       fte_days_available = sum(fte_days_available),
@@ -120,8 +130,14 @@ hcai_cia_formatting <- function(bedday_data, hcai_data) {
       organisation_code = ifelse((organisation_code == "REM" |
                                     organisation_code == "RQ6"),
                                  "REM",
-                                 organisation_code #merge historical Royal Liverpool codes
-      ),
+                                 organisation_code
+      ),  #merge historical Royal Liverpool codes
+      organisation_code = ifelse((organisation_code == "RAL" |
+                                    organisation_code == "RVL"),
+                                 "RAL",
+                                 organisation_code
+      ) ,
+   #merge historical Chase Farm codes
       rate = (count_of_cases / beddays) * 10000 #cases per 10,000 beddays
     ) |>
     summarise(combined_rate = sum(rate),
@@ -188,8 +204,13 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
                                     organisation_code == "RQ6"),
                                  "REM",
                                  organisation_code
-      )
-    ) |> #merge historical Royal Liverpool codes
+      ),  #merge historical Royal Liverpool codes
+      organisation_code = ifelse((organisation_code == "RAL" |
+                                    organisation_code == "RVL"),
+                                 "RAL",
+                                 organisation_code
+      ) 
+    ) |> #merge historical Chase Farm codes
     summarise(
       median_by_prov = median(rep(weeks, number_of_incomplete_pathways)),
       number_incomplete = sum(number_of_incomplete_pathways),
@@ -211,9 +232,14 @@ bed_occupancy_cia_formatting <- function(data) {
       organisation_code = ifelse((organisation_code == "REM" |
                                     organisation_code == "RQ6"),
                                  "REM",
-                                 organisation_code #merge historical Royal Liverpool codes
-      )
-    ) |>
+                                 organisation_code
+      ),  #merge historical Royal Liverpool codes
+      organisation_code = ifelse((organisation_code == "RAL" |
+                                    organisation_code == "RVL"),
+                                 "RAL",
+                                 organisation_code
+      ) 
+    ) |> #merge historical Chase Farm codes
     filter(month >= as.Date("2010-03-01")) |>
     summarise(
       available = sum(available),
@@ -298,8 +324,13 @@ sbr_percent_cia_formatting <- function(data) {
                                     organisation_code == "RQ6"),
                                  "REM",
                                  organisation_code
-      )
-    ) |> #merge historical Royal Liverpool codes
+      ),  #merge historical Royal Liverpool codes
+      organisation_code = ifelse((organisation_code == "RAL" |
+                                    organisation_code == "RVL"),
+                                 "RAL",
+                                 organisation_code
+      ) 
+    ) |> #merge historical Chase Farm codes
     summarise(
       percentage_single_bedrooms = sum(total_single_bedrooms)/sum(total_available)*100,
       .by = c(month, organisation_code)

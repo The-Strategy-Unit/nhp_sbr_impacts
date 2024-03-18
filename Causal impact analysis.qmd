@@ -67,7 +67,8 @@ hcai<-tar_read(hcai_cia_format)
 
 ## In-hospital Falls and Fractures - Fall rate per 1000 bed days
 falls_and_fractures<- tar_read(falls_and_fractures_cia_format)|>
-  mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))
+  mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))|>
+  filter(site_code!="RALC7"|month>'2014-03-01')
 
 # SUS death rate (deaths/1000 admissions)
 sus_deaths<- tar_read(sus_deaths_cia_format)
@@ -81,7 +82,8 @@ rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
 
 ## Bed occupancy
 bed_occupancy<-tar_read(bed_occupancy_cia_format)|>
-  mutate(bed_occupancy=bed_occupancy*100)
+  mutate(bed_occupancy=bed_occupancy*100)|>
+  filter(organisation_code!="R0A" & organisation_code!="RNL") #remove controls for Chase Farm
 
 ## Length of Stay
 length_of_stay<- tar_read(length_of_stay_cia_format)
@@ -106,6 +108,12 @@ emergency_readmissions<-tar_read(emergency_readmissions_cia_format)|>
  # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
 
 matches<-tar_read(single_bedroom_matches)
+
+
+rtt_test<-tar_read(rtt_waiting_time_cia_format)|>
+  filter(organisation_code=="REM")
+
+
 ```
 
 ```{r}
@@ -417,9 +425,6 @@ indicator_availability_by_site<-indicators|>
   mutate(group=factor(group, levels=c("Productivity & Efficiency", "Health & Safety","Patient & Staff Experience")))|>
   arrange(group)
 
-
-
-
  colormatrix1<-ifelse(indicator_availability_by_site=="no","#FBE0DC", 
                      ifelse(indicator_availability_by_site=="yes", "#d5eed1", "#FFFFFF"  )) |>
    as.data.frame()|>
@@ -481,10 +486,9 @@ Seems to be some change in data reporting around 2011. Also have numbers predict
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_median_REM<-cia_analysis("REM", rtt_waiting_time,"2022-10-01", "median_by_prov", 0.05)
+waiting_time_median_REM<-cia_analysis("REM",  rtt_waiting_time,"2022-10-01", "median_by_prov", 0.05)
 
-evaluating_model("REM",  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM)
-
+evaluating_model("REM",   rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM)
 
 ```
 
@@ -551,8 +555,6 @@ waiting_time_median_RAL<-cia_analysis("RAL", rtt_waiting_time,"2018-09-01", "med
 
 evaluating_model("RAL",  rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL)
 
-test<-rtt_waiting_time|>
-  filter(organisation_code=="RAL")
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -618,9 +620,6 @@ waiting_time_number_REN<-cia_analysis("REN", rtt_waiting_time,"2020-06-01","numb
 
 evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN)
 
-test<-rtt_waiting_time|>
-  filter(organisation_code=="REN")
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -670,8 +669,6 @@ waiting_time_number_RAL<-cia_analysis("RAL", rtt_waiting_time,"2018-09-01", "num
 
 evaluating_model("RAL",  rtt_waiting_time, "2018-09-01", "number_incomplete", 0.05, waiting_time_number_RAL)
 
-test<-rtt_waiting_time|>
-  filter(organisation_code=="RAL")
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -687,7 +684,6 @@ waiting_time_number_RVJ<-cia_analysis("RVJ", rtt_waiting_time,"2014-05-01", "num
 
 evaluating_model("RVJ",  rtt_waiting_time, "2014-05-01", "number_incomplete", 0.05, waiting_time_number_RVJ)
 
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -702,7 +698,6 @@ cia_summary_plots(waiting_time_number_RVJ, "Study site: Southmead, RVJ","Number 
 waiting_time_number_RWF<-cia_analysis("RWF", rtt_waiting_time,"2011-01-01","number_incomplete", 0.01)
 
 evaluating_model("RWF",  rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF)
-
 
 ```
 
@@ -748,7 +743,7 @@ cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)"
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 #Believe REN22- the Liverpool site of interest is currently the only one with inpatient facilities, but still have records REN20
 
@@ -826,10 +821,6 @@ LoS_RAL<-cia_analysis_sites("RAL", "RALC7", length_of_stay,"2018-09-01", "avg_lo
 
 evaluating_model_sites("RAL", "RALC7", length_of_stay, "2018-09-01", "avg_los", 0.05, LoS_RAL)
 
-
-test<-length_of_stay|>
-  filter(site_code=="RALC7")
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -845,7 +836,6 @@ cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "
 LoS_RVJ<-cia_analysis_sites("RVJ", "RVJ01",length_of_stay,"2014-05-01", "avg_los", 0.05)
 
 evaluating_model_sites("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.05, LoS_RVJ)
-
 
 ```
 
@@ -880,8 +870,6 @@ emergency_readmissions_REM<-cia_analysis_sites("REM", "REMRQ", emergency_readmis
 
 evaluating_model_sites("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM)
 
-test<-emergency_readmissions|>
-  filter(site_code=="RXPCP")
 
 ```
 
@@ -907,7 +895,7 @@ cia_summary_plots(emergency_readmissions_REN, "Study site: Clatterbridge, REN","
 
 ```
 
-```{r}
+```{r, include=FALSE}
 
 emergency_readmissions|>
   filter(site_code=="REN22"|
@@ -980,15 +968,14 @@ emergency_readmissions_RAL<-cia_analysis_sites("RAL", "RALC7", emergency_readmis
 
 evaluating_model_sites("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL)
 
-
-test<-length_of_stay|>
-  filter(site_code=="RALC7")
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
 cia_summary_plots(emergency_readmissions_RAL, "Study site: Chase Farm, RAL","% readmissions", "2018-09-01")
+
+pred <- emergency_readmissions_RAL$Predictions
+
 ```
 
 #### Southmead
@@ -998,7 +985,6 @@ cia_summary_plots(emergency_readmissions_RAL, "Study site: Chase Farm, RAL","% r
 emergency_readmissions_RVJ<-cia_analysis_sites("RVJ", "RVJ01",emergency_readmissions,"2014-05-01", "perc", 0.05)
 
 evaluating_model_sites("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","perc", 0.05, emergency_readmissions_RVJ)
-
 
 ```
 
@@ -1032,9 +1018,6 @@ cia_summary_plots(emergency_readmissions_RWF, "Study site: Tunbridge Wells, RWF"
 bed_occupancy_REM<-cia_analysis("REM", bed_occupancy,"2022-10-01", "bed_occupancy", 0.05)
 
 evaluating_model("REM",  bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM)
-
-test<-bed_occupancy|>
-  filter(organisation_code=="REM")
 
 ```
 
@@ -1084,9 +1067,6 @@ cia_summary_plots(bed_occupancy_RGM, "Study site: Papworth, RGM","Percentage", "
 bed_occupancy_RAL<-cia_analysis("RAL", bed_occupancy,"2018-09-01", "bed_occupancy", 0.05)
 
 evaluating_model("RAL",  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL)
-
-test<-bed_occupancy|>
-  filter(organisation_code)
 
 ```
 
@@ -1225,8 +1205,7 @@ falls_and_fractures_RAL<-cia_analysis_sites("RAL", "RALC7", falls_and_fractures,
 
 evaluating_model_sites("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL)
 
-test<-falls_and_fractures|>
-  filter(site_code=="RALC7")
+
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -1299,12 +1278,9 @@ evaluating_model_sites("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000"
 
 cia_summary_plots(sus_deaths_REN, "Study site: Clatterbridge, REN","No./per 1,000 discharges", "2020-06-01")
 
-test<-sus_deaths|>
-  filter(site_code=="REN22")
-
 ```
 
-```{r}
+```{r, include=FALSE}
 
 sus_deaths|>
   filter(site_code=="REN22"|
@@ -1377,46 +1353,11 @@ sus_deaths_RAL<-cia_analysis_sites("RAL", "RALC7", sus_deaths,"2018-09-01", "hos
 
 evaluating_model_sites("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL)
 
-
-test<-length_of_stay|>
-  filter(site_code=="RALC7")
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
 cia_summary_plots(sus_deaths_RAL, "Study site: Chase Farm, RAL","No./per 1,000 discharges", "2018-09-01")
-```
-
-```{r}
-
-sus_deaths|>
-  filter(site_code=="RALC7"|
-         site_code=="RAPCF"| 
-         site_code=="RVLC7"| 
-         site_code=="RRP16" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=discharges, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-sus_deaths|>
-  filter(site_code=="RALC7"|
-         site_code=="RAPCF"| 
-         site_code=="RVLC7"| 
-         site_code=="RRP16" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=death_hosp, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-sus_deaths|>
-  filter(site_code=="RALC7"|
-         site_code=="RAPCF"| 
-         site_code=="RVLC7"| 
-         site_code=="RRP16" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=hosp_rate_1000, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
 ```
 
 #### Southmead
@@ -1529,8 +1470,6 @@ friends_and_family_RALC7<-cia_analysis_sites("RAL", "RALC7", friends_and_family,
 
 evaluating_model_sites("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RALC7)
 
-test<- friends_and_family|>
-  filter(site_code=="RALC7")
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -1549,8 +1488,6 @@ staff_sickness_REM<-cia_analysis("REM",  staff_sickness,"2022-10-01", "staff_sic
 
 evaluating_model("REM", staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM)
 
-
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -1566,7 +1503,6 @@ cia_summary_plots(staff_sickness_REM, "Study site: Royal Liverpool, REM","Sickne
 staff_sickness_REN<-cia_analysis("REN", staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05)
 
 evaluating_model("REN", staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN )
-
 
 ```
 
@@ -1617,7 +1553,6 @@ staff_sickness_RVJ<-cia_analysis("RVJ", staff_sickness,"2014-05-01", "staff_sick
 
 evaluating_model("RVJ", staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ)
 
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -1643,17 +1578,9 @@ test<-staff_turnover|>
 cia_summary_plots(staff_turnover_REM, "Study site: Royal Liverpool, REM","Leaving Rate (%)", "2022-10-01")
 
 
-
-
-
-
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
 
-
-
-```
 
 ```{r, include=FALSE}
 # Other plots information

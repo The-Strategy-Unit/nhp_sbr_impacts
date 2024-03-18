@@ -28,7 +28,12 @@ merge_sites <- function(data) {
                                  site_code == "RWF02"),
                               "RWFTW",
                               site_code
-    )) #merge Tunbridge site codes
+    ))|> #merge Tunbridge site codes
+  mutate(site_code = ifelse((site_code == "RALC7" |
+                               site_code == "RVLC7"),
+                            "RALC7",
+                            site_code
+  )) #merge Chase Farm site codes
 }
 
 # Beddays by provider

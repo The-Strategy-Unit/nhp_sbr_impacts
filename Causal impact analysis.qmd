@@ -622,9 +622,6 @@ waiting_time_number_REN<-cia_analysis("REN", rtt_waiting_time,"2020-06-01","numb
 
 evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN)
 
-test<-rtt_waiting_time|>
-  filter(organisation_code=="REN")
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}

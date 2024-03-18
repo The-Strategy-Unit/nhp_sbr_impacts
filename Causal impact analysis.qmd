@@ -75,10 +75,9 @@ sus_deaths<- tar_read(sus_deaths_cia_format)
 
 ## RTT waiting time
 rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
-  filter( organisation_code!="RF4"  ) #&
-        # organisation_code!="RX1" &
-        # organisation_code!="RHQ" &
-        # organisation_code!="RA9") #Removing poss control due to data issues
+  filter( organisation_code!="RF4" &  
+        organisation_code!="R1H" &
+         organisation_code!= "RJ2") #Removing poss control due to data issues
 
 ## Bed occupancy
 bed_occupancy<-tar_read(bed_occupancy_cia_format)|>
@@ -511,6 +510,9 @@ evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05,
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
 cia_summary_plots(waiting_time_median_REN, "Study site: Clatterbridge, REN","Median waiting time (wks)", "2020-06-01")
+
+test<-rtt_waiting_time|>
+  filter(organisation_code=="REN")
 ```
 
 #### Papworth
@@ -619,6 +621,9 @@ cia_summary_plots(waiting_time_number_REM, "Study site: Royal Liverpool, REM","N
 waiting_time_number_REN<-cia_analysis("REN", rtt_waiting_time,"2020-06-01","number_incomplete", 0.05)
 
 evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN)
+
+test<-rtt_waiting_time|>
+  filter(organisation_code=="REN")
 
 ```
 

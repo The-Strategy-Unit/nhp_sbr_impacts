@@ -622,9 +622,6 @@ waiting_time_number_REN<-cia_analysis("REN", rtt_waiting_time,"2020-06-01","numb
 
 evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN)
 
-test<-rtt_waiting_time|>
-  filter(organisation_code=="REN")
-
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -1109,6 +1106,7 @@ evaluating_model("RAL",  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 60d9804 (Updated Chase farm models)
@@ -1116,6 +1114,8 @@ test<-bed_occupancy|>
   filter(organisation_code)
 
 >>>>>>> 144b813 (Updated Chase farm models)
+=======
+>>>>>>> 8e3cc9f (Update CIA analysis)
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
@@ -1406,37 +1406,6 @@ evaluating_model_sites("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000"
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
 cia_summary_plots(sus_deaths_RAL, "Study site: Chase Farm, RAL","No./per 1,000 discharges", "2018-09-01")
-```
-
-```{r}
-
-sus_deaths|>
-  filter(site_code=="RALC7"|
-         site_code=="RAPCF"| 
-         site_code=="RVLC7"| 
-         site_code=="RRP16" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=discharges, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-sus_deaths|>
-  filter(site_code=="RALC7"|
-         site_code=="RAPCF"| 
-         site_code=="RVLC7"| 
-         site_code=="RRP16" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=death_hosp, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-sus_deaths|>
-  filter(site_code=="RALC7"|
-         site_code=="RAPCF"| 
-         site_code=="RVLC7"| 
-         site_code=="RRP16" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=hosp_rate_1000, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
 ```
 
 #### Southmead

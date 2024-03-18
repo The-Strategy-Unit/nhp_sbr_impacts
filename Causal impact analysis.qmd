@@ -834,6 +834,7 @@ cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "
 ```
 
 
+
 ```{r}
 length_of_stay|>
   filter(site_code=="RALC7"|
@@ -866,7 +867,10 @@ length_of_stay|>
 
 ```
 
+<<<<<<< HEAD
 >>>>>>> fb90aa3 (Add some plots)
+=======
+>>>>>>> 6f5ec5b (Add some plots)
 #### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}

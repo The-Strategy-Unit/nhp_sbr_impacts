@@ -834,7 +834,39 @@ cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "
 ```
 
 
+```{r}
+length_of_stay|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=los, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
 
+length_of_stay|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=spells, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+length_of_stay|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=avg_los, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+
+
+```
+
+>>>>>>> fb90aa3 (Add some plots)
 #### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}

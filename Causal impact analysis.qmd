@@ -1208,16 +1208,16 @@ cia_summary_plots(falls_and_fractures_RGN, "Study site: Peterborough, RGN","% of
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-falls_and_fractures_RAL<-cia_analysis_sites("RAL", "RALC7", falls_and_fractures,"2018-09-01", "ff_rate", 0.05)
+#falls_and_fractures_RAL<-cia_analysis_sites("RAL", "RALC7", falls_and_fractures,"2018-09-01", "ff_rate", 0.05)
 
-evaluating_model_sites("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL)
+#evaluating_model_sites("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL)
 
 
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
-cia_summary_plots(falls_and_fractures_RAL, "Study site: Chase Farm, RAL","% of spells", "2018-09-01")
+#cia_summary_plots(falls_and_fractures_RAL, "Study site: Chase Farm, RAL","% of spells", "2018-09-01")
 ```
 
 #### Southmead

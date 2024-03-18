@@ -834,6 +834,8 @@ cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "
 ```
 
 
+
+
 #### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -1363,6 +1365,37 @@ evaluating_model_sites("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000"
 ```{r, include=TRUE, fig.width=8, fig.height=8}
 
 cia_summary_plots(sus_deaths_RAL, "Study site: Chase Farm, RAL","No./per 1,000 discharges", "2018-09-01")
+```
+
+```{r}
+
+sus_deaths|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=discharges, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+sus_deaths|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=death_hosp, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
+sus_deaths|>
+  filter(site_code=="RALC7"|
+         site_code=="RAPCF"| 
+         site_code=="RVLC7"| 
+         site_code=="RRP16" )|>
+  ggplot()+
+  geom_line(aes(x=month, y=hosp_rate_1000, group=site_code, colour=site_code))+
+  scale_y_continuous(limits=c(0,NA))
+
 ```
 
 #### Southmead

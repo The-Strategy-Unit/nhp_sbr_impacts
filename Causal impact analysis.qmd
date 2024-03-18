@@ -1104,18 +1104,10 @@ bed_occupancy_RAL<-cia_analysis("RAL", bed_occupancy,"2018-09-01", "bed_occupanc
 
 evaluating_model("RAL",  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 60d9804 (Updated Chase farm models)
+
 test<-bed_occupancy|>
   filter(organisation_code)
 
->>>>>>> 144b813 (Updated Chase farm models)
-=======
->>>>>>> 8e3cc9f (Update CIA analysis)
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}

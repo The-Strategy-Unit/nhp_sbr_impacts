@@ -838,8 +838,6 @@ cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "
 ```
 
 
-
-
 #### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}

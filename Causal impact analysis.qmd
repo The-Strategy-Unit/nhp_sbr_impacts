@@ -1075,13 +1075,9 @@ bed_occupancy_RAL<-cia_analysis("RAL", bed_occupancy,"2018-09-01", "bed_occupanc
 
 evaluating_model("RAL",  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL)
 
-<<<<<<< HEAD
-
 test<-bed_occupancy|>
   filter(organisation_code)
 
-=======
->>>>>>> 911615ac2d079d63ecdd84e4548940137c16b7c1
 ```
 
 ```{r, include=TRUE, fig.width=8, fig.height=8}

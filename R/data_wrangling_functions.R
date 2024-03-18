@@ -600,7 +600,8 @@ rtt_data_formatting <- function(data) {
     mutate(weeks = sub("\\plus.*", "", weeks)) |>
     mutate(weeks = as.numeric(weeks)) |>
     mutate(number_of_incomplete_pathways_with_dta = NA) |>
-    mutate(treatment_function_code = gsub("^IP", "", treatment_function_code))
+    mutate(treatment_function_code = gsub("^IP", "", treatment_function_code))|>
+    filter(treatment_function_code=="999")
   
   assign("pre2011_rtt_data", pre2011_rtt_data, envir = .GlobalEnv)
   

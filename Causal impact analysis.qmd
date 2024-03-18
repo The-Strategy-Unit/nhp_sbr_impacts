@@ -867,10 +867,7 @@ length_of_stay|>
 
 ```
 
-<<<<<<< HEAD
->>>>>>> fb90aa3 (Add some plots)
-=======
->>>>>>> 6f5ec5b (Add some plots)
+
 #### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -1111,7 +1108,10 @@ bed_occupancy_RAL<-cia_analysis("RAL", bed_occupancy,"2018-09-01", "bed_occupanc
 evaluating_model("RAL",  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 60d9804 (Updated Chase farm models)
 test<-bed_occupancy|>
   filter(organisation_code)
 

@@ -1,0 +1,637 @@
+---
+title: "Causal Impact Analysis: Productivity and Efficiency indicators"
+editor: visual
+execute:
+  echo: false
+  message: false
+  warning: false
+  cache: false
+lang: en-GB
+author: Sarah Lucas
+date: last-modified
+date-format: "YYYY-MM-DD"
+title-block-banner: "#f9bf07"
+title-block-banner-color: "#333739"
+format:
+  html:
+    embed-resources: true
+    smooth-scroll: true
+    theme: cosmo
+    fontcolor: black
+    toc: true
+    toc-location: left
+    toc-title: Summary
+    toc-depth: 3
+    grid:
+      sidebar-width: 250px
+      body-width: 1050px
+      margin-width: 0px
+      gutter-width: 1.5rem
+css: styles.css
+---
+
+```{r, include=FALSE}
+
+library(tidyverse)
+library(MarketMatching)
+library(tsibble)
+library(targets)
+library(janitor)
+library(readxl)
+library(zoo)
+library(lubridate)
+library(ggrepel)
+library(flextable)
+library(egg)
+library(StrategyUnitTheme)
+
+
+## RTT waiting time
+rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
+  filter( organisation_code!="RF4" &  
+        organisation_code!="R1H" &
+         organisation_code!= "RJ2") #Removing poss control due to data issues
+
+## Bed occupancy
+bed_occupancy<-tar_read(bed_occupancy_cia_format)|>
+  mutate(bed_occupancy=bed_occupancy*100)|>
+  filter(organisation_code!="R0A" & organisation_code!="RNL") #remove controls for Chase Farm
+
+## Length of Stay
+length_of_stay<- tar_read(length_of_stay_cia_format)
+
+## Emergency readmissions
+emergency_readmissions<-tar_read(emergency_readmissions_cia_format)|>
+  filter(site_code!="RXPCP" &
+         site_code!="RVY01" &
+         site_code!="RDEEB"&
+         site_code!="RPA02")
+
+
+#Loading control data
+single_bedroom_matches<-tar_read(single_bedroom_matches)
+
+source("R/CIA_Functions.R")
+
+
+```
+
+# Availability of indicators by site
+
+```{r, fig.height=6, fig.width=10}
+
+tar_read(indicator_availability_plot)
+
+```
+
+```{r}
+
+tar_read(indicator_availability_table)
+
+```
+
+# Productivity and Efficiency
+
+## Waiting time data- Median waiting time (in weeks)
+
+Seems to be some change in data reporting around 2011. Also have numbers predicted to be negative, so need to look at transforming the data first.
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_REM<-cia_analysis("REM", NA, rtt_waiting_time,"2022-10-01", "median_by_prov", 0.05)
+
+#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05)
+
+```
+
+```{r, include=TRUE, fig.width=6, fig.height=6}
+
+cia_summary_plots(waiting_time_median_REM, "Study site: Royal Liverpool, REM","Median waiting time (wks)", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_REN<-cia_analysis("REN",NA, rtt_waiting_time,"2020-06-01", "median_by_prov", 0.05)
+
+evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_median_REN, "Study site: Clatterbridge, REN","Median waiting time (wks)", "2020-06-01")
+
+```
+
+#### Papworth
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_RGM<-cia_analysis("RGM", NA, rtt_waiting_time,"2019-05-01", "median_by_prov", 0.05)
+
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_median_RGM, "Study site: Papworth, RGM","Median waiting time (wks)", "2019-05-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_RGN<-cia_analysis("RGN", NA,rtt_waiting_time,"2010-11-01", "median_by_prov", 0.05)
+
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.05, waiting_time_median_RGN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_median_RGN, "Study site: Peterborough, RGN","Median waiting time (wks)", "2010-11-01")
+```
+
+#### Chase Farm
+
+Missing data in 2019 and 2020
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_RAL<-cia_analysis("RAL", NA,rtt_waiting_time,"2018-09-01", "median_by_prov", 0.05)
+
+#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median waiting time (wks)", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_RVJ<-cia_analysis("RVJ",NA, rtt_waiting_time,"2014-05-01", "median_by_prov", 0.05)
+
+#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05, waiting_time_median_RVJ)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_median_RVJ, "Study site: Southmead, RVJ","Median waiting time (wks)", "2014-05-01")
+```
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_RWF<-cia_analysis("RWF", NA,rtt_waiting_time,"2011-01-01", "median_by_prov", 0.01)
+
+#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_median_RWF, "Study site: Tunbridge Wells, RWF","Median waiting time (wks)", "2011-01-01")
+```
+
+## Waiting time data- Total numbers waiting
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_REM<-cia_analysis("REM", NA,rtt_waiting_time,"2022-10-01", "number_incomplete", 0.05)
+
+#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.05, waiting_time_number_REM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_number_REM, "Study site: Royal Liverpool, REM","Number waiting", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_REN<-cia_analysis("REN", NA,rtt_waiting_time,"2020-06-01","number_incomplete", 0.05)
+
+#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_number_REN, "Study site: Clatterbridge, REN","Number waiting", "2020-06-01")
+```
+
+#### Papworth
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_RGM<-cia_analysis("RGM",NA, rtt_waiting_time,"2019-05-01", "number_incomplete", 0.05)
+
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete", 0.05, waiting_time_number_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_number_RGM, "Study site: Papworth, RGM","Number waiting", "2019-05-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_RGN<-cia_analysis("RGN",NA, rtt_waiting_time,"2010-11-01", "number_incomplete", 0.05)
+
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01","number_incomplete", 0.05, waiting_time_number_RGN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_number_RGN, "Study site: Peterborough, RGN","Number waiting", "2010-11-01")
+```
+
+#### Chase Farm
+
+Missing data in 2019 and 2020
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_RAL<-cia_analysis("RAL", NA,rtt_waiting_time,"2018-09-01", "number_incomplete", 0.05)
+
+#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "number_incomplete", 0.05, waiting_time_number_RAL)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number waiting", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_RVJ<-cia_analysis("RVJ", NA,rtt_waiting_time,"2014-05-01", "number_incomplete", 0.05)
+
+#evaluating_model("RVJ", NA, rtt_waiting_time, "2014-05-01", "number_incomplete", 0.05, waiting_time_number_RVJ)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_number_RVJ, "Study site: Southmead, RVJ","Number waiting", "2014-05-01")
+```
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_RWF<-cia_analysis("RWF",NA, rtt_waiting_time,"2011-01-01","number_incomplete", 0.01)
+
+#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(waiting_time_number_RWF, "Study site: Tunbridge Wells, RWF","Number waiting", "2011-01-01")
+```
+
+## Length of stay
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+LoS_REM<-cia_analysis("REM", "REMRQ", length_of_stay,"2022-10-01", "avg_los", 0.05)
+
+#evaluating_model("REM", "REMRQ",  length_of_stay, "2022-10-01", "avg_los", 0.05, LoS_REM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(LoS_REM, "Study site: Royal Liverpool, REM","Average LoS (days)", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+LoS_REN<-cia_analysis("REN", "REN22",length_of_stay,"2020-06-01","avg_los", 0.05)
+
+#evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.05, LoS_REN)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)", "2020-06-01")
+
+
+```
+
+#### Papworth
+
+COVID-19 spikes in the post switch period are impacting LoS.
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+LoS_RGM<-cia_analysis("RGM", "RGM22",length_of_stay,"2019-05-01", "avg_los", 0.05)
+
+#evaluating_model("RGM", "RGM22", length_of_stay, "2019-05-01", "avg_los", 0.05, LoS_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(LoS_RGM, "Study site: Papworth, RGM","Average LoS (days)", "2019-05-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+LoS_RGN<-cia_analysis("RGN", "RGN80",length_of_stay,"2010-11-01", "avg_los", 0.05)
+
+#evaluating_model("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.05, LoS_RGN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(LoS_RGN, "Study site: Peterborough, RGN","Average LoS (days)", "2010-11-01")
+```
+
+#### Chase Farm
+
+Missing data in 2019 and 2020
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+LoS_RAL<-cia_analysis("RAL", "RALC7", length_of_stay,"2018-09-01", "avg_los", 0.05)
+
+#evaluating_model("RAL", "RALC7", length_of_stay, "2018-09-01", "avg_los", 0.05, LoS_RAL)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+LoS_RVJ<-cia_analysis("RVJ", "RVJ01",length_of_stay,"2014-05-01", "avg_los", 0.05)
+
+#evaluating_model("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.05, LoS_RVJ)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(LoS_RVJ, "Study site: Southmead, RVJ","Average LoS (days)", "2014-05-01")
+```
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+LoS_RWF<-cia_analysis("RWF", "RWFTW", length_of_stay,"2011-01-01","avg_los", 0.05)
+
+#evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(LoS_RWF, "Study site: Tunbridge Wells, RWF","Average LoS (days)", "2011-01-01")
+```
+
+## Emergency Readmissions
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+emergency_readmissions_REM<-cia_analysis("REM", "REMRQ", emergency_readmissions,"2022-10-01", "perc", 0.05)
+
+#evaluating_model("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(emergency_readmissions_REM, "Study site: Royal Liverpool, REM","% readmissions", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+emergency_readmissions_REN<-cia_analysis("REN", "REN22",emergency_readmissions, "2020-06-01","perc", 0.05)
+
+#evaluating_model("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.05, emergency_readmissions_REN)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(emergency_readmissions_REN, "Study site: Clatterbridge, REN","% readmissions", "2020-06-01")
+
+```
+
+#### Papworth
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+emergency_readmissions_RGM<-cia_analysis("RGM", "RGM22",emergency_readmissions,"2019-05-01", "perc", 0.05)
+
+#evaluating_model("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.05, emergency_readmissions_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(emergency_readmissions_RGM, "Study site: Papworth, RGM","% readmissions", "2019-05-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+emergency_readmissions_RGN<-cia_analysis("RGN", "RGN80",emergency_readmissions,"2010-11-01", "perc", 0.05)
+
+#evaluating_model("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.05, emergency_readmissions_RGN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(emergency_readmissions_RGN, "Study site: Peterborough, RGN","% readmissions", "2010-11-01")
+```
+
+#### Chase Farm
+
+Missing data in 2019 and 2020
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+emergency_readmissions_RAL<-cia_analysis("RAL", "RALC7", emergency_readmissions,"2018-09-01", "perc", 0.05)
+
+#evaluating_model("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(emergency_readmissions_RAL, "Study site: Chase Farm, RAL","% readmissions", "2018-09-01")
+
+pred <- emergency_readmissions_RAL$Predictions
+
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+emergency_readmissions_RVJ<-cia_analysis("RVJ", "RVJ01",emergency_readmissions,"2014-05-01", "perc", 0.05)
+
+#evaluating_model("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","perc", 0.05, emergency_readmissions_RVJ)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(emergency_readmissions_RVJ, "Study site: Southmead, RVJ","% readmissions", "2014-05-01")
+```
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+emergency_readmissions_RWF<-cia_analysis("RWF", "RWFTW", emergency_readmissions,"2011-01-01","perc", 0.05)
+
+#evaluating_model("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.05, emergency_readmissions_RWF)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(emergency_readmissions_RWF, "Study site: Tunbridge Wells, RWF","% readmissions", "2011-01-01")
+```
+
+## Bed Occupancy
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+bed_occupancy_REM<-cia_analysis("REM", NA,bed_occupancy,"2022-10-01", "bed_occupancy", 0.05)
+
+#evaluating_model("REM", NA, bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(bed_occupancy_REM, "Study site: Royal Liverpool, REM","Percentage", "2022-10-01")
+```
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+bed_occupancy_REN<-cia_analysis("REN",NA, bed_occupancy,"2020-06-01", "bed_occupancy", 0.05)
+
+#evaluating_model("REN", NA, bed_occupancy, "2020-06-01", "bed_occupancy", 0.05, bed_occupancy_REN)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(bed_occupancy_REN, "Study site: Clatterbridge, REN","Percentage", "2020-06-01")
+```
+
+#### Papworth
+
+Post switch period is impacted by COVID-19
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+bed_occupancy_RGM<-cia_analysis("RGM",NA, bed_occupancy,"2019-05-01", "bed_occupancy", 0.05)
+
+#evaluating_model("RGM",NA, bed_occupancy, "2019-05-01", "bed_occupancy", 0.05, bed_occupancy_RGM)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(bed_occupancy_RGM, "Study site: Papworth, RGM","Percentage", "2019-05-01")
+```
+
+#### Chase Farm
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+bed_occupancy_RAL<-cia_analysis("RAL",NA, bed_occupancy,"2018-09-01", "bed_occupancy", 0.05)
+
+#evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL)
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(bed_occupancy_RAL, "Study site: Chase Farm, RAL","Percentage", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+bed_occupancy_RVJ<-cia_analysis("RVJ",NA, bed_occupancy,"2014-05-01", "bed_occupancy", 0.05)
+
+#evaluating_model("RVJ", NA, bed_occupancy, "2014-05-01", "bed_occupancy", 0.05, bed_occupancy_RVJ)
+
+
+```
+
+```{r, include=TRUE, fig.width=8, fig.height=8}
+
+cia_summary_plots(bed_occupancy_RVJ, "Study site: Southmead, RVJ","Percentage", "2014-05-01")
+```

@@ -106,12 +106,10 @@ emergency_readmissions<-tar_read(emergency_readmissions_cia_format)|>
 
  # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
 
-matches<-tar_read(single_bedroom_matches)
+#Loading control data
+single_bedroom_matches<-tar_read(single_bedroom_matches)
 
-
-rtt_test<-tar_read(rtt_waiting_time_cia_format)|>
-  filter(organisation_code=="REM")
-
+source("R/CIA_Functions.R")
 
 ```
 
@@ -125,7 +123,7 @@ tar_read(indicator_availability_plot)
 
 ```{r}
 
-tar_read(indicator_availability_by_site)
+tar_read(indicator_availability_table)
 
 ```
 
@@ -139,9 +137,9 @@ Seems to be some change in data reporting around 2011. Also have numbers predict
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_median_REM<-cia_analysis("REM",  rtt_waiting_time,"2022-10-01", "median_by_prov", 0.05)
+waiting_time_median_REM<-cia_analysis("REM", NA, rtt_waiting_time,"2022-10-01", "median_by_prov", 0.05)
 
-#evaluating_model("REM",   rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM)
+#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05)
 
 ```
 
@@ -154,9 +152,9 @@ cia_summary_plots(waiting_time_median_REM, "Study site: Royal Liverpool, REM","M
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_median_REN<-cia_analysis("REN", rtt_waiting_time,"2020-06-01", "median_by_prov", 0.05)
+waiting_time_median_REN<-cia_analysis("REN",NA, rtt_waiting_time,"2020-06-01", "median_by_prov", 0.05)
 
-#evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN)
+#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN)
 
 
 ```
@@ -171,9 +169,9 @@ cia_summary_plots(waiting_time_median_REN, "Study site: Clatterbridge, REN","Med
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_median_RGM<-cia_analysis("RGM", rtt_waiting_time,"2019-05-01", "median_by_prov", 0.05)
+waiting_time_median_RGM<-cia_analysis("RGM", NA, rtt_waiting_time,"2019-05-01", "median_by_prov", 0.05)
 
-#evaluating_model("RGM",  rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM)
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM)
 
 
 ```
@@ -187,9 +185,9 @@ cia_summary_plots(waiting_time_median_RGM, "Study site: Papworth, RGM","Median w
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_median_RGN<-cia_analysis("RGN", rtt_waiting_time,"2010-11-01", "median_by_prov", 0.05)
+waiting_time_median_RGN<-cia_analysis("RGN", NA,rtt_waiting_time,"2010-11-01", "median_by_prov", 0.05)
 
-#evaluating_model("RGN",  rtt_waiting_time, "2010-11-01", "median_by_prov", 0.05, waiting_time_median_RGN)
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.05, waiting_time_median_RGN)
 
 
 ```
@@ -205,9 +203,9 @@ Missing data in 2019 and 2020
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_median_RAL<-cia_analysis("RAL", rtt_waiting_time,"2018-09-01", "median_by_prov", 0.05)
+waiting_time_median_RAL<-cia_analysis("RAL", NA,rtt_waiting_time,"2018-09-01", "median_by_prov", 0.05)
 
-#evaluating_model("RAL",  rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL)
+#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL)
 
 ```
 
@@ -220,9 +218,9 @@ cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_median_RVJ<-cia_analysis("RVJ", rtt_waiting_time,"2014-05-01", "median_by_prov", 0.05)
+waiting_time_median_RVJ<-cia_analysis("RVJ",NA, rtt_waiting_time,"2014-05-01", "median_by_prov", 0.05)
 
-#evaluating_model("RVJ",  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05, waiting_time_median_RVJ)
+#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05, waiting_time_median_RVJ)
 
 ```
 
@@ -235,9 +233,9 @@ cia_summary_plots(waiting_time_median_RVJ, "Study site: Southmead, RVJ","Median 
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_median_RWF<-cia_analysis("RWF", rtt_waiting_time,"2011-01-01", "median_by_prov", 0.01)
+waiting_time_median_RWF<-cia_analysis("RWF", NA,rtt_waiting_time,"2011-01-01", "median_by_prov", 0.01)
 
-#evaluating_model("RWF",  rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF)
+#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF)
 
 
 ```
@@ -253,9 +251,9 @@ cia_summary_plots(waiting_time_median_RWF, "Study site: Tunbridge Wells, RWF","M
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_REM<-cia_analysis("REM", rtt_waiting_time,"2022-10-01", "number_incomplete", 0.05)
+waiting_time_number_REM<-cia_analysis("REM", NA,rtt_waiting_time,"2022-10-01", "number_incomplete", 0.05)
 
-#evaluating_model("REM",  rtt_waiting_time, "2022-10-01", "number_incomplete", 0.05, waiting_time_number_REM)
+#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.05, waiting_time_number_REM)
 
 
 ```
@@ -269,9 +267,9 @@ cia_summary_plots(waiting_time_number_REM, "Study site: Royal Liverpool, REM","N
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_REN<-cia_analysis("REN", rtt_waiting_time,"2020-06-01","number_incomplete", 0.05)
+waiting_time_number_REN<-cia_analysis("REN", NA,rtt_waiting_time,"2020-06-01","number_incomplete", 0.05)
 
-#evaluating_model("REN",  rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN)
+#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN)
 
 ```
 
@@ -284,9 +282,9 @@ cia_summary_plots(waiting_time_number_REN, "Study site: Clatterbridge, REN","Num
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_RGM<-cia_analysis("RGM", rtt_waiting_time,"2019-05-01", "number_incomplete", 0.05)
+waiting_time_number_RGM<-cia_analysis("RGM",NA, rtt_waiting_time,"2019-05-01", "number_incomplete", 0.05)
 
-#evaluating_model("RGM",  rtt_waiting_time, "2019-05-01", "number_incomplete", 0.05, waiting_time_number_RGM)
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete", 0.05, waiting_time_number_RGM)
 
 
 ```
@@ -300,9 +298,9 @@ cia_summary_plots(waiting_time_number_RGM, "Study site: Papworth, RGM","Number w
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_RGN<-cia_analysis("RGN", rtt_waiting_time,"2010-11-01", "number_incomplete", 0.05)
+waiting_time_number_RGN<-cia_analysis("RGN",NA, rtt_waiting_time,"2010-11-01", "number_incomplete", 0.05)
 
-#evaluating_model("RGN",  rtt_waiting_time, "2010-11-01","number_incomplete", 0.05, waiting_time_number_RGN)
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01","number_incomplete", 0.05, waiting_time_number_RGN)
 
 
 ```
@@ -318,9 +316,9 @@ Missing data in 2019 and 2020
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_RAL<-cia_analysis("RAL", rtt_waiting_time,"2018-09-01", "number_incomplete", 0.05)
+waiting_time_number_RAL<-cia_analysis("RAL", NA,rtt_waiting_time,"2018-09-01", "number_incomplete", 0.05)
 
-#evaluating_model("RAL",  rtt_waiting_time, "2018-09-01", "number_incomplete", 0.05, waiting_time_number_RAL)
+#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "number_incomplete", 0.05, waiting_time_number_RAL)
 
 ```
 
@@ -333,9 +331,9 @@ cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_RVJ<-cia_analysis("RVJ", rtt_waiting_time,"2014-05-01", "number_incomplete", 0.05)
+waiting_time_number_RVJ<-cia_analysis("RVJ", NA,rtt_waiting_time,"2014-05-01", "number_incomplete", 0.05)
 
-#evaluating_model("RVJ",  rtt_waiting_time, "2014-05-01", "number_incomplete", 0.05, waiting_time_number_RVJ)
+#evaluating_model("RVJ", NA, rtt_waiting_time, "2014-05-01", "number_incomplete", 0.05, waiting_time_number_RVJ)
 
 ```
 
@@ -348,9 +346,9 @@ cia_summary_plots(waiting_time_number_RVJ, "Study site: Southmead, RVJ","Number 
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_RWF<-cia_analysis("RWF", rtt_waiting_time,"2011-01-01","number_incomplete", 0.01)
+waiting_time_number_RWF<-cia_analysis("RWF",NA, rtt_waiting_time,"2011-01-01","number_incomplete", 0.01)
 
-#evaluating_model("RWF",  rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF)
+#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF)
 
 ```
 
@@ -365,10 +363,10 @@ cia_summary_plots(waiting_time_number_RWF, "Study site: Tunbridge Wells, RWF","N
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-LoS_REM<-cia_analysis_sites("REM", "REMRQ", length_of_stay,"2022-10-01", "avg_los", 0.05)
+LoS_REM<-cia_analysis("REM", "REMRQ", length_of_stay,"2022-10-01", "avg_los", 0.05,single_bedroom_matches )
 
 #evaluating_model_sites("REM", "REMRQ",  length_of_stay, "2022-10-01", "avg_los", 0.05, LoS_REM)
-
+test<-select_matches("REM","REMRQ", length_of_stay,"2022-10-01", "avg_los", single_bedroom_matches)
 
 ```
 
@@ -667,9 +665,9 @@ cia_summary_plots(emergency_readmissions_RWF, "Study site: Tunbridge Wells, RWF"
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-bed_occupancy_REM<-cia_analysis("REM", bed_occupancy,"2022-10-01", "bed_occupancy", 0.05)
+bed_occupancy_REM<-cia_analysis("REM", NA,bed_occupancy,"2022-10-01", "bed_occupancy", 0.05)
 
-#evaluating_model("REM",  bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM)
+#evaluating_model("REM", NA, bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM)
 
 ```
 
@@ -682,9 +680,9 @@ cia_summary_plots(bed_occupancy_REM, "Study site: Royal Liverpool, REM","Percent
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-bed_occupancy_REN<-cia_analysis("REN", bed_occupancy,"2020-06-01", "bed_occupancy", 0.05)
+bed_occupancy_REN<-cia_analysis("REN",NA, bed_occupancy,"2020-06-01", "bed_occupancy", 0.05)
 
-#evaluating_model("REN",  bed_occupancy, "2020-06-01", "bed_occupancy", 0.05, bed_occupancy_REN)
+#evaluating_model("REN", NA, bed_occupancy, "2020-06-01", "bed_occupancy", 0.05, bed_occupancy_REN)
 
 
 ```
@@ -700,9 +698,9 @@ Post switch period is impacted by COVID-19
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-bed_occupancy_RGM<-cia_analysis("RGM", bed_occupancy,"2019-05-01", "bed_occupancy", 0.05)
+bed_occupancy_RGM<-cia_analysis("RGM",NA, bed_occupancy,"2019-05-01", "bed_occupancy", 0.05)
 
-#evaluating_model("RGM", bed_occupancy, "2019-05-01", "bed_occupancy", 0.05, bed_occupancy_RGM)
+#evaluating_model("RGM",NA, bed_occupancy, "2019-05-01", "bed_occupancy", 0.05, bed_occupancy_RGM)
 
 
 ```
@@ -716,9 +714,9 @@ cia_summary_plots(bed_occupancy_RGM, "Study site: Papworth, RGM","Percentage", "
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-bed_occupancy_RAL<-cia_analysis("RAL", bed_occupancy,"2018-09-01", "bed_occupancy", 0.05)
+bed_occupancy_RAL<-cia_analysis("RAL",NA, bed_occupancy,"2018-09-01", "bed_occupancy", 0.05)
 
-#evaluating_model("RAL",  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL)
+#evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL)
 
 ```
 
@@ -731,9 +729,9 @@ cia_summary_plots(bed_occupancy_RAL, "Study site: Chase Farm, RAL","Percentage",
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-bed_occupancy_RVJ<-cia_analysis("RVJ", bed_occupancy,"2014-05-01", "bed_occupancy", 0.05)
+bed_occupancy_RVJ<-cia_analysis("RVJ",NA, bed_occupancy,"2014-05-01", "bed_occupancy", 0.05)
 
-#evaluating_model("RVJ",  bed_occupancy, "2014-05-01", "bed_occupancy", 0.05, bed_occupancy_RVJ)
+#evaluating_model("RVJ", NA, bed_occupancy, "2014-05-01", "bed_occupancy", 0.05, bed_occupancy_RVJ)
 
 
 ```

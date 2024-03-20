@@ -1,18 +1,29 @@
 # Function to find the best matches FOR ORGANISATIONS
 
-select_matches<-function(organisation, data, switch_month, variable){
+select_matches<-function(organisation,site ,data, switch_month, variable){
   
   matches<-tar_read(single_bedroom_matches)|>
     filter(organisation_code==organisation)
   
-  dataset<-data|>
-    filter(organisation_code==organisation | organisation_code %in% matches$matching_organisation_code)|>
-    left_join(matches[,c("matching_organisation_code", "trust_name")],    by=c("organisation_code"="matching_organisation_code"))|> # Add name of matched sites
-    distinct()
-  # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+  if (is.na(site)) {
+    dataset<-data|>
+      filter(organisation_code==organisation | organisation_code %in% matches$matching_organisation_code)|>
+      left_join(matches[,c("matching_organisation_code", "trust_name")],    by=c("organisation_code"="matching_organisation_code"))|> # Add name of matched sites
+      distinct()
+    # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+  }
+  
+  if (!is.na(site)) {
+    dataset<-data|>
+      filter(site_code==site | site_code %in% matches$site_code)|>
+      left_join(matches[,c("site_code", "trust_name")], by=c("site_code"))|> # Add name of matched sites
+      distinct()|>
+      rename(organisation_code=site_code)
+    # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+  }
   
   # Find best matches
-  mm <- MarketMatching::best_matches(data=dataset,
+  cia_matches <- MarketMatching::best_matches(data=dataset,
                                      id_variable="organisation_code",
                                      date_variable="month",
                                      matching_variable={{variable}},
@@ -25,59 +36,79 @@ select_matches<-function(organisation, data, switch_month, variable){
   
   # start_match_period=(as.Date(min(data$month))),
   
-  return(mm)
+  return(cia_matches)
   
 }
 
 
 
-# Function to run the CIA FOR ORGANISATIONS  
-cia_analysis<-function(organisation, data, switch_month, variable, prior_sd){
+# Function to run the CIA model
+cia_analysis<-function(organisation, site, data, switch_month, variable, prior_sd ){
   
-  mm<-select_matches(organisation, data, switch_month, variable)
+  cia_matches<-select_matches(organisation, site, data, switch_month, variable )
   
   #View the best matches
-  value<-mm$BestMatches|>
-    filter(organisation_code==organisation)
+  if (is.na(site)) {
+    value<-cia_matches$BestMatches|>
+      filter(organisation_code==organisation)
+    
+    test_site<-organisation
+  }
   
+  if (!is.na(site)) {
+      value<-cia_matches$BestMatches|>
+      filter(organisation_code==site)
+    # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+      
+      test_site<-site
+  }
+
   
   # Run the causal impact analysis
-  results <- MarketMatching::inference(matched_markets = mm,
+  model_results <- MarketMatching::inference(matched_markets = cia_matches,
                                        analyze_betas=TRUE,
-                                       test_market = organisation,
+                                       test_market = test_site,
                                        end_post_period =(as.Date(switch_month) %m+% months(24)),
                                        alpha=0.05, 
                                        prior_level_sd= prior_sd)
   
   # See which hospital receives the highest weight in determining the outcome
-  coeff <- results$Coefficients
+  coeff <- model_results$Coefficients
   
   #Store predicted values in dataframe
-  pred <- results$Predictions
+  pred <- model_results$Predictions
   
-  return(results)
+  return(model_results)
   
 }
 
 
-evaluating_model<-function(organisation, data, switch_month, variable, prior_sd, model){
+evaluating_model<-function(organisation, site, data, switch_month, variable, prior_sd, model_results_organisation, single_bedroom_matches ){
   
-  mm<-  select_matches(organisation, data, switch_month, variable)
+  cia_matches<-  select_matches(organisation, site, data, switch_month, variable, single_bedroom_matches)
+  
+  if (is.na(site)) {
+    test_site<-organisation
+  }
+  
+  if (!is.na(site)) {
+    test_site<-site
+  }
   
   #Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
-  power <- MarketMatching::test_fake_lift(matched_markets = mm, 
-                                          test_market = organisation, 
+  power <- MarketMatching::test_fake_lift(matched_markets = cia_matches, 
+                                          test_market = test_site, 
                                           end_fake_post_period = (as.Date(switch_month) %m+% months(24)), 
                                           prior_level_sd = prior_sd, 
                                           steps=10,
                                           max_fake_lift=0.1)
   
   #Plot the actuals 
-  a<-model$PlotActuals+
+  a<-model_results$PlotActuals+
     su_theme()
   
   # Check out the DW and MAPE of the model
-  b<-model$PlotPriorLevelSdAnalysis+
+  b<-model_results$PlotPriorLevelSdAnalysis+
     su_theme()
   
   #And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
@@ -89,72 +120,14 @@ evaluating_model<-function(organisation, data, switch_month, variable, prior_sd,
   
 }
 
-# Function to find the best matches FOR SITES
-select_matches_sites<-function(organisation, site, data, switch_month, variable){
-  
-  matches<-tar_read(single_bedroom_matches)|>
-    filter(organisation_code==organisation)
-  
-  dataset<-data|>
-    filter(site_code==site | site_code %in% matches$site_code)|>
-    left_join(matches[,c("site_code", "trust_name")], by=c("site_code"))|> # Add name of matched sites
-    distinct()
-  #  filter(month!=switch_month |site_code!=site) #remove month of switch
-  
-  # Find best matches
-  mm <- MarketMatching::best_matches(data=dataset,
-                                     id_variable="site_code",
-                                     date_variable="month",
-                                     matching_variable={{variable}},
-                                     parallel=FALSE,
-                                     warping_limit=1, 
-                                     dtw_emphasis=1, 
-                                     matches=5, 
-                                     start_match_period=(as.Date(switch_month) %m-% months(120)),
-                                     end_match_period=(as.Date(switch_month)))
-  
-  # start_match_period=(as.Date(min(data$month))),
-  
-  return(mm)
-  
-}
-
-
-
-# Function to run the CIA FOR SITES   
-cia_analysis_sites<-function(organisation, site, data, switch_month, variable, prior_sd){
-  
-  mm<-select_matches_sites(organisation, site, data, switch_month, variable)
-  
-  #View the best matches
-  value<-mm$BestMatches|>
-    filter(site_code==site)
-  
-  # Run the causal impact analysis
-  results <- MarketMatching::inference(matched_markets = mm,
-                                       analyze_betas=TRUE,
-                                       test_market = site,
-                                       end_post_period =(as.Date(switch_month) %m+% months(24)),
-                                       alpha=0.05, 
-                                       prior_level_sd= prior_sd)
-  
-  # See which hospital receives the highest weight in determining the outcome
-  coeff <- results$Coefficients
-  
-  #Store predicted values in dataframe
-  pred <- results$Predictions
-  
-  return(results)
-  
-}
 
 # Evaluating the model FOR SITES
-evaluating_model_sites<-function(organisation, site, data, switch_month, variable, prior_sd, model){
+evaluating_model_sites<-function(organisation, site, data, switch_month, variable, prior_sd, model_results_sites, single_bedroom_matches ){
   
-  mm<-  select_matches_sites(organisation, site, data, switch_month, variable)
+  cia_matches_sites<-  select_matches_sites(organisation, site, data, switch_month, variable,single_bedroom_matches )
   
   #Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
-  power <- MarketMatching::test_fake_lift(matched_markets = mm, 
+  power <- MarketMatching::test_fake_lift(matched_markets = cia_matches_sites, 
                                           test_market = site, 
                                           end_fake_post_period = (as.Date(switch_month) %m+% months(24)), 
                                           prior_level_sd = prior_sd, 
@@ -162,11 +135,11 @@ evaluating_model_sites<-function(organisation, site, data, switch_month, variabl
                                           max_fake_lift=0.1)
   
   #Plot the actuals 
-  a<-model$PlotActuals+
+  a<-model_results_sites$PlotActuals+
     su_theme()
   
   # Check out the DW and MAPE of the model
-  b<-model$PlotPriorLevelSdAnalysis+
+  b<-model_results_sites$PlotPriorLevelSdAnalysis+
     su_theme()
   
   #And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
@@ -180,10 +153,12 @@ evaluating_model_sites<-function(organisation, site, data, switch_month, variabl
 
 # Function to plot out the CIA results
 
-cia_summary_plots<-function(results, title, ylab, switch_date){
+cia_summary_plots<-function(model_results,  title, ylab, switch_date){
+  
+  
   
   # Plot out actual vs expected
-  a<-results$PlotActualVersusExpected+
+  a<-model_results$PlotActualVersusExpected+
     su_theme()+
     labs(title=title, y=ylab)+
     theme(axis.text = element_text(size=10), 
@@ -197,7 +172,7 @@ cia_summary_plots<-function(results, title, ylab, switch_date){
     guides(colour = guide_legend(reverse=T))
   
   # Plot pointwise effect
-  b<-results$PlotPointEffect+
+  b<-model_results$PlotPointEffect+
     su_theme()+
     theme(axis.text = element_text(size=10), axis.title = element_text(size=11))+
     geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
@@ -205,7 +180,7 @@ cia_summary_plots<-function(results, title, ylab, switch_date){
     scale_x_date(date_breaks = "1 year",date_labels = "%Y")
   
   # Plot out cumulative effect
-  c<-results$PlotCumulativeEffect+
+  c<-model_results$PlotCumulativeEffect+
     su_theme()+
     theme(axis.text = element_text(size=10), axis.title = element_text(size=11))+
     geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+

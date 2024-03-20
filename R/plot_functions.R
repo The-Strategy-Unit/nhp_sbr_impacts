@@ -346,8 +346,6 @@ indicator_availability_by_site<-function(friends_and_family_cia_format, staff_tu
     select(-group)|>
     as.matrix()
   
-  #, level=c("Productivity & Efficiency","Health & Safety",  "Patient & Staff Experience")
-  #    
   
   as_grouped_data(indicator_availability_by_site, groups = "group")|>
     as_flextable( hide_grouplabel = TRUE) |>

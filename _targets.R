@@ -739,11 +739,13 @@ tar_target(
 
 #Indicator availability by site table
 tar_target(
-  indicator_availability_by_site,
+  indicator_availability_table,
   indicator_availability_by_site(friends_and_family_cia_format, staff_turnover_cia_format, 
                                  staff_sickness_cia_format, hcai_cia_format,falls_and_fractures_cia_format,
                                  sus_deaths_cia_format,rtt_waiting_time_cia_format,bed_occupancy_cia_format,
                                  length_of_stay_cia_format,emergency_readmissions_cia_format)
 )
+
+
 
 )

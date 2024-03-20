@@ -60,3 +60,7 @@ rsconnect/
 
 #targets meta
 _targets/
+
+#for gh pages
+/.quarto/
+/_site/

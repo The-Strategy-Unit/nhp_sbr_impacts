@@ -208,18 +208,11 @@ get_indicator_site_level_plot <- function(hospital_of_interest,
 
 # Plot of availability of indicators over time
 
-indicator_availability_over_time<-function(){
-  
-  friends_and_family_cia_format<- tar_read(friends_and_family_cia_format)
-  staff_turnover_cia_format<- tar_read(staff_turnover_cia_format)
-  staff_sickness_cia_format<- tar_read(staff_sickness_cia_format)
-  hcai_cia_format<- tar_read(hcai_cia_format)
-  falls_and_fractures_cia_format<- tar_read(falls_and_fractures_cia_format)
-  sus_deaths_cia_format<- tar_read(sus_deaths_cia_format)
-  rtt_waiting_time_cia_format<- tar_read(rtt_waiting_time_cia_format)
-  bed_occupancy_cia_format<- tar_read(bed_occupancy_cia_format)
-  length_of_stay_cia_format<- tar_read(length_of_stay_cia_format)
-  emergency_readmissions_cia_format<- tar_read(emergency_readmissions_cia_format)
+indicator_availability_over_time<-function(friends_and_family_cia_format, staff_turnover_cia_format, 
+                                           staff_sickness_cia_format, hcai_cia_format,falls_and_fractures_cia_format,
+                                           sus_deaths_cia_format,rtt_waiting_time_cia_format,bed_occupancy_cia_format,
+                                           length_of_stay_cia_format,emergency_readmissions_cia_format){
+
   
   measure<-c("Patient experience-\nfriends and family test", "Staff turnover", "Staff sickness", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "RTT waiting times", "Bed occupancy", "Length of stay", "Emergency readmissions" )
   level<-c("site", "trust", "trust", "trust", "site", "site", "trust", "trust", "site", "site")
@@ -243,13 +236,14 @@ indicator_availability_over_time<-function(){
   a<-ggplot(data=(indicators|>filter(group=="Productivity & Efficiency")),aes(y=measure, x=range))+
     geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
     labs(title="Productivity & Efficiency", y=NULL, x=NULL)+
-    su_theme()+
+    theme_minimal()+
     theme(axis.text.y = element_text(size=12.5),
           plot.margin = unit(c(4.5,1,0,1), "lines"),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank(),
           axis.line.x=element_blank(),
-          plot.title = element_text(hjust = -0.45, colour="#5881c1"))+
+          plot.title = element_text(hjust = -0.45, colour="#5881c1"),
+          panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
     geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
     geom_text(data=sites|>filter(name!= "Peterborough" & name!="Tunbridge Wells"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0, vjust=-0.2, text=element_text(size=11.5))+
     geom_text(data=sites|>filter(name== "Peterborough"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0.1, vjust=-0.4, text=element_text(size=11))+
@@ -260,13 +254,14 @@ indicator_availability_over_time<-function(){
   b<-ggplot(data=(indicators|>filter(group=="Health & Safety")),aes(y=measure, x=range))+
     geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
     labs(title="Health & Safety", y=NULL, x=NULL)+
-    su_theme()+
+    theme_minimal()+
     theme(axis.text.y = element_text(size=12.5),
           plot.margin = unit(c(0,1,0,1), "lines"),
           axis.text.x=element_blank(),
           axis.ticks.x=element_blank(),
           axis.line.x=element_blank(),
-          plot.title = element_text(hjust = -0.4, colour="#5881c1"))+
+          plot.title = element_text(hjust = -0.4, colour="#5881c1"),
+          panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
     geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
     scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
     coord_cartesian(clip = 'off') 
@@ -274,10 +269,11 @@ indicator_availability_over_time<-function(){
   c<-ggplot(data=(indicators|>filter(group=="Patient & Staff Experience")),aes(y=measure, x=range))+
     geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
     labs(title="Patient & Staff Experience", y=NULL, x=NULL)+
-    su_theme()+
+    theme_minimal()+
     theme(axis.text.y = element_text(size=12.5),axis.text.x = element_text(size=11),
           plot.margin = unit(c(0,1,1,1), "lines"),
-          plot.title = element_text(hjust = -0.45, colour="#5881c1"))+
+          plot.title = element_text(hjust = -0.45, colour="#5881c1"),
+          panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
     geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
     scale_x_date(date_breaks = "1 year",date_labels = "%Y",
                  limits = as.Date(c('2008-04-01','2023-11-01')))+
@@ -290,18 +286,11 @@ indicator_availability_over_time<-function(){
 #### Availability of indicators by site table format
 
 
-indicator_availability_by_site<-function(){
+indicator_availability_by_site<-function(friends_and_family_cia_format, staff_turnover_cia_format, 
+                                        staff_sickness_cia_format, hcai_cia_format,falls_and_fractures_cia_format,
+                                        sus_deaths_cia_format,rtt_waiting_time_cia_format,bed_occupancy_cia_format,
+                                          length_of_stay_cia_format,emergency_readmissions_cia_format){
   
-  friends_and_family_cia_format<- tar_read(friends_and_family_cia_format)
-  staff_turnover_cia_format<- tar_read(staff_turnover_cia_format)
-  staff_sickness_cia_format<- tar_read(staff_sickness_cia_format)
-  hcai_cia_format<- tar_read(hcai_cia_format)
-  falls_and_fractures_cia_format<- tar_read(falls_and_fractures_cia_format)
-  sus_deaths_cia_format<- tar_read(sus_deaths_cia_format)
-  rtt_waiting_time_cia_format<- tar_read(rtt_waiting_time_cia_format)
-  bed_occupancy_cia_format<- tar_read(bed_occupancy_cia_format)
-  length_of_stay_cia_format<- tar_read(length_of_stay_cia_format)
-  emergency_readmissions_cia_format<- tar_read(emergency_readmissions_cia_format)
   
   measure<-c("Patient experience-\nfriends and family test", "Staff turnover", "Staff sickness", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "RTT waiting times", "Bed occupancy", "Length of stay", "Emergency readmissions" )
   level<-c("site", "trust", "trust", "trust", "site", "site", "trust", "trust", "site", "site")

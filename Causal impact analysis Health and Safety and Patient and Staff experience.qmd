@@ -341,140 +341,16 @@ figure<-ggarrange(a,b,c, ncol=1)
 
 ```{r, fig.height=6, fig.width=10}
 
-
-  measure<-c("Patient experience-\nfriends and family test", "Staff turnover", "Staff sickness", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "RTT waiting times", "Bed occupancy", "Length of stay", "Emergency readmissions" )
-level<-c("site", "trust", "trust", "trust", "site", "site", "trust", "trust", "site", "site")
-group<-c("Patient & Staff Experience", "Patient & Staff Experience", "Patient & Staff Experience", "Health & Safety", "Health & Safety", "Health & Safety", "Productivity & Efficiency", "Productivity & Efficiency", "Productivity & Efficiency", "Productivity & Efficiency")
-    start_date<-c(min(friends_and_family$month), min(staff_turnover$month), min(staff_sickness$month), min(hcai$month), min(falls_and_fractures$month), min(sus_deaths$month), min(rtt_waiting_time$month), min(bed_occupancy$month), min(length_of_stay$month), min(emergency_readmissions$month))
-      end_date<-c(max(friends_and_family$month), max(staff_turnover$month), max(staff_sickness$month), max(hcai$month), max(falls_and_fractures$month), max(sus_deaths$month), max(rtt_waiting_time$month), max(bed_occupancy$month), max(length_of_stay$month), max(emergency_readmissions$month))
-      
-
-indicators<- data.frame(group, measure, level, start_date, end_date)|>
- gather(key=type, value=range, -group, -measure, -level)|>
-    mutate(range=as.Date(range))|>
-  mutate(measure=factor(measure, levels=c( "Staff turnover", "Staff sickness","Patient experience-\nfriends and family test", "Healthcare acquired infections", "Falls and fractures", "Hospital deaths", "Emergency readmissions","Bed occupancy",  "RTT waiting times","Length of stay")))
-
-name<-c("Royal Liverpool", "Clatterbridge", "Papworth", "Peterborough", "Chase Farm", "Southmead", "Tunbridge Wells")
-date<-c('2022-10-01', '2020-06-01', '2019-05-01', '2010-11-01', '2018-09-01', '2014-05-01', '2011-01-01' )
-
-sites<-data.frame(name, date)|>
-  mutate(date=as.Date(date))
-
-
-a<-ggplot(data=(indicators|>filter(group=="Productivity & Efficiency")),aes(y=measure, x=range))+
- geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
-labs(title="Productivity & Efficiency", y=NULL, x=NULL)+
- su_theme()+
-  theme(axis.text.y = element_text(size=12.5),
-        plot.margin = unit(c(4.5,1,0,1), "lines"),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.line.x=element_blank(),
-        plot.title = element_text(hjust = -0.45, colour="#5881c1"))+
- geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
- geom_text(data=sites|>filter(name!= "Peterborough" & name!="Tunbridge Wells"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0, vjust=-0.2, text=element_text(size=11.5))+
-  geom_text(data=sites|>filter(name== "Peterborough"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0.1, vjust=-0.4, text=element_text(size=11))+
-  geom_text(data=sites|>filter(name=="Tunbridge Wells"), aes(x=date, y=Inf, label=name), colour="#2c2825", angle=40, hjust=0, vjust=0.6, text=element_text(size=11))+
-scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  coord_cartesian(clip = 'off') 
-
-b<-ggplot(data=(indicators|>filter(group=="Health & Safety")),aes(y=measure, x=range))+
- geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
-labs(title="Health & Safety", y=NULL, x=NULL)+
- su_theme()+
-  theme(axis.text.y = element_text(size=12.5),
-        plot.margin = unit(c(0,1,0,1), "lines"),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.line.x=element_blank(),
-        plot.title = element_text(hjust = -0.4, colour="#5881c1"))+
- geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
-scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-  coord_cartesian(clip = 'off') 
-
-c<-ggplot(data=(indicators|>filter(group=="Patient & Staff Experience")),aes(y=measure, x=range))+
- geom_path(lineend = "round", color="#f9bf07", linewidth=5)+
-labs(title="Patient & Staff Experience", y=NULL, x=NULL)+
- su_theme()+
-  theme(axis.text.y = element_text(size=12.5),axis.text.x = element_text(size=11),
-        plot.margin = unit(c(0,1,1,1), "lines"),
-        plot.title = element_text(hjust = -0.45, colour="#5881c1"))+
- geom_vline(data=sites, aes(xintercept =date), linetype="dashed", color="#2c2825", linewidth=0.8)+
-scale_x_date(date_breaks = "1 year",date_labels = "%Y",
-             limits = as.Date(c('2008-04-01','2023-11-01')))+
-  coord_cartesian(clip = 'off') 
-
-figure<-ggarrange(a, b,c, ncol=1)
-
+tar_read(indicator_availability_plot)
 
 ```
 
 ```{r}
 
-
-indicator_availability_by_site<-indicators|>
-  cross_join(sites)|>
-  filter(type=="start_date")|>
-   mutate(difference=as.numeric(date-range))|> #difference in days
-  mutate(sufficient_baseline=ifelse(difference>=730, "yes", "no"))|>
-  select(-difference, -date, -range, -type)|>
-  pivot_wider( names_from = name, values_from=sufficient_baseline)|>
-  mutate(measure=factor(measure, levels=c( "Patient experience-\nfriends and family test", "Staff sickness","Staff turnover", "Hospital deaths", "Falls and fractures", "Healthcare acquired infections","Length of stay" ,"RTT waiting times","Bed occupancy",  "Emergency readmissions"))) |>
-  arrange(measure)|>
-  mutate(group=factor(group, levels=c("Productivity & Efficiency", "Health & Safety","Patient & Staff Experience")))|>
-  arrange(group)
-
- colormatrix1<-ifelse(indicator_availability_by_site=="no","#FBE0DC", 
-                     ifelse(indicator_availability_by_site=="yes", "#d5eed1", "#FFFFFF"  )) |>
-   as.data.frame()|>
-   slice(1:4)|>
-   select(-group)|>
-   as.matrix()
-   
-    colormatrix2<-ifelse(indicator_availability_by_site=="no","#FBE0DC", 
-                     ifelse(indicator_availability_by_site=="yes", "#d5eed1", "#FFFFFF"  )) |>
-   as.data.frame()|>
-   slice(5:7)|>
-   select(-group)|>
-   as.matrix()
-   
-   
-   
-    colormatrix3<-ifelse(indicator_availability_by_site=="no","#FBE0DC", 
-                     ifelse(indicator_availability_by_site=="yes", "#d5eed1", "#FFFFFF"  )) |>
-   as.data.frame()|>
-   slice(8:10)|>
-   select(-group)|>
-   as.matrix()
-   
-#, level=c("Productivity & Efficiency","Health & Safety",  "Patient & Staff Experience")
- #    
-   
-  as_grouped_data(indicator_availability_by_site, groups = "group")|>
-  as_flextable( hide_grouplabel = TRUE) |>
-  set_header_labels(measure= "Variable",
-                    level="Level")|>
-  align(part = "header", align = "center")|>
-    align(part = "body", align = "center")|>
-      align(j=1:2,  align = "left")|>
-  bg(bg = "#f9bf07", part = "header") |>
-  bg(i=2:5, part="body", bg=colormatrix1)|>
-      bg(i=7:9, bg=colormatrix2)|>
-      bg(i=11:13, bg=colormatrix3)|>
-      align(j = 1, i = ~ !is.na(group), part = "body", align="left" )|>
-  bold(j = 1, i = ~ !is.na(group), part = "body" )|>
-  bold(bold = TRUE, part="header")|>
-   fontsize(size = 12, part = "all")|>
-   padding(padding = 2, part = "all", padding.top=NULL) |>
- autofit()|>
-      htmltools_value(ft.align = "left") 
-
-
-
+tar_read(indicator_availability_by_site)
 
 
 ```
-
 
 # Health and Safety
 
@@ -820,7 +696,7 @@ cia_summary_plots(friends_and_family_REN22, "Study site: Clatterbridge, REN22","
 
 #### Papworth (RGM)
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=FALSE, fig.width=8, fig.height=8}
 
 friends_and_family_RGM22<-cia_analysis_sites("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05)
 
@@ -933,7 +809,7 @@ staff_sickness_RVJ<-cia_analysis("RVJ", staff_sickness,"2014-05-01", "staff_sick
 cia_summary_plots(staff_sickness_RVJ, "Study site: Southmead, RVJ","Sickness Rate (%)", "2014-05-01")
 ```
 
-```{r, fig.height=8, fig.width=8}
+```{r, include= FALSE, fig.height=8, fig.width=8}
 
 ## Staff turnover
 
@@ -951,8 +827,6 @@ cia_summary_plots(staff_turnover_REM, "Study site: Royal Liverpool, REM","Leavin
 
 
 ```
-
-
 
 ```{r, include=FALSE}
 # Other plots information

@@ -46,33 +46,6 @@ library(egg)
 library(StrategyUnitTheme)
 
 
-
-## Friends & Family
-friends_and_family<-tar_read(friends_and_family_cia_format)|>
-  filter(!is.na(friends_and_family_percent))|>
-  filter(site_code!="N6J7V" &
-         site_code!="E0A3H")
-
-## Staff turnover
-staff_turnover<-tar_read(staff_turnover_cia_format)|>
-  mutate(leaving_rate=ifelse(is.na(leaving_rate), 0, leaving_rate))|>
-  filter(month>"2020-08-01" | organisation_code!="REM") |># Liverpool data issues before this point
-  filter(organisation_code!="RVY")
-
-## Staff sickness
-staff_sickness<-tar_read(staff_sickness_cia_format)
-
-## Healthcare acquired infections - Infection rate per 10,000 bed days
-hcai<-tar_read(hcai_cia_format)
-
-## In-hospital Falls and Fractures - Fall rate per 1000 bed days
-falls_and_fractures<- tar_read(falls_and_fractures_cia_format)|>
-  mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))|>
-  filter(site_code!="RALC7"|month>'2014-03-01')
-
-# SUS death rate (deaths/1000 admissions)
-sus_deaths<- tar_read(sus_deaths_cia_format)
-
 ## RTT waiting time
 rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) |>
   filter( organisation_code!="RF4" &  
@@ -94,22 +67,12 @@ emergency_readmissions<-tar_read(emergency_readmissions_cia_format)|>
          site_code!="RDEEB"&
          site_code!="RPA02")
 
-#survey<-read_csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")
-
-#test<-survey|>
-#  clean_names()|>
-#      mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
-#    mutate(month = floor_date(effective_snapshot_date, "month"))|>  #Format date to monthly
-#  filter( str_detect(breakdown_category,"Registered Nurses & Midwives:")|
- #       breakdown_category=="Nursing auxiliary / Nursing assistant / Healthcare assistant") |>
- #   
-
- # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
 
 #Loading control data
 single_bedroom_matches<-tar_read(single_bedroom_matches)
 
 source("R/CIA_Functions.R")
+
 
 ```
 
@@ -154,7 +117,7 @@ cia_summary_plots(waiting_time_median_REM, "Study site: Royal Liverpool, REM","M
 
 waiting_time_median_REN<-cia_analysis("REN",NA, rtt_waiting_time,"2020-06-01", "median_by_prov", 0.05)
 
-#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN)
+evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN)
 
 
 ```
@@ -377,11 +340,9 @@ cia_summary_plots(LoS_REM, "Study site: Royal Liverpool, REM","Average LoS (days
 
 #### Clatterbridge
 
-Missing data from the end of 2020
-
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-LoS_REN<-cia_analysis_sites("REN", "REN22",length_of_stay,"2020-06-01","avg_los", 0.05)
+LoS_REN<-cia_analysis("REN", "REN22",length_of_stay,"2020-06-01","avg_los", 0.05)
 
 #evaluating_model_sites("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.05, LoS_REN)
 
@@ -394,47 +355,13 @@ cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)"
 
 ```
 
-```{r, include=FALSE}
-
-#Believe REN22- the Liverpool site of interest is currently the only one with inpatient facilities, but still have records REN20
-
-length_of_stay|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=los, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-length_of_stay|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21")|>
-  ggplot()+
-  geom_line(aes(x=month, y=spells, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-length_of_stay|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21")|>
-  ggplot()+
-  geom_line(aes(x=month, y=avg_los, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-
-```
-
 #### Papworth
 
 COVID-19 spikes in the post switch period are impacting LoS.
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-LoS_RGM<-cia_analysis_sites("RGM", "RGM22",length_of_stay,"2019-05-01", "avg_los", 0.05)
+LoS_RGM<-cia_analysis("RGM", "RGM22",length_of_stay,"2019-05-01", "avg_los", 0.05)
 
 #evaluating_model_sites("RGM", "RGM22", length_of_stay, "2019-05-01", "avg_los", 0.05, LoS_RGM)
 
@@ -450,7 +377,7 @@ cia_summary_plots(LoS_RGM, "Study site: Papworth, RGM","Average LoS (days)", "20
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-LoS_RGN<-cia_analysis_sites("RGN", "RGN80",length_of_stay,"2010-11-01", "avg_los", 0.05)
+LoS_RGN<-cia_analysis("RGN", "RGN80",length_of_stay,"2010-11-01", "avg_los", 0.05)
 
 #evaluating_model_sites("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.05, LoS_RGN)
 
@@ -468,7 +395,7 @@ Missing data in 2019 and 2020
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-LoS_RAL<-cia_analysis_sites("RAL", "RALC7", length_of_stay,"2018-09-01", "avg_los", 0.05)
+LoS_RAL<-cia_analysis("RAL", "RALC7", length_of_stay,"2018-09-01", "avg_los", 0.05)
 
 #evaluating_model_sites("RAL", "RALC7", length_of_stay, "2018-09-01", "avg_los", 0.05, LoS_RAL)
 
@@ -483,7 +410,7 @@ cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-LoS_RVJ<-cia_analysis_sites("RVJ", "RVJ01",length_of_stay,"2014-05-01", "avg_los", 0.05)
+LoS_RVJ<-cia_analysis("RVJ", "RVJ01",length_of_stay,"2014-05-01", "avg_los", 0.05)
 
 #evaluating_model_sites("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.05, LoS_RVJ)
 
@@ -498,7 +425,7 @@ cia_summary_plots(LoS_RVJ, "Study site: Southmead, RVJ","Average LoS (days)", "2
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-LoS_RWF<-cia_analysis_sites("RWF", "RWFTW", length_of_stay,"2011-01-01","avg_los", 0.05)
+LoS_RWF<-cia_analysis("RWF", "RWFTW", length_of_stay,"2011-01-01","avg_los", 0.05)
 
 #evaluating_model_sites("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF)
 
@@ -516,7 +443,7 @@ cia_summary_plots(LoS_RWF, "Study site: Tunbridge Wells, RWF","Average LoS (days
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-emergency_readmissions_REM<-cia_analysis_sites("REM", "REMRQ", emergency_readmissions,"2022-10-01", "perc", 0.05)
+emergency_readmissions_REM<-cia_analysis("REM", "REMRQ", emergency_readmissions,"2022-10-01", "perc", 0.05)
 
 #evaluating_model_sites("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM)
 
@@ -532,10 +459,9 @@ cia_summary_plots(emergency_readmissions_REM, "Study site: Royal Liverpool, REM"
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-emergency_readmissions_REN<-cia_analysis_sites("REN", "REN22",emergency_readmissions, "2020-06-01","perc", 0.05)
+emergency_readmissions_REN<-cia_analysis("REN", "REN22",emergency_readmissions, "2020-06-01","perc", 0.05)
 
 #evaluating_model_sites("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.05, emergency_readmissions_REN)
-
 
 ```
 
@@ -545,42 +471,11 @@ cia_summary_plots(emergency_readmissions_REN, "Study site: Clatterbridge, REN","
 
 ```
 
-```{r, include=FALSE}
-
-emergency_readmissions|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=admits, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-emergency_readmissions|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21")|>
-  ggplot()+
-  geom_line(aes(x=month, y=readmits, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-emergency_readmissions|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21")|>
-  ggplot()+
-  geom_line(aes(x=month, y=perc, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-```
-
 #### Papworth
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-emergency_readmissions_RGM<-cia_analysis_sites("RGM", "RGM22",emergency_readmissions,"2019-05-01", "perc", 0.05)
+emergency_readmissions_RGM<-cia_analysis("RGM", "RGM22",emergency_readmissions,"2019-05-01", "perc", 0.05)
 
 #evaluating_model_sites("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.05, emergency_readmissions_RGM)
 
@@ -596,7 +491,7 @@ cia_summary_plots(emergency_readmissions_RGM, "Study site: Papworth, RGM","% rea
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-emergency_readmissions_RGN<-cia_analysis_sites("RGN", "RGN80",emergency_readmissions,"2010-11-01", "perc", 0.05)
+emergency_readmissions_RGN<-cia_analysis("RGN", "RGN80",emergency_readmissions,"2010-11-01", "perc", 0.05)
 
 #evaluating_model_sites("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.05, emergency_readmissions_RGN)
 
@@ -614,7 +509,7 @@ Missing data in 2019 and 2020
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-emergency_readmissions_RAL<-cia_analysis_sites("RAL", "RALC7", emergency_readmissions,"2018-09-01", "perc", 0.05)
+emergency_readmissions_RAL<-cia_analysis("RAL", "RALC7", emergency_readmissions,"2018-09-01", "perc", 0.05)
 
 #evaluating_model_sites("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL)
 
@@ -632,7 +527,7 @@ pred <- emergency_readmissions_RAL$Predictions
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-emergency_readmissions_RVJ<-cia_analysis_sites("RVJ", "RVJ01",emergency_readmissions,"2014-05-01", "perc", 0.05)
+emergency_readmissions_RVJ<-cia_analysis("RVJ", "RVJ01",emergency_readmissions,"2014-05-01", "perc", 0.05)
 
 #evaluating_model_sites("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","perc", 0.05, emergency_readmissions_RVJ)
 
@@ -647,7 +542,7 @@ cia_summary_plots(emergency_readmissions_RVJ, "Study site: Southmead, RVJ","% re
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-emergency_readmissions_RWF<-cia_analysis_sites("RWF", "RWFTW", emergency_readmissions,"2011-01-01","perc", 0.05)
+emergency_readmissions_RWF<-cia_analysis("RWF", "RWFTW", emergency_readmissions,"2011-01-01","perc", 0.05)
 
 #evaluating_model_sites("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.05, emergency_readmissions_RWF)
 

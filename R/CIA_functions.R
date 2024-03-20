@@ -83,9 +83,9 @@ cia_analysis<-function(organisation, site, data, switch_month, variable, prior_s
 }
 
 
-evaluating_model<-function(organisation, site, data, switch_month, variable, prior_sd, model_results_organisation, single_bedroom_matches ){
+evaluating_model<-function(organisation, site, data, switch_month, variable, prior_sd, model_results_organisation){
   
-  cia_matches<-  select_matches(organisation, site, data, switch_month, variable, single_bedroom_matches)
+  cia_matches<-  select_matches(organisation, site, data, switch_month, variable)
   
   if (is.na(site)) {
     test_site<-organisation

@@ -1,6 +1,6 @@
-# nhp_royalliverpool_newsite
+# Measuring the impact of Single Bed Rooms
 
-New Hospitals Programme (NHP) project to considering the impacts of single-bedded inpatient accommodation.
+New Hospitals Programme (NHP) project to considering the impacts of single-bedded inpatient accommodation on a range of indicators.
 
 A pilot analysis of length of stay trends at Royal Liverpool Hospital (switched to single-bed accommodation in October 2022) was undertaken to assess the potential direction and scale of effect. The result of that initial crude analysis suggested some reduction was likely, however there is significant potential that factors outside of the data may be influencing the effects, for example case-mix, hospital processes and pathways or wider ecological changes to inpatient demand.
 
@@ -13,4 +13,6 @@ We will assess the impacts on:
 
 The project uses Causal Impact Analysis with control group(s) to estimate the post-intervention counterfactual against which to measure study group impacts. Control hospitals are selected accounting for size, function, demographic catchment and patient case mix.
 
+Some key outputs so far:
 
+https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/standard_charts.html

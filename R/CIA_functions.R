@@ -83,7 +83,8 @@ cia_analysis<-function(organisation, site, data, switch_month, variable, prior_s
 }
 
 
-evaluating_model<-function(organisation, site, data, switch_month, variable, prior_sd, model_results_organisation){
+#Evaluating the model
+evaluating_model<-function(organisation, site, data, switch_month, variable, prior_sd, model_results){
   
   cia_matches<-  select_matches(organisation, site, data, switch_month, variable)
   
@@ -121,35 +122,6 @@ evaluating_model<-function(organisation, site, data, switch_month, variable, pri
 }
 
 
-# Evaluating the model FOR SITES
-evaluating_model_sites<-function(organisation, site, data, switch_month, variable, prior_sd, model_results_sites, single_bedroom_matches ){
-  
-  cia_matches_sites<-  select_matches_sites(organisation, site, data, switch_month, variable,single_bedroom_matches )
-  
-  #Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention. 
-  power <- MarketMatching::test_fake_lift(matched_markets = cia_matches_sites, 
-                                          test_market = site, 
-                                          end_fake_post_period = (as.Date(switch_month) %m+% months(24)), 
-                                          prior_level_sd = prior_sd, 
-                                          steps=10,
-                                          max_fake_lift=0.1)
-  
-  #Plot the actuals 
-  a<-model_results_sites$PlotActuals+
-    su_theme()
-  
-  # Check out the DW and MAPE of the model
-  b<-model_results_sites$PlotPriorLevelSdAnalysis+
-    su_theme()
-  
-  #And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period. 
-  c<-power$ResultsGraph+
-    su_theme()
-  
-  figure<-ggarrange(a,b,c,
-                    ncol=1)
-  
-}
 
 # Function to plot out the CIA results
 

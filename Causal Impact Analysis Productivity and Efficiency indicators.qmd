@@ -326,10 +326,10 @@ cia_summary_plots(waiting_time_number_RWF, "Study site: Tunbridge Wells, RWF","N
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-LoS_REM<-cia_analysis("REM", "REMRQ", length_of_stay,"2022-10-01", "avg_los", 0.05,single_bedroom_matches )
+LoS_REM<-cia_analysis("REM", "REMRQ", length_of_stay,"2022-10-01", "avg_los", 0.05)
 
-#evaluating_model_sites("REM", "REMRQ",  length_of_stay, "2022-10-01", "avg_los", 0.05, LoS_REM)
-test<-select_matches("REM","REMRQ", length_of_stay,"2022-10-01", "avg_los", single_bedroom_matches)
+#evaluating_model("REM", "REMRQ",  length_of_stay, "2022-10-01", "avg_los", 0.05, LoS_REM)
+
 
 ```
 
@@ -344,7 +344,7 @@ cia_summary_plots(LoS_REM, "Study site: Royal Liverpool, REM","Average LoS (days
 
 LoS_REN<-cia_analysis("REN", "REN22",length_of_stay,"2020-06-01","avg_los", 0.05)
 
-#evaluating_model_sites("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.05, LoS_REN)
+#evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.05, LoS_REN)
 
 ```
 
@@ -363,7 +363,7 @@ COVID-19 spikes in the post switch period are impacting LoS.
 
 LoS_RGM<-cia_analysis("RGM", "RGM22",length_of_stay,"2019-05-01", "avg_los", 0.05)
 
-#evaluating_model_sites("RGM", "RGM22", length_of_stay, "2019-05-01", "avg_los", 0.05, LoS_RGM)
+#evaluating_model("RGM", "RGM22", length_of_stay, "2019-05-01", "avg_los", 0.05, LoS_RGM)
 
 
 ```
@@ -379,7 +379,7 @@ cia_summary_plots(LoS_RGM, "Study site: Papworth, RGM","Average LoS (days)", "20
 
 LoS_RGN<-cia_analysis("RGN", "RGN80",length_of_stay,"2010-11-01", "avg_los", 0.05)
 
-#evaluating_model_sites("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.05, LoS_RGN)
+#evaluating_model("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.05, LoS_RGN)
 
 
 ```
@@ -397,7 +397,7 @@ Missing data in 2019 and 2020
 
 LoS_RAL<-cia_analysis("RAL", "RALC7", length_of_stay,"2018-09-01", "avg_los", 0.05)
 
-#evaluating_model_sites("RAL", "RALC7", length_of_stay, "2018-09-01", "avg_los", 0.05, LoS_RAL)
+#evaluating_model("RAL", "RALC7", length_of_stay, "2018-09-01", "avg_los", 0.05, LoS_RAL)
 
 ```
 
@@ -412,7 +412,7 @@ cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "
 
 LoS_RVJ<-cia_analysis("RVJ", "RVJ01",length_of_stay,"2014-05-01", "avg_los", 0.05)
 
-#evaluating_model_sites("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.05, LoS_RVJ)
+#evaluating_model("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.05, LoS_RVJ)
 
 ```
 
@@ -427,7 +427,7 @@ cia_summary_plots(LoS_RVJ, "Study site: Southmead, RVJ","Average LoS (days)", "2
 
 LoS_RWF<-cia_analysis("RWF", "RWFTW", length_of_stay,"2011-01-01","avg_los", 0.05)
 
-#evaluating_model_sites("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF)
+#evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF)
 
 
 ```
@@ -445,7 +445,7 @@ cia_summary_plots(LoS_RWF, "Study site: Tunbridge Wells, RWF","Average LoS (days
 
 emergency_readmissions_REM<-cia_analysis("REM", "REMRQ", emergency_readmissions,"2022-10-01", "perc", 0.05)
 
-#evaluating_model_sites("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM)
+#evaluating_model("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM)
 
 
 ```
@@ -461,7 +461,7 @@ cia_summary_plots(emergency_readmissions_REM, "Study site: Royal Liverpool, REM"
 
 emergency_readmissions_REN<-cia_analysis("REN", "REN22",emergency_readmissions, "2020-06-01","perc", 0.05)
 
-#evaluating_model_sites("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.05, emergency_readmissions_REN)
+#evaluating_model("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.05, emergency_readmissions_REN)
 
 ```
 
@@ -477,7 +477,7 @@ cia_summary_plots(emergency_readmissions_REN, "Study site: Clatterbridge, REN","
 
 emergency_readmissions_RGM<-cia_analysis("RGM", "RGM22",emergency_readmissions,"2019-05-01", "perc", 0.05)
 
-#evaluating_model_sites("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.05, emergency_readmissions_RGM)
+#evaluating_model("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.05, emergency_readmissions_RGM)
 
 
 ```
@@ -493,7 +493,7 @@ cia_summary_plots(emergency_readmissions_RGM, "Study site: Papworth, RGM","% rea
 
 emergency_readmissions_RGN<-cia_analysis("RGN", "RGN80",emergency_readmissions,"2010-11-01", "perc", 0.05)
 
-#evaluating_model_sites("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.05, emergency_readmissions_RGN)
+#evaluating_model("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.05, emergency_readmissions_RGN)
 
 
 ```
@@ -511,7 +511,7 @@ Missing data in 2019 and 2020
 
 emergency_readmissions_RAL<-cia_analysis("RAL", "RALC7", emergency_readmissions,"2018-09-01", "perc", 0.05)
 
-#evaluating_model_sites("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL)
+#evaluating_model("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL)
 
 ```
 
@@ -529,7 +529,7 @@ pred <- emergency_readmissions_RAL$Predictions
 
 emergency_readmissions_RVJ<-cia_analysis("RVJ", "RVJ01",emergency_readmissions,"2014-05-01", "perc", 0.05)
 
-#evaluating_model_sites("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","perc", 0.05, emergency_readmissions_RVJ)
+#evaluating_model("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","perc", 0.05, emergency_readmissions_RVJ)
 
 ```
 
@@ -544,7 +544,7 @@ cia_summary_plots(emergency_readmissions_RVJ, "Study site: Southmead, RVJ","% re
 
 emergency_readmissions_RWF<-cia_analysis("RWF", "RWFTW", emergency_readmissions,"2011-01-01","perc", 0.05)
 
-#evaluating_model_sites("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.05, emergency_readmissions_RWF)
+#evaluating_model("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.05, emergency_readmissions_RWF)
 
 
 ```

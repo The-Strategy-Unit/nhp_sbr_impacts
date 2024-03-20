@@ -373,7 +373,7 @@ cia_summary_plots(hcai_REN, "Study site: Clatterbridge, REN","Rate/10,000 bedday
 
 falls_and_fractures_REM<-cia_analysis("REM", "REMRQ", falls_and_fractures,"2022-10-01", "ff_rate", 0.05)
 
-#evaluating_model_sites("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM)
+#evaluating_model("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM)
 
 
 ```
@@ -389,7 +389,7 @@ cia_summary_plots(falls_and_fractures_REM, "Study site: Royal Liverpool, REM","%
 
 falls_and_fractures_REN<-cia_analysis("REN", "REN22",falls_and_fractures, "2020-06-01","ff_rate", 0.05)
 
-#evaluating_model_sites("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN)
+#evaluating_model("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN)
 
 
 ```
@@ -407,7 +407,7 @@ cia_summary_plots(falls_and_fractures_REN, "Study site: Clatterbridge, REN","% o
 
 falls_and_fractures_RGM<-cia_analysis("RGM", "RGM22",falls_and_fractures,"2019-05-01", "ff_rate", 0.05)
 
-#evaluating_model_sites("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM)
+#evaluating_model("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM)
 
 ```
 
@@ -422,7 +422,7 @@ cia_summary_plots(falls_and_fractures_RGM, "Study site: Papworth, RGM","% of spe
 
 falls_and_fractures_RGN<-cia_analysis("RGN", "RGN80",falls_and_fractures,"2010-11-01", "ff_rate", 0.05)
 
-#evaluating_model_sites("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.05, falls_and_fractures_RGN)
+#evaluating_model("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.05, falls_and_fractures_RGN)
 
 
 ```
@@ -438,7 +438,7 @@ cia_summary_plots(falls_and_fractures_RGN, "Study site: Peterborough, RGN","% of
 
 #falls_and_fractures_RAL<-cia_analysis_sites("RAL", "RALC7", falls_and_fractures,"2018-09-01", "ff_rate", 0.05)
 
-#evaluating_model_sites("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL)
+#evaluating_model("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL)
 
 
 ```
@@ -454,7 +454,7 @@ cia_summary_plots(falls_and_fractures_RGN, "Study site: Peterborough, RGN","% of
 
 falls_and_fractures_RVJ<-cia_analysis("RVJ", "RVJ01",falls_and_fractures,"2014-05-01", "ff_rate", 0.05)
 
-#evaluating_model_sites("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ)
+#evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ)
 
 
 ```
@@ -470,7 +470,7 @@ cia_summary_plots(falls_and_fractures_RVJ, "Study site: Southmead, RVJ","% of sp
 
 falls_and_fractures_RWF<-cia_analysis("RWF", "RWFTW", falls_and_fractures,"2011-01-01","ff_rate", 0.05)
 
-#evaluating_model_sites("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF)
+#evaluating_model("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF)
 
 
 ```
@@ -488,7 +488,7 @@ cia_summary_plots(falls_and_fractures_RWF, "Study site: Tunbridge Wells, RWF","%
 
 sus_deaths_REM<-cia_analysis("REM", "REMRQ", sus_deaths,"2022-10-01", "hosp_rate_1000", 0.05)
 
-#evaluating_model_sites("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM)
+#evaluating_model("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM)
 
 
 ```
@@ -504,7 +504,7 @@ cia_summary_plots(sus_deaths_REM, "Study site: Royal Liverpool, REM","No./per 1,
 
 sus_deaths_REN<-cia_analysis("REN", "REN22",sus_deaths, "2020-06-01","hosp_rate_1000", 0.05)
 
-#evaluating_model_sites("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN)
+evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN)
 
 
 ```
@@ -552,7 +552,7 @@ sus_deaths|>
 
 sus_deaths_RGM<-cia_analysis("RGM", "RGM22",sus_deaths,"2019-05-01", "hosp_rate_1000", 0.05)
 
-#evaluating_model_sites("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM)
+#evaluating_model("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM)
 
 
 ```
@@ -568,7 +568,7 @@ cia_summary_plots(sus_deaths_RGM, "Study site: Papworth, RGM","No./per 1,000 dis
 
 sus_deaths_RGN<-cia_analysis("RGN", "RGN80",sus_deaths,"2010-11-01", "hosp_rate_1000", 0.05)
 
-#evaluating_model_sites("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.05, sus_deaths_RGN)
+#evaluating_model("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.05, sus_deaths_RGN)
 
 
 ```
@@ -586,7 +586,7 @@ Missing data in 2019 and 2020
 
 sus_deaths_RAL<-cia_analysis("RAL", "RALC7", sus_deaths,"2018-09-01", "hosp_rate_1000", 0.05)
 
-#evaluating_model_sites("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL)
+#evaluating_model("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL)
 
 ```
 
@@ -601,7 +601,7 @@ cia_summary_plots(sus_deaths_RAL, "Study site: Chase Farm, RAL","No./per 1,000 d
 
 sus_deaths_RVJ<-cia_analysis("RVJ", "RVJ01",sus_deaths,"2014-05-01", "hosp_rate_1000", 0.05)
 
-#evaluating_model_sites("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.05, sus_deaths_RVJ)
+#evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.05, sus_deaths_RVJ)
 
 
 ```
@@ -617,7 +617,7 @@ cia_summary_plots(sus_deaths_RVJ, "Study site: Southmead, RVJ","No./per 1,000 di
 
 sus_deaths_RWF<-cia_analysis("RWF", "RWFTW", sus_deaths,"2011-01-01","hosp_rate_1000", 0.05)
 
-#evaluating_model_sites("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.05, sus_deaths_RWF)
+#evaluating_model("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.05, sus_deaths_RWF)
 
 
 ```
@@ -637,7 +637,7 @@ cia_summary_plots(sus_deaths_RWF, "Study site: Tunbridge Wells, RWF","No./per 1,
 
 friends_and_family_REMRQ<-cia_analysis("REM","REMRQ",  friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05)
 
-#evaluating_model_sites("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REMRQ)
+#evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REMRQ)
 
 ```
 
@@ -657,7 +657,7 @@ cia_summary_plots(friends_and_family_REMRQ, "Study site: Royal Liverpool, REMRQ"
 
 friends_and_family_REN22<-cia_analysis("REN", "REN22",friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05)
 
-#evaluating_model_sites("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN22 )
+#evaluating_model("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN22 )
 
 ```
 
@@ -675,7 +675,7 @@ cia_summary_plots(friends_and_family_REN22, "Study site: Clatterbridge, REN22","
 
 friends_and_family_RGM22<-cia_analysis("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05)
 
-#evaluating_model_sites("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM22)
+#evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM22)
 
 
 ```
@@ -692,7 +692,7 @@ cia_summary_plots(friends_and_family_RGM22, "Study site: Papworth, RGM22","Posit
 friends_and_family_RALC7<-cia_analysis("RAL", "RALC7", friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05)
 
 
-#evaluating_model_sites("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RALC7)
+#evaluating_model("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RALC7)
 
 ```
 

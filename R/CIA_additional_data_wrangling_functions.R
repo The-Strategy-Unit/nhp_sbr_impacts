@@ -58,7 +58,10 @@ friends_and_family_cia_formatting <- function(data) {
     mutate(month = as.Date(month)) |>
     merge_sites() |>
     group_by(month, site_code) |>
-    summarise(friends_and_family_percent = mean(percent, na.rm = TRUE))
+    summarise(friends_and_family_percent = mean(percent, na.rm = TRUE))|>
+    filter(!is.na(friends_and_family_percent))|>
+    filter(site_code!="N6J7V" &
+             site_code!="E0A3H") # removing control sites with issues
   
   return(friends_and_family_cia_format)
 }
@@ -90,7 +93,10 @@ staff_turnover_cia_formatting <- function(data) {
     ) |>
     pivot_wider(names_from = type, values_from = turnover_fte) |>
     mutate(leaving_rate = (Leavers / Denoms) * 100) |>
-    filter(month >= '2018-08-01') #no leavers or joiners before this date
+    filter(month >= '2018-08-01') |> #no leavers or joiners before this date
+    mutate(leaving_rate=ifelse(is.na(leaving_rate), 0, leaving_rate))|>
+    filter(month>"2020-08-01" | organisation_code!="REM") |># Liverpool data issues before this point
+    filter(organisation_code!="RVY")
   
   return(staff_turnover_cia_format)
   
@@ -172,7 +178,9 @@ falls_and_fractures_cia_formatting <- function(data) {
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
     mutate(ff_rate = (fall_spells/ all_spells) * 100) |> # % of spells with a fall 
-    mutate(ff_los = (fall_spell_los/ all_spell_los) * 100) # % of los associated with fall  
+    mutate(ff_los = (fall_spell_los/ all_spell_los) * 100)  |># % of los associated with fall 
+  mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))|>
+    filter(site_code!="RALC7"|month>'2014-03-01')#remove data pre-merger
   
   return(falls_and_fractures_cia_format)
   

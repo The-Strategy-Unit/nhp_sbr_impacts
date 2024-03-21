@@ -223,7 +223,7 @@ cia_summary_plots(waiting_time_number_REM, "Study site: Royal Liverpool, REM","N
 
 waiting_time_number_REN<-tar_read(waiting_time_number_REN)
 
-#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN, single_bedroom_matches)
+evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN, single_bedroom_matches)
 
 ```
 
@@ -381,7 +381,6 @@ cia_summary_plots(LoS_RGN, "Study site: Peterborough, RGN","Average LoS (days)",
 ```
 
 #### Chase Farm
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 

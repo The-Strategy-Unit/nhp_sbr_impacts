@@ -1127,6 +1127,293 @@ tar_target(
                "bed_occupancy", 
                0.05,
                single_bedroom_matches)
+),
+
+
+# Healthcare acquired infections
+
+tar_target(
+  hcai_REM,
+  cia_analysis("REM", 
+               NA, 
+               hcai_cia_format,
+               "2022-10-01", 
+               "combined_rate", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  hcai_REN,
+  cia_analysis("REN", 
+               NA, 
+               hcai_cia_format,
+               "2020-06-01", 
+               "combined_rate",  
+               0.05,
+               single_bedroom_matches)
+),
+
+# Falls and Fractures in hospital
+tar_target(
+  falls_and_fractures_REM,
+  cia_analysis("REM", 
+               "REMRQ", 
+               falls_and_fractures_cia_format,
+               "2022-10-01", 
+               "ff_rate", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  falls_and_fractures_REN,
+  cia_analysis("REN", 
+               "REN22", 
+               falls_and_fractures_cia_format,
+               "2020-06-01", 
+               "ff_rate",  
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  falls_and_fractures_RGM,
+  cia_analysis("RGM", 
+               "RGM22", 
+               falls_and_fractures_cia_format,
+               "2019-05-01", 
+               "ff_rate", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  falls_and_fractures_RGN,
+  cia_analysis("RGN", 
+               "RGN80", 
+               falls_and_fractures_cia_format,
+               "2010-11-01", 
+               "ff_rate", 
+               0.05,
+               single_bedroom_matches)
+),
+
+#tar_target(
+#  falls_and_fractures_RAL,
+#  cia_analysis("RAL", 
+#               "RALC7", 
+#               falls_and_fractures_cia_format,
+#               "2018-09-01", 
+#               "ff_rate", 
+#               0.05,
+#               single_bedroom_matches)
+#),
+
+
+tar_target(
+  falls_and_fractures_RVJ,
+  cia_analysis("RVJ", 
+               "RVJ01", 
+               falls_and_fractures_cia_format,
+               "2014-05-01", 
+               "ff_rate", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  falls_and_fractures_RWF,
+  cia_analysis("RWF", 
+               "RWFTW", 
+               falls_and_fractures_cia_format,
+               "2011-01-01", 
+               "ff_rate",  
+               0.05,
+               single_bedroom_matches)
+),
+
+
+# SUS deaths in hospital
+tar_target(
+  sus_deaths_REM,
+  cia_analysis("REM", 
+               "REMRQ", 
+               sus_deaths_cia_format,
+               "2022-10-01", 
+               "hosp_rate_1000", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  sus_deaths_REN,
+  cia_analysis("REN", 
+               "REN22", 
+               sus_deaths_cia_format,
+               "2020-06-01", 
+               "hosp_rate_1000",  
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  sus_deaths_RGM,
+  cia_analysis("RGM", 
+               "RGM22", 
+               sus_deaths_cia_format,
+               "2019-05-01", 
+               "hosp_rate_1000", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  sus_deaths_RGN,
+  cia_analysis("RGN", 
+               "RGN80", 
+               sus_deaths_cia_format,
+               "2010-11-01", 
+               "hosp_rate_1000", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  sus_deaths_RAL,
+  cia_analysis("RAL", 
+               "RALC7", 
+               sus_deaths_cia_format,
+               "2018-09-01", 
+               "hosp_rate_1000", 
+               0.05,
+               single_bedroom_matches)
+),
+
+
+tar_target(
+  sus_deaths_RVJ,
+  cia_analysis("RVJ", 
+               "RVJ01", 
+               sus_deaths_cia_format,
+               "2014-05-01", 
+               "hosp_rate_1000", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  sus_deaths_RWF,
+  cia_analysis("RWF", 
+               "RWFTW", 
+               sus_deaths_cia_format,
+               "2011-01-01", 
+               "hosp_rate_1000",  
+               0.05,
+               single_bedroom_matches)
+),
+
+# Friends and family test
+tar_target(
+  friends_and_family_REM,
+  cia_analysis("REM", 
+               "REMRQ", 
+               friends_and_family_cia_format,
+               "2022-10-01", 
+               "friends_and_family_percent", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  friends_and_family_REN,
+  cia_analysis("REN", 
+               "REN22", 
+               friends_and_family_cia_format,
+               "2020-06-01", 
+               "friends_and_family_percent",  
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  friends_and_family_RGM,
+  cia_analysis("RGM", 
+               "RGM22", 
+               friends_and_family_cia_format,
+               "2019-05-01", 
+               "friends_and_family_percent", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  friends_and_family_RAL,
+  cia_analysis("RAL", 
+               "RALC7", 
+               friends_and_family_cia_format,
+               "2018-09-01", 
+               "friends_and_family_percent", 
+               0.05,
+               single_bedroom_matches)
+),
+
+#Staff sickness
+
+tar_target(
+  staff_sickness_REM,
+  cia_analysis("REM", 
+               NA, 
+               staff_sickness_cia_format,
+               "2022-10-01", 
+               "staff_sickness_percent", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  staff_sickness_REN,
+  cia_analysis("REN", 
+               NA, 
+               staff_sickness_cia_format,
+               "2020-06-01", 
+               "staff_sickness_percent",  
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  staff_sickness_RGM,
+  cia_analysis("RGM", 
+               NA, 
+               staff_sickness_cia_format,
+               "2019-05-01", 
+               "staff_sickness_percent", 
+               0.05,
+               single_bedroom_matches)
+),
+
+
+tar_target(
+  staff_sickness_RAL,
+  cia_analysis("RAL", 
+               NA, 
+               staff_sickness_cia_format,
+               "2018-09-01", 
+               "staff_sickness_percent", 
+               0.05,
+               single_bedroom_matches)
+),
+
+tar_target(
+  staff_sickness_RVJ,
+  cia_analysis("RVJ", 
+               NA, 
+               staff_sickness_cia_format,
+               "2014-05-01", 
+               "staff_sickness_percent", 
+               0.05,
+               single_bedroom_matches)
 )
 
 )

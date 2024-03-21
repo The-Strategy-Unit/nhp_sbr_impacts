@@ -15,4 +15,6 @@ The project uses Causal Impact Analysis with control group(s) to estimate the po
 
 Some key outputs so far:
 
-https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/standard_charts.html
+Maps and basic trend charts (with controls) - https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/standard_charts.html
+Causal Impact Analysis (productivity & efficiency) - https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/CIA Productivity and Efficiency indicators.html
+Causal Impact Analysis (health & safety, staff & patient experience) - https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/Causal impact analysis Health and Safety and Patient and Staff experience.html

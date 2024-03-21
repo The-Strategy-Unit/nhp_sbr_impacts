@@ -1,8 +1,8 @@
 # Function to find the best matches FOR ORGANISATIONS
 
-select_matches<-function(organisation,site ,data, switch_month, variable){
+select_matches<-function(organisation,site ,data, switch_month, variable,single_bedroom_matches ){
   
-  matches<-tar_read(single_bedroom_matches)|>
+  matches<-(single_bedroom_matches)|>
     filter(organisation_code==organisation)
   
   if (is.na(site)) {
@@ -43,9 +43,9 @@ select_matches<-function(organisation,site ,data, switch_month, variable){
 
 
 # Function to run the CIA model
-cia_analysis<-function(organisation, site, data, switch_month, variable, prior_sd ){
+cia_analysis<-function(organisation, site, data, switch_month, variable, prior_sd, single_bedroom_matches  ){
   
-  cia_matches<-select_matches(organisation, site, data, switch_month, variable )
+  cia_matches<-select_matches(organisation, site, data, switch_month, variable,single_bedroom_matches  )
   
   #View the best matches
   if (is.na(site)) {
@@ -84,9 +84,9 @@ cia_analysis<-function(organisation, site, data, switch_month, variable, prior_s
 
 
 #Evaluating the model
-evaluating_model<-function(organisation, site, data, switch_month, variable, prior_sd, model_results){
+evaluating_model<-function(organisation, site, data, switch_month, variable, prior_sd, model_results,single_bedroom_matches ){
   
-  cia_matches<-  select_matches(organisation, site, data, switch_month, variable)
+  cia_matches<-  select_matches(organisation, site, data, switch_month, variable,single_bedroom_matches )
   
   if (is.na(site)) {
     test_site<-organisation

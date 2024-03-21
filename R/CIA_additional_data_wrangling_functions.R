@@ -58,7 +58,10 @@ friends_and_family_cia_formatting <- function(data) {
     mutate(month = as.Date(month)) |>
     merge_sites() |>
     group_by(month, site_code) |>
-    summarise(friends_and_family_percent = mean(percent, na.rm = TRUE))
+    summarise(friends_and_family_percent = mean(percent, na.rm = TRUE))|>
+    filter(!is.na(friends_and_family_percent))|>
+    filter(site_code!="N6J7V" &
+             site_code!="E0A3H") # removing control sites with issues
   
   return(friends_and_family_cia_format)
 }
@@ -90,7 +93,10 @@ staff_turnover_cia_formatting <- function(data) {
     ) |>
     pivot_wider(names_from = type, values_from = turnover_fte) |>
     mutate(leaving_rate = (Leavers / Denoms) * 100) |>
-    filter(month >= '2018-08-01') #no leavers or joiners before this date
+    filter(month >= '2018-08-01') |> #no leavers or joiners before this date
+    mutate(leaving_rate=ifelse(is.na(leaving_rate), 0, leaving_rate))|>
+    filter(month>"2020-08-01" | organisation_code!="REM") |># Liverpool data issues before this point
+    filter(organisation_code!="RVY")
   
   return(staff_turnover_cia_format)
   
@@ -172,7 +178,9 @@ falls_and_fractures_cia_formatting <- function(data) {
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
     mutate(ff_rate = (fall_spells/ all_spells) * 100) |> # % of spells with a fall 
-    mutate(ff_los = (fall_spell_los/ all_spell_los) * 100) # % of los associated with fall  
+    mutate(ff_los = (fall_spell_los/ all_spell_los) * 100)  |># % of los associated with fall 
+  mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))|>
+    filter(site_code!="RALC7"|month>'2014-03-01')#remove data pre-merger
   
   return(falls_and_fractures_cia_format)
   
@@ -221,7 +229,10 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
       number_incomplete = sum(number_of_incomplete_pathways),
       .by = c(month, organisation_code)
     ) |> #Median by month and provider
-    mutate(median_by_prov = ifelse(is.na(median_by_prov), 0, median_by_prov))
+    mutate(median_by_prov = ifelse(is.na(median_by_prov), 0, median_by_prov))|>
+    filter( organisation_code!="RF4" &  
+              organisation_code!="R1H" &
+              organisation_code!= "RJ2") #Removing poss control due to data issues
   
   return(rtt_waiting_time_cia_format)
   
@@ -251,7 +262,9 @@ bed_occupancy_cia_formatting <- function(data) {
       occupied = sum(occupied),
       .by = c(month, organisation_code)
     ) |>
-    mutate(bed_occupancy = occupied / available)
+    mutate(bed_occupancy = occupied / available)|>
+    mutate(bed_occupancy=bed_occupancy*100)|>
+    filter(organisation_code!="R0A" & organisation_code!="RNL") #remove controls for Chase Farm
   
   return(bed_occupancy_cia_format)
 }
@@ -312,7 +325,11 @@ emergency_readmissions_cia_formatting <- function(data) {
       readmits = sum(readmits),
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
-    mutate(perc = (readmits/ admits) * 100) # % of readmissions 
+    mutate(perc = (readmits/ admits) * 100)|> # % of readmissions 
+    filter(site_code!="RXPCP" &
+             site_code!="RVY01" &
+             site_code!="RDEEB"&
+             site_code!="RPA02")#removing control data with issues
   
   return(emergency_readmissions_cia_format)
 }

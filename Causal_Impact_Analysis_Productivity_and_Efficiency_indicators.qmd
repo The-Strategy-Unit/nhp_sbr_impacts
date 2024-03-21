@@ -100,6 +100,7 @@ waiting_time_median_REM<-tar_read(waiting_time_median_REM)
 
 cia_summary_plots(waiting_time_median_REM, "Study site: Royal Liverpool, REM","Median waiting time (wks)", "2022-10-01")
 
+
 ```
 
 #### Clatterbridge
@@ -110,10 +111,9 @@ waiting_time_median_REN<-tar_read(waiting_time_median_REN)
 
 #evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN, single_bedroom_matches)
 
-
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_median_REN, "Study site: Clatterbridge, REN","Median waiting time (wks)", "2020-06-01")
 
@@ -127,10 +127,9 @@ waiting_time_median_RGM<-tar_read(waiting_time_median_RGM)
 
 #evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM, single_bedroom_matches)
 
-
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_median_RGM, "Study site: Papworth, RGM","Median waiting time (wks)", "2019-05-01")
 ```
@@ -146,7 +145,7 @@ waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_median_RGN, "Study site: Peterborough, RGN","Median waiting time (wks)", "2010-11-01")
 ```
@@ -163,7 +162,7 @@ waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median waiting time (wks)", "2018-09-01")
 ```
@@ -178,7 +177,7 @@ waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_median_RVJ, "Study site: Southmead, RVJ","Median waiting time (wks)", "2014-05-01")
 ```
@@ -194,9 +193,33 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_median_RWF, "Study site: Tunbridge Wells, RWF","Median waiting time (wks)", "2011-01-01")
+```
+
+```{r}
+
+ggplot(aes(x = Estimate, y = Group)) +
+  geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
+geom_errorbarh(aes(xmax = high, xmin = low), size = 0.5, height = 0.5, color = "black") +
+ geom_point(size = 2.8, aes(color = sig)) +
+ theme_bw() +
+ theme(panel.grid.minor = element_blank()) +
+ ylab("") +
+ xlab("Incidence Rate Ratio") +
+  scale_color_manual(values=c( "#686f73","#ec6555","#f9bf07"))+
+facet_wrap(vars(Category), ncol=1, scale="free_y") +
+  theme_bw() +
+  theme(panel.spacing.y = unit(0, "points"),
+        panel.border = element_blank(),
+        legend.position = "left", 
+        legend.title=element_blank(),
+        strip.background = element_rect(fill="grey80", color="grey80"))+
+     guides(color=guide_legend(nrow=3))
+
+
+
 ```
 
 ## Waiting time data- Total numbers waiting
@@ -212,7 +235,7 @@ waiting_time_number_REM<-tar_read(waiting_time_number_REM)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_number_REM, "Study site: Royal Liverpool, REM","Number waiting", "2022-10-01")
 ```
@@ -227,7 +250,7 @@ evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete",
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_number_REN, "Study site: Clatterbridge, REN","Number waiting", "2020-06-01")
 ```
@@ -243,7 +266,7 @@ waiting_time_number_RGM<-tar_read(waiting_time_number_RGM)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_number_RGM, "Study site: Papworth, RGM","Number waiting", "2019-05-01")
 ```
@@ -259,7 +282,7 @@ waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_number_RGN, "Study site: Peterborough, RGN","Number waiting", "2010-11-01")
 ```
@@ -276,7 +299,7 @@ waiting_time_number_RAL<-tar_read(waiting_time_number_RAL)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number waiting", "2018-09-01")
 ```
@@ -291,7 +314,7 @@ waiting_time_number_RVJ<-tar_read(waiting_time_number_RVJ)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_number_RVJ, "Study site: Southmead, RVJ","Number waiting", "2014-05-01")
 ```
@@ -306,7 +329,7 @@ waiting_time_number_RWF<-tar_read(waiting_time_number_RWF)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(waiting_time_number_RWF, "Study site: Tunbridge Wells, RWF","Number waiting", "2011-01-01")
 ```
@@ -324,7 +347,7 @@ LoS_REM<-tar_read(LoS_REM)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(LoS_REM, "Study site: Royal Liverpool, REM","Average LoS (days)", "2022-10-01")
 ```
@@ -339,7 +362,7 @@ LoS_REN<-tar_read(LoS_REN)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)", "2020-06-01")
 
@@ -359,7 +382,7 @@ LoS_RGM<-tar_read(LoS_RGM)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(LoS_RGM, "Study site: Papworth, RGM","Average LoS (days)", "2019-05-01")
 ```
@@ -375,7 +398,7 @@ LoS_RGN<-tar_read(LoS_RGN)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(LoS_RGN, "Study site: Peterborough, RGN","Average LoS (days)", "2010-11-01")
 ```
@@ -390,7 +413,7 @@ LoS_RAL<-tar_read(LoS_RAL)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(LoS_RAL, "Study site: Chase Farm, RAL","Average LoS (days)", "2018-09-01")
 ```
@@ -405,7 +428,7 @@ LoS_RVJ<-tar_read(LoS_RVJ)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(LoS_RVJ, "Study site: Southmead, RVJ","Average LoS (days)", "2014-05-01")
 ```
@@ -421,7 +444,7 @@ LoS_RWF<-tar_read(LoS_RWF)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(LoS_RWF, "Study site: Tunbridge Wells, RWF","Average LoS (days)", "2011-01-01")
 ```
@@ -439,7 +462,7 @@ emergency_readmissions_REM<-tar_read(emergency_readmissions_REM)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(emergency_readmissions_REM, "Study site: Royal Liverpool, REM","% readmissions", "2022-10-01")
 ```
@@ -454,7 +477,7 @@ emergency_readmissions_REN<-tar_read(emergency_readmissions_REN)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(emergency_readmissions_REN, "Study site: Clatterbridge, REN","% readmissions", "2020-06-01")
 
@@ -471,7 +494,7 @@ emergency_readmissions_RGM<-tar_read(emergency_readmissions_RGM)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(emergency_readmissions_RGM, "Study site: Papworth, RGM","% readmissions", "2019-05-01")
 ```
@@ -487,7 +510,7 @@ emergency_readmissions_RGN<-tar_read(emergency_readmissions_RGN)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(emergency_readmissions_RGN, "Study site: Peterborough, RGN","% readmissions", "2010-11-01")
 ```
@@ -504,7 +527,7 @@ emergency_readmissions_RAL<-tar_read(emergency_readmissions_RAL)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(emergency_readmissions_RAL, "Study site: Chase Farm, RAL","% readmissions", "2018-09-01")
 
@@ -522,7 +545,7 @@ emergency_readmissions_RVJ<-tar_read(emergency_readmissions_RVJ)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(emergency_readmissions_RVJ, "Study site: Southmead, RVJ","% readmissions", "2014-05-01")
 ```
@@ -538,7 +561,7 @@ emergency_readmissions_RWF<-tar_read(emergency_readmissions_RWF)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(emergency_readmissions_RWF, "Study site: Tunbridge Wells, RWF","% readmissions", "2011-01-01")
 ```
@@ -555,7 +578,7 @@ bed_occupancy_REM<-tar_read(bed_occupancy_REM)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(bed_occupancy_REM, "Study site: Royal Liverpool, REM","Percentage", "2022-10-01")
 ```
@@ -571,7 +594,7 @@ bed_occupancy_REN<-tar_read(bed_occupancy_REN)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(bed_occupancy_REN, "Study site: Clatterbridge, REN","Percentage", "2020-06-01")
 ```
@@ -589,7 +612,7 @@ bed_occupancy_RGM<-tar_read(bed_occupancy_RGM)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(bed_occupancy_RGM, "Study site: Papworth, RGM","Percentage", "2019-05-01")
 ```
@@ -604,7 +627,7 @@ bed_occupancy_RAL<-tar_read(bed_occupancy_RAL)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(bed_occupancy_RAL, "Study site: Chase Farm, RAL","Percentage", "2018-09-01")
 ```
@@ -620,7 +643,7 @@ bed_occupancy_RVJ<-tar_read(bed_occupancy_RVJ)
 
 ```
 
-```{r, include=TRUE, fig.width=8, fig.height=8}
+```{r, include=TRUE, fig.width=6, fig.height=6}
 
 cia_summary_plots(bed_occupancy_RVJ, "Study site: Southmead, RVJ","Percentage", "2014-05-01")
 ```

@@ -162,3 +162,24 @@ cia_summary_plots<-function(model_results,  title, ylab, switch_date){
   figure<-ggarrange(a,b,c, ncol=1)
 }
 
+# Function to extract model details
+
+extract_model_details<-function(model) {
+  
+  name<-deparse(substitute(model))
+  
+  df<-(model[['CausalImpactObject']][['summary']])|>
+    mutate(site=name)|>
+    mutate(sig=ifelse(p<0.05, "*", "NS"))
+  
+  df<-df |>
+    filter(row.names(df) %in% c('Average'))
+  
+  
+  return(df)
+  
+}
+
+
+
+

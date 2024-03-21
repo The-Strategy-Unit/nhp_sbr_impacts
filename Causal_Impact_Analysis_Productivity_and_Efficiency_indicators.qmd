@@ -198,25 +198,23 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 cia_summary_plots(waiting_time_median_RWF, "Study site: Tunbridge Wells, RWF","Median waiting time (wks)", "2011-01-01")
 ```
 
-```{r}
-
-ggplot(aes(x = Estimate, y = Group)) +
-  geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
-geom_errorbarh(aes(xmax = high, xmin = low), size = 0.5, height = 0.5, color = "black") +
+```{r, fig.width=6, fig.height=3}
+waiting_time_median|>
+  arrange(RelEffect)|>
+ggplot(aes(x = RelEffect, y = site)) +
+  geom_vline(aes(xintercept = 0), size = .25, linetype = "dashed") +
+geom_errorbarh(aes(xmax = RelEffect.upper, xmin = RelEffect.lower), size = 0.2, height = 0.2, color = "black") +
  geom_point(size = 2.8, aes(color = sig)) +
  theme_bw() +
  theme(panel.grid.minor = element_blank()) +
  ylab("") +
- xlab("Incidence Rate Ratio") +
-  scale_color_manual(values=c( "#686f73","#ec6555","#f9bf07"))+
-facet_wrap(vars(Category), ncol=1, scale="free_y") +
-  theme_bw() +
-  theme(panel.spacing.y = unit(0, "points"),
+ xlab("Relative Effect size") +
+  scale_color_manual(values=c("#ec6555", "#686f73"))+
+  theme(axis.text=element_text(size=11),
+        panel.spacing.y = unit(0, "points"),
         panel.border = element_blank(),
-        legend.position = "left", 
-        legend.title=element_blank(),
-        strip.background = element_rect(fill="grey80", color="grey80"))+
-     guides(color=guide_legend(nrow=3))
+        legend.position = "right", 
+        legend.title=element_blank())
 
 
 

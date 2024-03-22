@@ -21,6 +21,15 @@ The following maps demonstrate the location of the intervention sites
 across England and then, for each one individually, show where the
 current set of control sites are.
 
+Currently, the controls are matched according to whether they are part
+of a sub-set of specialty providers e.g. cancer or cardiothoracic and
+then having a similar % of single-bed inpatient rooms prior to the
+switch.
+
+The next iteration of this matching of control sites will include
+factors on hospital size and patient case-mix to improve the suitability
+of comparisons fed into the Causal Impact Analysis.
+
 ```{r overview_map}
 tar_read(map_all)
 ```

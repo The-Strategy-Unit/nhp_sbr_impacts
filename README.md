@@ -17,6 +17,6 @@ Some key outputs so far:
 
 Maps and basic trend charts (with controls) - https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/standard_charts.html
 
-Causal Impact Analysis (productivity & efficiency) - https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/CIA%20Productivity%20and%20Efficiency%20indicators.html
+Causal Impact Analysis (productivity & efficiency) - https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/Causal_impact_analysis_Productivity_and_Efficiency_indicators.html
 
-Causal Impact Analysis (health & safety, staff & patient experience) - https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/Causal%20impact%20analysis%20Health%20and%20Safety%20and%20Patient%20and%20Staff%20experience.html
+Causal Impact Analysis (health & safety, staff & patient experience) - https://the-strategy-unit.github.io/nhp_royalliverpool_newsite/Causal_impact_analysis_Health_and_Safety_and_Patient_and_Staff_experience.html

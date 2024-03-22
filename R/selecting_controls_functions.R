@@ -225,3 +225,102 @@ site_type_filter <- function(data, filtered_sites, ref_org_sites) {
   
 }
 
+
+# To get the floor space by sites and date:
+get_floor_space_by_site <- function(data) {
+  floor_space <- data |>
+    filter(!is.na(occupied_floor_area_m2)) |> 
+    dplyr::select(organisation_code, site_code, effective_snapshot_date, occupied_floor_area_m2)
+  
+  return(floor_space)
+  
+}
+
+# To find sites with similar floor space. Default is
+# to look at sites with a floor space in m2 that is +/- 30% of the
+# base sites.
+
+find_floor_space_matches <- function(data,
+                                     date_pre_single_bedrooms,
+                                     site_code_pick,
+                                     range = 0.3) {
+  # Get the floor space of the sites we want
+  # to find matches for:
+  floor_space_base <- data |>
+    dplyr::filter(
+      effective_snapshot_date == date_pre_single_bedrooms
+      & site_code == site_code_pick
+    ) |>
+    dplyr::pull(occupied_floor_area_m2)
+  
+  fsb_high <- floor_space_base*(1+range)
+  fsb_low <- floor_space_base*(1-range)
+  
+  # Find other sites at the same time that have a similar floor space:
+  similar_sites <- data |>
+    dplyr::filter(
+      effective_snapshot_date == date_pre_single_bedrooms,
+      site_code != site_code_pick,
+      occupied_floor_area_m2 > fsb_low,
+      occupied_floor_area_m2 < fsb_high) |>
+    dplyr::mutate(difference_floor_space = round((occupied_floor_area_m2 - floor_space_base) / floor_space_base,2),
+                  site_code_og = site_code_pick,
+                  org_code_og = stringr::str_sub(site_code_og,1,3)) |> 
+    select(7,6,1:5)
+  
+  return(similar_sites)
+  
+}
+
+# To create a dataframe of all the sites with their matching sites for floor
+# space. By necessity some of the codes and dates of sites are changed
+# to ensure baseline size is captured
+
+combine_floor_space_matches <- function(floor_space) {
+  data <- rbind(
+    # royal_liverpool_matches
+    find_floor_space_matches(floor_space,
+                             "2022-03-31",
+                             "REMRQ"),
+    # clatterbridge_matches
+    find_floor_space_matches(floor_space,
+                             "2022-03-31",
+                             "REN22"),
+    # royal_papworth_matches
+    find_floor_space_matches(floor_space,
+                             "2022-03-31",
+                             "RGM21"),
+    # peterborough_matches
+    find_floor_space_matches(floor_space,
+                             "2012-03-31",
+                             "RGN80"),
+    # chase_farm_matches
+    find_floor_space_matches(floor_space,
+                             "2018-03-31",
+                             "RALC7"),
+    # southmead_matches
+    find_floor_space_matches(floor_space,
+                             "2016-03-31",
+                             "RVJ01"),
+    # tunbridge_wells_matches
+    find_floor_space_matches(floor_space,
+                             "2012-03-31",
+                             "RWFTW")
+  )
+  
+  return(data)
+  
+}
+
+# join floor space to single-bed matches
+
+control_stage2 <- function(data1,data2) {
+  data <- data1 |>
+    left_join(data2 |> select(org_code_og, site_code, difference_floor_space),
+              by = c("organisation_code"="org_code_og", "site_code"="site_code")) |> 
+    mutate(fs_match = if_else(is.na(difference_floor_space),0,1))
+  
+  return(data)
+  
+}
+

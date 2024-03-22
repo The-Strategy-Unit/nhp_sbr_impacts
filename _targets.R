@@ -241,6 +241,22 @@ list(
     )
   ),
   
+  tar_target(
+    floor_space,
+    get_floor_space_by_site(formatted_eric)
+  ),
+  
+  tar_target(
+    floor_space_matches,
+    combine_floor_space_matches(floor_space)
+  ),
+  
+  # adding floor space matches to control df
+  tar_target(
+    single_bedroom_matches_2,
+    control_stage2(single_bedroom_matches, floor_space_matches)
+  ),
+  
   #----------------------------------------------------------------------------#
   
   #### Causal Impact Analysis additional formatting

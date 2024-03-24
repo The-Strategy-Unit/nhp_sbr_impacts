@@ -85,7 +85,17 @@ tar_read(indicator_availability_table)
 
 ## Waiting time data- Median waiting time (in weeks)
 
-Seems to be some change in data reporting around 2011. Also have numbers predicted to be negative, so need to look at transforming the data first.
+```{r, fig.width=8, fig.height=4}
+
+waiting_time_median_output<-tar_read(waiting_time_median_output)
+
+forest_plot(waiting_time_median_output)
+
+model_effects_table(waiting_time_median_output)
+
+
+```
+
 
 #### Royal Liverpool
 
@@ -151,9 +161,6 @@ waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 cia_summary_plots(waiting_time_median_RGN, "Study site: Peterborough, RGN","Median waiting time (wks)", "2010-11-01")
 ```
 
-
-
-
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
 #waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
@@ -198,28 +205,20 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 cia_summary_plots(waiting_time_median_RWF, "Study site: Tunbridge Wells, RWF","Median waiting time (wks)", "2011-01-01")
 ```
 
-# Summary forest plot
+
+
+## Waiting time data- Total numbers waiting
 
 ```{r, fig.width=8, fig.height=4}
 
-waiting_time_median<-model_output(waiting_time_median_REM,
-        waiting_time_median_REN,
-        waiting_time_median_RGM,
-         waiting_time_median_RGN,
-         waiting_time_median_RAL,
-        waiting_time_median_RVJ,
-         waiting_time_median_RWF)
+waiting_time_number_output<-tar_read(waiting_time_number_output)
 
+forest_plot(waiting_time_number_output)
 
-
-forest_plot(waiting_time_median, 8)
-
-model_effects_table(waiting_time_median)
+model_effects_table(waiting_time_number_output)
 
 
 ```
-
-## Waiting time data- Total numbers waiting
 
 #### Royal Liverpool
 
@@ -284,7 +283,6 @@ waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
 cia_summary_plots(waiting_time_number_RGN, "Study site: Peterborough, RGN","Number waiting", "2010-11-01")
 ```
 
-
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
 
@@ -331,6 +329,19 @@ cia_summary_plots(waiting_time_number_RWF, "Study site: Tunbridge Wells, RWF","N
 
 ## Length of stay
 
+```{r, fig.width=8, fig.height=4}
+
+LoS_output<-tar_read(LoS_output)
+
+forest_plot(LoS_output)
+
+model_effects_table(LoS_output)
+
+
+```
+
+
+
 #### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -365,7 +376,9 @@ cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)"
 ```
 
 #### Papworth
+
 COVID-19 spikes in the post switch period are impacting LoS.
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 
@@ -445,6 +458,17 @@ cia_summary_plots(LoS_RWF, "Study site: Tunbridge Wells, RWF","Average LoS (days
 ```
 
 ## Emergency Readmissions
+
+```{r, fig.width=8, fig.height=4}
+
+emergency_readmissions_output<-tar_read(emergency_readmissions_output)
+
+forest_plot(emergency_readmissions_output)
+
+model_effects_table(emergency_readmissions_output)
+
+
+```
 
 #### Royal Liverpool
 
@@ -562,6 +586,17 @@ cia_summary_plots(emergency_readmissions_RWF, "Study site: Tunbridge Wells, RWF"
 ```
 
 ## Bed Occupancy
+
+```{r, fig.width=8, fig.height=4}
+
+bed_occupancy_output<-tar_read(bed_occupancy_output)
+
+forest_plot(bed_occupancy_output)
+
+model_effects_table(bed_occupancy_output)
+
+
+```
 
 #### Royal Liverpool
 

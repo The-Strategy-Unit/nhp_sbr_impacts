@@ -197,13 +197,13 @@ extract_model_details<-function(model) {
 
 model_output<-function(rem, ren, rgm,rgn,ral,rvj, rwf){
   
-  ifelse((!is.na(rem)), r_rem<-extract_model_details(rem), NA)
-  ifelse((!is.na(ren)), r_ren<-extract_model_details(ren), NA)
-  ifelse((!is.na(rgm)), r_rgm<-extract_model_details(rgm), NA)
-  ifelse((!is.na(rgn)), r_rgn<-extract_model_details(rgn), NA)
-  ifelse((!is.na(ral)), r_ral<-extract_model_details(ral), NA)
-  ifelse((!is.na(rvj)), r_rvj<-extract_model_details(rvj), NA)
-  ifelse((!is.na(rwf)), r_rwf<-extract_model_details(rwf), NA)
+  ifelse((!is.na(rem)), r_rem<-extract_model_details(rem), r_rem<-NA)
+  ifelse((!is.na(ren)), r_ren<-extract_model_details(ren), r_ren<-NA)
+  ifelse((!is.na(rgm)), r_rgm<-extract_model_details(rgm), r_rgm<-NA)
+  ifelse((!is.na(rgn)), r_rgn<-extract_model_details(rgn), r_rgn<-NA)
+  ifelse((!is.na(ral)), r_ral<-extract_model_details(ral), r_ral<-NA)
+  ifelse((!is.na(rvj)), r_rvj<-extract_model_details(rvj), r_rvj<-NA)
+  ifelse((!is.na(rwf)), r_rwf<-extract_model_details(rwf), r_rwf<-NA)
   
   df<-rbind(r_rem,r_ren,r_rgm,r_rgn,r_ral,r_rvj, r_rwf)
   return(df)
@@ -217,9 +217,10 @@ model_output<-function(rem, ren, rgm,rgn,ral,rvj, rwf){
 
 # Function to generate forest plot
 
-forest_plot<-function(data, num){
+forest_plot<-function(data){
   
   results_data<-data|>
+    filter(!is.na(site))|>
     mutate(site = fct_reorder(site, RelEffect))|>
     mutate(p=as.character(p))|>
     bind_rows(
@@ -240,7 +241,7 @@ forest_plot<-function(data, num){
     geom_vline(xintercept = 0, linetype="dashed") +
     scale_color_manual(values=c("#686f73","#ec6555"))+
     labs(x="Relative Effect Size", y="")+
-    coord_cartesian(ylim=c(1,num), xlim=c(-0.5, .5))+
+    coord_cartesian(ylim=c(1,nrow(results_data)), xlim=c(-0.52, 0.5))+
     annotate("text", x = -.32, y = 8, size=3, label = "Decrease with SBR") +
     annotate("text", x = .3, y = 8, size=3,  label = "Increase with SBR")+ 
     theme(legend.position="none",
@@ -289,6 +290,7 @@ forest_plot<-function(data, num){
 model_effects_table<-function(data){
 
 data|>
+  filter(!is.na(site))|>
   arrange(desc(RelEffect))|>
   mutate(sig=case_when(RelEffect>0 & p<0.05 ~ "Sig Increase", 
                        RelEffect<0 & p<0.05 ~ "Sig Decrease",

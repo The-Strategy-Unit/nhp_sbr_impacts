@@ -102,6 +102,17 @@ tar_read(indicator_availability_table)
 
 Combined rate per 10,000 beddays
 
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+hcai_output<-tar_read(hcai_output)
+
+forest_plot(hcai_output)
+
+model_effects_table(hcai_output)
+
+```
+
+
 #### Royal Liverpool
 
 ```{r, include=FALSE}
@@ -117,8 +128,6 @@ hcai_REM<-tar_read(hcai_REM)
 
 cia_summary_plots(hcai_REM, "Study site: Royal Liverpool, REM","Rate/10,000 beddays", "2022-10-01")
 ```
-
-
 
 ```{r, include=FALSE}
 #### Clatterbridge
@@ -137,6 +146,17 @@ cia_summary_plots(hcai_REM, "Study site: Royal Liverpool, REM","Rate/10,000 bedd
 
 ## Falls and Fractures in hospital
 
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+falls_and_fractures_output<-tar_read(falls_and_fractures_output)
+
+forest_plot(falls_and_fractures_output)
+
+model_effects_table(falls_and_fractures_output)
+
+```
+
+
 #### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -152,8 +172,6 @@ falls_and_fractures_REM<-tar_read(falls_and_fractures_REM)
 
 cia_summary_plots(falls_and_fractures_REM, "Study site: Royal Liverpool, REM","% of spells", "2022-10-01")
 ```
-
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Clatterbridge
@@ -171,8 +189,6 @@ cia_summary_plots(falls_and_fractures_REM, "Study site: Royal Liverpool, REM","%
 
 
 ```
-
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Papworth
@@ -202,8 +218,6 @@ falls_and_fractures_RGN<-tar_read(falls_and_fractures_RGN)
 
 cia_summary_plots(falls_and_fractures_RGN, "Study site: Peterborough, RGN","% of spells", "2010-11-01")
 ```
-
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
@@ -252,8 +266,18 @@ cia_summary_plots(falls_and_fractures_RWF, "Study site: Tunbridge Wells, RWF","%
 ```
 
 ## Deaths in hospital
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+sus_deaths_output<-tar_read(sus_deaths_output)
+
+forest_plot(sus_deaths_output)
+
+model_effects_table(sus_deaths_output)
+
+```
 
 #### Royal Liverpool
+
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -317,8 +341,6 @@ sus_deaths|>
 
 ```
 
-
-
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Papworth
 #sus_deaths_RGM<-tar_read(sus_deaths_RGM)
@@ -348,8 +370,6 @@ sus_deaths_RGN<-tar_read(sus_deaths_RGN)
 
 cia_summary_plots(sus_deaths_RGN, "Study site: Peterborough, RGN","No./per 1,000 discharges", "2010-11-01")
 ```
-
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
@@ -400,6 +420,18 @@ cia_summary_plots(sus_deaths_RWF, "Study site: Tunbridge Wells, RWF","No./per 1,
 # Patient and Staff Experience
 
 ## Patient experience - Friends and Family scores
+
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+friends_and_family_output<-tar_read(friends_and_family_output)
+
+forest_plot(friends_and_family_output)
+
+model_effects_table(friends_and_family_output)
+
+```
+
 
 #### Royal Liverpool (REMRQ)
 
@@ -475,6 +507,16 @@ cia_summary_plots(friends_and_family_RAL, "Study site: Chase Farm Hospital, RALC
 ```
 
 ## Staff sickness
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+staff_sickness_output<-tar_read(staff_sickness_output)
+
+forest_plot(staff_sickness_output)
+
+model_effects_table(staff_sickness_output)
+
+```
 
 #### Royal Liverpool (REM)
 

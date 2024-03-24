@@ -44,6 +44,7 @@ library(ggrepel)
 library(flextable)
 library(egg)
 library(StrategyUnitTheme)
+library(patchwork)
 
 
 ## RTT waiting time
@@ -84,7 +85,17 @@ tar_read(indicator_availability_table)
 
 ## Waiting time data- Median waiting time (in weeks)
 
-Seems to be some change in data reporting around 2011. Also have numbers predicted to be negative, so need to look at transforming the data first.
+```{r, fig.width=8, fig.height=4}
+
+waiting_time_median_output<-tar_read(waiting_time_median_output)
+
+forest_plot(waiting_time_median_output)
+
+model_effects_table(waiting_time_median_output)
+
+
+```
+
 
 #### Royal Liverpool
 
@@ -150,13 +161,9 @@ waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 cia_summary_plots(waiting_time_median_RGN, "Study site: Peterborough, RGN","Median waiting time (wks)", "2010-11-01")
 ```
 
-#### Chase Farm
-
-Missing data in 2019 and 2020
-
 ```{r, include=FALSE, fig.width=8, fig.height=8}
-
-waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
+#### Chase Farm
+#waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
 
 #evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL, single_bedroom_matches)
 
@@ -164,7 +171,7 @@ waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
 
 ```{r, include=TRUE, fig.width=6, fig.height=6}
 
-cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median waiting time (wks)", "2018-09-01")
+#cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median waiting time (wks)", "2018-09-01")
 ```
 
 #### Southmead
@@ -198,31 +205,20 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 cia_summary_plots(waiting_time_median_RWF, "Study site: Tunbridge Wells, RWF","Median waiting time (wks)", "2011-01-01")
 ```
 
-```{r}
 
-ggplot(aes(x = Estimate, y = Group)) +
-  geom_vline(aes(xintercept = 1), size = .25, linetype = "dashed") +
-geom_errorbarh(aes(xmax = high, xmin = low), size = 0.5, height = 0.5, color = "black") +
- geom_point(size = 2.8, aes(color = sig)) +
- theme_bw() +
- theme(panel.grid.minor = element_blank()) +
- ylab("") +
- xlab("Incidence Rate Ratio") +
-  scale_color_manual(values=c( "#686f73","#ec6555","#f9bf07"))+
-facet_wrap(vars(Category), ncol=1, scale="free_y") +
-  theme_bw() +
-  theme(panel.spacing.y = unit(0, "points"),
-        panel.border = element_blank(),
-        legend.position = "left", 
-        legend.title=element_blank(),
-        strip.background = element_rect(fill="grey80", color="grey80"))+
-     guides(color=guide_legend(nrow=3))
 
+## Waiting time data- Total numbers waiting
+
+```{r, fig.width=8, fig.height=4}
+
+waiting_time_number_output<-tar_read(waiting_time_number_output)
+
+forest_plot(waiting_time_number_output)
+
+model_effects_table(waiting_time_number_output)
 
 
 ```
-
-## Waiting time data- Total numbers waiting
 
 #### Royal Liverpool
 
@@ -287,13 +283,10 @@ waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
 cia_summary_plots(waiting_time_number_RGN, "Study site: Peterborough, RGN","Number waiting", "2010-11-01")
 ```
 
+```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
 
-Missing data in 2019 and 2020
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-waiting_time_number_RAL<-tar_read(waiting_time_number_RAL)
+#waiting_time_number_RAL<-tar_read(waiting_time_number_RAL)
 
 #evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "number_incomplete", 0.05, waiting_time_number_RAL, single_bedroom_matches)
 
@@ -301,7 +294,7 @@ waiting_time_number_RAL<-tar_read(waiting_time_number_RAL)
 
 ```{r, include=TRUE, fig.width=6, fig.height=6}
 
-cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number waiting", "2018-09-01")
+#cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number waiting", "2018-09-01")
 ```
 
 #### Southmead
@@ -335,6 +328,19 @@ cia_summary_plots(waiting_time_number_RWF, "Study site: Tunbridge Wells, RWF","N
 ```
 
 ## Length of stay
+
+```{r, fig.width=8, fig.height=4}
+
+LoS_output<-tar_read(LoS_output)
+
+forest_plot(LoS_output)
+
+model_effects_table(LoS_output)
+
+
+```
+
+
 
 #### Royal Liverpool
 
@@ -374,6 +380,8 @@ cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)"
 COVID-19 spikes in the post switch period are impacting LoS.
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
+
+
 
 LoS_RGM<-tar_read(LoS_RGM)
 
@@ -450,6 +458,17 @@ cia_summary_plots(LoS_RWF, "Study site: Tunbridge Wells, RWF","Average LoS (days
 ```
 
 ## Emergency Readmissions
+
+```{r, fig.width=8, fig.height=4}
+
+emergency_readmissions_output<-tar_read(emergency_readmissions_output)
+
+forest_plot(emergency_readmissions_output)
+
+model_effects_table(emergency_readmissions_output)
+
+
+```
 
 #### Royal Liverpool
 
@@ -567,6 +586,17 @@ cia_summary_plots(emergency_readmissions_RWF, "Study site: Tunbridge Wells, RWF"
 ```
 
 ## Bed Occupancy
+
+```{r, fig.width=8, fig.height=4}
+
+bed_occupancy_output<-tar_read(bed_occupancy_output)
+
+forest_plot(bed_occupancy_output)
+
+model_effects_table(bed_occupancy_output)
+
+
+```
 
 #### Royal Liverpool
 

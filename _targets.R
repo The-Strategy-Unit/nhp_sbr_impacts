@@ -25,7 +25,8 @@ tar_option_set(
     "htmltools",
     "oceanis",
     "flextable",
-    "egg"
+    "egg",
+    "patchwork"
   ) # Packages that your targets need for their tasks.
 )
 
@@ -1430,6 +1431,121 @@ tar_target(
                "staff_sickness_percent", 
                0.05,
                single_bedroom_matches)
+),
+
+#------------------------------------------------------------------------------#
+
+#Presenting CIA outputs
+
+tar_target(
+  waiting_time_median_output,
+  model_output(waiting_time_median_REM,
+               waiting_time_median_REN,
+               waiting_time_median_RGM,
+               waiting_time_median_RGN,
+               NA,
+               waiting_time_median_RVJ,
+               waiting_time_median_RWF)
+),
+
+tar_target(
+  waiting_time_number_output,
+  model_output(waiting_time_number_REM,
+               waiting_time_number_REN,
+               waiting_time_number_RGM,
+               waiting_time_number_RGN,
+               NA,
+               waiting_time_number_RVJ,
+               waiting_time_number_RWF)
+),
+
+tar_target(
+  LoS_output,
+  model_output(LoS_REM,
+               LoS_REN,
+               LoS_RGM,
+               LoS_RGN,
+               LoS_RAL,
+               LoS_RVJ,
+               LoS_RWF)
+),
+
+tar_target(
+  emergency_readmissions_output,
+  model_output(emergency_readmissions_REM,
+               emergency_readmissions_REN,
+               emergency_readmissions_RGM,
+               emergency_readmissions_RGN,
+               emergency_readmissions_RAL,
+               emergency_readmissions_RVJ,
+               emergency_readmissions_RWF)
+),
+
+tar_target(
+  bed_occupancy_output,
+  model_output(bed_occupancy_REM,
+               bed_occupancy_REN,
+               bed_occupancy_RGM,
+               NA,
+               bed_occupancy_RAL,
+               bed_occupancy_RVJ,
+               NA)
+),
+
+tar_target(
+  hcai_output,
+  model_output(hcai_REM,
+               NA,
+               NA,
+               NA,
+               NA,
+               NA,
+               NA)
+),
+
+tar_target(
+  falls_and_fractures_output,
+  model_output(falls_and_fractures_REM,
+               NA,
+               NA,
+               falls_and_fractures_RGN,
+               NA,
+               falls_and_fractures_RVJ,
+               falls_and_fractures_RWF)
+),
+
+
+tar_target(
+  sus_deaths_output,
+  model_output(sus_deaths_REM,
+               sus_deaths_REN,
+               NA,
+               sus_deaths_RGN,
+               sus_deaths_RAL,
+               sus_deaths_RVJ,
+               NA)
+),
+
+tar_target(
+  friends_and_family_output,
+  model_output(friends_and_family_REM,
+               friends_and_family_REN,
+               friends_and_family_RGM,
+               NA,
+               friends_and_family_RAL,
+               NA,
+               NA)
+),
+
+tar_target(
+  staff_sickness_output,
+  model_output(staff_sickness_REM,
+               staff_sickness_REN,
+               staff_sickness_RGM,
+               NA,
+               staff_sickness_RAL,
+               staff_sickness_RVJ,
+               NA)
 )
 
 )

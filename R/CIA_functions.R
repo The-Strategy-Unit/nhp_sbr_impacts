@@ -165,21 +165,155 @@ cia_summary_plots<-function(model_results,  title, ylab, switch_date){
 # Function to extract model details
 
 extract_model_details<-function(model) {
-  
+
   name<-deparse(substitute(model))
   
-  df<-(model[['CausalImpactObject']][['summary']])|>
+  df<-(model$CausalImpactObject$summary)|>
     mutate(site=name)|>
-    mutate(sig=ifelse(p<0.05, "*", "NS"))
+    mutate(sig=ifelse(p<0.05, "Sig", "Non-sig"))|>
+    mutate(p=round(p,3))|>
+    mutate(Actual=round(Actual,2))|>
+    mutate(Pred=round(Pred,2))|>
+    mutate(Predicted=paste0(round(Pred,2), " (",round(Pred.lower,2)," - ",round(Pred.upper,2), ")" ))|>
+    mutate(Effect=paste0(round(RelEffect,2), " (",round(RelEffect.lower,2)," - ",round(RelEffect.upper,2), ")" ))|>
+    mutate(Absolute=paste0(round(AbsEffect,2), " (",round(AbsEffect.lower,2)," - ",round(AbsEffect.upper,2), ")" ))|>
+    mutate(site=case_when(site=="rem" ~ "Royal Liverpool",
+                          site=="ren" ~ "Clatterbridge",
+                          site=="rgm" ~ "Papworth",
+                          site=="rgn" ~ "Peterborough",
+                          site=="ral" ~ "Chase Farm",
+                          site=="rvj" ~ "Southmead",
+                          site=="rwf" ~ "Tunbridge Wells"))
   
   df<-df |>
     filter(row.names(df) %in% c('Average'))
+
+  return(df)
+}
+
+
+
+#Summary table of model parameters
+
+model_output<-function(rem, ren, rgm,rgn,ral,rvj, rwf){
   
+  ifelse((!is.na(rem)), r_rem<-extract_model_details(rem), NA)
+  ifelse((!is.na(ren)), r_ren<-extract_model_details(ren), NA)
+  ifelse((!is.na(rgm)), r_rgm<-extract_model_details(rgm), NA)
+  ifelse((!is.na(rgn)), r_rgn<-extract_model_details(rgn), NA)
+  ifelse((!is.na(ral)), r_ral<-extract_model_details(ral), NA)
+  ifelse((!is.na(rvj)), r_rvj<-extract_model_details(rvj), NA)
+  ifelse((!is.na(rwf)), r_rwf<-extract_model_details(rwf), NA)
   
+  df<-rbind(r_rem,r_ren,r_rgm,r_rgn,r_ral,r_rvj, r_rwf)
   return(df)
   
 }
 
 
+
+
+
+
+# Function to generate forest plot
+
+forest_plot<-function(data, num){
+  
+  results_data<-data|>
+    mutate(site = fct_reorder(site, RelEffect))|>
+    mutate(p=as.character(p))|>
+    bind_rows(
+      data.frame(
+        Effect = "Relative Effect (95% CI)",
+        p = "p-value",
+        RelEffect=100)
+    )
+  
+  
+  
+  
+  p_mid<-results_data |>
+    ggplot(aes(x = RelEffect, y = fct_reorder(site,RelEffect))) +
+    theme_classic()+
+    geom_point(aes(x=RelEffect, colour=sig), shape=15, size=3) +
+    geom_linerange(aes(xmin=RelEffect.lower, xmax=RelEffect.upper, colour=sig)) +
+    geom_vline(xintercept = 0, linetype="dashed") +
+    scale_color_manual(values=c("#686f73","#ec6555"))+
+    labs(x="Relative Effect Size", y="")+
+    coord_cartesian(ylim=c(1,num), xlim=c(-0.5, .5))+
+    annotate("text", x = -.32, y = 8, size=3, label = "Decrease with SBR") +
+    annotate("text", x = .3, y = 8, size=3,  label = "Increase with SBR")+ 
+    theme(legend.position="none",
+          axis.line.y = element_blank(),
+          axis.ticks.y= element_blank(),
+          axis.text.y= element_blank(),
+          axis.title.y= element_blank())
+  
+  
+  
+  p_left <-
+    results_data |>
+    ggplot(aes(y = fct_reorder(site,RelEffect))) +
+    geom_text(aes(x = 0, label = site), hjust = 0, size=3, fontface = "bold")+
+    geom_text(
+      aes(x = 2, label = Effect),
+      hjust = 0,
+      size=3,
+      fontface = ifelse(results_data$Effect =="Relative Effect (95% CI)", "bold", "plain"))+
+    theme_void() +
+    coord_cartesian(xlim = c(0, 4))
+  
+  
+  p_right <-
+    results_data |>
+    ggplot() +
+    geom_text(
+      aes(x = 0, y = fct_reorder(site,RelEffect), label = p),
+      hjust = 0,
+      size=3,
+      fontface = ifelse(results_data$p == "p-value", "bold", "plain")
+    ) +
+    theme_void() 
+  
+  layout <- c(
+    area(t = 0, l = 0, b = 30, r = 5), 
+    area(t =1, l = 6, b = 30, r = 11), 
+    area(t = 0, l = 11, b = 30, r = 13) 
+  )
+  # final plot arrangement
+  p_left + p_mid + p_right + plot_layout(design = layout)
+  
+}
+
+# Function for model output table
+model_effects_table<-function(data){
+
+data|>
+  arrange(desc(RelEffect))|>
+  mutate(sig=case_when(RelEffect>0 & p<0.05 ~ "Sig Increase", 
+                       RelEffect<0 & p<0.05 ~ "Sig Decrease",
+                       p>=0.05 ~ "Non-Sig"))|>
+  select(site, Actual, Predicted, Absolute, Effect, p, sig)|>
+  flextable()|>
+  set_header_labels(site="Site",
+                    Actual="Actual \nEffect",
+                    Predicted="Predicted Effect \n(95% CI)",
+                    Absolute="Absolute Effect \n(95% CI)",
+                    Effect="Relative Effect \n(95% CI)",
+                    p="p-value",
+                    sig="Significance")|>
+  align(part = "header", align = "center")|>
+  align(part = "body", align = "center")|>
+  align(j=2:7,align = "right")|>
+  align(j=2:7,align = "right", part="header")|>
+  align(j=1,  align = "left")|>
+  bg(bg = "#f9bf07", part = "header") |>
+  bold(bold = TRUE, part="header")|>
+  fontsize(size = 10.5, part = "all")|>
+  padding(padding = 2, part = "all", padding.top=NULL) |>
+  autofit()|>
+  htmltools_value(ft.align = "left") 
+
+}
 
 

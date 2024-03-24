@@ -44,6 +44,7 @@ library(ggrepel)
 library(flextable)
 library(egg)
 library(StrategyUnitTheme)
+library(patchwork)
 
 
 ## RTT waiting time
@@ -150,13 +151,12 @@ waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 cia_summary_plots(waiting_time_median_RGN, "Study site: Peterborough, RGN","Median waiting time (wks)", "2010-11-01")
 ```
 
-#### Chase Farm
 
-Missing data in 2019 and 2020
+
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
-
-waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
+#### Chase Farm
+#waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
 
 #evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL, single_bedroom_matches)
 
@@ -164,7 +164,7 @@ waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
 
 ```{r, include=TRUE, fig.width=6, fig.height=6}
 
-cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median waiting time (wks)", "2018-09-01")
+#cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median waiting time (wks)", "2018-09-01")
 ```
 
 #### Southmead
@@ -198,24 +198,23 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 cia_summary_plots(waiting_time_median_RWF, "Study site: Tunbridge Wells, RWF","Median waiting time (wks)", "2011-01-01")
 ```
 
-```{r, fig.width=6, fig.height=3}
-waiting_time_median|>
-  arrange(RelEffect)|>
-ggplot(aes(x = RelEffect, y = site)) +
-  geom_vline(aes(xintercept = 0), size = .25, linetype = "dashed") +
-geom_errorbarh(aes(xmax = RelEffect.upper, xmin = RelEffect.lower), size = 0.2, height = 0.2, color = "black") +
- geom_point(size = 2.8, aes(color = sig)) +
- theme_bw() +
- theme(panel.grid.minor = element_blank()) +
- ylab("") +
- xlab("Relative Effect size") +
-  scale_color_manual(values=c("#ec6555", "#686f73"))+
-  theme(axis.text=element_text(size=11),
-        panel.spacing.y = unit(0, "points"),
-        panel.border = element_blank(),
-        legend.position = "right", 
-        legend.title=element_blank())
+# Summary forest plot
 
+```{r, fig.width=8, fig.height=4}
+
+waiting_time_median<-model_output(waiting_time_median_REM,
+        waiting_time_median_REN,
+        waiting_time_median_RGM,
+         waiting_time_median_RGN,
+         waiting_time_median_RAL,
+        waiting_time_median_RVJ,
+         waiting_time_median_RWF)
+
+
+
+forest_plot(waiting_time_median, 8)
+
+model_effects_table(waiting_time_median)
 
 
 ```
@@ -285,13 +284,11 @@ waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
 cia_summary_plots(waiting_time_number_RGN, "Study site: Peterborough, RGN","Number waiting", "2010-11-01")
 ```
 
-#### Chase Farm
-
-Missing data in 2019 and 2020
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
+#### Chase Farm
 
-waiting_time_number_RAL<-tar_read(waiting_time_number_RAL)
+#waiting_time_number_RAL<-tar_read(waiting_time_number_RAL)
 
 #evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "number_incomplete", 0.05, waiting_time_number_RAL, single_bedroom_matches)
 
@@ -299,7 +296,7 @@ waiting_time_number_RAL<-tar_read(waiting_time_number_RAL)
 
 ```{r, include=TRUE, fig.width=6, fig.height=6}
 
-cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number waiting", "2018-09-01")
+#cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number waiting", "2018-09-01")
 ```
 
 #### Southmead
@@ -368,10 +365,10 @@ cia_summary_plots(LoS_REN, "Study site: Clatterbridge, REN","Average LoS (days)"
 ```
 
 #### Papworth
-
 COVID-19 spikes in the post switch period are impacting LoS.
-
 ```{r, include=FALSE, fig.width=8, fig.height=8}
+
+
 
 LoS_RGM<-tar_read(LoS_RGM)
 

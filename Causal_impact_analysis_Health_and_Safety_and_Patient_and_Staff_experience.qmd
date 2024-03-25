@@ -44,6 +44,8 @@ library(ggrepel)
 library(flextable)
 library(egg)
 library(StrategyUnitTheme)
+library(patchwork)
+
 
 ## Friends & Family
 friends_and_family<-tar_read(friends_and_family_cia_format)
@@ -75,7 +77,7 @@ sus_deaths<- tar_read(sus_deaths_cia_format)
 
  # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
 
-single_bedroom_matches<-tar_read(single_bedroom_matches)
+single_bedroom_matches_2<-tar_read(single_bedroom_matches_2)
 
 source("R/CIA_Functions.R")
 
@@ -99,8 +101,11 @@ tar_read(indicator_availability_table)
 # Health and Safety
 
 ## Healthcare acquired infections
-
 Combined rate per 10,000 beddays
+
+::: panel-tabset
+
+### Summary
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -112,6 +117,7 @@ model_effects_table(hcai_output)
 
 ```
 
+### No change
 
 #### Royal Liverpool
 
@@ -119,32 +125,37 @@ model_effects_table(hcai_output)
 
 hcai_REM<-tar_read(hcai_REM)
 
-#evaluating_model("REM", NA, hcai, "2022-10-01", "combined_rate", 0.05, hcai_REM, single_bedroom_matches)
+#evaluating_model("REM", NA, hcai, "2022-10-01", "combined_rate", 0.05, hcai_REM, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(hcai_REM, "Study site: Royal Liverpool, REM","Rate/10,000 beddays", "2022-10-01")
+cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
 ```
+:::
 
 ```{r, include=FALSE}
 #### Clatterbridge
 
 #hcai_REN<-tar_read(hcai_REN)
 
-#evaluating_model("REN",NA,  hcai, "2020-06-01", "combined_rate", 0.05, hcai_REN, single_bedroom_matches)
+#evaluating_model("REN",NA,  hcai, "2020-06-01", "combined_rate", 0.05, hcai_REN, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-#cia_summary_plots(hcai_REN, "Study site: Clatterbridge, REN","Rate/10,000 beddays", "2020-06-01")
+#cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2020-06-01")
 ```
 
 ## Falls and Fractures in hospital
+
+::: panel-tabset
+
+### Summary
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -156,6 +167,28 @@ model_effects_table(falls_and_fractures_output)
 
 ```
 
+### Decrease 
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RGN<-tar_read(falls_and_fractures_RGN)
+
+#evaluating_model("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.05, falls_and_fractures_RGN, single_bedroom_matches_2)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(falls_and_fractures_RGN,"% of spells", "2010-11-01")
+```
+
+### No change
+
+::: columns
+::: {.column width="50%"}
 
 #### Royal Liverpool
 
@@ -163,14 +196,14 @@ model_effects_table(falls_and_fractures_output)
 
 falls_and_fractures_REM<-tar_read(falls_and_fractures_REM)
 
-#evaluating_model("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM, single_bedroom_matches)
+#evaluating_model("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(falls_and_fractures_REM, "Study site: Royal Liverpool, REM","% of spells", "2022-10-01")
+cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 ```
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -178,14 +211,14 @@ cia_summary_plots(falls_and_fractures_REM, "Study site: Royal Liverpool, REM","%
 
 #falls_and_fractures_REN<-tar_read(falls_and_fractures_REN)
 
-#evaluating_model("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN, single_bedroom_matches)
+#evaluating_model("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-#cia_summary_plots(falls_and_fractures_REN, "Study site: Clatterbridge, REN","% of spells", "2020-06-01")
+#cia_summary_plots(falls_and_fractures_REN, "% of spells", "2020-06-01")
 
 
 ```
@@ -194,44 +227,52 @@ cia_summary_plots(falls_and_fractures_REM, "Study site: Royal Liverpool, REM","%
 #### Papworth
 #falls_and_fractures_RGM<-tar_read(falls_and_fractures_RGM)
 
-#evaluating_model("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM, single_bedroom_matches)
+#evaluating_model("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM, single_bedroom_matches_2)
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-#cia_summary_plots(falls_and_fractures_RGM, "Study site: Papworth, RGM","% of spells", "2019-05-01")
+#cia_summary_plots(falls_and_fractures_RGM, "% of spells", "2019-05-01")
 ```
 
-#### Peterborough
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-falls_and_fractures_RGN<-tar_read(falls_and_fractures_RGN)
-
-#evaluating_model("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.05, falls_and_fractures_RGN, single_bedroom_matches)
-
-
-```
-
-```{r, include=TRUE, fig.width=6, fig.height=6}
-
-cia_summary_plots(falls_and_fractures_RGN, "Study site: Peterborough, RGN","% of spells", "2010-11-01")
-```
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
 #falls_and_fractures_RAL<-tar_read(falls_and_fractures_RAL)
 
-#evaluating_model("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL, single_bedroom_matches)
+#evaluating_model("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-#cia_summary_plots(falls_and_fractures_RAL, "Study site: Chase Farm, RAL","% of spells", "2018-09-01")
+#cia_summary_plots(falls_and_fractures_RAL,"% of spells", "2018-09-01")
 ```
+:::
+
+
+::: {.column width="50%"}
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RWF<-tar_read(falls_and_fractures_RWF)
+
+#evaluating_model("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF, single_bedroom_matches_2)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
+```
+:::
+:::
+
+### Increase
 
 #### Southmead
 
@@ -239,33 +280,26 @@ cia_summary_plots(falls_and_fractures_RGN, "Study site: Peterborough, RGN","% of
 
 falls_and_fractures_RVJ<-tar_read(falls_and_fractures_RVJ)
 
-#evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ, single_bedroom_matches)
+#evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(falls_and_fractures_RVJ, "Study site: Southmead, RVJ","% of spells", "2014-05-01")
+cia_summary_plots(falls_and_fractures_RVJ,"% of spells", "2014-05-01")
 ```
 
-#### Tunbridge Wells
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-falls_and_fractures_RWF<-tar_read(falls_and_fractures_RWF)
-
-#evaluating_model("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF, single_bedroom_matches)
+:::
 
 
-```
-
-```{r, include=TRUE, fig.width=6, fig.height=6}
-
-cia_summary_plots(falls_and_fractures_RWF, "Study site: Tunbridge Wells, RWF","% of spells", "2011-01-01")
-```
 
 ## Deaths in hospital
+
+::: panel-tabset
+
+### Summary
+
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
 sus_deaths_output<-tar_read(sus_deaths_output)
@@ -276,84 +310,7 @@ model_effects_table(sus_deaths_output)
 
 ```
 
-#### Royal Liverpool
-
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-sus_deaths_REM<-tar_read(sus_deaths_REM)
-
-#evaluating_model("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM, single_bedroom_matches)
-
-
-```
-
-```{r, include=TRUE, fig.width=6, fig.height=6}
-
-cia_summary_plots(sus_deaths_REM, "Study site: Royal Liverpool, REM","No./per 1,000 discharges", "2022-10-01")
-```
-
-#### Clatterbridge
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-sus_deaths_REN<-tar_read(sus_deaths_REN)
-
-evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN, single_bedroom_matches )
-
-
-```
-
-```{r, include=TRUE, fig.width=6, fig.height=6}
-
-cia_summary_plots(sus_deaths_REN, "Study site: Clatterbridge, REN","No./per 1,000 discharges", "2020-06-01")
-
-```
-
-```{r, include=FALSE}
-
-sus_deaths|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21" )|>
-  ggplot()+
-  geom_line(aes(x=month, y=discharges, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-sus_deaths|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21")|>
-  ggplot()+
-  geom_line(aes(x=month, y=death_hosp, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-sus_deaths|>
-  filter(site_code=="REN22"|
-         site_code=="REN20"| 
-         site_code=="REN01"| 
-         site_code=="REN21")|>
-  ggplot()+
-  geom_line(aes(x=month, y=hosp_rate_1000, group=site_code, colour=site_code))+
-  scale_y_continuous(limits=c(0,NA))
-
-```
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-#### Papworth
-#sus_deaths_RGM<-tar_read(sus_deaths_RGM)
-
-#evaluating_model("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM, single_bedroom_matches)
-
-
-```
-
-```{r, include=TRUE, fig.width=6, fig.height=6}
-
-cia_summary_plots(sus_deaths_RGM, "Study site: Papworth, RGM","No./per 1,000 discharges", "2019-05-01")
-```
+### Decrease
 
 #### Peterborough
 
@@ -361,28 +318,64 @@ cia_summary_plots(sus_deaths_RGM, "Study site: Papworth, RGM","No./per 1,000 dis
 
 sus_deaths_RGN<-tar_read(sus_deaths_RGN)
 
-#evaluating_model("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.05, sus_deaths_RGN, single_bedroom_matches)
+#evaluating_model("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.05, sus_deaths_RGN, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(sus_deaths_RGN, "Study site: Peterborough, RGN","No./per 1,000 discharges", "2010-11-01")
+cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 ```
+
+### No change
+
+::: columns
+::: {.column width="50%"}
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_REM<-tar_read(sus_deaths_REM)
+
+#evaluating_model("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM, single_bedroom_matches_2)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
+```
+
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+#### Papworth
+#sus_deaths_RGM<-tar_read(sus_deaths_RGM)
+
+#evaluating_model("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM, single_bedroom_matches_2)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+#cia_summary_plots(sus_deaths_RGM, "No./per 1,000 discharges", "2019-05-01")
+```
+
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
 
 #sus_deaths_RAL<-tar_read(sus_deaths_RAL)
 
-#evaluating_model("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL, single_bedroom_matches)
+#evaluating_model("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL, single_bedroom_matches_2)
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-#cia_summary_plots(sus_deaths_RAL, "Study site: Chase Farm, RAL","No./per 1,000 discharges", "2018-09-01")
+#cia_summary_plots(sus_deaths_RAL, "No./per 1,000 discharges", "2018-09-01")
 ```
 
 #### Southmead
@@ -391,36 +384,63 @@ cia_summary_plots(sus_deaths_RGN, "Study site: Peterborough, RGN","No./per 1,000
 
 sus_deaths_RVJ<-tar_read(sus_deaths_RVJ)
 
-#evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.05, sus_deaths_RVJ, single_bedroom_matches)
+#evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.05, sus_deaths_RVJ, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(sus_deaths_RVJ, "Study site: Southmead, RVJ","No./per 1,000 discharges", "2014-05-01")
+cia_summary_plots(sus_deaths_RVJ,"No./per 1,000 discharges", "2014-05-01")
 ```
+:::
 
+::: {.column width="50%"}
 #### Tunbridge Wells
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 sus_deaths_RWF<-tar_read(sus_deaths_RWF)
 
-#evaluating_model("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.05, sus_deaths_RWF, single_bedroom_matches)
+#evaluating_model("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.05, sus_deaths_RWF, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(sus_deaths_RWF, "Study site: Tunbridge Wells, RWF","No./per 1,000 discharges", "2011-01-01")
+cia_summary_plots(sus_deaths_RWF, "No./per 1,000 discharges", "2011-01-01")
 ```
+:::
+:::
+### Increase
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_REN<-tar_read(sus_deaths_REN)
+
+evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN, single_bedroom_matches_2 )
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
+
+```
+
+:::
 
 # Patient and Staff Experience
 
 ## Patient experience - Friends and Family scores
 
+::: panel-tabset
+
+### Summary
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -432,25 +452,7 @@ model_effects_table(friends_and_family_output)
 
 ```
 
-
-#### Royal Liverpool (REMRQ)
-
-```{r, include=FALSE, fig.height=8, fig.width=8}
-
-friends_and_family_REM<-tar_read(friends_and_family_REM)
-
-#evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REMRQ, single_bedroom_matches)
-
-```
-
-```{r, include=TRUE, fig.width=6, fig.height=6}
-
-cia_summary_plots(friends_and_family_REM, "Study site: Royal Liverpool, REMRQ","Positive responses (%)", "2022-10-01")
-
-
-# Large amount of data missing in the two years prior due to gap over covid. One of the control sites doesn't go back far enough for it is causing the data to be cut off. Think I need to have less matches for this one. But would still have a disturbed pre switch period due to COVID
-
-```
+### Decrease
 
 #### Clatterbridge (REN)
 
@@ -459,37 +461,47 @@ cia_summary_plots(friends_and_family_REM, "Study site: Royal Liverpool, REMRQ","
 
 friends_and_family_REN<-tar_read(friends_and_family_REN)
 
-evaluating_model("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN, single_bedroom_matches )
+evaluating_model("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN, single_bedroom_matches_2 )
 
 test<-friends_and_family|>
   filter(site_code=="REN22")
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(friends_and_family_REN, "Study site: Clatterbridge, REN22","Positive responses (%)", "2020-06-01")
+cia_summary_plots(friends_and_family_REN,"Positive responses (%)", "2020-06-01")
 
 #Last data point prior to switch was about 4 months prior then no data for 8 months after, as switch came during COVID
 
 ```
 
-#### Papworth (RGM)
+### No Change
 
-```{r, include=FALSE, fig.width=8, fig.height=8}
+::: columns
+::: {.column width="50%"}
+#### Royal Liverpool (REMRQ)
 
-friends_and_family_RGM<-tar_read(friends_and_family_RGM)
+```{r, include=FALSE, fig.height=8, fig.width=8}
 
-#evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM, single_bedroom_matches)
+friends_and_family_REM<-tar_read(friends_and_family_REM)
 
+#evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REMRQ, single_bedroom_matches_2)
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(friends_and_family_RGM, "Study site: Papworth, RGM22","Positive responses (%)", "2019-05-01")
+cia_summary_plots(friends_and_family_REM, "Positive responses (%)", "2022-10-01")
+
+
+# Large amount of data missing in the two years prior due to gap over covid. One of the control sites doesn't go back far enough for it is causing the data to be cut off. Think I need to have less matches for this one. But would still have a disturbed pre switch period due to COVID
+
 ```
 
+:::
+
+::: {.column width="50%"}
 #### Chase Farm Hospital (RAL)
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -497,16 +509,41 @@ cia_summary_plots(friends_and_family_RGM, "Study site: Papworth, RGM22","Positiv
 friends_and_family_RAL<-tar_read(friends_and_family_RAL)
 
 
-#evaluating_model("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RAL, single_bedroom_matches)
+#evaluating_model("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RAL, single_bedroom_matches_2)
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(friends_and_family_RAL, "Study site: Chase Farm Hospital, RALC7","Positive responses (%)", "2018-09-01")
+cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01")
+```
+:::
+:::
+
+### Increase
+
+#### Papworth (RGM)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+friends_and_family_RGM<-tar_read(friends_and_family_RGM)
+
+#evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM, single_bedroom_matches_2)
+
+
 ```
 
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01")
+```
+:::
 ## Staff sickness
+
+::: panel-tabset
+
+### Summary
+
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -517,7 +554,10 @@ forest_plot(staff_sickness_output)
 model_effects_table(staff_sickness_output)
 
 ```
+### No change
 
+::: columns
+::: {.column width="50%"}
 #### Royal Liverpool (REM)
 
 ```{r, include=FALSE, fig.height=8, fig.width=8}
@@ -525,13 +565,13 @@ model_effects_table(staff_sickness_output)
 staff_sickness_REM<-tar_read(staff_sickness_REM)
 
 
-#evaluating_model("REM",NA, staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM, single_bedroom_matches)
+#evaluating_model("REM",NA, staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM, single_bedroom_matches_2)
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(staff_sickness_REM, "Study site: Royal Liverpool, REM","Sickness Rate (%)", "2022-10-01")
+cia_summary_plots(staff_sickness_REM, "Sickness Rate (%)", "2022-10-01")
 
 ```
 
@@ -541,13 +581,13 @@ cia_summary_plots(staff_sickness_REM, "Study site: Royal Liverpool, REM","Sickne
 
 staff_sickness_REN<-tar_read(staff_sickness_REN)
 
-#evaluating_model("REN", NA,staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN, single_bedroom_matches )
+#evaluating_model("REN", NA,staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN, single_bedroom_matches_2 )
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(staff_sickness_REN, "Study site: Clatterbridge, REN","Sickness Rate (%)", "2020-06-01")
+cia_summary_plots(staff_sickness_REN, "Sickness Rate (%)", "2020-06-01")
 
 ```
 
@@ -557,16 +597,19 @@ cia_summary_plots(staff_sickness_REN, "Study site: Clatterbridge, REN","Sickness
 
 staff_sickness_RGM<-tar_read(staff_sickness_RGM)
 
-#evaluating_model("RGM", NA,staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05, staff_sickness_RGM, single_bedroom_matches)
+#evaluating_model("RGM", NA,staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05, staff_sickness_RGM, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(staff_sickness_RGM, "Study site: Papworth, RGM","Sickness Rate (%)", "2019-05-01")
+cia_summary_plots(staff_sickness_RGM, "Sickness Rate (%)", "2019-05-01")
 ```
+:::
 
+
+::: {.column width="50%"}
 #### Chase Farm Hospital (RAL)
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -574,14 +617,14 @@ cia_summary_plots(staff_sickness_RGM, "Study site: Papworth, RGM","Sickness Rate
 staff_sickness_RAL<-tar_read(staff_sickness_RAL)
 
 
-#evaluating_model("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05, staff_sickness_RAL, single_bedroom_matches)
+#evaluating_model("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05, staff_sickness_RAL, single_bedroom_matches_2)
 
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(staff_sickness_RAL, "Study site: Chase Farm Hospital, RAL","Sickness Rate (%)", "2018-09-01")
+cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 ```
 
 #### Southmead (RVJ)
@@ -590,15 +633,17 @@ cia_summary_plots(staff_sickness_RAL, "Study site: Chase Farm Hospital, RAL","Si
 
 staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
 
-#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches)
+#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_2)
 
 ```
 
-```{r, include=TRUE, fig.width=6, fig.height=6}
+```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(staff_sickness_RVJ, "Study site: Southmead, RVJ","Sickness Rate (%)", "2014-05-01")
+cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 ```
-
+:::
+:::
+:::
 ```{r, include= FALSE, fig.height=8, fig.width=8}
 
 ## Staff turnover
@@ -608,12 +653,12 @@ cia_summary_plots(staff_sickness_RVJ, "Study site: Southmead, RVJ","Sickness Rat
 #staff_turnover_REM<-cia_analysis("REM", NA, staff_turnover,"2022-10-01", "leaving_rate", 0.05)
 
 
-#evaluating_model("REM", NA,staff_turnover,"2022-10-01", "leaving_rate", 0.05, staff_turnover_REM, single_bedroom_matches)
+#evaluating_model("REM", NA,staff_turnover,"2022-10-01", "leaving_rate", 0.05, staff_turnover_REM, single_bedroom_matches_2)
 
 
 # denominator appears to remain constant but for 12 months between Sept 2019 to Aug 2020, the numbers of leavers and joiners recorded is approx. 6 times higher than usual.
 
-#cia_summary_plots(staff_turnover_REM, "Study site: Royal Liverpool, REM","Leaving Rate (%)", "2022-10-01")
+#cia_summary_plots(staff_turnover_REM, "Leaving Rate (%)", "2022-10-01")
 
 
 ```

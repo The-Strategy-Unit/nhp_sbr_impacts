@@ -260,9 +260,10 @@ find_floor_space_matches <- function(data,
   similar_sites <- data |>
     dplyr::filter(
       effective_snapshot_date == date_pre_single_bedrooms,
-      site_code != site_code_pick,
-      occupied_floor_area_m2 > fsb_low,
-      occupied_floor_area_m2 < fsb_high) |>
+      site_code != site_code_pick#,
+      #occupied_floor_area_m2 > fsb_low,
+      #occupied_floor_area_m2 < fsb_high
+      ) |>
     dplyr::mutate(difference_floor_space = round((occupied_floor_area_m2 - floor_space_base) / floor_space_base,2),
                   site_code_og = site_code_pick,
                   org_code_og = stringr::str_sub(site_code_og,1,3)) |> 
@@ -317,8 +318,8 @@ combine_floor_space_matches <- function(floor_space) {
 control_stage2 <- function(data1,data2) {
   data <- data1 |>
     left_join(data2 |> select(org_code_og, site_code, difference_floor_space),
-              by = c("organisation_code"="org_code_og", "site_code"="site_code")) |> 
-    mutate(fs_match = if_else(is.na(difference_floor_space),0,1))
+              by = c("organisation_code"="org_code_og", "site_code"="site_code"))# |> 
+    #mutate(fs_match = if_else(is.na(difference_floor_space),0,1))
   
   return(data)
   

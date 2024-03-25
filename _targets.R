@@ -276,6 +276,12 @@ list(
     control_stage3(single_bedroom_matches_2, med_age_matches)
   ),
   
+  # ranking the secondary matching variables
+  tar_target(
+    single_bedroom_matches_final,
+    ranking_control_var(single_bedroom_matches_3)
+  ),
+  
   #----------------------------------------------------------------------------#
   
   #### Causal Impact Analysis additional formatting

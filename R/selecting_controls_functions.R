@@ -412,7 +412,7 @@ combine_med_age_matches <- function(med_age) {
   
 }
 
-# join floor space to single-bed matches
+# join median age to single-bed matches
 
 control_stage3 <- function(data1,data2) {
   data <- data1 |>
@@ -422,5 +422,15 @@ control_stage3 <- function(data1,data2) {
   
   return(data)
   
+}
+
+# rank floor space and age variables (unsigned percentage differences) for each site
+
+ranking_control_var <- function(df) {
+  data <- df |> 
+    group_by(organisation_code) |> 
+    mutate(floor_rank = rank(abs(difference_floor_space), ties.method = "first"),
+           age_rank = rank(abs(difference_med_age), ties.method = "first"))
+
 }
 

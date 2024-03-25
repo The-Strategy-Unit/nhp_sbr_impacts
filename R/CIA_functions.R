@@ -222,22 +222,30 @@ model_output<-function(rem, ren, rgm,rgn,ral,rvj, rwf){
 
 forest_plot<-function(data){
   
+  mean<-mean(data$RelEffect, na.rm=TRUE)
+  
   results_data<-data|>
     filter(!is.na(site))|>
     mutate(site = fct_reorder(site, RelEffect))|>
+    mutate(site=fct_rev(site))|>
     mutate(p=as.character(p))|>
+    mutate(id = RelEffect)|>
+    bind_rows(data.frame(
+      site="MEAN EFFECT",
+      RelEffect = mean,
+      Effect= as.character(round(mean,2) ),
+      id=-100))|>
     bind_rows(
       data.frame(
         Effect = "Relative Effect (95% CI)",
         p = "p-value",
-        RelEffect=100)
-    )
+        id=100) )
   
   a<-c((min(results_data$RelEffect.lower, na.rm=TRUE)),-0.4)
   b<-c((max(results_data$RelEffect.upper, na.rm=TRUE)),0.4)
   
   p_mid<-results_data |>
-    ggplot(aes(x = RelEffect, y = fct_reorder(site,RelEffect))) +
+    ggplot(aes(x = RelEffect, y = (fct_reorder(site,id) ))) +
     theme_classic()+
     geom_point(aes(x=RelEffect, colour=sig), shape=15, size=3) +
     geom_linerange(aes(xmin=RelEffect.lower, xmax=RelEffect.upper, colour=sig)) +
@@ -259,7 +267,7 @@ forest_plot<-function(data){
   
   p_left <-
     results_data |>
-    ggplot(aes(y = fct_reorder(site,RelEffect))) +
+    ggplot(aes(y = fct_reorder(site,id))) +
     geom_text(aes(x = 0, label = site), hjust = 0, size=3, fontface = "bold")+
     geom_text(
       aes(x = 2, label = Effect),
@@ -274,7 +282,7 @@ forest_plot<-function(data){
     results_data |>
     ggplot() +
     geom_text(
-      aes(x = 0, y = fct_reorder(site,RelEffect), label = p),
+      aes(x = 0, y = fct_reorder(site,id), label = p),
       hjust = 0,
       size=3,
       fontface = ifelse(results_data$p == "p-value", "bold", "plain")

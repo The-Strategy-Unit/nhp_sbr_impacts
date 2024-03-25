@@ -101,10 +101,10 @@ tar_read(indicator_availability_table)
 # Health and Safety
 
 ## Healthcare acquired infections
+
 Combined rate per 10,000 beddays
 
 ::: panel-tabset
-
 ### Summary
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
@@ -154,7 +154,6 @@ cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
 ## Falls and Fractures in hospital
 
 ::: panel-tabset
-
 ### Summary
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
@@ -167,7 +166,7 @@ model_effects_table(falls_and_fractures_output)
 
 ```
 
-### Decrease 
+### Decrease
 
 #### Peterborough
 
@@ -189,7 +188,6 @@ cia_summary_plots(falls_and_fractures_RGN,"% of spells", "2010-11-01")
 
 ::: columns
 ::: {.column width="50%"}
-
 #### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -236,7 +234,6 @@ cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 #cia_summary_plots(falls_and_fractures_RGM, "% of spells", "2019-05-01")
 ```
 
-
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
 #falls_and_fractures_RAL<-tar_read(falls_and_fractures_RAL)
@@ -251,7 +248,6 @@ cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 #cia_summary_plots(falls_and_fractures_RAL,"% of spells", "2018-09-01")
 ```
 :::
-
 
 ::: {.column width="50%"}
 #### Tunbridge Wells
@@ -289,15 +285,11 @@ falls_and_fractures_RVJ<-tar_read(falls_and_fractures_RVJ)
 
 cia_summary_plots(falls_and_fractures_RVJ,"% of spells", "2014-05-01")
 ```
-
 :::
-
-
 
 ## Deaths in hospital
 
 ::: panel-tabset
-
 ### Summary
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
@@ -348,7 +340,6 @@ sus_deaths_REM<-tar_read(sus_deaths_REM)
 cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
 ```
 
-
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Papworth
 #sus_deaths_RGM<-tar_read(sus_deaths_RGM)
@@ -362,7 +353,6 @@ cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
 
 #cia_summary_plots(sus_deaths_RGM, "No./per 1,000 discharges", "2019-05-01")
 ```
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Chase Farm
@@ -413,6 +403,7 @@ cia_summary_plots(sus_deaths_RWF, "No./per 1,000 discharges", "2011-01-01")
 ```
 :::
 :::
+
 ### Increase
 
 #### Clatterbridge
@@ -431,7 +422,6 @@ evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 
 ```
-
 :::
 
 # Patient and Staff Experience
@@ -439,7 +429,6 @@ cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 ## Patient experience - Friends and Family scores
 
 ::: panel-tabset
-
 ### Summary
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
@@ -498,7 +487,6 @@ cia_summary_plots(friends_and_family_REM, "Positive responses (%)", "2022-10-01"
 # Large amount of data missing in the two years prior due to gap over covid. One of the control sites doesn't go back far enough for it is causing the data to be cut off. Think I need to have less matches for this one. But would still have a disturbed pre switch period due to COVID
 
 ```
-
 :::
 
 ::: {.column width="50%"}
@@ -538,12 +526,11 @@ friends_and_family_RGM<-tar_read(friends_and_family_RGM)
 cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01")
 ```
 :::
+
 ## Staff sickness
 
 ::: panel-tabset
-
 ### Summary
-
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -554,6 +541,7 @@ forest_plot(staff_sickness_output)
 model_effects_table(staff_sickness_output)
 
 ```
+
 ### No change
 
 ::: columns
@@ -608,7 +596,6 @@ cia_summary_plots(staff_sickness_RGM, "Sickness Rate (%)", "2019-05-01")
 ```
 :::
 
-
 ::: {.column width="50%"}
 #### Chase Farm Hospital (RAL)
 
@@ -644,6 +631,7 @@ cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 :::
 :::
 :::
+
 ```{r, include= FALSE, fig.height=8, fig.width=8}
 
 ## Staff turnover

@@ -241,7 +241,9 @@ forest_plot<-function(data){
     geom_vline(xintercept = 0, linetype="dashed") +
     scale_color_manual(values=c("#686f73","#ec6555"))+
     labs(x="Relative Effect Size", y="")+
-    coord_cartesian(ylim=c(1,nrow(results_data)), xlim=c(-0.52, 0.5))+
+    coord_cartesian(ylim=c(1,nrow(results_data)), 
+                    xlim=c(min(results_data$RelEffect.lower, na.rm=TRUE)-0.02,
+                           max(results_data$RelEffect.upper, na.rm=TRUE)+0.02))+
     annotate("text", x = -.32, y = 8, size=3, label = "Decrease with SBR") +
     annotate("text", x = .3, y = 8, size=3,  label = "Increase with SBR")+ 
     theme(legend.position="none",

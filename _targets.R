@@ -776,7 +776,7 @@ tar_target(
                "2022-10-01", 
                "median_by_prov", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -787,7 +787,7 @@ tar_target(
                "2020-06-01", 
                "median_by_prov", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -798,7 +798,7 @@ tar_target(
                "2019-05-01", 
                "median_by_prov", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -809,7 +809,7 @@ tar_target(
                "2010-11-01", 
                "median_by_prov", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -820,7 +820,7 @@ tar_target(
                "2018-09-01", 
                "median_by_prov", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -832,7 +832,7 @@ tar_target(
                "2014-05-01", 
                "median_by_prov", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -843,7 +843,7 @@ tar_target(
                "2011-01-01", 
                "median_by_prov", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -857,7 +857,7 @@ tar_target(
                "2022-10-01", 
                "number_incomplete", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -868,7 +868,7 @@ tar_target(
                "2020-06-01", 
                "number_incomplete", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -879,7 +879,7 @@ tar_target(
                "2019-05-01", 
                "number_incomplete", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -890,7 +890,7 @@ tar_target(
                "2010-11-01", 
                "number_incomplete", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -901,7 +901,7 @@ tar_target(
                "2018-09-01", 
                "number_incomplete", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -913,7 +913,7 @@ tar_target(
                "2014-05-01", 
                "number_incomplete", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -924,7 +924,7 @@ tar_target(
                "2011-01-01", 
                "number_incomplete", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 #Length of Stay
@@ -937,7 +937,7 @@ tar_target(
                "2022-10-01", 
                "avg_los", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -948,7 +948,7 @@ tar_target(
                "2020-06-01", 
                "avg_los",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -959,7 +959,7 @@ tar_target(
                "2019-05-01", 
                "avg_los", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -970,7 +970,7 @@ tar_target(
                "2010-11-01", 
                "avg_los", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -981,7 +981,7 @@ tar_target(
                "2018-09-01", 
                "avg_los", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -993,7 +993,7 @@ tar_target(
                "2014-05-01", 
                "avg_los", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1004,7 +1004,7 @@ tar_target(
                "2011-01-01", 
                "avg_los",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 #Emergency Readmissions
@@ -1017,7 +1017,7 @@ tar_target(
                "2022-10-01", 
                "perc", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1028,7 +1028,7 @@ tar_target(
                "2020-06-01", 
                "perc",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1039,7 +1039,7 @@ tar_target(
                "2019-05-01", 
                "perc", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1050,7 +1050,7 @@ tar_target(
                "2010-11-01", 
                "perc", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1061,7 +1061,7 @@ tar_target(
                "2018-09-01", 
                "perc", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -1073,7 +1073,7 @@ tar_target(
                "2014-05-01", 
                "perc", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1084,7 +1084,7 @@ tar_target(
                "2011-01-01", 
                "perc",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 #Bed Occupancy
@@ -1097,7 +1097,7 @@ tar_target(
                "2022-10-01", 
                "bed_occupancy", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1108,7 +1108,7 @@ tar_target(
                "2020-06-01", 
                "bed_occupancy", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1119,7 +1119,7 @@ tar_target(
                "2019-05-01", 
                "bed_occupancy", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -1131,7 +1131,7 @@ tar_target(
                "2018-09-01", 
                "bed_occupancy", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -1143,7 +1143,7 @@ tar_target(
                "2014-05-01", 
                "bed_occupancy", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -1157,7 +1157,7 @@ tar_target(
                "2022-10-01", 
                "combined_rate", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1168,7 +1168,7 @@ tar_target(
                "2020-06-01", 
                "combined_rate",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 # Falls and Fractures in hospital
@@ -1180,7 +1180,7 @@ tar_target(
                "2022-10-01", 
                "ff_rate", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1191,7 +1191,7 @@ tar_target(
                "2020-06-01", 
                "ff_rate",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1202,7 +1202,7 @@ tar_target(
                "2019-05-01", 
                "ff_rate", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1213,7 +1213,7 @@ tar_target(
                "2010-11-01", 
                "ff_rate", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 #tar_target(
@@ -1224,7 +1224,7 @@ tar_target(
 #               "2018-09-01", 
 #               "ff_rate", 
 #               0.05,
-#               single_bedroom_matches)
+#               single_bedroom_matches_2)
 #),
 
 
@@ -1236,7 +1236,7 @@ tar_target(
                "2014-05-01", 
                "ff_rate", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1247,7 +1247,7 @@ tar_target(
                "2011-01-01", 
                "ff_rate",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -1260,7 +1260,7 @@ tar_target(
                "2022-10-01", 
                "hosp_rate_1000", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1271,7 +1271,7 @@ tar_target(
                "2020-06-01", 
                "hosp_rate_1000",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1282,7 +1282,7 @@ tar_target(
                "2019-05-01", 
                "hosp_rate_1000", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1293,7 +1293,7 @@ tar_target(
                "2010-11-01", 
                "hosp_rate_1000", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1304,7 +1304,7 @@ tar_target(
                "2018-09-01", 
                "hosp_rate_1000", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -1316,7 +1316,7 @@ tar_target(
                "2014-05-01", 
                "hosp_rate_1000", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1327,7 +1327,7 @@ tar_target(
                "2011-01-01", 
                "hosp_rate_1000",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 # Friends and family test
@@ -1339,7 +1339,7 @@ tar_target(
                "2022-10-01", 
                "friends_and_family_percent", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1350,7 +1350,7 @@ tar_target(
                "2020-06-01", 
                "friends_and_family_percent",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1361,7 +1361,7 @@ tar_target(
                "2019-05-01", 
                "friends_and_family_percent", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1372,7 +1372,7 @@ tar_target(
                "2018-09-01", 
                "friends_and_family_percent", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 #Staff sickness
@@ -1385,7 +1385,7 @@ tar_target(
                "2022-10-01", 
                "staff_sickness_percent", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1396,7 +1396,7 @@ tar_target(
                "2020-06-01", 
                "staff_sickness_percent",  
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1407,7 +1407,7 @@ tar_target(
                "2019-05-01", 
                "staff_sickness_percent", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 
@@ -1419,7 +1419,7 @@ tar_target(
                "2018-09-01", 
                "staff_sickness_percent", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 tar_target(
@@ -1430,7 +1430,7 @@ tar_target(
                "2014-05-01", 
                "staff_sickness_percent", 
                0.05,
-               single_bedroom_matches)
+               single_bedroom_matches_2)
 ),
 
 #------------------------------------------------------------------------------#

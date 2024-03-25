@@ -242,6 +242,7 @@ list(
     )
   ),
   
+  ## adding data on floor space:
   tar_target(
     floor_space,
     get_floor_space_by_site(formatted_eric)
@@ -256,6 +257,23 @@ list(
   tar_target(
     single_bedroom_matches_2,
     control_stage2(single_bedroom_matches, floor_space_matches)
+  ),
+  
+  ## adding data on median ages:
+  tar_target(
+    med_age,
+    get_med_age_by_site("Data/nhp_sbr_admit_age.csv")
+  ),
+  
+  tar_target(
+    med_age_matches,
+    combine_med_age_matches(med_age)
+  ),
+  
+  # adding med age matches to control df
+  tar_target(
+    single_bedroom_matches_3,
+    control_stage3(single_bedroom_matches_2, med_age_matches)
   ),
   
   #----------------------------------------------------------------------------#

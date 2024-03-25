@@ -325,3 +325,102 @@ control_stage2 <- function(data1,data2) {
   
 }
 
+# To get the median ages by sites and date:
+get_med_age_by_site <- function(filepth) {
+  med_age <- read.csv(filepth) |>
+    janitor::clean_names() |> 
+    filter(!is.na(age_med))
+  
+  return(med_age)
+  
+}
+
+# To find sites with similar patient ages (median). Default is
+# to look at sites with median age that is +/- 5 years of the
+# base sites.
+
+find_med_age_matches <- function(data,
+                                     month_pre_single_bedrooms,
+                                     site_code_pick,
+                                     range = 5) {
+  # Get the median of the sites we want
+  # to find matches for:
+  med_age_base <- data |>
+    dplyr::filter(
+      yr_mth == month_pre_single_bedrooms
+      & der_provider_site_code == site_code_pick
+    ) |>
+    dplyr::pull(age_med)
+  
+  age_high <- med_age_base+range
+  age_low <- med_age_base-range
+  
+  # Find other sites at the same time that have a similar ages:
+  similar_sites <- data |>
+    dplyr::filter(
+      yr_mth == month_pre_single_bedrooms,
+      der_provider_site_code != site_code_pick#,
+      #age_med > age_low,
+      #age_med < age_high
+    ) |>
+    dplyr::mutate(difference_med_age = round(((age_med - med_age_base)/med_age_base),2),
+                  site_code_og = site_code_pick,
+                  org_code_og = stringr::str_sub(site_code_og,1,3)) |> 
+    select(8,7,1:6)
+  
+  return(similar_sites)
+  
+}
+
+# To create a dataframe of all the sites with their matching sites for floor
+# space. By necessity some of the codes and dates of sites are changed
+# to ensure baseline size is captured
+
+combine_med_age_matches <- function(med_age) {
+  data <- rbind(
+    # royal_liverpool_matches
+    find_med_age_matches(med_age,
+                             "2022-11",
+                             "REMRQ"),
+    # clatterbridge_matches
+    find_med_age_matches(med_age,
+                             "2020-07",
+                             "REN22"),
+    # royal_papworth_matches
+    find_med_age_matches(med_age,
+                             "2019-06",
+                             "RGM22"),
+    # peterborough_matches
+    find_med_age_matches(med_age,
+                             "2010-12",
+                             "RGN80"),
+    # chase_farm_matches
+    find_med_age_matches(med_age,
+                             "2018-10",
+                             "RALC7"),
+    # southmead_matches
+    find_med_age_matches(med_age,
+                             "2014-06",
+                             "RVJ01"),
+    # tunbridge_wells_matches
+    find_med_age_matches(med_age,
+                             "2011-10",
+                             "RWFTW")
+  )
+  
+  return(data)
+  
+}
+
+# join floor space to single-bed matches
+
+control_stage3 <- function(data1,data2) {
+  data <- data1 |>
+    left_join(data2 |> select(org_code_og, der_provider_site_code, difference_med_age),
+              by = c("organisation_code"="org_code_og", "site_code"="der_provider_site_code"))# |> 
+  #mutate(age_match = if_else(is.na(difference_med_age),0,1))
+  
+  return(data)
+  
+}
+

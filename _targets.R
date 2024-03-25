@@ -1111,16 +1111,16 @@ tar_target(
                single_bedroom_matches_2)
 ),
 
-tar_target(
-  bed_occupancy_RGM,
-  cia_analysis("RGM", 
-               NA, 
-               bed_occupancy_cia_format,
-               "2019-05-01", 
-               "bed_occupancy", 
-               0.05,
-               single_bedroom_matches_2)
-),
+#tar_target(
+#  bed_occupancy_RGM,
+#  cia_analysis("RGM", 
+#               NA, 
+#               bed_occupancy_cia_format,
+#               "2019-05-01", 
+#               "bed_occupancy", 
+#               0.05,
+#               single_bedroom_matches_2)
+#),
 
 
 tar_target(
@@ -1463,7 +1463,7 @@ tar_target(
   LoS_output,
   model_output(LoS_REM,
                LoS_REN,
-               LoS_RGM,
+               NA,
                LoS_RGN,
                LoS_RAL,
                LoS_RVJ,
@@ -1485,7 +1485,7 @@ tar_target(
   bed_occupancy_output,
   model_output(bed_occupancy_REM,
                bed_occupancy_REN,
-               bed_occupancy_RGM,
+               NA,
                NA,
                bed_occupancy_RAL,
                bed_occupancy_RVJ,
@@ -1521,9 +1521,9 @@ tar_target(
                sus_deaths_REN,
                NA,
                sus_deaths_RGN,
-               sus_deaths_RAL,
+               NA,
                sus_deaths_RVJ,
-               NA)
+               sus_deaths_RWF)
 ),
 
 tar_target(

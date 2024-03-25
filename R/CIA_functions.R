@@ -125,28 +125,31 @@ evaluating_model<-function(organisation, site, data, switch_month, variable, pri
 
 # Function to plot out the CIA results
 
-cia_summary_plots<-function(model_results,  title, ylab, switch_date){
-  
-  
+cia_summary_plots<-function(model_results, ylab, switch_date){
   
   # Plot out actual vs expected
+  
+  max<-c(model_results$PlotActualVersusExpected$data$upper_bound, model_results$PlotActualVersusExpected$data$Response)
+  
   a<-model_results$PlotActualVersusExpected+
     su_theme()+
-    labs(title=title, y=ylab)+
-    theme(axis.text = element_text(size=10), 
+    labs(title=NULL, y=ylab)+
+    theme(axis.text = element_text(size=9.5), 
           axis.title = element_text(size=11), 
           legend.title =element_blank(),
-          legend.text=element_text(size=10))+
+          legend.text=element_text(size=10),
+          legend.position = "top")+
     annotate(geom="text", x=as.Date(switch_date),  y=-Inf, vjust=-0.3, hjust=1.04, label="SBR switch", color="#ec6555")+
     geom_vline(aes(xintercept =as.Date(switch_date)),  linetype="solid", linewidth=0.6, color="#ec6555")+
     scale_color_manual(values=c("#f9bf07","#2c2825" ))+
     scale_x_date(date_breaks = "1 year",date_labels = "%Y")+
-    guides(colour = guide_legend(reverse=T))
+    guides(colour = guide_legend(reverse=T))+
+    scale_y_continuous(limits=c(0,max(max)*1.1))
   
   # Plot pointwise effect
   b<-model_results$PlotPointEffect+
     su_theme()+
-    theme(axis.text = element_text(size=10), axis.title = element_text(size=11))+
+    theme(axis.text = element_text(size=9.5), axis.title = element_text(size=11))+
     geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
     geom_vline(aes(xintercept =as.Date(switch_date)), linetype="solid", linewidth=0.6, color="#ec6555")+
     scale_x_date(date_breaks = "1 year",date_labels = "%Y")
@@ -154,7 +157,7 @@ cia_summary_plots<-function(model_results,  title, ylab, switch_date){
   # Plot out cumulative effect
   c<-model_results$PlotCumulativeEffect+
     su_theme()+
-    theme(axis.text = element_text(size=10), axis.title = element_text(size=11))+
+    theme(axis.text = element_text(size=9.5), axis.title = element_text(size=11))+
     geom_hline(aes(yintercept =0), linetype="dotted", color="#686f73", linewidth=0.4)+
     geom_vline(aes(xintercept =as.Date(switch_date)), linetype="solid", linewidth=0.6, color="#ec6555")+
     scale_x_date(date_breaks = "1 year",date_labels = "%Y")
@@ -230,8 +233,8 @@ forest_plot<-function(data){
         RelEffect=100)
     )
   
-  
-  
+  a<-c((min(results_data$RelEffect.lower, na.rm=TRUE)),-0.4)
+  b<-c((max(results_data$RelEffect.upper, na.rm=TRUE)),0.4)
   
   p_mid<-results_data |>
     ggplot(aes(x = RelEffect, y = fct_reorder(site,RelEffect))) +
@@ -242,10 +245,10 @@ forest_plot<-function(data){
     scale_color_manual(values=c("#686f73","#ec6555"))+
     labs(x="Relative Effect Size", y="")+
     coord_cartesian(ylim=c(1,nrow(results_data)), 
-                    xlim=c(min(results_data$RelEffect.lower, na.rm=TRUE)-0.02,
-                           max(results_data$RelEffect.upper, na.rm=TRUE)+0.02))+
-    annotate("text", x = -.32, y = 8, size=3, label = "Decrease with SBR") +
-    annotate("text", x = .3, y = 8, size=3,  label = "Increase with SBR")+ 
+                    xlim=c(min(a)-0.02,
+                           max(b)+0.02))+
+    annotate("text", x = min(a)/1.5, y = nrow(results_data), size=3, label = "Decrease with SBR") +
+    annotate("text", x = max(b)/1.5, y = nrow(results_data), size=3,  label = "Increase with SBR")+ 
     theme(legend.position="none",
           axis.line.y = element_blank(),
           axis.ticks.y= element_blank(),

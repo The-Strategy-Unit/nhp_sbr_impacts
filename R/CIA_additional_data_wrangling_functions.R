@@ -265,6 +265,7 @@ bed_occupancy_cia_formatting <- function(data) {
     mutate(bed_occupancy = occupied / available)|>
     mutate(bed_occupancy=bed_occupancy*100)|>
     filter(organisation_code!="R0A" & organisation_code!="RNL") #remove controls for Chase Farm
+   
   
   return(bed_occupancy_cia_format)
 }

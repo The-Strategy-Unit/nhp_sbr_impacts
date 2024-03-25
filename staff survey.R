@@ -8,7 +8,7 @@ survey_local_trends <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP
   mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
   mutate(value=as.numeric(value))|>
   rename(organisation_code=trust)|>
-  filter((str_detect(month,"2023") & question=="q25c")| # need to add this one not in current dataset
+  filter(#(str_detect(month,"2023") & question=="q25c")| # need to add this one not in current dataset
            (str_detect(month,"2022") & question=="q23c")|
            (str_detect(month,"2021") & question=="q21c")|
            (str_detect(month,"2020") & question=="q18c")|

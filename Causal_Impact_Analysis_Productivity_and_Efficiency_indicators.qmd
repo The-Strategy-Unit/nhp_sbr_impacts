@@ -51,12 +51,7 @@ library(patchwork)
 rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) 
 
 ## Bed occupancy
-bed_occupancy<-tar_read(bed_occupancy_cia_format)|>
- filter(organisation_code !="RAL" | month>2020-03-01) #Remove part of Chase farm outcome period affected by covid
-
-test<-bed_occupancy|>
- filter(organisation_code=="RAL")
-
+bed_occupancy<-tar_read(bed_occupancy_cia_format)
 
 ## Length of Stay
 length_of_stay<- tar_read(length_of_stay_cia_format)
@@ -101,8 +96,32 @@ combined_outputs<-rbind(waiting_time_median_output,waiting_time_number_output,Lo
    mutate(sig=case_when(RelEffect>0 & p<0.05 ~ "Sig Increase", 
                        RelEffect<0 & p<0.05 ~ "Sig Decrease",
                        p>=0.05 ~ "Non-Sig"))|>
-  select(site, measure, sig)
+  select(site, measure, sig)|>
+  pivot_wider(names_from = site, values_from=sig )|>
+  select(-`NA`)
   
+colormatrix<-ifelse(combined_outputs=="NULL", "#FFFFFF" , 
+                       ifelse(combined_outputs=="Non-Sig", "#fce18c", 
+                              ifelse(combined_outputs=="Sig Increase" & 
+                                       (combined_outputs$measure!="Patient experience- friends and family test" |
+                                        combined_outputs$measure!="Staff sickness")  
+                                          , "#FBE0DC", "#d5eed1"))) 
+
+
+#combined_outputs|>
+#    flextable() |>
+ #   set_header_labels(measure= "")|>
+ #   align(part = "header", align = "center")|>
+ #   align(part = "body", align = "center")|>
+  #  bg(bg = "#f9bf07", part = "header") |>
+ #   bg(i=2:8, part="body", bg=colormatrix)|>
+  #  bold(bold = TRUE, part="header")|>
+  #  fontsize(size = 12, part = "all")|>
+  #  padding(padding = 2, part = "all", padding.top=NULL) |>
+   # autofit()|>
+   # htmltools_value(ft.align = "left") 
+
+
 
 ```
 
@@ -135,7 +154,6 @@ waiting_time_median_output<-tar_read(waiting_time_median_output)
 forest_plot(waiting_time_median_output)
 
 model_effects_table(waiting_time_median_output)
-
 
 ```
 
@@ -737,22 +755,18 @@ model_effects_table(bed_occupancy_output)
 ```
 
 
-### Decrease
 
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-#### Papworth
+#### Papworth - Only 4 points post switch and last one might be impacted by COVID
 
 #Post switch period is impacted by COVID-19
 
 #bed_occupancy_RGM<-tar_read(bed_occupancy_RGM)
 
-
 #evaluating_model("RGM",NA, bed_occupancy, "2019-05-01", "bed_occupancy", 0.05, bed_occupancy_RGM, single_bedroom_matches_2)
 
-#test<-bed_occupancy|>
-#  filter(organisation_code=="RGM")
 ```
 
 ```{r, include=TRUE, fig.width=5, fig.height=6}
@@ -760,27 +774,11 @@ model_effects_table(bed_occupancy_output)
 #cia_summary_plots(bed_occupancy_RGM,"Percentage", "2019-05-01")
 ```
 
-#### Chase Farm
 
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-bed_occupancy_RAL<-tar_read(bed_occupancy_RAL)
-
-evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL, single_bedroom_matches_2)
-
-test<-bed_occupancy|>
- filter(organisation_code=="RAL")
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(bed_occupancy_RAL, "Percentage", "2018-09-01")
-```
 
 ### No change
-
+:::columns
+::: {.column width="50%"}
 #### Royal Liverpool
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -795,6 +793,27 @@ bed_occupancy_REM<-tar_read(bed_occupancy_REM)
 
 cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
 ```
+
+:::
+
+::: {.column width="50%"}
+#### Chase Farm
+
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+bed_occupancy_RAL<-tar_read(bed_occupancy_RAL)
+
+evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL, single_bedroom_matches_2)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(bed_occupancy_RAL, "Percentage", "2018-09-01")
+```
+:::
+:::
 
 ### Increase
 :::columns

@@ -1,43 +1,26 @@
 
 
-survey_data_acute <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff survey acute trusts.csv")
-survey_data_specialist <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff survey specialist trust.csv")
-survey_local_trends <- read.csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff survey local trends detail.csv")|>
-  clean_names()|>
-  mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%d/%m/%Y")) |> #Format date
-  mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
-  mutate(value=as.numeric(value))|>
-  rename(organisation_code=trust)|>
-  filter(#(str_detect(month,"2023") & question=="q25c")| # need to add this one not in current dataset
-           (str_detect(month,"2022") & question=="q23c")|
-           (str_detect(month,"2021") & question=="q21c")|
-           (str_detect(month,"2020") & question=="q18c")|
-           (str_detect(month,"2019") & question=="q21c")|
-           (str_detect(month,"2018") & question=="q21c")|
-           (str_detect(month,"2017") & question=="q21c"))
-#labels don't match up to the question numbers
-
-#Labels are not the right responses for the Would you recommend your workplace question for 2018 and 2022 
-#despite the question numbers being the correct ones according to the questionnaires for those particular years.
+survey_data_2014 <- read.csv("Data/staff_survey_2014.csv")
+survey_data_2015 <- read.csv("Data/staff_survey_2015.csv")
+survey_data_2016 <- read.csv("Data/staff_survey_2016.csv")
+survey_data_2017 <- read.csv("Data/staff_survey_2017.csv")
+survey_data_2018 <- read.csv("Data/staff_survey_2018.csv")
+survey_data_2019 <- read.csv("Data/staff_survey_2019.csv")
+survey_data_2020 <- read.csv("Data/staff_survey_2020.csv")
+survey_data_2021 <- read.csv("Data/staff_survey_2021.csv")
+survey_data_2022 <- read.csv("Data/staff_survey_2022.csv")
 
 
-survey_data<-rbind(survey_data_acute, survey_data_specialist)|>
-  clean_names()|>
-  mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
-  mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
-  mutate(value=as.numeric(value))|>
-  rename(organisation_code=trust)
+survey_data<-survey_data_2014|>
+full_join(survey_data_2015, by=c("organisation_code") )|>
+  full_join(survey_data_2016, by=c("organisation_code") )|>
+  full_join(survey_data_2017, by=c("organisation_code") )|>
+  full_join(survey_data_2018, by=c("organisation_code") )|>
+  full_join(survey_data_2019, by=c("organisation_code") )|>
+  full_join(survey_data_2020, by=c("organisation_code") )|>
+  full_join(survey_data_2021, by=c("organisation_code") )|>
+  full_join(survey_data_2022, by=c("organisation_code") )|>
+  gather(key="year", value="positive_responses", -organisation_code)|>
+  mutate(year=str_sub(year,-4,-1))
 
-survey_data|>
-  filter(organisation_code=="REM"|
-           organisation_code=="REN"|
-           organisation_code=="RGM"|
-           organisation_code=="RGN"|
-           organisation_code=="RAL"| 
-           organisation_code=="RVJ"|
-           organisation_code=="RWF"  )|>
-  group_by(month, organisation_code)|>
-  summarise(value=mean(value))|>
-  ggplot()+
-  geom_line(aes(x=month, y=value, group=organisation_code, colour=organisation_code))+
-  scale_y_continuous((limits=c(0,NA)))
+

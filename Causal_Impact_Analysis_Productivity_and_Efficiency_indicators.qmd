@@ -65,8 +65,27 @@ single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
 source("R/CIA_Functions.R")
 
-  hcai_output  <-tar_read(hcai_output)
+
+
+
 ```
+
+
+```{r, include=FALSE, fig.height=6, fig.width=10}
+
+LoS_output<-tar_read(LoS_output)|>
+  mutate(RelEffect.var=RelEffect.sd^2)|>
+filter(!is.na(site))
+
+rma(RelEffect, RelEffect.var, data=LoS_output)
+
+LOS <- bayesmeta(y= LoS_output[,"RelEffect"],
+                               sigma = LoS_output[,"RelEffect.sd"],
+                               label = LoS_output[,"site"])
+
+
+```
+
 
 # Availability of indicators by site
 

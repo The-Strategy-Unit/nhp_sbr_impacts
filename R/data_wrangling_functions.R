@@ -882,3 +882,65 @@ fun_load_ods_sites <- function(filepth) {
   
   return(data)
 }
+
+## Wrangling staff survey data
+
+staff_survey_formatting <-
+  function(staff_survey_2008,
+           staff_survey_2009,
+           staff_survey_2010,
+           staff_survey_2011,
+           staff_survey_2012,
+           staff_survey_2013,
+           staff_survey_2014,
+           staff_survey_2015,
+           staff_survey_2016,
+           staff_survey_2017,
+           staff_survey_2018,
+           staff_survey_2019,
+           staff_survey_2020,
+           staff_survey_2021,
+           staff_survey_2022) {
+    
+    survey_data_2008 <- read.csv(staff_survey_2008)
+    survey_data_2009 <- read.csv(staff_survey_2009)
+    survey_data_2010 <- read.csv(staff_survey_2010)
+    survey_data_2011 <- read.csv(staff_survey_2011)
+    survey_data_2012 <- read.csv(staff_survey_2012)
+    survey_data_2013 <- read.csv(staff_survey_2013)
+    survey_data_2014 <- read.csv(staff_survey_2014)
+    survey_data_2015 <- read.csv(staff_survey_2015)
+    survey_data_2016 <- read.csv(staff_survey_2016)
+    survey_data_2017 <- read.csv(staff_survey_2017)
+    survey_data_2018 <- read.csv(staff_survey_2018)
+    survey_data_2019 <- read.csv(staff_survey_2019)
+    survey_data_2020 <- read.csv(staff_survey_2020)
+    survey_data_2021 <- read.csv(staff_survey_2021)
+    survey_data_2022 <- read.csv(staff_survey_2022)
+    
+    
+    survey_data<-survey_data_2008|>
+      full_join(survey_data_2009, by=c("organisation_code") )|>
+     full_join(survey_data_2010, by=c("organisation_code") )|>
+     full_join(survey_data_2011, by=c("organisation_code") )|>
+     full_join(survey_data_2012, by=c("organisation_code") )|>
+      full_join(survey_data_2013, by=c("organisation_code") )|>
+      full_join(survey_data_2014, by=c("organisation_code") )|>
+      full_join(survey_data_2015, by=c("organisation_code") )|>
+      full_join(survey_data_2016, by=c("organisation_code") )|>
+      full_join(survey_data_2017, by=c("organisation_code") )|>
+      full_join(survey_data_2018, by=c("organisation_code") )|>
+      full_join(survey_data_2019, by=c("organisation_code") )|>
+      full_join(survey_data_2020, by=c("organisation_code") )|>
+      full_join(survey_data_2021, by=c("organisation_code") )|>
+      full_join(survey_data_2022, by=c("organisation_code") )|>
+      gather(key="year", value="positive_responses", -organisation_code)|>
+      mutate(year=str_sub(year,-4,-1))
+
+    return(survey_data)
+  }
+
+
+
+
+

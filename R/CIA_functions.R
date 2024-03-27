@@ -222,27 +222,64 @@ model_output<-function(rem, ren, rgm,rgn,ral,rvj, rwf){
 
 forest_plot<-function(data){
   
+  results_data<-data|>
+    filter(!is.na(site))
+    
+  if(count(results_data)>1){
+  output<-bayesmeta(y = results_data[,"RelEffect"],
+                    sigma = results_data[,"RelEffect.sd"],
+                    label = results_data[,"site"])
+  
+  df<-as.data.frame(output$summary)
+  
+  df$value <- row.names(df)
+  
+  df<-df|>
+    select(mu, value)|>
+    pivot_wider(names_from = value, values_from=mu)
+  }
+  
+  if(count(results_data)<=1){
+
+    mean<-c(data$RelEffect)
+    `95% upper`<-c(data$RelEffect.upper)
+    `95% lower`<-c(data$RelEffect.lower) 
+    
+    df<-cbind(mean,`95% upper`, `95% lower`)|>
+      as.data.frame()|>
+      filter(!is.na(mean))
+
+  }
+  
+  
   mean<-mean(data$RelEffect, na.rm=TRUE)
   
-  results_data<-data|>
-    filter(!is.na(site))|>
+  results_data<-results_data|>
     mutate(site = fct_reorder(site, RelEffect))|>
     mutate(site=fct_rev(site))|>
     mutate(p=as.character(p))|>
     mutate(id = RelEffect)|>
     bind_rows(data.frame(
       site="MEAN EFFECT",
-      RelEffect = mean,
-      Effect= as.character(round(mean,2) ),
-      id=-100))|>
+      RelEffect = df$mean,
+      RelEffect.upper=df$`95% upper`,
+      RelEffect.lower=df$`95% lower`,
+      Effect= paste0(round(df$mean,2), " (",round(df$`95% lower`,2), " - ", round(df$`95% upper`,2), ")" ),
+      id=-100,
+      sig="NA"))|>
     bind_rows(
       data.frame(
         Effect = "Relative Effect (95% CI)",
         p = "p-value",
         id=100) )
   
-  a<-c((min(results_data$RelEffect.lower, na.rm=TRUE)),-0.4)
-  b<-c((max(results_data$RelEffect.upper, na.rm=TRUE)),0.4)
+  a<-min(results_data$RelEffect.lower, na.rm=TRUE)
+  b<-max(results_data$RelEffect.upper, na.rm=TRUE)
+  
+  if (((b-0)/-(a-0))>2){
+    a<-a*(1.7)
+  }
+  
   
   p_mid<-results_data |>
     ggplot(aes(x = RelEffect, y = (fct_reorder(site,id) ))) +
@@ -250,13 +287,13 @@ forest_plot<-function(data){
     geom_point(aes(x=RelEffect, colour=sig), shape=15, size=3) +
     geom_linerange(aes(xmin=RelEffect.lower, xmax=RelEffect.upper, colour=sig)) +
     geom_vline(xintercept = 0, linetype="dashed") +
-    scale_color_manual(values=c("#686f73","#ec6555"))+
+    scale_color_manual(values=c("black","#686f73","#ec6555" ))+
     labs(x="Relative Effect Size", y="")+
     coord_cartesian(ylim=c(1,nrow(results_data)), 
                     xlim=c(min(a)-0.02,
                            max(b)+0.02))+
-    annotate("text", x = min(a)/1.5, y = nrow(results_data), size=3, label = "Decrease with SBR") +
-    annotate("text", x = max(b)/1.5, y = nrow(results_data), size=3,  label = "Increase with SBR")+ 
+    annotate("text", x = min(a)/1.5, y = nrow(results_data), size=3, label = "Decrease with SBR", colour="#686f73") +
+    annotate("text", x = max(b)/2, y = nrow(results_data), size=3,  label = "Increase with SBR", colour="#686f73")+ 
     theme(legend.position="none",
           axis.line.y = element_blank(),
           axis.ticks.y= element_blank(),
@@ -290,9 +327,9 @@ forest_plot<-function(data){
     theme_void() 
   
   layout <- c(
-    area(t = 0, l = 0, b = 30, r = 5), 
-    area(t =1, l = 6, b = 30, r = 11), 
-    area(t = 0, l = 11, b = 30, r = 13) 
+    area(t = 0, l = 0, b = 30, r = 6), 
+    area(t =1, l = 7, b = 30, r = 13), 
+    area(t = 0, l = 13, b = 30, r = 15) 
   )
   # final plot arrangement
   p_left + p_mid + p_right + plot_layout(design = layout)
@@ -331,4 +368,77 @@ data|>
 
 }
 
+# Function for summary table of all sites and indicators
 
+summary_table_indicators_and_sites<-function(waiting_time_median_output,
+                                             waiting_time_number_output,
+                                             LoS_output,
+                                             emergency_readmissions_output,
+                                             bed_occupancy_output,
+                                             hcai_output,
+                                             falls_and_fractures_output,
+                                             sus_deaths_output,
+                                             friends_and_family_output,
+                                             staff_sickness_output)   {
+  
+  waiting_time_median_output<-waiting_time_median_output|>
+    mutate(measure="Waiting time (median)")
+  waiting_time_number_output<-waiting_time_number_output|>
+    mutate(measure="Waiting time (number)")
+  LoS_output  <-LoS_output|>
+    mutate(measure="Length of stay")
+  emergency_readmissions_output  <-emergency_readmissions_output|>
+    mutate(measure="Emergency readmissions")
+  bed_occupancy_output  <-bed_occupancy_output|>
+    mutate(measure="Bed occupancy")
+  hcai_output  <-hcai_output|>
+    mutate(measure="Healthcare acquired infections")
+  falls_and_fractures_output  <-falls_and_fractures_output|>
+    mutate(measure="Falls and fractures")
+  sus_deaths_output  <-sus_deaths_output|>
+    mutate(measure="Hospital deaths")
+  friends_and_family_output  <-friends_and_family_output|>
+    mutate(measure="Patient experience- friends and family test")
+  staff_sickness_output  <-staff_sickness_output|>
+    mutate(measure="Staff sickness")
+  
+  
+  combined_outputs<-rbind(waiting_time_median_output,waiting_time_number_output,LoS_output, emergency_readmissions_output,
+                          bed_occupancy_output, hcai_output, falls_and_fractures_output, sus_deaths_output,
+                          friends_and_family_output, staff_sickness_output )|>
+    mutate(sig=case_when(RelEffect>0 & p<0.05 ~ "Increase", 
+                         RelEffect<0 & p<0.05 ~ "Decrease",
+                         p>=0.05 ~ "NS"))|>
+    select(site, measure, sig)|>
+    filter(!is.na(site))|>
+    pivot_wider(names_from = site, values_from=sig )
+  
+  colormatrix<-ifelse(is.na(combined_outputs), "#FFFFFF" , 
+                      ifelse(combined_outputs=="NS","#FFFFD9", 
+                             ifelse((combined_outputs=="Increase" & 
+                                       (combined_outputs$measure!="Patient experience- friends and family test" &
+                                          combined_outputs$measure!="Staff sickness" & combined_outputs$measure!="Bed occupancy"))|((combined_outputs$measure=="Patient experience- friends and family test" | combined_outputs$measure=="Staff sickness"| combined_outputs$measure=="Bed occupancy")& combined_outputs=="Decrease"), "#FBE0DC", "#d5eed1")))|>
+    as.data.frame()|>
+    mutate(measure= "#FFFFFF")|>
+    as.matrix()
+  
+  
+  combined_outputs|>
+    flextable()|>
+    set_header_labels(measure= "")|>
+    align(part = "header", align = "center")|>
+    align(part = "body", align = "center")|>
+    bg(bg = "#f9bf07", part = "header") |>
+    bg( part="body", bg=colormatrix)|>
+    bold(bold = TRUE, part="header")|>
+    fontsize(size = 12, part = "all")|>
+    padding(padding = 2, part = "all", padding.top=NULL) |>
+    autofit()|>
+    htmltools_value(ft.align = "left") 
+  
+  
+  
+  
+  
+  
+}

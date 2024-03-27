@@ -78,7 +78,7 @@ sus_deaths<- tar_read(sus_deaths_cia_format)
 
  # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
 
-single_bedroom_matches_2<-tar_read(single_bedroom_matches_2)
+single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
 source("R/CIA_Functions.R")
 
@@ -126,7 +126,7 @@ model_effects_table(hcai_output)
 
 hcai_REM<-tar_read(hcai_REM)
 
-#evaluating_model("REM", NA, hcai, "2022-10-01", "combined_rate", 0.05, hcai_REM, single_bedroom_matches_2)
+#evaluating_model("REM", NA, hcai, "2022-10-01", "combined_rate", 0.05, hcai_REM, single_bedroom_matches_final)
 
 
 ```
@@ -142,7 +142,7 @@ cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
 
 #hcai_REN<-tar_read(hcai_REN)
 
-#evaluating_model("REN",NA,  hcai, "2020-06-01", "combined_rate", 0.05, hcai_REN, single_bedroom_matches_2)
+#evaluating_model("REN",NA,  hcai, "2020-06-01", "combined_rate", 0.05, hcai_REN, single_bedroom_matches_final)
 
 
 ```
@@ -175,7 +175,7 @@ model_effects_table(falls_and_fractures_output)
 
 falls_and_fractures_RGN<-tar_read(falls_and_fractures_RGN)
 
-#evaluating_model("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.05, falls_and_fractures_RGN, single_bedroom_matches_2)
+#evaluating_model("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.05, falls_and_fractures_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -195,7 +195,7 @@ cia_summary_plots(falls_and_fractures_RGN,"% of spells", "2010-11-01")
 
 falls_and_fractures_REM<-tar_read(falls_and_fractures_REM)
 
-#evaluating_model("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM, single_bedroom_matches_2)
+#evaluating_model("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM, single_bedroom_matches_final)
 
 
 ```
@@ -210,7 +210,7 @@ cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 
 #falls_and_fractures_REN<-tar_read(falls_and_fractures_REN)
 
-#evaluating_model("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN, single_bedroom_matches_2)
+#evaluating_model("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN, single_bedroom_matches_final)
 
 
 ```
@@ -226,7 +226,7 @@ cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 #### Papworth
 #falls_and_fractures_RGM<-tar_read(falls_and_fractures_RGM)
 
-#evaluating_model("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM, single_bedroom_matches_final)
 
 ```
 
@@ -239,7 +239,7 @@ cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 #### Chase Farm
 #falls_and_fractures_RAL<-tar_read(falls_and_fractures_RAL)
 
-#evaluating_model("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL, single_bedroom_matches_2)
+#evaluating_model("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL, single_bedroom_matches_final)
 
 
 ```
@@ -257,7 +257,7 @@ cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 
 falls_and_fractures_RWF<-tar_read(falls_and_fractures_RWF)
 
-#evaluating_model("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF, single_bedroom_matches_2)
+#evaluating_model("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF, single_bedroom_matches_final)
 
 
 ```
@@ -272,12 +272,14 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 ### Increase
 
 #### Southmead
+
 Increase doesn't seem to be associated with the single room switch
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 falls_and_fractures_RVJ<-tar_read(falls_and_fractures_RVJ)
 
-#evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ, single_bedroom_matches_2)
+#evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ, single_bedroom_matches_final)
 
 falls_and_fractures_cia_format<-tar_read(falls_and_fractures_cia_format)
 test<-falls_and_fractures_cia_format|>
@@ -315,7 +317,7 @@ model_effects_table(sus_deaths_output)
 
 sus_deaths_RGN<-tar_read(sus_deaths_RGN)
 
-#evaluating_model("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.05, sus_deaths_RGN, single_bedroom_matches_2)
+#evaluating_model("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.05, sus_deaths_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -335,7 +337,7 @@ cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 
 sus_deaths_REM<-tar_read(sus_deaths_REM)
 
-#evaluating_model("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM, single_bedroom_matches_2)
+#evaluating_model("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM, single_bedroom_matches_final)
 
 
 ```
@@ -349,7 +351,7 @@ cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
 #### Papworth
 #sus_deaths_RGM<-tar_read(sus_deaths_RGM)
 
-#evaluating_model("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM, single_bedroom_matches_final)
 
 
 ```
@@ -364,7 +366,7 @@ cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
 
 #sus_deaths_RAL<-tar_read(sus_deaths_RAL)
 
-#evaluating_model("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL, single_bedroom_matches_2)
+#evaluating_model("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -379,7 +381,7 @@ cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
 
 sus_deaths_RVJ<-tar_read(sus_deaths_RVJ)
 
-#evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.05, sus_deaths_RVJ, single_bedroom_matches_2)
+#evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.05, sus_deaths_RVJ, single_bedroom_matches_final)
 
 
 ```
@@ -397,7 +399,7 @@ cia_summary_plots(sus_deaths_RVJ,"No./per 1,000 discharges", "2014-05-01")
 
 sus_deaths_RWF<-tar_read(sus_deaths_RWF)
 
-#evaluating_model("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.05, sus_deaths_RWF, single_bedroom_matches_2)
+#evaluating_model("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.05, sus_deaths_RWF, single_bedroom_matches_final)
 
 
 ```
@@ -417,7 +419,7 @@ cia_summary_plots(sus_deaths_RWF, "No./per 1,000 discharges", "2011-01-01")
 
 sus_deaths_REN<-tar_read(sus_deaths_REN)
 
-evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN, single_bedroom_matches_2 )
+evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN, single_bedroom_matches_final )
 
 
 ```
@@ -455,7 +457,7 @@ model_effects_table(friends_and_family_output)
 
 friends_and_family_REN<-tar_read(friends_and_family_REN)
 
-evaluating_model("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN, single_bedroom_matches_2 )
+evaluating_model("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.05,friends_and_family_REN, single_bedroom_matches_final )
 
 test<-friends_and_family|>
   filter(site_code=="REN22")
@@ -480,7 +482,7 @@ cia_summary_plots(friends_and_family_REN,"Positive responses (%)", "2020-06-01")
 
 friends_and_family_REM<-tar_read(friends_and_family_REM)
 
-#evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REMRQ, single_bedroom_matches_2)
+#evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REMRQ, single_bedroom_matches_final)
 
 ```
 
@@ -502,7 +504,7 @@ cia_summary_plots(friends_and_family_REM, "Positive responses (%)", "2022-10-01"
 friends_and_family_RAL<-tar_read(friends_and_family_RAL)
 
 
-#evaluating_model("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RAL, single_bedroom_matches_2)
+#evaluating_model("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.05, friends_and_family_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -521,7 +523,7 @@ cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01"
 
 friends_and_family_RGM<-tar_read(friends_and_family_RGM)
 
-#evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM, single_bedroom_matches_final)
 
 
 ```
@@ -558,7 +560,7 @@ model_effects_table(staff_sickness_output)
 staff_sickness_REM<-tar_read(staff_sickness_REM)
 
 
-#evaluating_model("REM",NA, staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM, single_bedroom_matches_2)
+#evaluating_model("REM",NA, staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM, single_bedroom_matches_final)
 
 ```
 
@@ -574,7 +576,7 @@ cia_summary_plots(staff_sickness_REM, "Sickness Rate (%)", "2022-10-01")
 
 staff_sickness_REN<-tar_read(staff_sickness_REN)
 
-#evaluating_model("REN", NA,staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN, single_bedroom_matches_2 )
+#evaluating_model("REN", NA,staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN, single_bedroom_matches_final )
 
 ```
 
@@ -590,7 +592,7 @@ cia_summary_plots(staff_sickness_REN, "Sickness Rate (%)", "2020-06-01")
 
 staff_sickness_RGM<-tar_read(staff_sickness_RGM)
 
-#evaluating_model("RGM", NA,staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05, staff_sickness_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM", NA,staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05, staff_sickness_RGM, single_bedroom_matches_final)
 
 
 ```
@@ -609,7 +611,7 @@ cia_summary_plots(staff_sickness_RGM, "Sickness Rate (%)", "2019-05-01")
 staff_sickness_RAL<-tar_read(staff_sickness_RAL)
 
 
-#evaluating_model("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05, staff_sickness_RAL, single_bedroom_matches_2)
+#evaluating_model("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05, staff_sickness_RAL, single_bedroom_matches_final)
 
 
 ```
@@ -625,7 +627,7 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 
 staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
 
-#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_2)
+#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -646,7 +648,7 @@ cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 #staff_turnover_REM<-cia_analysis("REM", NA, staff_turnover,"2022-10-01", "leaving_rate", 0.05)
 
 
-#evaluating_model("REM", NA,staff_turnover,"2022-10-01", "leaving_rate", 0.05, staff_turnover_REM, single_bedroom_matches_2)
+#evaluating_model("REM", NA,staff_turnover,"2022-10-01", "leaving_rate", 0.05, staff_turnover_REM, single_bedroom_matches_final)
 
 
 # denominator appears to remain constant but for 12 months between Sept 2019 to Aug 2020, the numbers of leavers and joiners recorded is approx. 6 times higher than usual.

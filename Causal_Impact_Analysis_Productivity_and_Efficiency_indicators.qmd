@@ -61,13 +61,12 @@ length_of_stay<- tar_read(length_of_stay_cia_format)
 emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
 
 #Loading control data
-single_bedroom_matches_2<-tar_read(single_bedroom_matches_2)
+single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
 source("R/CIA_Functions.R")
 
   hcai_output  <-tar_read(hcai_output)
 ```
-
 
 # Availability of indicators by site
 
@@ -110,7 +109,7 @@ model_effects_table(waiting_time_median_output)
 
 waiting_time_median_REM<-tar_read(waiting_time_median_REM)
 
-#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM, single_bedroom_matches_2)
+#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM, single_bedroom_matches_final)
 
 ```
 
@@ -129,7 +128,7 @@ cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10
 
 waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 
-#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.05, waiting_time_median_RGN, single_bedroom_matches_2)
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.05, waiting_time_median_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -151,7 +150,7 @@ cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11
 
 waiting_time_median_REN<-tar_read(waiting_time_median_REN)
 
-#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN, single_bedroom_matches_2)
+#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN, single_bedroom_matches_final)
 
 ```
 
@@ -167,7 +166,7 @@ cia_summary_plots(waiting_time_median_REN, "Median waiting time (wks)", "2020-06
 
 waiting_time_median_RGM<-tar_read(waiting_time_median_RGM)
 
-#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM, single_bedroom_matches_final)
 
 ```
 
@@ -181,7 +180,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 #### Chase Farm
 #waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
 
-#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL, single_bedroom_matches_2)
+#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -197,7 +196,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
 
-#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05, waiting_time_median_RVJ, single_bedroom_matches_2)
+#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05, waiting_time_median_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -212,7 +211,7 @@ cia_summary_plots(waiting_time_median_RVJ, "Median waiting time (wks)", "2014-05
 
 waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
-#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF, single_bedroom_matches_2)
+#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF, single_bedroom_matches_final)
 
 
 ```
@@ -249,7 +248,7 @@ model_effects_table(waiting_time_number_output)
 
 waiting_time_number_REM<-tar_read(waiting_time_number_REM)
 
-#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.05, waiting_time_number_REM, single_bedroom_matches_2)
+#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.05, waiting_time_number_REM, single_bedroom_matches_final)
 
 
 ```
@@ -269,7 +268,7 @@ cia_summary_plots(waiting_time_number_REM, "Number waiting", "2022-10-01")
 
 waiting_time_number_RGM<-tar_read(waiting_time_number_RGM)
 
-#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete", 0.05, waiting_time_number_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete", 0.05, waiting_time_number_RGM, single_bedroom_matches_final)
 
 
 ```
@@ -285,7 +284,7 @@ cia_summary_plots(waiting_time_number_RGM, "Number waiting", "2019-05-01")
 
 waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
 
-#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01","number_incomplete", 0.05, waiting_time_number_RGN, single_bedroom_matches_2)
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01","number_incomplete", 0.05, waiting_time_number_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -301,7 +300,7 @@ cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
 
 #waiting_time_number_RAL<-tar_read(waiting_time_number_RAL)
 
-#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "number_incomplete", 0.05, waiting_time_number_RAL, single_bedroom_matches_2)
+#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "number_incomplete", 0.05, waiting_time_number_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -317,7 +316,7 @@ cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
 
 waiting_time_number_RVJ<-tar_read(waiting_time_number_RVJ) 
 
-#evaluating_model("RVJ", NA, rtt_waiting_time, "2014-05-01", "number_incomplete", 0.05, waiting_time_number_RVJ, single_bedroom_matches_2)
+#evaluating_model("RVJ", NA, rtt_waiting_time, "2014-05-01", "number_incomplete", 0.05, waiting_time_number_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -338,7 +337,7 @@ cia_summary_plots(waiting_time_number_RVJ, "Number waiting", "2014-05-01")
 
 waiting_time_number_REN<-tar_read(waiting_time_number_REN)
 
-evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN, single_bedroom_matches_2)
+evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN, single_bedroom_matches_final)
 
 ```
 
@@ -355,7 +354,7 @@ cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
 
 waiting_time_number_RWF<-tar_read(waiting_time_number_RWF)
 
-#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF, single_bedroom_matches_2)
+#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF, single_bedroom_matches_final)
 
 ```
 
@@ -392,7 +391,7 @@ model_effects_table(LoS_output)
 
 #LoS_RGM<-tar_read(LoS_RGM)
 
-#evaluating_model("RGM", "RGM22", length_of_stay, "2019-05-01", "avg_los", 0.05, LoS_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM", "RGM22", length_of_stay, "2019-05-01", "avg_los", 0.05, LoS_RGM, single_bedroom_matches_final)
 
 ```
 
@@ -409,7 +408,7 @@ model_effects_table(LoS_output)
 
 LoS_RGN<-tar_read(LoS_RGN)
 
-#evaluating_model("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.05, LoS_RGN, single_bedroom_matches_2)
+#evaluating_model("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.05, LoS_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -425,7 +424,7 @@ cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
 
 LoS_RAL<-tar_read(LoS_RAL)
 
-#evaluating_model("RAL", "RALC7", length_of_stay, "2018-09-01", "avg_los", 0.05, LoS_RAL, single_bedroom_matches_2)
+#evaluating_model("RAL", "RALC7", length_of_stay, "2018-09-01", "avg_los", 0.05, LoS_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -442,7 +441,7 @@ cia_summary_plots(LoS_RAL,"Average LoS (days)", "2018-09-01")
 
 LoS_RVJ<-tar_read(LoS_RVJ)
 
-#evaluating_model("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.05, LoS_RVJ, single_bedroom_matches_2)
+#evaluating_model("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.05, LoS_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -461,7 +460,7 @@ cia_summary_plots(LoS_RVJ,"Average LoS (days)", "2014-05-01")
 
 LoS_REM<-tar_read(LoS_REM)
 
-#evaluating_model("REM", "REMRQ",  length_of_stay, "2022-10-01", "avg_los", 0.05, LoS_REM, single_bedroom_matches_2)
+#evaluating_model("REM", "REMRQ",  length_of_stay, "2022-10-01", "avg_los", 0.05, LoS_REM, single_bedroom_matches_final)
 
 
 ```
@@ -481,7 +480,7 @@ cia_summary_plots(LoS_REM, "Average LoS (days)", "2022-10-01")
 
 LoS_REN<-tar_read(LoS_REN)
 
-evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.05, LoS_REN, single_bedroom_matches_2)
+evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.05, LoS_REN, single_bedroom_matches_final)
 
 ```
 
@@ -500,7 +499,7 @@ cia_summary_plots(LoS_REN,"Average LoS (days)", "2020-06-01")
 
 LoS_RWF<-tar_read(LoS_RWF)
 
-#evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF, single_bedroom_matches_2)
+#evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF, single_bedroom_matches_final)
 
 
 ```
@@ -539,7 +538,7 @@ model_effects_table(emergency_readmissions_output)
 
 emergency_readmissions_REN<-tar_read(emergency_readmissions_REN)
 
-#evaluating_model("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.05, emergency_readmissions_REN, single_bedroom_matches_2)
+#evaluating_model("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.05, emergency_readmissions_REN, single_bedroom_matches_final)
 
 ```
 
@@ -555,7 +554,7 @@ cia_summary_plots(emergency_readmissions_REN, "% readmissions", "2020-06-01")
 
 emergency_readmissions_RGN<-tar_read(emergency_readmissions_RGN)
 
-#evaluating_model("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.05, emergency_readmissions_RGN, single_bedroom_matches_2)
+#evaluating_model("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.05, emergency_readmissions_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -573,7 +572,7 @@ cia_summary_plots(emergency_readmissions_RGN,"% readmissions", "2010-11-01")
 
 emergency_readmissions_RWF<-tar_read(emergency_readmissions_RWF)
 
-#evaluating_model("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.05, emergency_readmissions_RWF, single_bedroom_matches_2)
+#evaluating_model("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.05, emergency_readmissions_RWF, single_bedroom_matches_final)
 
 
 ```
@@ -595,7 +594,7 @@ cia_summary_plots(emergency_readmissions_RWF, "% readmissions", "2011-01-01")
 
 emergency_readmissions_REM<-tar_read(emergency_readmissions_REM)
 
-#evaluating_model("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM, single_bedroom_matches_2)
+#evaluating_model("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM, single_bedroom_matches_final)
 
 
 ```
@@ -611,7 +610,7 @@ cia_summary_plots(emergency_readmissions_REM, "% readmissions", "2022-10-01")
 
 emergency_readmissions_RGM<-tar_read(emergency_readmissions_RGM)
 
-#evaluating_model("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.05, emergency_readmissions_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.05, emergency_readmissions_RGM, single_bedroom_matches_final)
 
 
 ```
@@ -629,7 +628,7 @@ cia_summary_plots(emergency_readmissions_RGM, "% readmissions", "2019-05-01")
 
 emergency_readmissions_RAL<-tar_read(emergency_readmissions_RAL)
 
-#evaluating_model("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL, single_bedroom_matches_2)
+#evaluating_model("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -647,7 +646,7 @@ pred <- emergency_readmissions_RAL$Predictions
 
 emergency_readmissions_RVJ<-tar_read(emergency_readmissions_RVJ)
 
-#evaluating_model("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","perc", 0.05, emergency_readmissions_RVJ, single_bedroom_matches_2)
+#evaluating_model("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","perc", 0.05, emergency_readmissions_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -683,7 +682,7 @@ model_effects_table(bed_occupancy_output)
 
 #bed_occupancy_RGM<-tar_read(bed_occupancy_RGM)
 
-#evaluating_model("RGM",NA, bed_occupancy, "2019-05-01", "bed_occupancy", 0.05, bed_occupancy_RGM, single_bedroom_matches_2)
+#evaluating_model("RGM",NA, bed_occupancy, "2019-05-01", "bed_occupancy", 0.05, bed_occupancy_RGM, single_bedroom_matches_final)
 
 ```
 
@@ -702,7 +701,7 @@ model_effects_table(bed_occupancy_output)
 
 bed_occupancy_REM<-tar_read(bed_occupancy_REM)
 
-#evaluating_model("REM", NA, bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM, single_bedroom_matches_2)
+#evaluating_model("REM", NA, bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM, single_bedroom_matches_final)
 
 ```
 
@@ -719,7 +718,7 @@ cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
 
 bed_occupancy_RAL<-tar_read(bed_occupancy_RAL)
 
-evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL, single_bedroom_matches_2)
+evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -740,7 +739,7 @@ cia_summary_plots(bed_occupancy_RAL, "Percentage", "2018-09-01")
 
 bed_occupancy_REN<-tar_read(bed_occupancy_REN)
 
-#evaluating_model("REN", NA, bed_occupancy, "2020-06-01", "bed_occupancy", 0.05, bed_occupancy_REN, single_bedroom_matches_2)
+#evaluating_model("REN", NA, bed_occupancy, "2020-06-01", "bed_occupancy", 0.05, bed_occupancy_REN, single_bedroom_matches_final)
 
 
 ```
@@ -758,7 +757,7 @@ cia_summary_plots(bed_occupancy_REN,"Percentage", "2020-06-01")
 
 bed_occupancy_RVJ<-tar_read(bed_occupancy_RVJ)
 
-#evaluating_model("RVJ", NA, bed_occupancy, "2014-05-01", "bed_occupancy", 0.05, bed_occupancy_RVJ, single_bedroom_matches_2)
+#evaluating_model("RVJ", NA, bed_occupancy, "2014-05-01", "bed_occupancy", 0.05, bed_occupancy_RVJ, single_bedroom_matches_final)
 
 
 ```
@@ -772,6 +771,7 @@ cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 :::
 
 ## Summary of effects across sites
+
 ```{r}
 
 
@@ -793,5 +793,3 @@ summary_table_indicators_and_sites(waiting_time_median_output,
                                              staff_sickness_output) 
 
 ```
-
-

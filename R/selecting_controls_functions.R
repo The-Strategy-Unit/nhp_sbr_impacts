@@ -317,7 +317,7 @@ combine_floor_space_matches <- function(floor_space) {
 
 control_stage2 <- function(data1,data2) {
   data <- data1 |>
-    left_join(data2 |> select(org_code_og, site_code, difference_floor_space),
+    left_join(data2 |> select(org_code_og, site_code, occupied_floor_area_m2, difference_floor_space),
               by = c("organisation_code"="org_code_og", "site_code"="site_code"))# |> 
     #mutate(fs_match = if_else(is.na(difference_floor_space),0,1))
   
@@ -416,7 +416,7 @@ combine_med_age_matches <- function(med_age) {
 
 control_stage3 <- function(data1,data2) {
   data <- data1 |>
-    left_join(data2 |> select(org_code_og, der_provider_site_code, difference_med_age),
+    left_join(data2 |> select(org_code_og, der_provider_site_code, age_med, difference_med_age),
               by = c("organisation_code"="org_code_og", "site_code"="der_provider_site_code"))# |> 
   #mutate(age_match = if_else(is.na(difference_med_age),0,1))
   
@@ -424,13 +424,20 @@ control_stage3 <- function(data1,data2) {
   
 }
 
-# rank floor space and age variables (unsigned percentage differences) for each site
+# rank floor space and age variables (unsigned differences) for each site
 
 ranking_control_var <- function(df) {
   data <- df |> 
     group_by(organisation_code) |> 
-    mutate(floor_rank = rank(abs(difference_floor_space), ties.method = "first"),
-           age_rank = rank(abs(difference_med_age), ties.method = "first"))
+    mutate(floor_rank = rank(abs(difference_floor_space), ties.method = "average"),
+           age_rank = rank(abs(difference_med_age), ties.method = "average"),
+           ##put any additional ranking variables/steps in here,
+          ) |> 
+    mutate(sum_ranks = rowSums(across(contains("_rank")))) |> 
+    group_by(organisation_code) |> 
+    mutate(rank_of_ranks = rank(sum_ranks, ties.method = "first"))
+  
+  return(data)
 
 }
 

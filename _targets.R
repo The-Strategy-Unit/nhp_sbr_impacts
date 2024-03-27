@@ -177,6 +177,26 @@ list(
     staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")
   ),
   
+  #Staff survey
+  tar_target(
+    formatted_staff_survey_data,
+    staff_survey_formatting("Data/staff_survey_2008.csv",
+                            "Data/staff_survey_2009.csv",
+                            "Data/staff_survey_2010.csv",
+                            "Data/staff_survey_2011.csv",
+                            "Data/staff_survey_2012.csv",
+                            "Data/staff_survey_2013.csv",
+                            "Data/staff_survey_2014.csv",
+                            "Data/staff_survey_2015.csv",
+                            "Data/staff_survey_2016.csv",
+                             "Data/staff_survey_2017.csv",
+                            "Data/staff_survey_2018.csv",
+                            "Data/staff_survey_2019.csv",
+                            "Data/staff_survey_2020.csv",
+                              "Data/staff_survey_2021.csv",
+                              "Data/staff_survey_2022.csv")
+  ),
+  
   #----------------------------------------------------------------------------#
   
   

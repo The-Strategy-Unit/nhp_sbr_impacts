@@ -45,6 +45,7 @@ library(flextable)
 library(egg)
 library(StrategyUnitTheme)
 library(patchwork)
+library(bayesmeta)
 
 
 ## Friends & Family
@@ -271,12 +272,16 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 ### Increase
 
 #### Southmead
-
+Increase doesn't seem to be associated with the single room switch
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 falls_and_fractures_RVJ<-tar_read(falls_and_fractures_RVJ)
 
 #evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ, single_bedroom_matches_2)
+
+falls_and_fractures_cia_format<-tar_read(falls_and_fractures_cia_format)
+test<-falls_and_fractures_cia_format|>
+  filter(site_code=="RVJ01")
 
 
 ```

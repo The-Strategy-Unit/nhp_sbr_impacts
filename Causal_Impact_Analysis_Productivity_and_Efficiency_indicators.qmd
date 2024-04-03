@@ -70,22 +70,49 @@ source("R/CIA_Functions.R")
 
 ```
 
-
 ```{r, include=FALSE, fig.height=6, fig.width=10}
 
 LoS_output<-tar_read(LoS_output)|>
   mutate(RelEffect.var=RelEffect.sd^2)|>
 filter(!is.na(site))
 
-rma(RelEffect, RelEffect.var, data=LoS_output)
+rma(yi=RelEffect, vi=RelEffect.var, method="DL", data=LoS_output)
+rma(yi=RelEffect, vi=RelEffect.var,  data=LoS_output)
 
-LOS <- bayesmeta(y= LoS_output[,"RelEffect"],
-                               sigma = LoS_output[,"RelEffect.sd"],
-                               label = LoS_output[,"site"])
+falls_and_fractures_output<-tar_read(falls_and_fractures_output)|>
+  mutate(RelEffect.var=RelEffect.sd^2)|>
+filter(!is.na(site))
 
 
+rma(RelEffect, RelEffect.var, method="DL", data=falls_and_fractures_output)
+
+bayesmeta(y= falls_and_fractures_output[,"RelEffect"],
+                               sigma = falls_and_fractures_output[,"RelEffect.sd"],
+                               label = falls_and_fractures_output[,"site"],
+                               mu.prior.mean=0, mu.prior.sd=0.2 )
+
+waiting_time_number_output<-tar_read(waiting_time_number_output)|>
+  mutate(RelEffect.var=RelEffect.sd^2)|>
+filter(!is.na(site))
+
+
+
+bayesmeta(y= waiting_time_number_output[,"RelEffect"],
+                               sigma = waiting_time_number_output[,"RelEffect.sd"],
+                               label = waiting_time_number_output[,"site"])
+
+
+
+bayesmeta(y= waiting_time_number_output[,"RelEffect"],
+                               sigma = waiting_time_number_output[,"RelEffect.sd"],
+                               label = waiting_time_number_output[,"site"],
+                               mu.prior.mean=0, mu.prior.sd=0.2)
+
+
+
+data(Rubin1981)
+help("Rubin1981")
 ```
-
 
 # Availability of indicators by site
 
@@ -128,7 +155,7 @@ model_effects_table(waiting_time_median_output)
 
 waiting_time_median_REM<-tar_read(waiting_time_median_REM)
 
-#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM, single_bedroom_matches_final)
+#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.01, waiting_time_median_REM, single_bedroom_matches_final)
 
 ```
 
@@ -147,7 +174,7 @@ cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10
 
 waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 
-#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.05, waiting_time_median_RGN, single_bedroom_matches_final)
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.01, waiting_time_median_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -169,7 +196,7 @@ cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11
 
 waiting_time_median_REN<-tar_read(waiting_time_median_REN)
 
-#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN, single_bedroom_matches_final)
+#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.1, waiting_time_median_REN, single_bedroom_matches_final)
 
 ```
 
@@ -215,7 +242,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
 
-#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05, waiting_time_median_RVJ, single_bedroom_matches_final)
+#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.1, waiting_time_median_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -398,6 +425,9 @@ forest_plot(LoS_output)
 
 model_effects_table(LoS_output)
 
+
+a<-deparse(substitute(LoS_output))
+  
 
 ```
 

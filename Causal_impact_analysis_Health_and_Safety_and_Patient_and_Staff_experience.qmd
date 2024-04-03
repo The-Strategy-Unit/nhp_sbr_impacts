@@ -205,6 +205,31 @@ falls_and_fractures_REM<-tar_read(falls_and_fractures_REM)
 cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 ```
 
+
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RVJ<-tar_read(falls_and_fractures_RVJ)
+
+#evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ, single_bedroom_matches_final)
+
+falls_and_fractures_cia_format<-tar_read(falls_and_fractures_cia_format)
+test<-falls_and_fractures_cia_format|>
+  filter(site_code=="RVJ01")
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(falls_and_fractures_RVJ,"% of spells", "2014-05-01")
+```
+Outcome period is cut short as the rate of falls and fractures at Southmead jumps suddenly in the second year of the outcome period (Nov 2015); this change does not appear to be associated with the change to single rooms as it occurs suddenly almost 18 months after the change to single rooms.
+
+
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Clatterbridge
 
@@ -269,29 +294,7 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 :::
 :::
 
-### Increase
 
-#### Southmead
-
-Increase doesn't seem to be associated with the single room switch
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-falls_and_fractures_RVJ<-tar_read(falls_and_fractures_RVJ)
-
-#evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ, single_bedroom_matches_final)
-
-falls_and_fractures_cia_format<-tar_read(falls_and_fractures_cia_format)
-test<-falls_and_fractures_cia_format|>
-  filter(site_code=="RVJ01")
-
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(falls_and_fractures_RVJ,"% of spells", "2014-05-01")
-```
 :::
 
 ## Deaths in hospital

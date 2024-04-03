@@ -234,7 +234,9 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
     mutate(median_by_prov = ifelse(is.na(median_by_prov), 0, median_by_prov))|>
     filter( organisation_code!="RF4" &  
               organisation_code!="R1H" &
-              organisation_code!= "RJ2") #Removing poss control due to data issues
+              organisation_code!= "RJ2" &
+              organisation_code!= "RJE" &
+              organisation_code!= "RQW") #Removing poss control due to data issues
   
   return(rtt_waiting_time_cia_format)
   

@@ -167,6 +167,13 @@ model_effects_table(falls_and_fractures_output)
 
 ```
 
+```{r, fig.width=8, fig.height=2}
+
+mean_forest_plot_DGH_Acute(falls_and_fractures_output)
+
+```
+
+
 ### Decrease
 
 #### Peterborough
@@ -205,8 +212,6 @@ falls_and_fractures_REM<-tar_read(falls_and_fractures_REM)
 cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 ```
 
-
-
 #### Southmead
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -226,9 +231,8 @@ test<-falls_and_fractures_cia_format|>
 
 cia_summary_plots(falls_and_fractures_RVJ,"% of spells", "2014-05-01")
 ```
+
 Outcome period is cut short as the rate of falls and fractures at Southmead jumps suddenly in the second year of the outcome period (Nov 2015); this change does not appear to be associated with the change to single rooms as it occurs suddenly almost 18 months after the change to single rooms.
-
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 #### Clatterbridge
@@ -293,8 +297,6 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 ```
 :::
 :::
-
-
 :::
 
 ## Deaths in hospital
@@ -309,6 +311,13 @@ sus_deaths_output<-tar_read(sus_deaths_output)
 forest_plot(sus_deaths_output)
 
 model_effects_table(sus_deaths_output)
+
+```
+
+
+```{r, fig.width=8, fig.height=2}
+
+mean_forest_plot_DGH_Acute(sus_deaths_output)
 
 ```
 
@@ -451,6 +460,7 @@ model_effects_table(friends_and_family_output)
 
 ```
 
+
 ### Decrease
 
 #### Clatterbridge (REN)
@@ -552,6 +562,11 @@ model_effects_table(staff_sickness_output)
 
 ```
 
+```{r, fig.width=8, fig.height=2}
+
+mean_forest_plot_DGH_Acute(staff_sickness_output)
+
+```
 ### No change
 
 ::: columns

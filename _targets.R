@@ -819,7 +819,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2022-10-01", 
                "median_by_prov", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -830,7 +830,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2020-06-01", 
                "median_by_prov", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -841,7 +841,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2019-05-01", 
                "median_by_prov", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -852,7 +852,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2010-11-01", 
                "median_by_prov", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -863,7 +863,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2018-09-01", 
                "median_by_prov", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -875,7 +875,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2014-05-01", 
                "median_by_prov", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -886,7 +886,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2011-01-01", 
                "median_by_prov", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -900,7 +900,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2022-10-01", 
                "number_incomplete", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -911,7 +911,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2020-06-01", 
                "number_incomplete", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -922,7 +922,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2019-05-01", 
                "number_incomplete", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -933,7 +933,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2010-11-01", 
                "number_incomplete", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -944,7 +944,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2018-09-01", 
                "number_incomplete", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -956,7 +956,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2014-05-01", 
                "number_incomplete", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -967,7 +967,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2011-01-01", 
                "number_incomplete", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 

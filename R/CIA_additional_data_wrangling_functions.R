@@ -180,7 +180,9 @@ falls_and_fractures_cia_formatting <- function(data) {
     mutate(ff_rate = (fall_spells/ all_spells) * 100) |> # % of spells with a fall 
     mutate(ff_los = (fall_spell_los/ all_spell_los) * 100)  |># % of los associated with fall 
   mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))|>
-    filter(site_code!="RALC7"|month>'2014-03-01')#remove data pre-merger
+    filter(site_code!="RALC7"|month>'2014-03-01')|> #remove data pre-merger
+  filter(site_code !="RVJ01" |
+           (site_code=="RVJ01" & month<='2015-10-01')) #Remove part of Southmead where rate jumps
   
   return(falls_and_fractures_cia_format)
   
@@ -232,7 +234,9 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
     mutate(median_by_prov = ifelse(is.na(median_by_prov), 0, median_by_prov))|>
     filter( organisation_code!="RF4" &  
               organisation_code!="R1H" &
-              organisation_code!= "RJ2") #Removing poss control due to data issues
+              organisation_code!= "RJ2" &
+              organisation_code!= "RJE" &
+              organisation_code!= "RQW") #Removing poss control due to data issues
   
   return(rtt_waiting_time_cia_format)
   

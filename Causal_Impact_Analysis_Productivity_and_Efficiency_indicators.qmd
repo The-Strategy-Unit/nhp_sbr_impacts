@@ -65,27 +65,16 @@ single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
 source("R/CIA_Functions.R")
 
-
-
-
 ```
-
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
 
 LoS_output<-tar_read(LoS_output)|>
-  mutate(RelEffect.var=RelEffect.sd^2)|>
 filter(!is.na(site))
 
-rma(RelEffect, RelEffect.var, data=LoS_output)
-
-LOS <- bayesmeta(y= LoS_output[,"RelEffect"],
-                               sigma = LoS_output[,"RelEffect.sd"],
-                               label = LoS_output[,"site"])
-
+rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ```
-
 
 # Availability of indicators by site
 
@@ -117,6 +106,14 @@ forest_plot(waiting_time_median_output)
 model_effects_table(waiting_time_median_output)
 
 ```
+#### Mean effect on median waiting time for DGH/Acute hospitals
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(waiting_time_median_output)
+
+```
+
+
 
 ### Decrease
 
@@ -128,7 +125,7 @@ model_effects_table(waiting_time_median_output)
 
 waiting_time_median_REM<-tar_read(waiting_time_median_REM)
 
-#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM, single_bedroom_matches_final)
+#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.01, waiting_time_median_REM, single_bedroom_matches_final)
 
 ```
 
@@ -138,38 +135,14 @@ cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10
 
 
 ```
-:::
 
-::: {.column width="50%"}
-#### Peterborough
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
-
-#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.05, waiting_time_median_RGN, single_bedroom_matches_final)
-
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11-01")
-```
-:::
-:::
-
-### No change
-
-::: columns
-::: {.column width="50%"}
 #### Clatterbridge
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_median_REN<-tar_read(waiting_time_median_REN)
 
-#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN, single_bedroom_matches_final)
+#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.01, waiting_time_median_REN, single_bedroom_matches_final)
 
 ```
 
@@ -179,13 +152,43 @@ cia_summary_plots(waiting_time_median_REN, "Median waiting time (wks)", "2020-06
 
 ```
 
+
+:::
+
+::: {.column width="50%"}
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
+
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.01, waiting_time_median_RGN, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11-01")
+```
+
+
+
+:::
+:::
+
+### No change
+
+::: columns
+::: {.column width="50%"}
+
 #### Papworth
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 waiting_time_median_RGM<-tar_read(waiting_time_median_RGM)
 
-#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM, single_bedroom_matches_final)
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.1, waiting_time_median_RGM, single_bedroom_matches_final)
 
 ```
 
@@ -199,7 +202,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 #### Chase Farm
 #waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
 
-#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.05, waiting_time_median_RAL, single_bedroom_matches_final)
+#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.01, waiting_time_median_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -215,7 +218,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
 
-#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.05, waiting_time_median_RVJ, single_bedroom_matches_final)
+#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.1, waiting_time_median_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -223,6 +226,11 @@ waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
 
 cia_summary_plots(waiting_time_median_RVJ, "Median waiting time (wks)", "2014-05-01")
 ```
+:::
+
+:::
+
+### Increase
 
 #### Tunbridge Wells
 
@@ -230,7 +238,7 @@ cia_summary_plots(waiting_time_median_RVJ, "Median waiting time (wks)", "2014-05
 
 waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
-#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF, single_bedroom_matches_final)
+evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF, single_bedroom_matches_final)
 
 
 ```
@@ -239,8 +247,8 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
 cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01-01")
 ```
-:::
-:::
+
+
 :::
 
 ## Waiting time - Total number waiting
@@ -259,23 +267,33 @@ model_effects_table(waiting_time_number_output)
 
 ```
 
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(waiting_time_number_output)
+
+```
+
 ### Decrease
 
-#### Royal Liverpool
+#### Peterborough
 
-```{r, include=FALSE, fig.width=5, fig.height=8}
+```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_REM<-tar_read(waiting_time_number_REM)
+waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
 
-#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.05, waiting_time_number_REM, single_bedroom_matches_final)
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01","number_incomplete", 0.01, waiting_time_number_RGN, single_bedroom_matches_final)
 
 
 ```
 
 ```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(waiting_time_number_REM, "Number waiting", "2022-10-01")
+cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
 ```
+
+
+
+
 
 ### No change
 
@@ -287,7 +305,7 @@ cia_summary_plots(waiting_time_number_REM, "Number waiting", "2022-10-01")
 
 waiting_time_number_RGM<-tar_read(waiting_time_number_RGM)
 
-#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete", 0.05, waiting_time_number_RGM, single_bedroom_matches_final)
+evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete", 0.1, waiting_time_number_RGM, single_bedroom_matches_final)
 
 
 ```
@@ -297,21 +315,7 @@ waiting_time_number_RGM<-tar_read(waiting_time_number_RGM)
 cia_summary_plots(waiting_time_number_RGM, "Number waiting", "2019-05-01")
 ```
 
-#### Peterborough
 
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
-
-#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01","number_incomplete", 0.05, waiting_time_number_RGN, single_bedroom_matches_final)
-
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
-```
 :::
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -329,20 +333,25 @@ cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
 ```
 
 ::: {.column width="50%"}
-#### Southmead
 
-```{r, include=FALSE, fig.width=8, fig.height=8}
+#### Royal Liverpool
 
-waiting_time_number_RVJ<-tar_read(waiting_time_number_RVJ) 
+```{r, include=FALSE, fig.width=5, fig.height=8}
 
-#evaluating_model("RVJ", NA, rtt_waiting_time, "2014-05-01", "number_incomplete", 0.05, waiting_time_number_RVJ, single_bedroom_matches_final)
+waiting_time_number_REM<-tar_read(waiting_time_number_REM)
+
+#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.1, waiting_time_number_REM, single_bedroom_matches_final)
+
 
 ```
 
 ```{r, include=TRUE, fig.width=5, fig.height=6}
 
-cia_summary_plots(waiting_time_number_RVJ, "Number waiting", "2014-05-01")
+cia_summary_plots(waiting_time_number_REM, "Number waiting", "2022-10-01")
 ```
+
+
+
 :::
 :::
 
@@ -352,11 +361,16 @@ cia_summary_plots(waiting_time_number_RVJ, "Number waiting", "2014-05-01")
 ::: {.column width="50%"}
 #### Clatterbridge
 
+? Remove as switch happened during COVID and there is an increase at the other sites similar to Clatterbridge but this doesn't appear in expected. Also errorbars go negative
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-waiting_time_number_REN<-tar_read(waiting_time_number_REN)
+#waiting_time_number_REN<-tar_read(waiting_time_number_REN)
 
-evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.05, waiting_time_number_REN, single_bedroom_matches_final)
+#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.1, waiting_time_number_REN, single_bedroom_matches_final)
+
+#test<-rtt_waiting_time|>
+#  filter(organisation_code=="REN")
 
 ```
 
@@ -364,6 +378,23 @@ evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete",
 
 cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
 ```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_RVJ<-tar_read(waiting_time_number_RVJ) 
+
+evaluating_model("RVJ", NA, rtt_waiting_time, "2014-05-01", "number_incomplete", 0.1, waiting_time_number_RVJ, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(waiting_time_number_RVJ, "Number waiting", "2014-05-01")
+```
+
+
 :::
 
 ::: {.column width="50%"}
@@ -373,7 +404,7 @@ cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
 
 waiting_time_number_RWF<-tar_read(waiting_time_number_RWF)
 
-#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF, single_bedroom_matches_final)
+evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF, single_bedroom_matches_final)
 
 ```
 
@@ -398,8 +429,14 @@ forest_plot(LoS_output)
 
 model_effects_table(LoS_output)
 
+```
+
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(LoS_output)
 
 ```
+
 
 ### Decrease
 
@@ -546,6 +583,13 @@ model_effects_table(emergency_readmissions_output)
 
 
 ```
+Mean effect for DGH/Acute hospitals
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(emergency_readmissions_output)
+
+```
+
 
 ### Decrease
 
@@ -692,6 +736,13 @@ model_effects_table(bed_occupancy_output)
 
 
 ```
+Mean effect for DGH/Acute hospitals
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(bed_occupancy_output)
+
+```
+
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 

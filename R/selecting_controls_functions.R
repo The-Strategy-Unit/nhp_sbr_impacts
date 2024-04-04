@@ -202,18 +202,16 @@ get_general_acute_site_codes <- function(formatted_eric) {
   
 }
 
-# To filter single bedroom matches by site type, to remove matches that are 
+# To filter single bedroom matches by site type, to remove matches that are
 # the other hospitals of interest, to add in organisation and site names:
 site_type_filter <- function(data, filtered_sites, ref_org_sites) {
-  
   site_codes_of_interest <- c("REM",
                               "REN",
                               "RGM",
                               "RGN",
                               "RAL",
                               "RVJ",
-                              "RWF"
-  )
+                              "RWF")
   
   data <- data |>
     dplyr::left_join(ref_org_sites,
@@ -229,8 +227,11 @@ site_type_filter <- function(data, filtered_sites, ref_org_sites) {
 # To get the floor space by sites and date:
 get_floor_space_by_site <- function(data) {
   floor_space <- data |>
-    filter(!is.na(occupied_floor_area_m2)) |> 
-    dplyr::select(organisation_code, site_code, effective_snapshot_date, occupied_floor_area_m2)
+    filter(!is.na(occupied_floor_area_m2)) |>
+    dplyr::select(organisation_code,
+                  site_code,
+                  effective_snapshot_date,
+                  occupied_floor_area_m2)
   
   return(floor_space)
   
@@ -247,27 +248,27 @@ find_floor_space_matches <- function(data,
   # Get the floor space of the sites we want
   # to find matches for:
   floor_space_base <- data |>
-    dplyr::filter(
-      effective_snapshot_date == date_pre_single_bedrooms
-      & site_code == site_code_pick
-    ) |>
+    dplyr::filter(effective_snapshot_date == date_pre_single_bedrooms
+                  & site_code == site_code_pick) |>
     dplyr::pull(occupied_floor_area_m2)
   
-  fsb_high <- floor_space_base*(1+range)
-  fsb_low <- floor_space_base*(1-range)
+  fsb_high <- floor_space_base * (1 + range)
+  fsb_low <- floor_space_base * (1 - range)
   
   # Find other sites at the same time that have a similar floor space:
   similar_sites <- data |>
-    dplyr::filter(
-      effective_snapshot_date == date_pre_single_bedrooms,
-      site_code != site_code_pick#,
-      #occupied_floor_area_m2 > fsb_low,
-      #occupied_floor_area_m2 < fsb_high
-      ) |>
-    dplyr::mutate(difference_floor_space = round((occupied_floor_area_m2 - floor_space_base) / floor_space_base,2),
-                  site_code_og = site_code_pick,
-                  org_code_og = stringr::str_sub(site_code_og,1,3)) |> 
-    select(7,6,1:5)
+    dplyr::filter(effective_snapshot_date == date_pre_single_bedrooms,
+                  #occupied_floor_area_m2 > fsb_low,
+                  #occupied_floor_area_m2 < fsb_high,
+                  site_code != site_code_pick) |>
+    dplyr::mutate(
+      difference_floor_space = round((occupied_floor_area_m2 - floor_space_base) / floor_space_base,
+                                     2
+      ),
+      site_code_og = site_code_pick,
+      org_code_og = stringr::str_sub(site_code_og, 1, 3)
+    ) |>
+    select(7, 6, 1:5)
   
   return(similar_sites)
   
@@ -315,11 +316,19 @@ combine_floor_space_matches <- function(floor_space) {
 
 # join floor space to single-bed matches
 
-control_stage2 <- function(data1,data2) {
+control_stage2 <- function(data1, data2) {
   data <- data1 |>
-    left_join(data2 |> select(org_code_og, site_code, occupied_floor_area_m2, difference_floor_space),
-              by = c("organisation_code"="org_code_og", "site_code"="site_code"))# |> 
-    #mutate(fs_match = if_else(is.na(difference_floor_space),0,1))
+    left_join(
+      data2 |> select(
+        org_code_og,
+        site_code,
+        occupied_floor_area_m2,
+        difference_floor_space
+      ),
+      by = c("organisation_code" = "org_code_og", "site_code" =
+               "site_code")
+    )# |>
+  #mutate(fs_match = if_else(is.na(difference_floor_space),0,1))
   
   return(data)
   
@@ -328,7 +337,7 @@ control_stage2 <- function(data1,data2) {
 # To get the median ages by sites and date:
 get_med_age_by_site <- function(filepth) {
   med_age <- read.csv(filepth) |>
-    janitor::clean_names() |> 
+    janitor::clean_names() |>
     filter(!is.na(age_med))
   
   return(med_age)
@@ -340,33 +349,33 @@ get_med_age_by_site <- function(filepth) {
 # base sites.
 
 find_med_age_matches <- function(data,
-                                     month_pre_single_bedrooms,
-                                     site_code_pick,
-                                     range = 5) {
+                                 month_pre_single_bedrooms,
+                                 site_code_pick,
+                                 range = 5) {
   # Get the median of the sites we want
   # to find matches for:
   med_age_base <- data |>
-    dplyr::filter(
-      yr_mth == month_pre_single_bedrooms
-      & der_provider_site_code == site_code_pick
-    ) |>
+    dplyr::filter(yr_mth == month_pre_single_bedrooms
+                  & der_provider_site_code == site_code_pick) |>
     dplyr::pull(age_med)
   
-  age_high <- med_age_base+range
-  age_low <- med_age_base-range
+  age_high <- med_age_base + range
+  age_low <- med_age_base - range
   
   # Find other sites at the same time that have a similar ages:
   similar_sites <- data |>
-    dplyr::filter(
-      yr_mth == month_pre_single_bedrooms,
-      der_provider_site_code != site_code_pick#,
-      #age_med > age_low,
-      #age_med < age_high
+    dplyr::filter(yr_mth == month_pre_single_bedrooms,
+                  #age_med > age_low,
+                  #age_med < age_high,
+                  der_provider_site_code != site_code_pick) |>
+    dplyr::mutate(
+      difference_med_age = round(((
+        age_med - med_age_base
+      ) / med_age_base), 2),
+      site_code_og = site_code_pick,
+      org_code_og = stringr::str_sub(site_code_og, 1, 3)
     ) |>
-    dplyr::mutate(difference_med_age = round(((age_med - med_age_base)/med_age_base),2),
-                  site_code_og = site_code_pick,
-                  org_code_og = stringr::str_sub(site_code_og,1,3)) |> 
-    select(8,7,1:6)
+    select(8, 7, 1:6)
   
   return(similar_sites)
   
@@ -380,32 +389,32 @@ combine_med_age_matches <- function(med_age) {
   data <- rbind(
     # royal_liverpool_matches
     find_med_age_matches(med_age,
-                             "2022-11",
-                             "REMRQ"),
+                         "2022-11",
+                         "REMRQ"),
     # clatterbridge_matches
     find_med_age_matches(med_age,
-                             "2020-07",
-                             "REN22"),
+                         "2020-07",
+                         "REN22"),
     # royal_papworth_matches
     find_med_age_matches(med_age,
-                             "2019-06",
-                             "RGM22"),
+                         "2019-06",
+                         "RGM22"),
     # peterborough_matches
     find_med_age_matches(med_age,
-                             "2010-12",
-                             "RGN80"),
+                         "2010-12",
+                         "RGN80"),
     # chase_farm_matches
     find_med_age_matches(med_age,
-                             "2018-10",
-                             "RALC7"),
+                         "2018-10",
+                         "RALC7"),
     # southmead_matches
     find_med_age_matches(med_age,
-                             "2014-06",
-                             "RVJ01"),
+                         "2014-06",
+                         "RVJ01"),
     # tunbridge_wells_matches
     find_med_age_matches(med_age,
-                             "2011-10",
-                             "RWFTW")
+                         "2011-10",
+                         "RWFTW")
   )
   
   return(data)
@@ -414,10 +423,18 @@ combine_med_age_matches <- function(med_age) {
 
 # join median age to single-bed matches
 
-control_stage3 <- function(data1,data2) {
+control_stage3 <- function(data1, data2) {
   data <- data1 |>
-    left_join(data2 |> select(org_code_og, der_provider_site_code, age_med, difference_med_age),
-              by = c("organisation_code"="org_code_og", "site_code"="der_provider_site_code"))# |> 
+    left_join(
+      data2 |> select(
+        org_code_og,
+        der_provider_site_code,
+        age_med,
+        difference_med_age
+      ),
+      by = c("organisation_code" = "org_code_og",
+             "site_code" = "der_provider_site_code")
+    )# |>
   #mutate(age_match = if_else(is.na(difference_med_age),0,1))
   
   return(data)
@@ -427,17 +444,17 @@ control_stage3 <- function(data1,data2) {
 # rank floor space and age variables (unsigned differences) for each site
 
 ranking_control_var <- function(df) {
-  data <- df |> 
-    group_by(organisation_code) |> 
-    mutate(floor_rank = rank(abs(difference_floor_space), ties.method = "average"),
-           age_rank = rank(abs(difference_med_age), ties.method = "average"),
-           ##put any additional ranking variables/steps in here,
-          ) |> 
-    mutate(sum_ranks = rowSums(across(contains("_rank")))) |> 
-    group_by(organisation_code) |> 
+  data <- df |>
+    group_by(organisation_code) |>
+    mutate(
+      floor_rank = rank(abs(difference_floor_space), ties.method = "average"),
+      age_rank = rank(abs(difference_med_age), ties.method = "average"),
+      ##put any additional ranking variables/steps in here,
+    ) |>
+    mutate(sum_ranks = rowSums(across(contains("_rank")))) |>
+    group_by(organisation_code) |>
     mutate(rank_of_ranks = rank(sum_ranks, ties.method = "first"))
   
   return(data)
-
+  
 }
-

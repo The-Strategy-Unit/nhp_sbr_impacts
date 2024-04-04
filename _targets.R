@@ -26,7 +26,8 @@ tar_option_set(
     "oceanis",
     "flextable",
     "egg",
-    "patchwork"
+    "patchwork",
+    "MarketMatching"
   ) # Packages that your targets need for their tasks.
 )
 
@@ -119,26 +120,16 @@ list(
     sus_readmit,
     fun_load_sus_readmit("Data/nhp_sbr_readmit.csv")
   ),
-  tar_target(
-    sus_los,
-    fun_load_sus_los("Data/nhp_sbr_los.csv")
-  ),
-  tar_target(
-    sus_falls,
-    fun_load_sus_falls("Data/nhp_sbr_falls.csv")
-  ),
-  tar_target(
-    sus_ages,
-    fun_load_sus_ages("Data/nhp_sbr_admit_age.csv")
-  ),
-  tar_target(
-    sus_deaths,
-    fun_load_sus_deaths("Data/nhp_sbr_deaths.csv")
-  ),
-  tar_target(
-    ods_sites,
-    fun_load_ods_sites("Data/ods_geocoded.csv")
-  ),
+  tar_target(sus_los,
+             fun_load_sus_los("Data/nhp_sbr_los.csv")),
+  tar_target(sus_falls,
+             fun_load_sus_falls("Data/nhp_sbr_falls.csv")),
+  tar_target(sus_ages,
+             fun_load_sus_ages("Data/nhp_sbr_admit_age.csv")),
+  tar_target(sus_deaths,
+             fun_load_sus_deaths("Data/nhp_sbr_deaths.csv")),
+  tar_target(ods_sites,
+             fun_load_ods_sites("Data/ods_geocoded.csv")),
   
   # rtt waiting times
   tar_target(
@@ -180,21 +171,23 @@ list(
   #Staff survey
   tar_target(
     formatted_staff_survey_data,
-    staff_survey_formatting("Data/staff_survey_2008.csv",
-                            "Data/staff_survey_2009.csv",
-                            "Data/staff_survey_2010.csv",
-                            "Data/staff_survey_2011.csv",
-                            "Data/staff_survey_2012.csv",
-                            "Data/staff_survey_2013.csv",
-                            "Data/staff_survey_2014.csv",
-                            "Data/staff_survey_2015.csv",
-                            "Data/staff_survey_2016.csv",
-                             "Data/staff_survey_2017.csv",
-                            "Data/staff_survey_2018.csv",
-                            "Data/staff_survey_2019.csv",
-                            "Data/staff_survey_2020.csv",
-                              "Data/staff_survey_2021.csv",
-                              "Data/staff_survey_2022.csv")
+    staff_survey_formatting(
+      "Data/staff_survey_2008.csv",
+      "Data/staff_survey_2009.csv",
+      "Data/staff_survey_2010.csv",
+      "Data/staff_survey_2011.csv",
+      "Data/staff_survey_2012.csv",
+      "Data/staff_survey_2013.csv",
+      "Data/staff_survey_2014.csv",
+      "Data/staff_survey_2015.csv",
+      "Data/staff_survey_2016.csv",
+      "Data/staff_survey_2017.csv",
+      "Data/staff_survey_2018.csv",
+      "Data/staff_survey_2019.csv",
+      "Data/staff_survey_2020.csv",
+      "Data/staff_survey_2021.csv",
+      "Data/staff_survey_2022.csv"
+    )
   ),
   
   #----------------------------------------------------------------------------#
@@ -263,10 +256,8 @@ list(
   ),
   
   ## adding data on floor space:
-  tar_target(
-    floor_space,
-    get_floor_space_by_site(formatted_eric)
-  ),
+  tar_target(floor_space,
+             get_floor_space_by_site(formatted_eric)),
   
   tar_target(
     floor_space_matches,
@@ -280,15 +271,11 @@ list(
   ),
   
   ## adding data on median ages:
-  tar_target(
-    med_age,
-    get_med_age_by_site("Data/nhp_sbr_admit_age.csv")
-  ),
+  tar_target(med_age,
+             get_med_age_by_site("Data/nhp_sbr_admit_age.csv")),
   
-  tar_target(
-    med_age_matches,
-    combine_med_age_matches(med_age)
-  ),
+  tar_target(med_age_matches,
+             combine_med_age_matches(med_age)),
   
   # adding med age matches to control df
   tar_target(
@@ -339,8 +326,10 @@ list(
   ),
   
   # Hospital death rate additional formatting
-  tar_target(sus_deaths_cia_format,
-             sus_deaths_cia_formatting(sus_deaths)),
+  tar_target(
+    sus_deaths_cia_format,
+    sus_deaths_cia_formatting(sus_deaths)
+  ),
   
   
   #rtt waiting time additional formatting
@@ -481,30 +470,30 @@ list(
       )
     )
   ),
-tarchetypes::tar_map(
-  list(
-    hospital_of_interest = c(
-      "royal_liverpool",
-      "clatterbridge",
-      "royal_papworth",
-      "peterborough",
-      "chase_farm",
-      "southmead",
-      "tunbridge_wells"
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge_wells"
+      )
+    ),
+    tar_target(
+      plot_staff_sickness,
+      get_indicator_organisation_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        staff_sickness_cia_format,
+        "staff_sickness_percent",
+        "month"
+      )
     )
   ),
-  tar_target(
-    plot_staff_sickness,
-    get_indicator_organisation_level_plot(
-      hospital_of_interest,
-      hospitals,
-      single_bedroom_matches,
-      staff_sickness_cia_format,
-      "staff_sickness_percent",
-      "month"
-    )
-  )
-),
   tarchetypes::tar_map(
     list(
       hospital_of_interest = c(
@@ -529,129 +518,129 @@ tarchetypes::tar_map(
       )
     )
   ),
-
-
+  
+  
   # site code plots
-tarchetypes::tar_map(
-  list(
-    hospital_of_interest = c(
-      "royal_liverpool",
-      "clatterbridge",
-      "royal_papworth",
-      "peterborough",
-      "chase_farm",
-      "southmead",
-      "tunbridge_wells"
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge_wells"
+      )
+    ),
+    tar_target(
+      plot_cleaning_staff,
+      get_indicator_site_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        cleaning_staff_cia_format,
+        "cleaning_staff_wte",
+        "year"
+      )
     )
   ),
-  tar_target(
-    plot_cleaning_staff,
-    get_indicator_site_level_plot(
-      hospital_of_interest,
-      hospitals,
-      single_bedroom_matches,
-      cleaning_staff_cia_format,
-      "cleaning_staff_wte",
-      "year"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    hospital_of_interest = c(
-      "royal_liverpool",
-      "clatterbridge",
-      "royal_papworth",
-      "peterborough",
-      "chase_farm",
-      "southmead",
-      "tunbridge_wells"
-    )
-  ),
-  tar_target(
-    plot_cleaning_costs,
-    get_indicator_site_level_plot(
-      hospital_of_interest,
-      hospitals,
-      single_bedroom_matches,
-      cleaning_costs_cia_format,
-      "cleaning_service_cost",
-      "year"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    hospital_of_interest = c(
-      "royal_liverpool",
-      "clatterbridge",
-      "royal_papworth",
-      "peterborough",
-      "chase_farm",
-      "southmead",
-      "tunbridge_wells"
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge_wells"
+      )
+    ),
+    tar_target(
+      plot_cleaning_costs,
+      get_indicator_site_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        cleaning_costs_cia_format,
+        "cleaning_service_cost",
+        "year"
+      )
     )
   ),
-  tar_target(
-    plot_friends_and_family,
-    get_indicator_site_level_plot(
-      hospital_of_interest,
-      hospitals,
-      single_bedroom_matches,
-      friends_and_family_cia_format,
-      "friends_and_family_percent",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    hospital_of_interest = c(
-      "royal_liverpool",
-      "clatterbridge",
-      "royal_papworth",
-      "peterborough",
-      "chase_farm",
-      "southmead",
-      "tunbridge_wells"
-    )
-  ),
-  tar_target(
-    plot_falls_and_fractures,
-    get_indicator_site_level_plot(
-      hospital_of_interest,
-      hospitals,
-      single_bedroom_matches,
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    hospital_of_interest = c(
-      "royal_liverpool",
-      "clatterbridge",
-      "royal_papworth",
-      "peterborough",
-      "chase_farm",
-      "southmead",
-      "tunbridge_wells"
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge_wells"
+      )
+    ),
+    tar_target(
+      plot_friends_and_family,
+      get_indicator_site_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        friends_and_family_cia_format,
+        "friends_and_family_percent",
+        "month"
+      )
     )
   ),
-  tar_target(
-    plot_sus_deaths,
-    get_indicator_site_level_plot(
-      hospital_of_interest,
-      hospitals,
-      single_bedroom_matches,
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      "month"
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge_wells"
+      )
+    ),
+    tar_target(
+      plot_falls_and_fractures,
+      get_indicator_site_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        falls_and_fractures_cia_format,
+        "ff_rate",
+        "month"
+      )
     )
-  )
-),
+  ),
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge_wells"
+      )
+    ),
+    tar_target(
+      plot_sus_deaths,
+      get_indicator_site_level_plot(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches,
+        sus_deaths_cia_format,
+        "hosp_rate_1000",
+        "month"
+      )
+    )
+  ),
   tarchetypes::tar_map(
     list(
       hospital_of_interest = c(
@@ -701,7 +690,7 @@ tarchetypes::tar_map(
     )
     
   ),
-tarchetypes::tar_map(
+  tarchetypes::tar_map(
     list(
       hospital_of_interest = c(
         "royal_liverpool",
@@ -725,66 +714,71 @@ tarchetypes::tar_map(
       )
     )
   ),
-
-#----------------------------------------------------------------------------#
-#### Maps ####
-
-    tar_target(
-      map_all,
-      map_all("Map of SBR intervention sites",
-              hospitals,
-              ods_sites)
-    ),
-    tar_target(
-      map_royal_liverpool,
-      map_controls("royal_liverpool",
-               hospitals,
-               single_bedroom_matches,
-               ods_sites)
-    ),
-    tar_target(
-     map_clatterbridge,
-     map_controls("clatterbridge",
-               hospitals,
-               single_bedroom_matches,
-               ods_sites)
-    ),
-    tar_target(
-      map_royal_papworth,
-      map_controls("royal_papworth",
-               hospitals,
-               single_bedroom_matches,
-               ods_sites)
-    ),
-    tar_target(
-      map_peterborough,
-      map_controls("peterborough",
-               hospitals,
-               single_bedroom_matches,
-               ods_sites)
-    ),
-    tar_target(
-      map_chase_farm,
-      map_controls("chase_farm",
-               hospitals,
-               single_bedroom_matches,
-               ods_sites)
-    ),
-    tar_target(
-      map_southmead,
-      map_controls("southmead",
-               hospitals,
-               single_bedroom_matches,
-               ods_sites)
-    ),
-    tar_target(
-      map_tunbridge_wells,
-      map_controls("tunbridge_wells",
-               hospitals,
-               single_bedroom_matches,
-               ods_sites)
-    ),
-
+  
+  #----------------------------------------------------------------------------#
+  #### Maps ####
+  
+  tar_target(
+    map_all_sites,
+    map_all("Map of SBR intervention sites",
+            hospitals,
+            ods_sites)
+  ),
+  tar_target(
+    map_royal_liverpool,
+    map_controls(
+      "royal_liverpool",
+      hospitals,
+      single_bedroom_matches,
+      ods_sites
+    )
+  ),
+  tar_target(
+    map_clatterbridge,
+    map_controls("clatterbridge",
+                 hospitals,
+                 single_bedroom_matches,
+                 ods_sites)
+  ),
+  tar_target(
+    map_royal_papworth,
+    map_controls(
+      "royal_papworth",
+      hospitals,
+      single_bedroom_matches,
+      ods_sites
+    )
+  ),
+  tar_target(
+    map_peterborough,
+    map_controls("peterborough",
+                 hospitals,
+                 single_bedroom_matches,
+                 ods_sites)
+  ),
+  tar_target(
+    map_chase_farm,
+    map_controls("chase_farm",
+                 hospitals,
+                 single_bedroom_matches,
+                 ods_sites)
+  ),
+  tar_target(
+    map_southmead,
+    map_controls("southmead",
+                 hospitals,
+                 single_bedroom_matches,
+                 ods_sites)
+  ),
+  tar_target(
+    map_tunbridge_wells,
+    map_controls(
+      "tunbridge_wells",
+      hospitals,
+      single_bedroom_matches,
+      ods_sites
+    )
+  )
 #-----------------------------------------------------------------------------#
 
 # Indicator availability plots
@@ -1591,5 +1585,5 @@ tar_target(
                staff_sickness_RVJ,
                NA)
 )
-
+  
 )

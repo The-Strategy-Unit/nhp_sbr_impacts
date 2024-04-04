@@ -778,7 +778,7 @@ list(
       single_bedroom_matches,
       ods_sites
     )
-  )
+  ),
 #-----------------------------------------------------------------------------#
 
 # Indicator availability plots

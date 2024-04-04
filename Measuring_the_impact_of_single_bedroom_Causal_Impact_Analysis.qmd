@@ -1,5 +1,5 @@
 ---
-title: "Causal Impact Analysis: Productivity and Efficiency indicators"
+title: "Measuring the impact of Single Bed Rooms: Causal Impact Analysis"
 editor: visual
 execute:
   echo: false

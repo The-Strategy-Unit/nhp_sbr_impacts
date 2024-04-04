@@ -11,23 +11,23 @@ library(targets)
 tar_option_set(
   packages = c(
     "dplyr",
+    "egg",
+    "flextable",
     "geomtextpath",
     "ggplot2",
+    "htmltools",
     "janitor",
+    "leaflet",
     "lubridate",
+    "MarketMatching",
+    "oceanis",
+    "patchwork",
     "readxl",
+    "sf",
     "stringr",
     "tidyr",
     "tsibble",
-    "zoo",
-    "sf",
-    "leaflet",
-    "htmltools",
-    "oceanis",
-    "flextable",
-    "egg",
-    "patchwork",
-    "MarketMatching"
+    "zoo"
   ) # Packages that your targets need for their tasks.
 )
 
@@ -780,9 +780,8 @@ list(
     )
   ),
   
-  #-----------------------------------------------------------------------------#
-  
-  # Indicator availability plots
+  #----------------------------------------------------------------------------#
+  #### Indicator availability plots ####
   
   #Indicator availability over time
   tar_target(
@@ -818,9 +817,8 @@ list(
     )
   ),
   
-  #-----------------------------------------------------------------------------#
-  
-  # CIA models
+  #----------------------------------------------------------------------------#
+  #### CIA models ####
   
   #Waiting time- median
   tar_target(
@@ -1602,9 +1600,8 @@ list(
     )
   ),
   
-  #------------------------------------------------------------------------------#
-  
-  #Presenting CIA outputs
+  #----------------------------------------------------------------------------#
+  #### Presenting CIA outputs ####
   
   tar_target(
     waiting_time_median_output,

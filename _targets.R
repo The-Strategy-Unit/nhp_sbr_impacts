@@ -1488,7 +1488,7 @@ tar_target(
                waiting_time_median_RGM,
                waiting_time_median_RGN,
                NA,
-               waiting_time_median_RVJ,
+               NA,
                waiting_time_median_RWF)
 ),
 
@@ -1499,7 +1499,7 @@ tar_target(
                waiting_time_number_RGM,
                waiting_time_number_RGN,
                NA,
-               waiting_time_number_RVJ,
+               NA,
                waiting_time_number_RWF)
 ),
 

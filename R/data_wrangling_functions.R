@@ -73,7 +73,7 @@ wrangle_eric <- function(eric_09_15, eric_16_23) {
       value = as.numeric(value),
       effective_snapshot_date = as.Date(effective_snapshot_date,
                                         format = "%d/%m/%Y")
-    )  
+    )
   
   return(data)
 }
@@ -600,8 +600,8 @@ rtt_data_formatting <- function(data) {
     mutate(weeks = sub("\\plus.*", "", weeks)) |>
     mutate(weeks = as.numeric(weeks)) |>
     mutate(number_of_incomplete_pathways_with_dta = NA) |>
-    mutate(treatment_function_code = gsub("^IP", "", treatment_function_code))|>
-    filter(treatment_function_code=="999")
+    mutate(treatment_function_code = gsub("^IP", "", treatment_function_code)) |>
+    filter(treatment_function_code == "999")
   
   assign("pre2011_rtt_data", pre2011_rtt_data, envir = .GlobalEnv)
   
@@ -620,8 +620,16 @@ rtt_data_formatting <- function(data) {
   
   
   formatted_rtt_data <- rbind(rtt_data, pre2011_rtt_data) |>
-    summarise(number_of_incomplete_pathways=sum(number_of_incomplete_pathways, na.rm=TRUE), 
-              .by=c(organisation_code, month, number_of_weeks_since_referral, weeks) )
+    summarise(
+      number_of_incomplete_pathways = sum(number_of_incomplete_pathways, na.rm =
+                                            TRUE),
+      .by = c(
+        organisation_code,
+        month,
+        number_of_weeks_since_referral,
+        weeks
+      )
+    )
   
   return(formatted_rtt_data)
   
@@ -826,8 +834,8 @@ fun_load_sus_cost_mth <- function(filepth) {
 
 fun_load_sus_readmit <- function(filepth) {
   data <- read.csv(filepth) |>
-    clean_names() |> 
-    mutate(perc = readmits/admits*100)
+    clean_names() |>
+    mutate(perc = readmits / admits * 100)
   
   return(data)
 }
@@ -863,9 +871,12 @@ fun_load_sus_ages <- function(filepth) {
 
 fun_load_sus_deaths <- function(filepth) {
   data <- read.csv(filepth) |>
-    clean_names() |> 
-    mutate(hosp_rate_1000 = death_hosp/discharges*1000
-           ,all_rate_1000 = (death_hosp + death_30days)/discharges*1000)
+    clean_names() |>
+    mutate(
+      hosp_rate_1000 = death_hosp / discharges * 1000
+      ,
+      all_rate_1000 = (death_hosp + death_30days) / discharges * 1000
+    )
   
   return(data)
 }
@@ -874,10 +885,13 @@ fun_load_sus_deaths <- function(filepth) {
 
 fun_load_ods_sites <- function(filepth) {
   data <- read.csv(filepth) |>
-    clean_names() |> 
-    mutate(effective_to = na_if(effective_to, "NULL")) |> 
-    mutate(effective_from = ymd(effective_from)
-           ,effective_to = ymd(effective_to)) |> 
+    clean_names() |>
+    mutate(effective_to = na_if(effective_to, "NULL")) |>
+    mutate(
+      effective_from = ymd(effective_from)
+      ,
+      effective_to = ymd(effective_to)
+    ) |>
     filter(is.na(effective_to))
   
   return(data)
@@ -901,7 +915,6 @@ staff_survey_formatting <-
            staff_survey_2020,
            staff_survey_2021,
            staff_survey_2022) {
-    
     survey_data_2008 <- read.csv(staff_survey_2008)
     survey_data_2009 <- read.csv(staff_survey_2009)
     survey_data_2010 <- read.csv(staff_survey_2010)
@@ -919,28 +932,23 @@ staff_survey_formatting <-
     survey_data_2022 <- read.csv(staff_survey_2022)
     
     
-    survey_data<-survey_data_2008|>
-      full_join(survey_data_2009, by=c("organisation_code") )|>
-     full_join(survey_data_2010, by=c("organisation_code") )|>
-     full_join(survey_data_2011, by=c("organisation_code") )|>
-     full_join(survey_data_2012, by=c("organisation_code") )|>
-      full_join(survey_data_2013, by=c("organisation_code") )|>
-      full_join(survey_data_2014, by=c("organisation_code") )|>
-      full_join(survey_data_2015, by=c("organisation_code") )|>
-      full_join(survey_data_2016, by=c("organisation_code") )|>
-      full_join(survey_data_2017, by=c("organisation_code") )|>
-      full_join(survey_data_2018, by=c("organisation_code") )|>
-      full_join(survey_data_2019, by=c("organisation_code") )|>
-      full_join(survey_data_2020, by=c("organisation_code") )|>
-      full_join(survey_data_2021, by=c("organisation_code") )|>
-      full_join(survey_data_2022, by=c("organisation_code") )|>
-      gather(key="year", value="positive_responses", -organisation_code)|>
-      mutate(year=str_sub(year,-4,-1))
-
+    survey_data <- survey_data_2008 |>
+      full_join(survey_data_2009, by = c("organisation_code")) |>
+      full_join(survey_data_2010, by = c("organisation_code")) |>
+      full_join(survey_data_2011, by = c("organisation_code")) |>
+      full_join(survey_data_2012, by = c("organisation_code")) |>
+      full_join(survey_data_2013, by = c("organisation_code")) |>
+      full_join(survey_data_2014, by = c("organisation_code")) |>
+      full_join(survey_data_2015, by = c("organisation_code")) |>
+      full_join(survey_data_2016, by = c("organisation_code")) |>
+      full_join(survey_data_2017, by = c("organisation_code")) |>
+      full_join(survey_data_2018, by = c("organisation_code")) |>
+      full_join(survey_data_2019, by = c("organisation_code")) |>
+      full_join(survey_data_2020, by = c("organisation_code")) |>
+      full_join(survey_data_2021, by = c("organisation_code")) |>
+      full_join(survey_data_2022, by = c("organisation_code")) |>
+      gather(key = "year", value = "positive_responses", -organisation_code) |>
+      mutate(year = str_sub(year, -4, -1))
+    
     return(survey_data)
   }
-
-
-
-
-

@@ -182,7 +182,9 @@ falls_and_fractures_cia_formatting <- function(data) {
   mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))|>
     filter(site_code!="RALC7"|month>'2014-03-01')|> #remove data pre-merger
   filter(site_code !="RVJ01" |
-           (site_code=="RVJ01" & month<='2015-10-01')) #Remove part of Southmead where rate jumps
+           (site_code=="RVJ01" & month<='2015-10-01')) |>#Remove part of Southmead where rate jumps
+  filter(site_code!="RQWG0") #remove control site with jumps in time series
+  
   
   return(falls_and_fractures_cia_format)
   
@@ -203,8 +205,10 @@ sus_deaths_cia_formatting <- function(data) {
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
     mutate(hosp_rate_1000 = (death_hosp / discharges) * 1000)|> #in hospital deaths/1000 discharges
-    mutate(all_rate_1000 = ((death_hosp+death_30days) / discharges) * 1000) #all deaths/1000 discharges
-  
+    mutate(all_rate_1000 = ((death_hosp+death_30days) / discharges) * 1000)|> #all deaths/1000 discharges
+    filter(site_code !="REN22" |
+             (site_code=="REN22" & month>='2013-01-01')) #Remove part before 2013 where Clatterbridge has -ive CIs.
+    
   return(sus_deaths_cia_format)
   
 }
@@ -236,7 +240,11 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
               organisation_code!="R1H" &
               organisation_code!= "RJ2" &
               organisation_code!= "RJE" &
-              organisation_code!= "RQW") #Removing poss control due to data issues
+              organisation_code!= "RQW" &
+              organisation_code!= "RHW" &
+              organisation_code!= "RHQ" &
+              organisation_code!= "RX1" &
+              organisation_code!= "RA7" ) #Removing poss control due to data issues
   
   return(rtt_waiting_time_cia_format)
   
@@ -290,7 +298,10 @@ length_of_stay_cia_formatting <- function(data) {
       spells = sum(spells),
       .by = c(site_code, month)
     ) |> #recalculate following merge of sites
-    mutate(avg_los = los / spells)
+    mutate(avg_los = los / spells)|>
+    filter(site_code !="RVR05" &
+             site_code !="RNLAY" &
+             site_code !="RNLBX" )
   
   return(length_of_stay_cia_format)
   
@@ -337,7 +348,9 @@ emergency_readmissions_cia_formatting <- function(data) {
     filter(site_code!="RXPCP" &
              site_code!="RVY01" &
              site_code!="RDEEB"&
-             site_code!="RPA02")#removing control data with issues
+             site_code!="RPA02"&
+             site_code !="RNLAY" &
+             site_code !="RNLBX")#removing control data with issues
   
   return(emergency_readmissions_cia_format)
 }

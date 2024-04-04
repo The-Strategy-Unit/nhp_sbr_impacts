@@ -60,6 +60,25 @@ length_of_stay<- tar_read(length_of_stay_cia_format)
 ## Emergency readmissions
 emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
 
+## Friends & Family
+friends_and_family<-tar_read(friends_and_family_cia_format)
+
+## Staff turnover
+staff_turnover<-tar_read(staff_turnover_cia_format)
+
+## Staff sickness
+staff_sickness<-tar_read(staff_sickness_cia_format)
+
+## Healthcare acquired infections - Infection rate per 10,000 bed days
+hcai<-tar_read(hcai_cia_format)
+
+## In-hospital Falls and Fractures - Fall rate per 1000 bed days
+falls_and_fractures<- tar_read(falls_and_fractures_cia_format)
+
+# SUS death rate (deaths/1000 admissions)
+sus_deaths<- tar_read(sus_deaths_cia_format)
+
+
 #Loading control data
 single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
@@ -97,6 +116,8 @@ tar_read(indicator_availability_table)
 ::: panel-tabset
 ### Summary
 
+Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
 ```{r, fig.width=8, fig.height=4}
 
 waiting_time_median_output<-tar_read(waiting_time_median_output)
@@ -106,35 +127,20 @@ forest_plot(waiting_time_median_output)
 model_effects_table(waiting_time_median_output)
 
 ```
+
 #### Mean effect on median waiting time for DGH/Acute hospitals
+
 ```{r, fig.width=8, fig.height=2.5}
 
 mean_forest_plot_DGH_Acute(waiting_time_median_output)
 
 ```
 
-
-
 ### Decrease
 
 ::: columns
 ::: {.column width="50%"}
-#### Royal Liverpool
 
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-waiting_time_median_REM<-tar_read(waiting_time_median_REM)
-
-#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.01, waiting_time_median_REM, single_bedroom_matches_final)
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10-01")
-
-
-```
 
 #### Clatterbridge
 
@@ -142,7 +148,7 @@ cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10
 
 waiting_time_median_REN<-tar_read(waiting_time_median_REN)
 
-#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.01, waiting_time_median_REN, single_bedroom_matches_final)
+evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN, single_bedroom_matches_final)
 
 ```
 
@@ -151,8 +157,6 @@ waiting_time_median_REN<-tar_read(waiting_time_median_REN)
 cia_summary_plots(waiting_time_median_REN, "Median waiting time (wks)", "2020-06-01")
 
 ```
-
-
 :::
 
 ::: {.column width="50%"}
@@ -171,9 +175,6 @@ waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 
 cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11-01")
 ```
-
-
-
 :::
 :::
 
@@ -181,6 +182,24 @@ cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11
 
 ::: columns
 ::: {.column width="50%"}
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_median_REM<-tar_read(waiting_time_median_REM)
+
+#evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10-01")
+
+
+```
+
+
 
 #### Papworth
 
@@ -188,7 +207,7 @@ cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11
 
 waiting_time_median_RGM<-tar_read(waiting_time_median_RGM)
 
-#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.1, waiting_time_median_RGM, single_bedroom_matches_final)
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM, single_bedroom_matches_final)
 
 ```
 
@@ -218,7 +237,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
 
-#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.1, waiting_time_median_RVJ, single_bedroom_matches_final)
+evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.1, waiting_time_median_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -227,7 +246,6 @@ waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
 cia_summary_plots(waiting_time_median_RVJ, "Median waiting time (wks)", "2014-05-01")
 ```
 :::
-
 :::
 
 ### Increase
@@ -238,7 +256,7 @@ cia_summary_plots(waiting_time_median_RVJ, "Median waiting time (wks)", "2014-05
 
 waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
-evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF, single_bedroom_matches_final)
+#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF, single_bedroom_matches_final)
 
 
 ```
@@ -247,14 +265,15 @@ evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.
 
 cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01-01")
 ```
-
-
 :::
 
 ## Waiting time - Total number waiting
 
 ::: panel-tabset
 ### Summary
+
+Points to the left indicate a decrease in number of patients on waiting lists following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
 
 ```{r, fig.width=8, fig.height=4}
 
@@ -273,27 +292,6 @@ mean_forest_plot_DGH_Acute(waiting_time_number_output)
 
 ```
 
-### Decrease
-
-#### Peterborough
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
-
-#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01","number_incomplete", 0.01, waiting_time_number_RGN, single_bedroom_matches_final)
-
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
-```
-
-
-
-
 
 ### No change
 
@@ -305,7 +303,7 @@ cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
 
 waiting_time_number_RGM<-tar_read(waiting_time_number_RGM)
 
-evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete", 0.1, waiting_time_number_RGM, single_bedroom_matches_final)
+#evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete", 0.05, waiting_time_number_RGM, single_bedroom_matches_final)
 
 
 ```
@@ -314,8 +312,6 @@ evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "number_incomplete",
 
 cia_summary_plots(waiting_time_number_RGM, "Number waiting", "2019-05-01")
 ```
-
-
 :::
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
@@ -330,53 +326,6 @@ cia_summary_plots(waiting_time_number_RGM, "Number waiting", "2019-05-01")
 ```{r, include=TRUE, fig.width=5, fig.height=6}
 
 #cia_summary_plots(waiting_time_number_RAL, "Study site: Chase Farm, RAL","Number waiting", "2018-09-01")
-```
-
-::: {.column width="50%"}
-
-#### Royal Liverpool
-
-```{r, include=FALSE, fig.width=5, fig.height=8}
-
-waiting_time_number_REM<-tar_read(waiting_time_number_REM)
-
-#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.1, waiting_time_number_REM, single_bedroom_matches_final)
-
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(waiting_time_number_REM, "Number waiting", "2022-10-01")
-```
-
-
-
-:::
-:::
-
-### Increase
-
-::: columns
-::: {.column width="50%"}
-#### Clatterbridge
-
-? Remove as switch happened during COVID and there is an increase at the other sites similar to Clatterbridge but this doesn't appear in expected. Also errorbars go negative
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-#waiting_time_number_REN<-tar_read(waiting_time_number_REN)
-
-#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.1, waiting_time_number_REN, single_bedroom_matches_final)
-
-#test<-rtt_waiting_time|>
-#  filter(organisation_code=="REN")
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
 ```
 
 #### Southmead
@@ -395,6 +344,70 @@ cia_summary_plots(waiting_time_number_RVJ, "Number waiting", "2014-05-01")
 ```
 
 
+::: {.column width="50%"}
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=5, fig.height=8}
+
+waiting_time_number_REM<-tar_read(waiting_time_number_REM)
+
+#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.1, waiting_time_number_REM, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(waiting_time_number_REM, "Number waiting", "2022-10-01")
+```
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
+
+#evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01","number_incomplete", 0.1, waiting_time_number_RGN, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
+```
+
+
+:::
+:::
+
+### Increase
+
+::: columns
+::: {.column width="50%"}
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+
+
+#? Remove as switch happened during COVID and there is an increase at the other sites similar to Clatterbridge but this doesn't appear in expected. Also errorbars go negative
+
+waiting_time_number_REN<-tar_read(waiting_time_number_REN)
+
+evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.01, waiting_time_number_REN, single_bedroom_matches_final)
+
+#test<-rtt_waiting_time|>
+#  filter(organisation_code=="REN")
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+#cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
+```
+
+
 :::
 
 ::: {.column width="50%"}
@@ -404,7 +417,7 @@ cia_summary_plots(waiting_time_number_RVJ, "Number waiting", "2014-05-01")
 
 waiting_time_number_RWF<-tar_read(waiting_time_number_RWF)
 
-evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "number_incomplete", 0.01, waiting_time_number_RWF, single_bedroom_matches_final)
+#evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "number_incomplete", 0.1, waiting_time_number_RWF, single_bedroom_matches_final)
 
 ```
 
@@ -421,6 +434,9 @@ cia_summary_plots(waiting_time_number_RWF, "Number waiting", "2011-01-01")
 ::: panel-tabset
 ### Summary
 
+Points to the left indicate a decrease in average length of stay following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
+
 ```{r, fig.width=8, fig.height=4}
 
 LoS_output<-tar_read(LoS_output)
@@ -436,7 +452,6 @@ model_effects_table(LoS_output)
 mean_forest_plot_DGH_Acute(LoS_output)
 
 ```
-
 
 ### Decrease
 
@@ -464,7 +479,7 @@ mean_forest_plot_DGH_Acute(LoS_output)
 
 LoS_RGN<-tar_read(LoS_RGN)
 
-#evaluating_model("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.05, LoS_RGN, single_bedroom_matches_final)
+#evaluating_model("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.01, LoS_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -497,7 +512,7 @@ cia_summary_plots(LoS_RAL,"Average LoS (days)", "2018-09-01")
 
 LoS_RVJ<-tar_read(LoS_RVJ)
 
-#evaluating_model("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.05, LoS_RVJ, single_bedroom_matches_final)
+#evaluating_model("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.01, LoS_RVJ, single_bedroom_matches_final)
 
 ```
 
@@ -505,10 +520,6 @@ LoS_RVJ<-tar_read(LoS_RVJ)
 
 cia_summary_plots(LoS_RVJ,"Average LoS (days)", "2014-05-01")
 ```
-:::
-:::
-
-### No change
 
 #### Royal Liverpool
 
@@ -526,6 +537,28 @@ LoS_REM<-tar_read(LoS_REM)
 cia_summary_plots(LoS_REM, "Average LoS (days)", "2022-10-01")
 ```
 
+
+:::
+:::
+
+### No change
+
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+LoS_RWF<-tar_read(LoS_RWF)
+
+evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(LoS_RWF,"Average LoS (days)", "2011-01-01")
+```
+
 ### Increase
 
 ::: columns
@@ -536,7 +569,7 @@ cia_summary_plots(LoS_REM, "Average LoS (days)", "2022-10-01")
 
 LoS_REN<-tar_read(LoS_REN)
 
-evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.05, LoS_REN, single_bedroom_matches_final)
+#evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.1, LoS_REN, single_bedroom_matches_final)
 
 ```
 
@@ -548,23 +581,6 @@ cia_summary_plots(LoS_REN,"Average LoS (days)", "2020-06-01")
 ```
 :::
 
-::: {.column width="50%"}
-#### Tunbridge Wells
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-LoS_RWF<-tar_read(LoS_RWF)
-
-#evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF, single_bedroom_matches_final)
-
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(LoS_RWF,"Average LoS (days)", "2011-01-01")
-```
-:::
 :::
 :::
 
@@ -572,6 +588,9 @@ cia_summary_plots(LoS_RWF,"Average LoS (days)", "2011-01-01")
 
 ::: panel-tabset
 ### Summary
+
+Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
 
 ```{r, fig.width=8, fig.height=4}
 
@@ -583,13 +602,14 @@ model_effects_table(emergency_readmissions_output)
 
 
 ```
+
 Mean effect for DGH/Acute hospitals
+
 ```{r, fig.width=8, fig.height=2.5}
 
 mean_forest_plot_DGH_Acute(emergency_readmissions_output)
 
 ```
-
 
 ### Decrease
 
@@ -601,7 +621,7 @@ mean_forest_plot_DGH_Acute(emergency_readmissions_output)
 
 emergency_readmissions_REN<-tar_read(emergency_readmissions_REN)
 
-#evaluating_model("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.05, emergency_readmissions_REN, single_bedroom_matches_final)
+#evaluating_model("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.1, emergency_readmissions_REN, single_bedroom_matches_final)
 
 ```
 
@@ -617,7 +637,7 @@ cia_summary_plots(emergency_readmissions_REN, "% readmissions", "2020-06-01")
 
 emergency_readmissions_RGN<-tar_read(emergency_readmissions_RGN)
 
-#evaluating_model("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.05, emergency_readmissions_RGN, single_bedroom_matches_final)
+#evaluating_model("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.1, emergency_readmissions_RGN, single_bedroom_matches_final)
 
 
 ```
@@ -635,7 +655,7 @@ cia_summary_plots(emergency_readmissions_RGN,"% readmissions", "2010-11-01")
 
 emergency_readmissions_RWF<-tar_read(emergency_readmissions_RWF)
 
-#evaluating_model("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.05, emergency_readmissions_RWF, single_bedroom_matches_final)
+#evaluating_model("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.01, emergency_readmissions_RWF, single_bedroom_matches_final)
 
 
 ```
@@ -657,7 +677,7 @@ cia_summary_plots(emergency_readmissions_RWF, "% readmissions", "2011-01-01")
 
 emergency_readmissions_REM<-tar_read(emergency_readmissions_REM)
 
-#evaluating_model("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.05, emergency_readmissions_REM, single_bedroom_matches_final)
+#evaluating_model("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.1, emergency_readmissions_REM, single_bedroom_matches_final)
 
 
 ```
@@ -673,7 +693,7 @@ cia_summary_plots(emergency_readmissions_REM, "% readmissions", "2022-10-01")
 
 emergency_readmissions_RGM<-tar_read(emergency_readmissions_RGM)
 
-#evaluating_model("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.05, emergency_readmissions_RGM, single_bedroom_matches_final)
+#evaluating_model("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.1, emergency_readmissions_RGM, single_bedroom_matches_final)
 
 
 ```
@@ -726,6 +746,9 @@ cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 ::: panel-tabset
 ### Summary
 
+Points to the right indicate a increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
+
+
 ```{r, fig.width=8, fig.height=4}
 
 bed_occupancy_output<-tar_read(bed_occupancy_output)
@@ -736,13 +759,14 @@ model_effects_table(bed_occupancy_output)
 
 
 ```
+
 Mean effect for DGH/Acute hospitals
+
 ```{r, fig.width=8, fig.height=2.5}
 
 mean_forest_plot_DGH_Acute(bed_occupancy_output)
 
 ```
-
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
@@ -761,34 +785,15 @@ mean_forest_plot_DGH_Acute(bed_occupancy_output)
 #cia_summary_plots(bed_occupancy_RGM,"Percentage", "2019-05-01")
 ```
 
-### No change
+### Decrease
 
-::: columns
-::: {.column width="50%"}
-#### Royal Liverpool
-
-```{r, include=FALSE, fig.width=8, fig.height=8}
-
-bed_occupancy_REM<-tar_read(bed_occupancy_REM)
-
-#evaluating_model("REM", NA, bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM, single_bedroom_matches_final)
-
-```
-
-```{r, include=TRUE, fig.width=5, fig.height=6}
-
-cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
-```
-:::
-
-::: {.column width="50%"}
 #### Chase Farm
 
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 bed_occupancy_RAL<-tar_read(bed_occupancy_RAL)
 
-evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL, single_bedroom_matches_final)
+#evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, bed_occupancy_RAL, single_bedroom_matches_final)
 
 ```
 
@@ -796,10 +801,9 @@ evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.05, 
 
 cia_summary_plots(bed_occupancy_RAL, "Percentage", "2018-09-01")
 ```
-:::
-:::
 
-### Increase
+
+### No change
 
 ::: columns
 ::: {.column width="50%"}
@@ -809,7 +813,7 @@ cia_summary_plots(bed_occupancy_RAL, "Percentage", "2018-09-01")
 
 bed_occupancy_REN<-tar_read(bed_occupancy_REN)
 
-#evaluating_model("REN", NA, bed_occupancy, "2020-06-01", "bed_occupancy", 0.05, bed_occupancy_REN, single_bedroom_matches_final)
+#evaluating_model("REN", NA, bed_occupancy, "2020-06-01", "bed_occupancy", 0.1, bed_occupancy_REN, single_bedroom_matches_final)
 
 
 ```
@@ -820,6 +824,33 @@ cia_summary_plots(bed_occupancy_REN,"Percentage", "2020-06-01")
 ```
 :::
 
+
+:::
+
+### Increase
+
+::: columns
+::: {.column width="50%"}
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+bed_occupancy_REM<-tar_read(bed_occupancy_REM)
+
+#evaluating_model("REM", NA, bed_occupancy, "2022-10-01", "bed_occupancy", 0.01, bed_occupancy_REM, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
+```
+
+
+
+
+:::
+
 ::: {.column width="50%"}
 #### Southmead
 
@@ -827,7 +858,7 @@ cia_summary_plots(bed_occupancy_REN,"Percentage", "2020-06-01")
 
 bed_occupancy_RVJ<-tar_read(bed_occupancy_RVJ)
 
-#evaluating_model("RVJ", NA, bed_occupancy, "2014-05-01", "bed_occupancy", 0.05, bed_occupancy_RVJ, single_bedroom_matches_final)
+#evaluating_model("RVJ", NA, bed_occupancy, "2014-05-01", "bed_occupancy", 0.1, bed_occupancy_RVJ, single_bedroom_matches_final)
 
 
 ```
@@ -839,6 +870,585 @@ cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 :::
 :::
 :::
+
+# Health and Safety
+
+## Healthcare acquired infections
+
+Grey indicates no significant change in the combined rate of healthcare acquired infections (number per 10,000 beddays) following a switch to single bed rooms.
+
+
+
+::: panel-tabset
+### Summary
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+hcai_output<-tar_read(hcai_output)
+
+forest_plot(hcai_output)
+
+model_effects_table(hcai_output)
+
+```
+
+### No change
+
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+hcai_REM<-tar_read(hcai_REM)
+
+#evaluating_model("REM", NA, hcai, "2022-10-01", "combined_rate", 0.1, hcai_REM, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
+```
+:::
+
+```{r, include=FALSE, fig.width=5, fig.height=6}
+#### Clatterbridge
+
+#hcai_REN<-tar_read(hcai_REN)
+
+#evaluating_model("REN",NA,  hcai, "2020-06-01", "combined_rate", 0.01, hcai_REN, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+#cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2020-06-01")
+```
+
+## Falls and Fractures in hospital
+
+::: panel-tabset
+### Summary
+
+Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+falls_and_fractures_output<-tar_read(falls_and_fractures_output)
+
+forest_plot(falls_and_fractures_output)
+
+model_effects_table(falls_and_fractures_output)
+
+```
+
+```{r, fig.width=8, fig.height=2}
+
+mean_forest_plot_DGH_Acute(falls_and_fractures_output)
+
+```
+
+### Decrease
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RGN<-tar_read(falls_and_fractures_RGN)
+
+#evaluating_model("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.01, falls_and_fractures_RGN, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(falls_and_fractures_RGN,"% of spells", "2010-11-01")
+```
+
+### No change
+
+::: columns
+::: {.column width="50%"}
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_REM<-tar_read(falls_and_fractures_REM)
+
+#evaluating_model("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.1, falls_and_fractures_REM, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RVJ<-tar_read(falls_and_fractures_RVJ)
+
+#evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.1, falls_and_fractures_RVJ, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(falls_and_fractures_RVJ,"% of spells", "2014-05-01")
+```
+
+Outcome period is cut short as the rate of falls and fractures at Southmead jumps suddenly in the second year of the outcome period (Nov 2015); this change does not appear to be associated with the change to single rooms as it occurs suddenly almost 18 months after the change to single rooms.
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+#### Clatterbridge
+
+#falls_and_fractures_REN<-tar_read(falls_and_fractures_REN)
+
+#evaluating_model("REN", "REN22", falls_and_fractures, "2020-06-01","ff_rate", 0.05, falls_and_fractures_REN, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+#cia_summary_plots(falls_and_fractures_REN, "% of spells", "2020-06-01")
+
+
+```
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+#### Papworth
+#falls_and_fractures_RGM<-tar_read(falls_and_fractures_RGM)
+
+#evaluating_model("RGM", "RGM22", falls_and_fractures, "2019-05-01", "ff_rate", 0.05, falls_and_fractures_RGM, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+#cia_summary_plots(falls_and_fractures_RGM, "% of spells", "2019-05-01")
+```
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+#### Chase Farm
+#falls_and_fractures_RAL<-tar_read(falls_and_fractures_RAL)
+
+#evaluating_model("RAL", "RALC7", falls_and_fractures, "2018-09-01", "ff_rate", 0.05, falls_and_fractures_RAL, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+#cia_summary_plots(falls_and_fractures_RAL,"% of spells", "2018-09-01")
+```
+:::
+
+::: {.column width="50%"}
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+falls_and_fractures_RWF<-tar_read(falls_and_fractures_RWF)
+
+evaluating_model("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
+```
+:::
+:::
+:::
+
+
+## Deaths in hospital
+
+::: panel-tabset
+### Summary
+
+Points to the left indicate a decrease in hospital deaths following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+sus_deaths_output<-tar_read(sus_deaths_output)
+
+forest_plot(sus_deaths_output)
+
+model_effects_table(sus_deaths_output)
+
+```
+
+```{r, fig.width=8, fig.height=2}
+
+mean_forest_plot_DGH_Acute(sus_deaths_output)
+
+```
+
+### Decrease
+
+#### Peterborough
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RGN<-tar_read(sus_deaths_RGN)
+
+#evaluating_model("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.1, sus_deaths_RGN, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
+```
+
+### No change
+
+::: columns
+::: {.column width="50%"}
+#### Royal Liverpool
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_REM<-tar_read(sus_deaths_REM)
+
+#evaluating_model("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
+```
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+#### Papworth
+#sus_deaths_RGM<-tar_read(sus_deaths_RGM)
+
+#evaluating_model("RGM", "RGM22", sus_deaths, "2019-05-01", "hosp_rate_1000", 0.05, sus_deaths_RGM, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+#cia_summary_plots(sus_deaths_RGM, "No./per 1,000 discharges", "2019-05-01")
+```
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+#### Chase Farm
+
+#sus_deaths_RAL<-tar_read(sus_deaths_RAL)
+
+#evaluating_model("RAL", "RALC7", sus_deaths, "2018-09-01","hosp_rate_1000", 0.05, sus_deaths_RAL, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+#cia_summary_plots(sus_deaths_RAL, "No./per 1,000 discharges", "2018-09-01")
+```
+
+#### Southmead
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RVJ<-tar_read(sus_deaths_RVJ)
+
+evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.01, sus_deaths_RVJ, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(sus_deaths_RVJ,"No./per 1,000 discharges", "2014-05-01")
+```
+:::
+
+::: {.column width="50%"}
+#### Tunbridge Wells
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_RWF<-tar_read(sus_deaths_RWF)
+
+#evaluating_model("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.01, sus_deaths_RWF, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(sus_deaths_RWF, "No./per 1,000 discharges", "2011-01-01")
+```
+:::
+:::
+
+### Increase
+
+#### Clatterbridge
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+sus_deaths_REN<-tar_read(sus_deaths_REN)
+
+evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN, single_bedroom_matches_final )
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
+
+```
+:::
+# Patient and Staff Experience
+
+## Patient experience - Friends and Family scores
+
+::: panel-tabset
+### Summary
+
+Points to the right indicate a increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
+
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+friends_and_family_output<-tar_read(friends_and_family_output)
+
+forest_plot(friends_and_family_output)
+
+model_effects_table(friends_and_family_output)
+
+```
+
+### Decrease
+
+#### Clatterbridge (REN)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+
+friends_and_family_REN<-tar_read(friends_and_family_REN)
+
+#evaluating_model("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.1, friends_and_family_REN, single_bedroom_matches_final )
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(friends_and_family_REN,"Positive responses (%)", "2020-06-01")
+
+#Last data point prior to switch was about 4 months prior then no data for 8 months after, as switch came during COVID
+
+```
+
+### No Change
+
+::: columns
+::: {.column width="50%"}
+#### Royal Liverpool (REMRQ)
+
+```{r, include=FALSE, fig.height=8, fig.width=8}
+
+friends_and_family_REM<-tar_read(friends_and_family_REM)
+
+evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.1, friends_and_family_REM, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(friends_and_family_REM, "Positive responses (%)", "2022-10-01")
+
+
+# Large amount of data missing in the two years prior due to gap over covid. One of the control sites doesn't go back far enough for it is causing the data to be cut off. Think I need to have less matches for this one. But would still have a disturbed pre switch period due to COVID
+
+```
+:::
+
+::: {.column width="50%"}
+#### Chase Farm Hospital (RAL)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+friends_and_family_RAL<-tar_read(friends_and_family_RAL)
+
+#evaluating_model("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.01, friends_and_family_RAL, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01")
+```
+:::
+:::
+
+### Increase
+
+#### Papworth (RGM)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+friends_and_family_RGM<-tar_read(friends_and_family_RGM)
+
+#evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.1, friends_and_family_RGM, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01")
+```
+:::
+
+## Staff sickness
+
+::: panel-tabset
+### Summary
+
+Points to the left indicate a decrease in staff sickness following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+staff_sickness_output<-tar_read(staff_sickness_output)
+
+forest_plot(staff_sickness_output)
+
+model_effects_table(staff_sickness_output)
+
+```
+
+```{r, fig.width=8, fig.height=2}
+
+mean_forest_plot_DGH_Acute(staff_sickness_output)
+
+```
+
+### No change
+
+::: columns
+::: {.column width="50%"}
+#### Royal Liverpool (REM)
+
+```{r, include=FALSE, fig.height=8, fig.width=8}
+
+staff_sickness_REM<-tar_read(staff_sickness_REM)
+
+#evaluating_model("REM",NA, staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(staff_sickness_REM, "Sickness Rate (%)", "2022-10-01")
+
+```
+
+#### Clatterbridge (REN)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_REN<-tar_read(staff_sickness_REN)
+
+#evaluating_model("REN", NA,staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN, single_bedroom_matches_final )
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(staff_sickness_REN, "Sickness Rate (%)", "2020-06-01")
+
+```
+
+#### Papworth (RGM)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_RGM<-tar_read(staff_sickness_RGM)
+
+#evaluating_model("RGM", NA,staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05, staff_sickness_RGM, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(staff_sickness_RGM, "Sickness Rate (%)", "2019-05-01")
+```
+:::
+
+::: {.column width="50%"}
+#### Chase Farm Hospital (RAL)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_RAL<-tar_read(staff_sickness_RAL)
+
+
+#evaluating_model("RAL", staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05, staff_sickness_RAL, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
+```
+### Increase
+#### Southmead (RVJ)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
+
+#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
+```
+:::
+:::
+:::
+
+# Staff survey
+
+#### Southmead (RVJ)
+
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+formatted_staff_survey_data<-tar_read(formatted_staff_survey_data)|>
+    mutate(month=paste0(year,"-01-01"))|>
+ mutate(month=as.Date(month))|>
+  filter(!is.na(positive_responses))
+
+#model<-cia_analysis("RVJ", NA, formatted_staff_survey_data, 2014, "positive_responses", 0.05, single_bedroom_matches_final )
+
+#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_final)
+
+```
+
+
+cia_analysis<-function(organisation, site, data, switch_month, variable, prior_sd, single_bedroom_matches  )
+
 
 ## Summary of effects across sites
 

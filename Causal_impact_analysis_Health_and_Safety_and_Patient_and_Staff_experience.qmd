@@ -66,21 +66,7 @@ falls_and_fractures<- tar_read(falls_and_fractures_cia_format)
 # SUS death rate (deaths/1000 admissions)
 sus_deaths<- tar_read(sus_deaths_cia_format)
 
-#survey<-read_csv("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey.csv")
 
-#test<-survey|>
-#  clean_names()|>
-#      mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
-#    mutate(month = floor_date(effective_snapshot_date, "month"))|>  #Format date to monthly
-#  filter( str_detect(breakdown_category,"Registered Nurses & Midwives:")|
- #       breakdown_category=="Nursing auxiliary / Nursing assistant / Healthcare assistant") |>
- #   
-
- # filter(question=="q21c - I would recommend my organisation as a place to work.")|>
-
-single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
-
-source("R/CIA_Functions.R")
 
 ```
 
@@ -172,7 +158,6 @@ model_effects_table(falls_and_fractures_output)
 mean_forest_plot_DGH_Acute(falls_and_fractures_output)
 
 ```
-
 
 ### Decrease
 
@@ -313,7 +298,6 @@ forest_plot(sus_deaths_output)
 model_effects_table(sus_deaths_output)
 
 ```
-
 
 ```{r, fig.width=8, fig.height=2}
 
@@ -460,7 +444,6 @@ model_effects_table(friends_and_family_output)
 
 ```
 
-
 ### Decrease
 
 #### Clatterbridge (REN)
@@ -567,6 +550,7 @@ model_effects_table(staff_sickness_output)
 mean_forest_plot_DGH_Acute(staff_sickness_output)
 
 ```
+
 ### No change
 
 ::: columns

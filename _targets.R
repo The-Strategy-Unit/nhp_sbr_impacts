@@ -819,7 +819,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2022-10-01", 
                "median_by_prov", 
-               0.01,
+               0.05,
                single_bedroom_matches_final)
 ),
 
@@ -830,7 +830,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2020-06-01", 
                "median_by_prov", 
-               0.01,
+               0.05,
                single_bedroom_matches_final)
 ),
 
@@ -841,7 +841,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2019-05-01", 
                "median_by_prov", 
-               0.1,
+               0.05,
                single_bedroom_matches_final)
 ),
 
@@ -904,16 +904,16 @@ tar_target(
                single_bedroom_matches_final)
 ),
 
-tar_target(
-  waiting_time_number_REN,
-  cia_analysis("REN", 
-               NA, 
-               rtt_waiting_time_cia_format,
-               "2020-06-01", 
-               "number_incomplete", 
-               0.1,
-               single_bedroom_matches_final)
-),
+#tar_target(
+#  waiting_time_number_REN,
+#  cia_analysis("REN", 
+#               NA, 
+#               rtt_waiting_time_cia_format,
+#               "2020-06-01", 
+#               "number_incomplete", 
+#               0.1,
+#               single_bedroom_matches_final)
+#),
 
 tar_target(
   waiting_time_number_RGM,
@@ -922,7 +922,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2019-05-01", 
                "number_incomplete", 
-               0.1,
+               0.05,
                single_bedroom_matches_final)
 ),
 
@@ -933,7 +933,7 @@ tar_target(
                rtt_waiting_time_cia_format,
                "2010-11-01", 
                "number_incomplete", 
-               0.01,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -991,7 +991,7 @@ tar_target(
                length_of_stay_cia_format,
                "2020-06-01", 
                "avg_los",  
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1013,7 +1013,7 @@ tar_target(
                length_of_stay_cia_format,
                "2010-11-01", 
                "avg_los", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -1036,7 +1036,7 @@ tar_target(
                length_of_stay_cia_format,
                "2014-05-01", 
                "avg_los", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -1060,7 +1060,7 @@ tar_target(
                emergency_readmissions_cia_format,
                "2022-10-01", 
                "perc", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1071,7 +1071,7 @@ tar_target(
                emergency_readmissions_cia_format,
                "2020-06-01", 
                "perc",  
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1082,7 +1082,7 @@ tar_target(
                emergency_readmissions_cia_format,
                "2019-05-01", 
                "perc", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1093,7 +1093,7 @@ tar_target(
                emergency_readmissions_cia_format,
                "2010-11-01", 
                "perc", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1127,7 +1127,7 @@ tar_target(
                emergency_readmissions_cia_format,
                "2011-01-01", 
                "perc",  
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -1140,7 +1140,7 @@ tar_target(
                bed_occupancy_cia_format,
                "2022-10-01", 
                "bed_occupancy", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -1151,7 +1151,7 @@ tar_target(
                bed_occupancy_cia_format,
                "2020-06-01", 
                "bed_occupancy", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1200,7 +1200,7 @@ tar_target(
                hcai_cia_format,
                "2022-10-01", 
                "combined_rate", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1223,7 +1223,7 @@ tar_target(
                falls_and_fractures_cia_format,
                "2022-10-01", 
                "ff_rate", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1256,20 +1256,20 @@ tar_target(
                falls_and_fractures_cia_format,
                "2010-11-01", 
                "ff_rate", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
-#tar_target(
-#  falls_and_fractures_RAL,
-#  cia_analysis("RAL", 
-#               "RALC7", 
-#               falls_and_fractures_cia_format,
-#               "2018-09-01", 
-#               "ff_rate", 
-#               0.05,
-#               single_bedroom_matches_final)
-#),
+tar_target(
+  falls_and_fractures_RAL,
+  cia_analysis("RAL", 
+               "RALC7", 
+               falls_and_fractures_cia_format,
+               "2018-09-01", 
+               "ff_rate", 
+               0.05,
+               single_bedroom_matches_final)
+),
 
 
 tar_target(
@@ -1279,7 +1279,7 @@ tar_target(
                falls_and_fractures_cia_format,
                "2014-05-01", 
                "ff_rate", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1336,7 +1336,7 @@ tar_target(
                sus_deaths_cia_format,
                "2010-11-01", 
                "hosp_rate_1000", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1359,7 +1359,7 @@ tar_target(
                sus_deaths_cia_format,
                "2014-05-01", 
                "hosp_rate_1000", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -1370,7 +1370,7 @@ tar_target(
                sus_deaths_cia_format,
                "2011-01-01", 
                "hosp_rate_1000",  
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -1382,7 +1382,7 @@ tar_target(
                friends_and_family_cia_format,
                "2022-10-01", 
                "friends_and_family_percent", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1393,7 +1393,7 @@ tar_target(
                friends_and_family_cia_format,
                "2020-06-01", 
                "friends_and_family_percent",  
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1404,7 +1404,7 @@ tar_target(
                friends_and_family_cia_format,
                "2019-05-01", 
                "friends_and_family_percent", 
-               0.05,
+               0.1,
                single_bedroom_matches_final)
 ),
 
@@ -1415,7 +1415,7 @@ tar_target(
                friends_and_family_cia_format,
                "2018-09-01", 
                "friends_and_family_percent", 
-               0.05,
+               0.01,
                single_bedroom_matches_final)
 ),
 
@@ -1495,7 +1495,7 @@ tar_target(
 tar_target(
   waiting_time_number_output,
   model_output(waiting_time_number_REM,
-               waiting_time_number_REN,
+               NA,
                waiting_time_number_RGM,
                waiting_time_number_RGN,
                NA,

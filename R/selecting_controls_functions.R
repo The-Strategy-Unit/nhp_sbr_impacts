@@ -453,7 +453,8 @@ ranking_control_var <- function(df) {
     ) |>
     mutate(sum_ranks = rowSums(across(contains("_rank")))) |>
     group_by(organisation_code) |>
-    mutate(rank_of_ranks = rank(sum_ranks, ties.method = "first"))
+    mutate(rank_of_ranks = rank(sum_ranks, ties.method = "first")) |>
+    ungroup()
   
   return(data)
   

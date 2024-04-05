@@ -11,23 +11,23 @@ library(targets)
 tar_option_set(
   packages = c(
     "dplyr",
+    "egg",
+    "flextable",
     "geomtextpath",
     "ggplot2",
+    "htmltools",
     "janitor",
+    "leaflet",
     "lubridate",
+    "MarketMatching",
+    "oceanis",
+    "patchwork",
     "readxl",
+    "sf",
     "stringr",
     "tidyr",
     "tsibble",
-    "zoo",
-    "sf",
-    "leaflet",
-    "htmltools",
-    "oceanis",
-    "flextable",
-    "egg",
-    "patchwork",
-    "MarketMatching"
+    "zoo"
   ) # Packages that your targets need for their tasks.
 )
 
@@ -439,7 +439,7 @@ list(
       get_indicator_organisation_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         bed_occupancy_cia_format,
         "bed_occupancy",
         "quarter"
@@ -463,7 +463,7 @@ list(
       get_indicator_organisation_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         staff_turnover_cia_format,
         "leaving_rate",
         "month"
@@ -487,7 +487,7 @@ list(
       get_indicator_organisation_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         staff_sickness_cia_format,
         "staff_sickness_percent",
         "month"
@@ -511,7 +511,7 @@ list(
       get_indicator_organisation_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         hcai_cia_format,
         "combined_rate",
         "month"
@@ -538,7 +538,7 @@ list(
       get_indicator_site_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         cleaning_staff_cia_format,
         "cleaning_staff_wte",
         "year"
@@ -562,7 +562,7 @@ list(
       get_indicator_site_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         cleaning_costs_cia_format,
         "cleaning_service_cost",
         "year"
@@ -586,7 +586,7 @@ list(
       get_indicator_site_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         friends_and_family_cia_format,
         "friends_and_family_percent",
         "month"
@@ -610,7 +610,7 @@ list(
       get_indicator_site_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         falls_and_fractures_cia_format,
         "ff_rate",
         "month"
@@ -634,7 +634,7 @@ list(
       get_indicator_site_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         sus_deaths_cia_format,
         "hosp_rate_1000",
         "month"
@@ -658,7 +658,7 @@ list(
       get_indicator_organisation_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         rtt_waiting_time_cia_format,
         "median_by_prov",
         "month"
@@ -682,7 +682,7 @@ list(
       get_indicator_site_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         length_of_stay_cia_format,
         "avg_los",
         "month"
@@ -707,7 +707,7 @@ list(
       get_indicator_organisation_level_plot(
         hospital_of_interest,
         hospitals,
-        single_bedroom_matches,
+        single_bedroom_matches_final,
         sbr_percent_cia_format,
         "percentage_single_bedrooms",
         "year"
@@ -729,7 +729,7 @@ list(
     map_controls(
       "royal_liverpool",
       hospitals,
-      single_bedroom_matches,
+      single_bedroom_matches_final,
       ods_sites
     )
   ),
@@ -737,7 +737,7 @@ list(
     map_clatterbridge,
     map_controls("clatterbridge",
                  hospitals,
-                 single_bedroom_matches,
+                 single_bedroom_matches_final,
                  ods_sites)
   ),
   tar_target(
@@ -745,7 +745,7 @@ list(
     map_controls(
       "royal_papworth",
       hospitals,
-      single_bedroom_matches,
+      single_bedroom_matches_final,
       ods_sites
     )
   ),
@@ -753,21 +753,21 @@ list(
     map_peterborough,
     map_controls("peterborough",
                  hospitals,
-                 single_bedroom_matches,
+                 single_bedroom_matches_final,
                  ods_sites)
   ),
   tar_target(
     map_chase_farm,
     map_controls("chase_farm",
                  hospitals,
-                 single_bedroom_matches,
+                 single_bedroom_matches_final,
                  ods_sites)
   ),
   tar_target(
     map_southmead,
     map_controls("southmead",
                  hospitals,
-                 single_bedroom_matches,
+                 single_bedroom_matches_final,
                  ods_sites)
   ),
   tar_target(
@@ -775,10 +775,11 @@ list(
     map_controls(
       "tunbridge_wells",
       hospitals,
-      single_bedroom_matches,
+      single_bedroom_matches_final,
       ods_sites
     )
   ),
+
 #-----------------------------------------------------------------------------#
 
 # Indicator availability plots
@@ -1585,5 +1586,6 @@ tar_target(
                staff_sickness_RVJ,
                NA)
 )
+
   
 )

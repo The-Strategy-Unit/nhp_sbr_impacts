@@ -1,11 +1,5 @@
 ## Map functions
 
-##library required (remove to targets header once function working)
-library("sf")
-library("leaflet")
-library("htmltools")
-library("oceanis")
-
 # To create the map of 7 sites (leaflet):
 map_all <- function(title,
                     hospitals,

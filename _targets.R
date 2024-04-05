@@ -721,69 +721,103 @@ list(
             hospitals,
             ods_sites)
   ),
-  tar_target(
-    map_royal_liverpool,
-    map_controls(
-      "royal_liverpool",
-      hospitals,
-      single_bedroom_matches_final,
-      ods_sites
+  
+  
+  
+  
+  
+  
+  tarchetypes::tar_map(
+    list(
+      hospital_of_interest = c(
+        "royal_liverpool",
+        "clatterbridge",
+        "royal_papworth",
+        "peterborough",
+        "chase_farm",
+        "southmead",
+        "tunbridge_wells"
+      )
+    ),
+    tar_target(
+      map,
+      map_controls(
+        hospital_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        ods_sites
+      )
     )
   ),
-  tar_target(
-    map_clatterbridge,
-    map_controls(
-      "clatterbridge",
-      hospitals,
-      single_bedroom_matches_final,
-      ods_sites
-    )
-  ),
-  tar_target(
-    map_royal_papworth,
-    map_controls(
-      "royal_papworth",
-      hospitals,
-      single_bedroom_matches_final,
-      ods_sites
-    )
-  ),
-  tar_target(
-    map_peterborough,
-    map_controls(
-      "peterborough",
-      hospitals,
-      single_bedroom_matches_final,
-      ods_sites
-    )
-  ),
-  tar_target(
-    map_chase_farm,
-    map_controls(
-      "chase_farm",
-      hospitals,
-      single_bedroom_matches_final,
-      ods_sites
-    )
-  ),
-  tar_target(
-    map_southmead,
-    map_controls(
-      "southmead",
-      hospitals,
-      single_bedroom_matches_final,
-      ods_sites
-    )
-  ),
-  tar_target(
-    map_tunbridge_wells,
-    map_controls(
-      "tunbridge_wells",
-      hospitals,
-      single_bedroom_matches_final,
-      ods_sites
-    )
-  ),
+  
+  
+  # 
+  # 
+  # 
+  # 
+  # tar_target(
+  #   map_royal_liverpool,
+  #   map_controls(
+  #     "royal_liverpool",
+  #     hospitals,
+  #     single_bedroom_matches_final,
+  #     ods_sites
+  #   )
+  # ),
+  # tar_target(
+  #   map_clatterbridge,
+  #   map_controls(
+  #     "clatterbridge",
+  #     hospitals,
+  #     single_bedroom_matches_final,
+  #     ods_sites
+  #   )
+  # ),
+  # tar_target(
+  #   map_royal_papworth,
+  #   map_controls(
+  #     "royal_papworth",
+  #     hospitals,
+  #     single_bedroom_matches_final,
+  #     ods_sites
+  #   )
+  # ),
+  # tar_target(
+  #   map_peterborough,
+  #   map_controls(
+  #     "peterborough",
+  #     hospitals,
+  #     single_bedroom_matches_final,
+  #     ods_sites
+  #   )
+  # ),
+  # tar_target(
+  #   map_chase_farm,
+  #   map_controls(
+  #     "chase_farm",
+  #     hospitals,
+  #     single_bedroom_matches_final,
+  #     ods_sites
+  #   )
+  # ),
+  # tar_target(
+  #   map_southmead,
+  #   map_controls(
+  #     "southmead",
+  #     hospitals,
+  #     single_bedroom_matches_final,
+  #     ods_sites
+  #   )
+  # ),
+  # tar_target(
+  #   map_tunbridge_wells,
+  #   map_controls(
+  #     "tunbridge_wells",
+  #     hospitals,
+  #     single_bedroom_matches_final,
+  #     ods_sites
+  #   )
+  # ),
   
   #-----------------------------------------------------------------------------#
   # Indicator availability plots

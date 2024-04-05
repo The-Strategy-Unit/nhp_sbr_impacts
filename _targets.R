@@ -399,28 +399,26 @@ list(
                       "RALC7",
                       "RVJ01",
                       "RWFTW"),
-      "date_sbr" = c(
-        as.Date("2022-10-31"),
-        as.Date("2022-06-30"),
-        as.Date("2019-05-31"),
-        as.Date("2010-11-30"),
-        as.Date("2018-09-30"),
-        as.Date("2014-05-30"),
-        as.Date("2011-01-31")
+      "switch_month" = c(
+        as.Date("2022-10-01"),
+        as.Date("2020-06-01"),
+        as.Date("2019-05-01"),
+        as.Date("2010-11-01"),
+        as.Date("2018-09-01"),
+        as.Date("2014-05-01"),
+        as.Date("2011-01-01")
       )
     )
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_bed_occupancy,
@@ -436,15 +434,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_staff_turnover,
@@ -460,15 +456,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_staff_sickness,
@@ -484,15 +478,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_hcai,
@@ -506,20 +498,18 @@ list(
       )
     )
   ),
-
-
+  
+  
   # site code plots
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_cleaning_staff,
@@ -535,15 +525,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_cleaning_costs,
@@ -559,15 +547,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_friends_and_family,
@@ -583,15 +569,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_falls_and_fractures,
@@ -607,15 +591,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_sus_deaths,
@@ -631,15 +613,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_rtt_waiting_time,
@@ -655,15 +635,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_length_of_stay,
@@ -676,19 +654,17 @@ list(
         "month"
       )
     )
-
+    
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       plot_sbr_percent,
@@ -714,15 +690,13 @@ list(
   ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c(
-        "REM",
-        "REN",
-        "RGM",
-        "RGN",
-        "RAL",
-        "RVJ",
-        "RWF"
-      )
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
     tar_target(
       map,
@@ -782,10 +756,10 @@ list(
       "REM",
       NA,
       rtt_waiting_time_cia_format,
-      "2022-10-01",
       "median_by_prov",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -795,10 +769,10 @@ list(
       "REN",
       NA,
       rtt_waiting_time_cia_format,
-      "2020-06-01",
       "median_by_prov",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -808,10 +782,10 @@ list(
       "RGM",
       NA,
       rtt_waiting_time_cia_format,
-      "2019-05-01",
       "median_by_prov",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -821,10 +795,10 @@ list(
       "RGN",
       NA,
       rtt_waiting_time_cia_format,
-      "2010-11-01",
       "median_by_prov",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -834,10 +808,10 @@ list(
       "RAL",
       NA,
       rtt_waiting_time_cia_format,
-      "2018-09-01",
       "median_by_prov",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -848,10 +822,10 @@ list(
       "RVJ",
       NA,
       rtt_waiting_time_cia_format,
-      "2014-05-01",
       "median_by_prov",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -861,10 +835,10 @@ list(
       "RWF",
       NA,
       rtt_waiting_time_cia_format,
-      "2011-01-01",
       "median_by_prov",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -877,10 +851,10 @@ list(
       "REM",
       NA,
       rtt_waiting_time_cia_format,
-      "2022-10-01",
       "number_incomplete",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -889,10 +863,10 @@ list(
   #  cia_analysis("REN",
   #               NA,
   #               rtt_waiting_time_cia_format,
-  #               "2020-06-01",
   #               "number_incomplete",
   #               0.1,
-  #               single_bedroom_matches_final)
+  #               single_bedroom_matches_final,
+  # hospitals)
   #),
   
   tar_target(
@@ -901,10 +875,10 @@ list(
       "RGM",
       NA,
       rtt_waiting_time_cia_format,
-      "2019-05-01",
       "number_incomplete",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -914,10 +888,10 @@ list(
       "RGN",
       NA,
       rtt_waiting_time_cia_format,
-      "2010-11-01",
       "number_incomplete",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -927,10 +901,10 @@ list(
       "RAL",
       NA,
       rtt_waiting_time_cia_format,
-      "2018-09-01",
       "number_incomplete",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -941,10 +915,10 @@ list(
       "RVJ",
       NA,
       rtt_waiting_time_cia_format,
-      "2014-05-01",
       "number_incomplete",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -954,10 +928,10 @@ list(
       "RWF",
       NA,
       rtt_waiting_time_cia_format,
-      "2011-01-01",
       "number_incomplete",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -969,10 +943,10 @@ list(
       "REM",
       "REMRQ",
       length_of_stay_cia_format,
-      "2022-10-01",
       "avg_los",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -982,10 +956,10 @@ list(
       "REN",
       "REN22",
       length_of_stay_cia_format,
-      "2020-06-01",
       "avg_los",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -995,10 +969,10 @@ list(
       "RGM",
       "RGM22",
       length_of_stay_cia_format,
-      "2019-05-01",
       "avg_los",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1008,10 +982,10 @@ list(
       "RGN",
       "RGN80",
       length_of_stay_cia_format,
-      "2010-11-01",
       "avg_los",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1021,10 +995,10 @@ list(
       "RAL",
       "RALC7",
       length_of_stay_cia_format,
-      "2018-09-01",
       "avg_los",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1035,10 +1009,10 @@ list(
       "RVJ",
       "RVJ01",
       length_of_stay_cia_format,
-      "2014-05-01",
       "avg_los",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1048,10 +1022,10 @@ list(
       "RWF",
       "RWFTW",
       length_of_stay_cia_format,
-      "2011-01-01",
       "avg_los",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1063,10 +1037,10 @@ list(
       "REM",
       "REMRQ",
       emergency_readmissions_cia_format,
-      "2022-10-01",
       "perc",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1076,10 +1050,10 @@ list(
       "REN",
       "REN22",
       emergency_readmissions_cia_format,
-      "2020-06-01",
       "perc",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1089,10 +1063,10 @@ list(
       "RGM",
       "RGM22",
       emergency_readmissions_cia_format,
-      "2019-05-01",
       "perc",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1102,10 +1076,10 @@ list(
       "RGN",
       "RGN80",
       emergency_readmissions_cia_format,
-      "2010-11-01",
       "perc",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1115,10 +1089,10 @@ list(
       "RAL",
       "RALC7",
       emergency_readmissions_cia_format,
-      "2018-09-01",
       "perc",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1129,10 +1103,10 @@ list(
       "RVJ",
       "RVJ01",
       emergency_readmissions_cia_format,
-      "2014-05-01",
       "perc",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1142,10 +1116,10 @@ list(
       "RWF",
       "RWFTW",
       emergency_readmissions_cia_format,
-      "2011-01-01",
       "perc",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1157,10 +1131,10 @@ list(
       "REM",
       NA,
       bed_occupancy_cia_format,
-      "2022-10-01",
       "bed_occupancy",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1170,10 +1144,10 @@ list(
       "REN",
       NA,
       bed_occupancy_cia_format,
-      "2020-06-01",
       "bed_occupancy",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1183,10 +1157,10 @@ list(
       "RGM",
       NA,
       bed_occupancy_cia_format,
-      "2019-05-01",
       "bed_occupancy",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1197,10 +1171,10 @@ list(
       "RAL",
       NA,
       bed_occupancy_cia_format,
-      "2018-09-01",
       "bed_occupancy",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1211,10 +1185,10 @@ list(
       "RVJ",
       NA,
       bed_occupancy_cia_format,
-      "2014-05-01",
       "bed_occupancy",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1227,10 +1201,10 @@ list(
       "REM",
       NA,
       hcai_cia_format,
-      "2022-10-01",
       "combined_rate",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1240,10 +1214,10 @@ list(
       "REN",
       NA,
       hcai_cia_format,
-      "2020-06-01",
       "combined_rate",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1254,10 +1228,10 @@ list(
       "REM",
       "REMRQ",
       falls_and_fractures_cia_format,
-      "2022-10-01",
       "ff_rate",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1267,10 +1241,10 @@ list(
       "REN",
       "REN22",
       falls_and_fractures_cia_format,
-      "2020-06-01",
       "ff_rate",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1280,10 +1254,10 @@ list(
       "RGM",
       "RGM22",
       falls_and_fractures_cia_format,
-      "2019-05-01",
       "ff_rate",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1293,10 +1267,10 @@ list(
       "RGN",
       "RGN80",
       falls_and_fractures_cia_format,
-      "2010-11-01",
       "ff_rate",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1306,10 +1280,10 @@ list(
       "RAL",
       "RALC7",
       falls_and_fractures_cia_format,
-      "2018-09-01",
       "ff_rate",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1320,10 +1294,10 @@ list(
       "RVJ",
       "RVJ01",
       falls_and_fractures_cia_format,
-      "2014-05-01",
       "ff_rate",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1333,10 +1307,10 @@ list(
       "RWF",
       "RWFTW",
       falls_and_fractures_cia_format,
-      "2011-01-01",
       "ff_rate",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1348,10 +1322,10 @@ list(
       "REM",
       "REMRQ",
       sus_deaths_cia_format,
-      "2022-10-01",
       "hosp_rate_1000",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1361,10 +1335,10 @@ list(
       "REN",
       "REN22",
       sus_deaths_cia_format,
-      "2020-06-01",
       "hosp_rate_1000",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1374,10 +1348,10 @@ list(
       "RGM",
       "RGM22",
       sus_deaths_cia_format,
-      "2019-05-01",
       "hosp_rate_1000",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1387,10 +1361,10 @@ list(
       "RGN",
       "RGN80",
       sus_deaths_cia_format,
-      "2010-11-01",
       "hosp_rate_1000",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1400,10 +1374,10 @@ list(
       "RAL",
       "RALC7",
       sus_deaths_cia_format,
-      "2018-09-01",
       "hosp_rate_1000",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1414,10 +1388,10 @@ list(
       "RVJ",
       "RVJ01",
       sus_deaths_cia_format,
-      "2014-05-01",
       "hosp_rate_1000",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1427,10 +1401,10 @@ list(
       "RWF",
       "RWFTW",
       sus_deaths_cia_format,
-      "2011-01-01",
       "hosp_rate_1000",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1441,10 +1415,10 @@ list(
       "REM",
       "REMRQ",
       friends_and_family_cia_format,
-      "2022-10-01",
       "friends_and_family_percent",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1454,10 +1428,10 @@ list(
       "REN",
       "REN22",
       friends_and_family_cia_format,
-      "2020-06-01",
       "friends_and_family_percent",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1467,10 +1441,10 @@ list(
       "RGM",
       "RGM22",
       friends_and_family_cia_format,
-      "2019-05-01",
       "friends_and_family_percent",
       0.1,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1480,10 +1454,10 @@ list(
       "RAL",
       "RALC7",
       friends_and_family_cia_format,
-      "2018-09-01",
       "friends_and_family_percent",
       0.01,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1495,10 +1469,10 @@ list(
       "REM",
       NA,
       staff_sickness_cia_format,
-      "2022-10-01",
       "staff_sickness_percent",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1508,10 +1482,10 @@ list(
       "REN",
       NA,
       staff_sickness_cia_format,
-      "2020-06-01",
       "staff_sickness_percent",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1521,10 +1495,10 @@ list(
       "RGM",
       NA,
       staff_sickness_cia_format,
-      "2019-05-01",
       "staff_sickness_percent",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1535,10 +1509,10 @@ list(
       "RAL",
       NA,
       staff_sickness_cia_format,
-      "2018-09-01",
       "staff_sickness_percent",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   
@@ -1548,10 +1522,10 @@ list(
       "RVJ",
       NA,
       staff_sickness_cia_format,
-      "2014-05-01",
       "staff_sickness_percent",
       0.05,
-      single_bedroom_matches_final
+      single_bedroom_matches_final,
+      hospitals
     )
   ),
   

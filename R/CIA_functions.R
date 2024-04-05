@@ -64,10 +64,14 @@ cia_analysis <-
   function(organisation,
            site,
            data,
-           switch_month,
            variable,
            prior_sd,
-           single_bedroom_matches) {
+           single_bedroom_matches,
+         hospitals) {
+    switch_month <- hospitals |>
+      dplyr::filter(organisation_code == organisation) |>
+      dplyr::pull(switch_month)
+    
     cia_matches <-
       select_matches(organisation,
                      site,

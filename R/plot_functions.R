@@ -144,7 +144,7 @@ get_indicator_organisation_level_plot <-
            frequency) {
     sbr_date <- hospitals |>
       dplyr::filter(organisation_code == org_code_of_interest) |>
-      dplyr::pull(date_sbr)
+      dplyr::pull(switch_month)
     
     site_of_interest <- indicator |>
       dplyr::filter(organisation_code == org_code_of_interest)
@@ -182,7 +182,7 @@ get_indicator_site_level_plot <- function(org_code_of_interest,
   
   sbr_date <- hospitals |>
     dplyr::filter(site_code == site_code_of_interest) |>
-    dplyr::pull(date_sbr)
+    dplyr::pull(switch_month)
   
   site_of_interest <- indicator |>
     dplyr::filter(site_code == site_code_of_interest)

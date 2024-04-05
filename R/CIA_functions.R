@@ -62,12 +62,19 @@ select_matches <-
 # Function to run the CIA model
 cia_analysis <-
   function(organisation,
-           site,
            data,
            variable,
            prior_sd,
            single_bedroom_matches,
-         hospitals) {
+           hospitals) {
+    if ("site_code" %in% colnames(data)) {
+      site <- hospitals |>
+        dplyr::filter(organisation_code == organisation) |>
+        dplyr::pull(site_code)
+    } else {
+      site <- NA
+    }
+    
     switch_month <- hospitals |>
       dplyr::filter(organisation_code == organisation) |>
       dplyr::pull(switch_month)

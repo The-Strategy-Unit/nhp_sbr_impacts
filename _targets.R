@@ -754,7 +754,6 @@ list(
     waiting_time_median_REM,
     cia_analysis(
       "REM",
-      NA,
       rtt_waiting_time_cia_format,
       "median_by_prov",
       0.05,
@@ -767,7 +766,6 @@ list(
     waiting_time_median_REN,
     cia_analysis(
       "REN",
-      NA,
       rtt_waiting_time_cia_format,
       "median_by_prov",
       0.05,
@@ -780,7 +778,6 @@ list(
     waiting_time_median_RGM,
     cia_analysis(
       "RGM",
-      NA,
       rtt_waiting_time_cia_format,
       "median_by_prov",
       0.05,
@@ -793,7 +790,6 @@ list(
     waiting_time_median_RGN,
     cia_analysis(
       "RGN",
-      NA,
       rtt_waiting_time_cia_format,
       "median_by_prov",
       0.01,
@@ -806,7 +802,6 @@ list(
     waiting_time_median_RAL,
     cia_analysis(
       "RAL",
-      NA,
       rtt_waiting_time_cia_format,
       "median_by_prov",
       0.01,
@@ -820,7 +815,6 @@ list(
     waiting_time_median_RVJ,
     cia_analysis(
       "RVJ",
-      NA,
       rtt_waiting_time_cia_format,
       "median_by_prov",
       0.1,
@@ -833,7 +827,6 @@ list(
     waiting_time_median_RWF,
     cia_analysis(
       "RWF",
-      NA,
       rtt_waiting_time_cia_format,
       "median_by_prov",
       0.01,
@@ -849,7 +842,6 @@ list(
     waiting_time_number_REM,
     cia_analysis(
       "REM",
-      NA,
       rtt_waiting_time_cia_format,
       "number_incomplete",
       0.1,
@@ -861,7 +853,6 @@ list(
   #tar_target(
   #  waiting_time_number_REN,
   #  cia_analysis("REN",
-  #               NA,
   #               rtt_waiting_time_cia_format,
   #               "number_incomplete",
   #               0.1,
@@ -873,7 +864,6 @@ list(
     waiting_time_number_RGM,
     cia_analysis(
       "RGM",
-      NA,
       rtt_waiting_time_cia_format,
       "number_incomplete",
       0.05,
@@ -886,7 +876,6 @@ list(
     waiting_time_number_RGN,
     cia_analysis(
       "RGN",
-      NA,
       rtt_waiting_time_cia_format,
       "number_incomplete",
       0.1,
@@ -899,7 +888,6 @@ list(
     waiting_time_number_RAL,
     cia_analysis(
       "RAL",
-      NA,
       rtt_waiting_time_cia_format,
       "number_incomplete",
       0.01,
@@ -913,7 +901,6 @@ list(
     waiting_time_number_RVJ,
     cia_analysis(
       "RVJ",
-      NA,
       rtt_waiting_time_cia_format,
       "number_incomplete",
       0.1,
@@ -926,7 +913,6 @@ list(
     waiting_time_number_RWF,
     cia_analysis(
       "RWF",
-      NA,
       rtt_waiting_time_cia_format,
       "number_incomplete",
       0.1,
@@ -941,7 +927,6 @@ list(
     LoS_REM,
     cia_analysis(
       "REM",
-      "REMRQ",
       length_of_stay_cia_format,
       "avg_los",
       0.05,
@@ -954,7 +939,6 @@ list(
     LoS_REN,
     cia_analysis(
       "REN",
-      "REN22",
       length_of_stay_cia_format,
       "avg_los",
       0.1,
@@ -967,7 +951,6 @@ list(
     LoS_RGM,
     cia_analysis(
       "RGM",
-      "RGM22",
       length_of_stay_cia_format,
       "avg_los",
       0.05,
@@ -980,7 +963,6 @@ list(
     LoS_RGN,
     cia_analysis(
       "RGN",
-      "RGN80",
       length_of_stay_cia_format,
       "avg_los",
       0.01,
@@ -993,7 +975,6 @@ list(
     LoS_RAL,
     cia_analysis(
       "RAL",
-      "RALC7",
       length_of_stay_cia_format,
       "avg_los",
       0.05,
@@ -1007,7 +988,6 @@ list(
     LoS_RVJ,
     cia_analysis(
       "RVJ",
-      "RVJ01",
       length_of_stay_cia_format,
       "avg_los",
       0.01,
@@ -1020,7 +1000,6 @@ list(
     LoS_RWF,
     cia_analysis(
       "RWF",
-      "RWFTW",
       length_of_stay_cia_format,
       "avg_los",
       0.05,
@@ -1035,7 +1014,6 @@ list(
     emergency_readmissions_REM,
     cia_analysis(
       "REM",
-      "REMRQ",
       emergency_readmissions_cia_format,
       "perc",
       0.1,
@@ -1048,7 +1026,6 @@ list(
     emergency_readmissions_REN,
     cia_analysis(
       "REN",
-      "REN22",
       emergency_readmissions_cia_format,
       "perc",
       0.1,
@@ -1061,7 +1038,6 @@ list(
     emergency_readmissions_RGM,
     cia_analysis(
       "RGM",
-      "RGM22",
       emergency_readmissions_cia_format,
       "perc",
       0.1,
@@ -1074,7 +1050,6 @@ list(
     emergency_readmissions_RGN,
     cia_analysis(
       "RGN",
-      "RGN80",
       emergency_readmissions_cia_format,
       "perc",
       0.1,
@@ -1087,7 +1062,6 @@ list(
     emergency_readmissions_RAL,
     cia_analysis(
       "RAL",
-      "RALC7",
       emergency_readmissions_cia_format,
       "perc",
       0.05,
@@ -1101,7 +1075,6 @@ list(
     emergency_readmissions_RVJ,
     cia_analysis(
       "RVJ",
-      "RVJ01",
       emergency_readmissions_cia_format,
       "perc",
       0.05,
@@ -1114,7 +1087,6 @@ list(
     emergency_readmissions_RWF,
     cia_analysis(
       "RWF",
-      "RWFTW",
       emergency_readmissions_cia_format,
       "perc",
       0.01,
@@ -1129,7 +1101,6 @@ list(
     bed_occupancy_REM,
     cia_analysis(
       "REM",
-      NA,
       bed_occupancy_cia_format,
       "bed_occupancy",
       0.01,
@@ -1142,7 +1113,6 @@ list(
     bed_occupancy_REN,
     cia_analysis(
       "REN",
-      NA,
       bed_occupancy_cia_format,
       "bed_occupancy",
       0.1,
@@ -1155,7 +1125,6 @@ list(
     bed_occupancy_RGM,
     cia_analysis(
       "RGM",
-      NA,
       bed_occupancy_cia_format,
       "bed_occupancy",
       0.05,
@@ -1169,7 +1138,6 @@ list(
     bed_occupancy_RAL,
     cia_analysis(
       "RAL",
-      NA,
       bed_occupancy_cia_format,
       "bed_occupancy",
       0.05,
@@ -1183,7 +1151,6 @@ list(
     bed_occupancy_RVJ,
     cia_analysis(
       "RVJ",
-      NA,
       bed_occupancy_cia_format,
       "bed_occupancy",
       0.05,
@@ -1199,7 +1166,6 @@ list(
     hcai_REM,
     cia_analysis(
       "REM",
-      NA,
       hcai_cia_format,
       "combined_rate",
       0.1,
@@ -1212,7 +1178,6 @@ list(
     hcai_REN,
     cia_analysis(
       "REN",
-      NA,
       hcai_cia_format,
       "combined_rate",
       0.05,
@@ -1226,7 +1191,6 @@ list(
     falls_and_fractures_REM,
     cia_analysis(
       "REM",
-      "REMRQ",
       falls_and_fractures_cia_format,
       "ff_rate",
       0.1,
@@ -1239,7 +1203,6 @@ list(
     falls_and_fractures_REN,
     cia_analysis(
       "REN",
-      "REN22",
       falls_and_fractures_cia_format,
       "ff_rate",
       0.05,
@@ -1252,7 +1215,6 @@ list(
     falls_and_fractures_RGM,
     cia_analysis(
       "RGM",
-      "RGM22",
       falls_and_fractures_cia_format,
       "ff_rate",
       0.05,
@@ -1265,7 +1227,6 @@ list(
     falls_and_fractures_RGN,
     cia_analysis(
       "RGN",
-      "RGN80",
       falls_and_fractures_cia_format,
       "ff_rate",
       0.01,
@@ -1278,7 +1239,6 @@ list(
     falls_and_fractures_RAL,
     cia_analysis(
       "RAL",
-      "RALC7",
       falls_and_fractures_cia_format,
       "ff_rate",
       0.05,
@@ -1292,7 +1252,6 @@ list(
     falls_and_fractures_RVJ,
     cia_analysis(
       "RVJ",
-      "RVJ01",
       falls_and_fractures_cia_format,
       "ff_rate",
       0.1,
@@ -1305,7 +1264,6 @@ list(
     falls_and_fractures_RWF,
     cia_analysis(
       "RWF",
-      "RWFTW",
       falls_and_fractures_cia_format,
       "ff_rate",
       0.05,
@@ -1320,7 +1278,6 @@ list(
     sus_deaths_REM,
     cia_analysis(
       "REM",
-      "REMRQ",
       sus_deaths_cia_format,
       "hosp_rate_1000",
       0.05,
@@ -1333,7 +1290,6 @@ list(
     sus_deaths_REN,
     cia_analysis(
       "REN",
-      "REN22",
       sus_deaths_cia_format,
       "hosp_rate_1000",
       0.05,
@@ -1346,7 +1302,6 @@ list(
     sus_deaths_RGM,
     cia_analysis(
       "RGM",
-      "RGM22",
       sus_deaths_cia_format,
       "hosp_rate_1000",
       0.05,
@@ -1359,7 +1314,6 @@ list(
     sus_deaths_RGN,
     cia_analysis(
       "RGN",
-      "RGN80",
       sus_deaths_cia_format,
       "hosp_rate_1000",
       0.1,
@@ -1372,7 +1326,6 @@ list(
     sus_deaths_RAL,
     cia_analysis(
       "RAL",
-      "RALC7",
       sus_deaths_cia_format,
       "hosp_rate_1000",
       0.05,
@@ -1386,7 +1339,6 @@ list(
     sus_deaths_RVJ,
     cia_analysis(
       "RVJ",
-      "RVJ01",
       sus_deaths_cia_format,
       "hosp_rate_1000",
       0.01,
@@ -1399,7 +1351,6 @@ list(
     sus_deaths_RWF,
     cia_analysis(
       "RWF",
-      "RWFTW",
       sus_deaths_cia_format,
       "hosp_rate_1000",
       0.01,
@@ -1413,7 +1364,6 @@ list(
     friends_and_family_REM,
     cia_analysis(
       "REM",
-      "REMRQ",
       friends_and_family_cia_format,
       "friends_and_family_percent",
       0.1,
@@ -1426,7 +1376,6 @@ list(
     friends_and_family_REN,
     cia_analysis(
       "REN",
-      "REN22",
       friends_and_family_cia_format,
       "friends_and_family_percent",
       0.1,
@@ -1439,7 +1388,6 @@ list(
     friends_and_family_RGM,
     cia_analysis(
       "RGM",
-      "RGM22",
       friends_and_family_cia_format,
       "friends_and_family_percent",
       0.1,
@@ -1452,7 +1400,6 @@ list(
     friends_and_family_RAL,
     cia_analysis(
       "RAL",
-      "RALC7",
       friends_and_family_cia_format,
       "friends_and_family_percent",
       0.01,
@@ -1467,7 +1414,6 @@ list(
     staff_sickness_REM,
     cia_analysis(
       "REM",
-      NA,
       staff_sickness_cia_format,
       "staff_sickness_percent",
       0.05,
@@ -1480,7 +1426,6 @@ list(
     staff_sickness_REN,
     cia_analysis(
       "REN",
-      NA,
       staff_sickness_cia_format,
       "staff_sickness_percent",
       0.05,
@@ -1493,7 +1438,6 @@ list(
     staff_sickness_RGM,
     cia_analysis(
       "RGM",
-      NA,
       staff_sickness_cia_format,
       "staff_sickness_percent",
       0.05,
@@ -1507,7 +1451,6 @@ list(
     staff_sickness_RAL,
     cia_analysis(
       "RAL",
-      NA,
       staff_sickness_cia_format,
       "staff_sickness_percent",
       0.05,
@@ -1520,7 +1463,6 @@ list(
     staff_sickness_RVJ,
     cia_analysis(
       "RVJ",
-      NA,
       staff_sickness_cia_format,
       "staff_sickness_percent",
       0.05,

@@ -31,7 +31,7 @@ factors on hospital size and patient case-mix to improve the suitability
 of comparisons fed into the Causal Impact Analysis.
 
 ```{r overview_map}
-tar_read(map_all)
+tar_read(map_all_sites)
 ```
 
 \

@@ -38,18 +38,15 @@ map_all <- function(title,
 }
 
 # To get a map with control locations for an intervention site:
-map_controls <- function(hospital_of_interest
-                         ,
-                         hospitals
-                         ,
-                         controls
-                         ,
+map_controls <- function(org_code_of_interest,
+                         hospitals,
+                         controls,
                          ods_sites) {
   colour_sites <- "blue"
   colour_controls <- "orange"
   
   site_code_of_interest <- hospitals |>
-    dplyr::filter(alias == hospital_of_interest) |>
+    dplyr::filter(organisation_code == org_code_of_interest) |>
     left_join(ods_sites |> select(site_code, long, lat), by = 'site_code')
   
   controls <- controls |>
@@ -87,15 +84,14 @@ map_controls <- function(hospital_of_interest
       )
     )
   
-  map <-
-    oceanis::add_titre(
-      map = map,
-      titre = paste0(
-        "Map of ",
-        site_code_of_interest$name,
-        " and similar control sites"
-      )
+  map <- oceanis::add_titre(
+    map = map,
+    titre = paste0(
+      "Map of ",
+      site_code_of_interest$name,
+      " and similar control sites"
     )
+  )
   
   map
   

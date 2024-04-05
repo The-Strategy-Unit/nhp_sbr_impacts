@@ -1,6 +1,7 @@
 # Additional data wrangling functions for Causal Impact Analysis
 
-# Merge together site information where site codes have changed over time and mergers occurred
+# Merge together site information where site codes have changed over time and
+# mergers occurred
 merge_sites <- function(data) {
   data |>
     mutate(site_code = ifelse((site_code == "REMRQ" |
@@ -44,7 +45,9 @@ merge_sites <- function(data) {
 # Beddays by provider
 beddays_by_provider_function <- function(data) {
   beddays_by_prov <- data |>
-    mutate(organisation_code = substr(der_provider_site_code, start = 1, stop = 3)) |>
+    mutate(organisation_code = substr(der_provider_site_code,
+                                      start = 1,
+                                      stop = 3)) |>
     #get organisation code
     group_by(yearmon, organisation_code) |>
     summarise(beddays = sum(beddays))
@@ -190,14 +193,16 @@ falls_and_fractures_cia_formatting <- function(data) {
       fall_spell_los = sum(fall_spell_los),
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
-    mutate(ff_rate = (fall_spells/ all_spells) * 100) |> # % of spells with a fall 
-    mutate(ff_los = (fall_spell_los/ all_spell_los) * 100)  |># % of los associated with fall 
-  mutate(ff_rate=ifelse(is.nan(ff_rate), 0, ff_rate))|>
-    filter(site_code!="RALC7"|month>'2014-03-01')|> #remove data pre-merger
-  filter(site_code !="RVJ01" |
-           (site_code=="RVJ01" & month<='2015-10-01')) |>#Remove part of Southmead where rate jumps
-  filter(site_code!="RQWG0") #remove control site with jumps in time series
-
+    mutate(ff_rate = (fall_spells / all_spells) * 100) |> # % of spells with a fall
+    mutate(ff_los = (fall_spell_los / all_spell_los) * 100)  |> # % of los associated with fall
+    mutate(ff_rate = ifelse(is.nan(ff_rate), 0, ff_rate)) |>
+    filter(site_code != "RALC7" |
+             month > '2014-03-01') |> #remove data pre-merger
+    filter(site_code != "RVJ01" |
+             (site_code == "RVJ01" &
+                month <= '2015-10-01')) |> #Remove part of Southmead where rate jumps
+    filter(site_code != "RQWG0") #remove control site with jumps in time series
+  
   
   return(falls_and_fractures_cia_format)
   
@@ -217,10 +222,11 @@ sus_deaths_cia_formatting <- function(data) {
       death_30days = sum(death_30days),
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
-    mutate(hosp_rate_1000 = (death_hosp / discharges) * 1000)|> #in hospital deaths/1000 discharges
-    mutate(all_rate_1000 = ((death_hosp+death_30days) / discharges) * 1000)|> #all deaths/1000 discharges
-    filter(site_code !="REN22" |
-             (site_code=="REN22" & month>='2013-01-01')) #Remove part before 2013 where Clatterbridge has -ive CIs.
+    mutate(hosp_rate_1000 = (death_hosp / discharges) * 1000) |> #in hospital deaths/1000 discharges
+    mutate(all_rate_1000 = ((death_hosp + death_30days) / discharges) * 1000) |> #all deaths/1000 discharges
+    filter(site_code != "REN22" |
+             (site_code == "REN22" &
+                month >= '2013-01-01')) #Remove part before 2013 where Clatterbridge has -ive CIs.
   
   return(sus_deaths_cia_format)
   
@@ -249,16 +255,18 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
       number_incomplete = sum(number_of_incomplete_pathways),
       .by = c(month, organisation_code)
     ) |> #Median by month and provider
-    mutate(median_by_prov = ifelse(is.na(median_by_prov), 0, median_by_prov))|>
-    filter( organisation_code!="RF4" &  
-              organisation_code!="R1H" &
-              organisation_code!= "RJ2" &
-              organisation_code!= "RJE" &
-              organisation_code!= "RQW" &
-              organisation_code!= "RHW" &
-              organisation_code!= "RHQ" &
-              organisation_code!= "RX1" &
-              organisation_code!= "RA7" ) #Removing poss control due to data issues
+    mutate(median_by_prov = ifelse(is.na(median_by_prov), 0, median_by_prov)) |>
+    filter(
+      organisation_code != "RF4" &
+        organisation_code != "R1H" &
+        organisation_code != "RJ2" &
+        organisation_code != "RJE" &
+        organisation_code != "RQW" &
+        organisation_code != "RHW" &
+        organisation_code != "RHQ" &
+        organisation_code != "RX1" &
+        organisation_code != "RA7"
+    ) #Removing poss control due to data issues
   
   return(rtt_waiting_time_cia_format)
   
@@ -300,7 +308,7 @@ bed_occupancy_cia_formatting <- function(data) {
              (organisation_code == "RGM" &
                 month <= '2020-03-01')) #Remove part of Papworth outcome period affected by covid
   
-
+  
   return(bed_occupancy_cia_format)
 }
 
@@ -317,10 +325,10 @@ length_of_stay_cia_formatting <- function(data) {
       spells = sum(spells),
       .by = c(site_code, month)
     ) |> #recalculate following merge of sites
-    mutate(avg_los = los / spells)|>
-    filter(site_code !="RVR05" &
-             site_code !="RNLAY" &
-             site_code !="RNLBX" )
+    mutate(avg_los = los / spells) |>
+    filter(site_code != "RVR05" &
+             site_code != "RNLAY" &
+             site_code != "RNLBX")
   
   return(length_of_stay_cia_format)
   
@@ -366,13 +374,15 @@ emergency_readmissions_cia_formatting <- function(data) {
       readmits = sum(readmits),
       .by = c(site_code, month)
     ) |> #recalculate rate following merging sites
-    mutate(perc = (readmits/ admits) * 100)|> # % of readmissions 
-    filter(site_code!="RXPCP" &
-             site_code!="RVY01" &
-             site_code!="RDEEB"&
-             site_code!="RPA02"&
-             site_code !="RNLAY" &
-             site_code !="RNLBX")#removing control data with issues
+    mutate(perc = (readmits / admits) * 100) |> # % of readmissions
+    filter(
+      site_code != "RXPCP" &
+        site_code != "RVY01" &
+        site_code != "RDEEB" &
+        site_code != "RPA02" &
+        site_code != "RNLAY" &
+        site_code != "RNLBX"
+    )#removing control data with issues
   
   return(emergency_readmissions_cia_format)
 }

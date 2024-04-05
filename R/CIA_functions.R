@@ -25,7 +25,8 @@ select_matches <-
     
     if (!is.na(site)) {
       dataset <- data |>
-        filter(site_code == site | site_code %in% matches$site_code) |>
+        filter(site_code == site |
+                 site_code %in% matches$site_code) |>
         left_join(matches[, c("site_code", "trust_name")], by = c("site_code")) |> # Add name of matched sites
         distinct() |>
         rename(organisation_code = site_code)
@@ -525,7 +526,8 @@ mean_forest_plot_DGH_Acute <- function(data) {
   
   
   if (count(results_data) > 1) {
-    output <- rma.uni(RelEffect, (RelEffect.sd) ^ 2, data = results_data)
+    output <-
+      rma.uni(RelEffect, (RelEffect.sd) ^ 2, data = results_data)
     
     df <- as.data.frame(output$b) |>
       rename(mean = V1) |>
@@ -778,7 +780,8 @@ summary_table_indicators_and_sites <-
       mutate(measure = "Waiting time (number)")
     LoS_output  <- LoS_output |>
       mutate(measure = "Length of stay")
-    emergency_readmissions_output  <- emergency_readmissions_output |>
+    emergency_readmissions_output  <-
+      emergency_readmissions_output |>
       mutate(measure = "Emergency readmissions")
     bed_occupancy_output  <- bed_occupancy_output |>
       mutate(measure = "Bed occupancy")

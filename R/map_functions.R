@@ -1,14 +1,38 @@
 ## Map functions
 
+# To add label for sites with option to change offset
+add_site_markers <- function(map, data, offset = c(0, 0)) {
+  
+  map <- map |> 
+    addCircleMarkers(
+      data = data,
+      lng = ~ long,
+      lat = ~ lat,
+      color = "blue",
+      label = data |> pull(name),
+      labelOptions = labelOptions(
+        noHide = T,
+        direction = "top",
+        textOnly = T,
+        textsize = "11px",
+        style = list("font-weight" = "bold"),
+        offset = offset
+      )
+    )
+  
+  return(map)
+}
+
 # To create the map of 7 sites (leaflet):
 map_all <- function(title,
                     hospitals,
                     ods_sites) {
-  colour_sites <- "blue"
-  
   sites <- ods_sites |>
     filter(is.na(effective_to)) |>
     inner_join(hospitals, by = "site_code")
+  
+  sites_not_clatterbridge <- sites |> filter(site_code != "REN22")
+  sites_clatterbridge <- sites |> filter(site_code == "REN22")
   
   map <- leaflet(data = sites,
                  options = leafletOptions(zoomControl = FALSE)) |>
@@ -16,20 +40,8 @@ map_all <- function(title,
     setView(lng = -1.75,
             lat = 52.5,
             zoom = 7) |>
-    addCircleMarkers(
-      data = sites,
-      lng = ~ long,
-      lat = ~ lat,
-      color = colour_sites,
-      label = sites$name,
-      labelOptions = labelOptions(
-        noHide = T,
-        direction = 'top',
-        textOnly = T,
-        textsize = "11px",
-        style = list("font-weight" = "bold")
-      )
-    )
+    add_site_markers(sites_not_clatterbridge) |>
+    add_site_markers(sites_clatterbridge, c(0, 15))
   
   map <- oceanis::add_titre(map = map, titre = title)
   
@@ -42,9 +54,6 @@ map_controls <- function(org_code_of_interest,
                          hospitals,
                          controls,
                          ods_sites) {
-  colour_sites <- "blue"
-  colour_controls <- "orange"
-  
   site_code_of_interest <- hospitals |>
     dplyr::filter(organisation_code == org_code_of_interest) |>
     left_join(ods_sites |> select(site_code, long, lat), by = 'site_code')
@@ -64,25 +73,12 @@ map_controls <- function(org_code_of_interest,
       lng = ~ long,
       lat = ~ lat,
       label = ~ htmlEscape(site_name),
-      color = colour_controls,
+      color = "orange",
       radius = 6,
       fillOpacity = 0.6,
       stroke = F
     ) |>
-    addCircleMarkers(
-      data = site_code_of_interest,
-      lng = ~ long,
-      lat = ~ lat,
-      color = colour_sites,
-      label = site_code_of_interest$name,
-      labelOptions = labelOptions(
-        noHide = T,
-        direction = 'top',
-        textOnly = T,
-        textsize = "11px",
-        style = list("font-weight" = "bold")
-      )
-    )
+    add_site_markers(site_code_of_interest)
   
   map <- oceanis::add_titre(
     map = map,

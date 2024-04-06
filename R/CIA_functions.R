@@ -221,7 +221,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
     scale_color_manual(values = c("#f9bf07", "#2c2825")) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
     guides(colour = guide_legend(reverse = T)) +
-    scale_y_continuous(limits = c(-100, max(max) * 1.1))
+    scale_y_continuous(limits = c(0, max(max) * 1.1))
   
   # Plot pointwise effect
   b <- model_results$PlotPointEffect +

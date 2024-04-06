@@ -307,8 +307,8 @@ bed_occupancy_cia_formatting <- function(data) {
     filter(organisation_code != "RGM" |
              (organisation_code == "RGM" &
                 month <= '2020-03-01')) #Remove part of Papworth outcome period affected by covid
-  
-  
+
+
   return(bed_occupancy_cia_format)
 }
 

@@ -25,7 +25,8 @@ select_matches <-
     
     if (!is.na(site)) {
       dataset <- data |>
-        filter(site_code == site | site_code %in% matches$site_code) |>
+        filter(site_code == site |
+                 site_code %in% matches$site_code) |>
         left_join(matches[, c("site_code", "trust_name")], by = c("site_code")) |> # Add name of matched sites
         distinct() |>
         rename(organisation_code = site_code)
@@ -61,12 +62,23 @@ select_matches <-
 # Function to run the CIA model
 cia_analysis <-
   function(organisation,
-           site,
            data,
-           switch_month,
            variable,
            prior_sd,
-           single_bedroom_matches) {
+           single_bedroom_matches,
+           hospitals) {
+    if ("site_code" %in% colnames(data)) {
+      site <- hospitals |>
+        dplyr::filter(organisation_code == organisation) |>
+        dplyr::pull(site_code)
+    } else {
+      site <- NA
+    }
+    
+    switch_month <- hospitals |>
+      dplyr::filter(organisation_code == organisation) |>
+      dplyr::pull(switch_month)
+    
     cia_matches <-
       select_matches(organisation,
                      site,
@@ -525,7 +537,8 @@ mean_forest_plot_DGH_Acute <- function(data) {
   
   
   if (count(results_data) > 1) {
-    output <- rma.uni(RelEffect, (RelEffect.sd) ^ 2, data = results_data)
+    output <-
+      rma.uni(RelEffect, (RelEffect.sd) ^ 2, data = results_data)
     
     df <- as.data.frame(output$b) |>
       rename(mean = V1) |>
@@ -778,7 +791,8 @@ summary_table_indicators_and_sites <-
       mutate(measure = "Waiting time (number)")
     LoS_output  <- LoS_output |>
       mutate(measure = "Length of stay")
-    emergency_readmissions_output  <- emergency_readmissions_output |>
+    emergency_readmissions_output  <-
+      emergency_readmissions_output |>
       mutate(measure = "Emergency readmissions")
     bed_occupancy_output  <- bed_occupancy_output |>
       mutate(measure = "Bed occupancy")

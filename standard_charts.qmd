@@ -31,7 +31,7 @@ factors on hospital size and patient case-mix to improve the suitability
 of comparisons fed into the Causal Impact Analysis.
 
 ```{r overview_map}
-tar_read(map_all)
+tar_read(map_all_sites)
 ```
 
 \
@@ -40,43 +40,43 @@ tar_read(map_all)
 ## Royal Liverpool
 
 ```{r royal_liverpool_map}
-tar_read(map_royal_liverpool)
+tar_read(map_REM)
 ```
 
 ## Clatterbridge
 
 ```{r clatterbridge_map}
-tar_read(map_clatterbridge)
+tar_read(map_REN)
 ```
 
 ## Royal Papworth
 
 ```{r royal_papworth_map}
-tar_read(map_royal_papworth)
+tar_read(map_RGM)
 ```
 
 ## Peterborough
 
 ```{r peterborough_map}
-tar_read(map_peterborough)
+tar_read(map_RGN)
 ```
 
 ## Chase Farm
 
 ```{r chase_farm_map}
-tar_read(map_chase_farm)
+tar_read(map_RAL)
 ```
 
 ## Southmead
 
 ```{r southmead_map}
-tar_read(map_southmead)
+tar_read(map_RVJ)
 ```
 
 ## Tunbridge Wells
 
 ```{r tunbridge_wells_map}
-tar_read(map_tunbridge_wells)
+tar_read(map_RWF)
 ```
 :::
 
@@ -100,50 +100,50 @@ collection](https://www.england.nhs.uk/statistics/statistical-work-areas/bed-ava
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_bed_occupancy_royal_liverpool) |> 
+```{r royal_liverpool_bed_occupancy}
+tar_read(plot_bed_occupancy_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_bed_occupancy_clatterbridge) |> 
+```{r clatterbridge_bed_occupancy}
+tar_read(plot_bed_occupancy_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_bed_occupancy_royal_papworth) |> 
+```{r royal_papworth_bed_occupancy}
+tar_read(plot_bed_occupancy_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_bed_occupancy_peterborough) |> 
+```{r peterborough_bed_occupancy}
+tar_read(plot_bed_occupancy_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_bed_occupancy_chase_farm) |> 
+```{r chase_farm_bed_occupancy}
+tar_read(plot_bed_occupancy_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_bed_occupancy_southmead) |> 
+```{r southmead_bed_occupancy}
+tar_read(plot_bed_occupancy_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_bed_occupancy_tunbridge_wells) |> 
+```{r tunbridge_wells_bed_occupancy}
+tar_read(plot_bed_occupancy_RWF) |> 
   ggplotly()
 ```
 
@@ -155,50 +155,50 @@ Collection](https://digital.nhs.uk/data-and-information/publications/statistical
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_cleaning_costs_royal_liverpool) |> 
+```{r royal_liverpool_cleaning_costs}
+tar_read(plot_cleaning_costs_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_cleaning_costs_clatterbridge) |> 
+```{r clatterbridge_cleaning_costs}
+tar_read(plot_cleaning_costs_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_cleaning_costs_royal_papworth) |> 
+```{r royal_papworth_cleaning_costs}
+tar_read(plot_cleaning_costs_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_cleaning_costs_peterborough) |> 
+```{r peterborough_cleaning_costs}
+tar_read(plot_cleaning_costs_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_cleaning_costs_chase_farm) |> 
+```{r chase_farm_cleaning_costs}
+tar_read(plot_cleaning_costs_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_cleaning_costs_southmead) |> 
+```{r southmead_cleaning_costs}
+tar_read(plot_cleaning_costs_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_cleaning_costs_tunbridge_wells) |> 
+```{r tunbridge_cleaning_costs}
+tar_read(plot_cleaning_costs_RWF) |> 
   ggplotly()
 ```
 
@@ -210,50 +210,50 @@ Collection](https://digital.nhs.uk/data-and-information/publications/statistical
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_cleaning_staff_royal_liverpool) |> 
+```{r royal_liverpool_cleaning_staff}
+tar_read(plot_cleaning_staff_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_cleaning_staff_clatterbridge) |> 
+```{r clatterbridge_cleaning_staff}
+tar_read(plot_cleaning_staff_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_cleaning_staff_royal_papworth) |> 
+```{r royal_papworth_cleaning_staff}
+tar_read(plot_cleaning_staff_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_cleaning_staff_peterborough) |> 
+```{r peterborough_cleaning_staff}
+tar_read(plot_cleaning_staff_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_cleaning_staff_chase_farm) |> 
+```{r chase_farm_cleaning_staff}
+tar_read(plot_cleaning_staff_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_cleaning_staff_southmead) |> 
+```{r southmead_cleaning_staff}
+tar_read(plot_cleaning_staff_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_cleaning_staff_tunbridge_wells) |> 
+```{r tunbridge_wells_cleaning_staff}
+tar_read(plot_cleaning_staff_RWF) |> 
   ggplotly()
 ```
 
@@ -264,50 +264,50 @@ beddays.
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_falls_and_fractures_royal_liverpool) |> 
+```{r royal_liverpool_falls_and_fractures}
+tar_read(plot_falls_and_fractures_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_falls_and_fractures_clatterbridge) |> 
+```{r clatterbridge_falls_and_fractures}
+tar_read(plot_falls_and_fractures_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_falls_and_fractures_royal_papworth) |> 
+```{r royal_papworth_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_falls_and_fractures_peterborough) |> 
+```{r peterborough_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_falls_and_fractures_chase_farm) |> 
+```{r chase_farm_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_falls_and_fractures_southmead) |> 
+```{r southmead_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_falls_and_fractures_tunbridge_wells) |> 
+```{r tunbridge_wells_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RWF) |> 
   ggplotly()
 ```
 
@@ -329,50 +329,50 @@ The combined rate of HCAI was calculated as the sum of the above rates.
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_hcai_royal_liverpool) |> 
+```{r royal_liverpool_hcai}
+tar_read(plot_hcai_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_hcai_clatterbridge) |> 
+```{r clatterbridge_hcai}
+tar_read(plot_hcai_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_hcai_royal_papworth) |> 
+```{r royal_papworth_hcai}
+tar_read(plot_hcai_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_hcai_peterborough) |> 
+```{r peterborough_hcai}
+tar_read(plot_hcai_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_hcai_chase_farm) |> 
+```{r chase_farm_hcai}
+tar_read(plot_hcai_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_hcai_southmead) |> 
+```{r southmead_hcai}
+tar_read(plot_hcai_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_hcai_tunbridge_wells) |> 
+```{r tunbridge_wells_hcai}
+tar_read(plot_hcai_RWF) |> 
   ggplotly()
 ```
 
@@ -383,50 +383,50 @@ that month.
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_length_of_stay_royal_liverpool) |> 
+```{r royal_liverpool_length_of_stay}
+tar_read(plot_length_of_stay_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_length_of_stay_clatterbridge) |> 
+```{r clatterbridge_length_of_stay}
+tar_read(plot_length_of_stay_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_length_of_stay_royal_papworth) |> 
+```{r royal_papworth_length_of_stay}
+tar_read(plot_length_of_stay_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_length_of_stay_peterborough) |> 
+```{r peterborough_length_of_stay}
+tar_read(plot_length_of_stay_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_length_of_stay_chase_farm) |> 
+```{r chase_farm_length_of_stay}
+tar_read(plot_length_of_stay_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_length_of_stay_southmead) |> 
+```{r southmead_length_of_stay}
+tar_read(plot_length_of_stay_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_length_of_stay_tunbridge_wells) |> 
+```{r tunbridge_wells_length_of_stay}
+tar_read(plot_length_of_stay_RWF) |> 
   ggplotly()
 ```
 
@@ -437,50 +437,50 @@ admissions.
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_sus_deaths_royal_liverpool) |> 
+```{r royal_liverpool_sus_deaths}
+tar_read(plot_sus_deaths_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_sus_deaths_clatterbridge) |> 
+```{r clatterbridge_sus_deaths}
+tar_read(plot_sus_deaths_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_sus_deaths_royal_papworth) |> 
+```{r royal_papworth_sus_deaths}
+tar_read(plot_sus_deaths_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_sus_deaths_peterborough) |> 
+```{r peterborough_sus_deaths}
+tar_read(plot_sus_deaths_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_sus_deaths_chase_farm) |> 
+```{r chase_farm_sus_deaths}
+tar_read(plot_sus_deaths_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_sus_deaths_southmead) |> 
+```{r southmead_sus_deaths}
+tar_read(plot_sus_deaths_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_sus_deaths_tunbridge_wells) |> 
+```{r tunbridge_wells_sus_deaths}
+tar_read(plot_sus_deaths_RWF) |> 
   ggplotly()
 ```
 
@@ -491,50 +491,50 @@ friends and family test.
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_friends_and_family_royal_liverpool) |> 
+```{r royal_liverpool_friends_and_family}
+tar_read(plot_friends_and_family_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_friends_and_family_clatterbridge) |> 
+```{r clatterbridge_friends_and_family}
+tar_read(plot_friends_and_family_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_friends_and_family_royal_papworth) |> 
+```{r royal_papworth_friends_and_family}
+tar_read(plot_friends_and_family_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_friends_and_family_peterborough) |> 
+```{r peterborough_friends_and_family}
+tar_read(plot_friends_and_family_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_friends_and_family_chase_farm) |> 
+```{r chase_farm_friends_and_family}
+tar_read(plot_friends_and_family_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_friends_and_family_southmead) |> 
+```{r southmead_friends_and_family}
+tar_read(plot_friends_and_family_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_friends_and_family_tunbridge_wells) |> 
+```{r tunbridge_wells_friends_and_family}
+tar_read(plot_friends_and_family_RWF) |> 
   ggplotly()
 ```
 
@@ -545,50 +545,50 @@ staff.
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_staff_turnover_royal_liverpool) |> 
+```{r royal_liverpool_staff_turnover}
+tar_read(plot_staff_turnover_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_staff_turnover_clatterbridge) |> 
+```{r clatterbridge_staff_turnover}
+tar_read(plot_staff_turnover_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_staff_turnover_royal_papworth) |> 
+```{r royal_papworth_staff_turnover}
+tar_read(plot_staff_turnover_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_staff_turnover_peterborough) |> 
+```{r peterborough_staff_turnover}
+tar_read(plot_staff_turnover_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_staff_turnover_chase_farm) |> 
+```{r chase_farm_staff_turnover}
+tar_read(plot_staff_turnover_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_staff_turnover_southmead) |> 
+```{r southmead_staff_turnover}
+tar_read(plot_staff_turnover_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_staff_turnover_tunbridge_wells) |> 
+```{r tunbridge_wells_staff_turnover}
+tar_read(plot_staff_turnover_RWF) |> 
   ggplotly()
 ```
 
@@ -599,50 +599,50 @@ sickness.
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_staff_sickness_royal_liverpool) |> 
+```{r royal_liverpool_staff_sickness}
+tar_read(plot_staff_sickness_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_staff_sickness_clatterbridge) |> 
+```{r clatterbridge_staff_sickness}
+tar_read(plot_staff_sickness_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_staff_sickness_royal_papworth) |> 
+```{r royal_papworth_staff_sickness}
+tar_read(plot_staff_sickness_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_staff_sickness_peterborough) |> 
+```{r peterborough_staff_sickness}
+tar_read(plot_staff_sickness_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_staff_sickness_chase_farm) |> 
+```{r chase_farm_staff_sickness}
+tar_read(plot_staff_sickness_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_staff_sickness_southmead) |>
+```{r southmead_staff_sickness}
+tar_read(plot_staff_sickness_RVJ) |>
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_staff_sickness_tunbridge_wells) |> 
+```{r tunbridge_wells_staff_sickness}
+tar_read(plot_staff_sickness_RWF) |> 
   ggplotly()
 ```
 
@@ -652,50 +652,50 @@ These are the charts for the median RTT waiting time in weeks.
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_rtt_waiting_time_royal_liverpool) |> 
+```{r royal_liverpool_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_rtt_waiting_time_clatterbridge) |> 
+```{r clatterbridge_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_rtt_waiting_time_royal_papworth) |> 
+```{r royal_papworth_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_rtt_waiting_time_peterborough) |> 
+```{r peterborough_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_rtt_waiting_time_chase_farm) |> 
+```{r chase_farm_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_rtt_waiting_time_southmead) |> 
+```{r southmead_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_rtt_waiting_time_tunbridge_wells) |> 
+```{r tunbridge_wells_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RWF) |> 
   ggplotly()
 ```
 
@@ -708,50 +708,50 @@ reported in ERIC).
 
 ### Royal Liverpool
 
-```{r}
-tar_read(plot_sbr_percent_royal_liverpool) |> 
+```{r royal_liverpool_sbr_percent}
+tar_read(plot_sbr_percent_REM) |> 
   ggplotly()
 ```
 
 ### Clatterbridge
 
-```{r}
-tar_read(plot_sbr_percent_clatterbridge) |> 
+```{r clatterbridge_sbr_percent}
+tar_read(plot_sbr_percent_REN) |> 
   ggplotly()
 ```
 
 ### Royal Papworth
 
-```{r}
-tar_read(plot_sbr_percent_royal_papworth) |> 
+```{r royal_papworth_sbr_percent}
+tar_read(plot_sbr_percent_RGM) |> 
   ggplotly()
 ```
 
 ### Peterborough
 
-```{r}
-tar_read(plot_sbr_percent_peterborough) |> 
+```{r peterborough_sbr_percent}
+tar_read(plot_sbr_percent_RGN) |> 
   ggplotly()
 ```
 
 ### Chase Farm
 
-```{r}
-tar_read(plot_sbr_percent_chase_farm) |> 
+```{r chase_farm_sbr_percent}
+tar_read(plot_sbr_percent_RAL) |> 
   ggplotly()
 ```
 
 ### Southmead
 
-```{r}
-tar_read(plot_sbr_percent_southmead) |> 
+```{r southmead_sbr_percent}
+tar_read(plot_sbr_percent_RVJ) |> 
   ggplotly()
 ```
 
 ### Tunbridge Wells
 
-```{r}
-tar_read(plot_sbr_percent_tunbridge_wells) |> 
+```{r tunbridge_wells_sbr_percent}
+tar_read(plot_sbr_percent_RWF) |> 
   ggplotly()
 ```
 :::

@@ -136,19 +136,15 @@ plot_indicator <- function(site_of_interest,
 
 # To get the plot for an indicator that is at organisation level:
 get_indicator_organisation_level_plot <-
-  function(hospital_of_interest,
+  function(org_code_of_interest,
            hospitals,
            controls,
            indicator,
            plotting_variable,
            frequency) {
-    org_code_of_interest <- hospitals |>
-      dplyr::filter(alias == hospital_of_interest) |>
-      dplyr::pull(organisation_code)
-    
     sbr_date <- hospitals |>
       dplyr::filter(organisation_code == org_code_of_interest) |>
-      dplyr::pull(date_sbr)
+      dplyr::pull(switch_month)
     
     site_of_interest <- indicator |>
       dplyr::filter(organisation_code == org_code_of_interest)
@@ -174,19 +170,19 @@ get_indicator_organisation_level_plot <-
   }
 
 # To get the plot for an indicator that is at site level:
-get_indicator_site_level_plot <- function(hospital_of_interest,
+get_indicator_site_level_plot <- function(org_code_of_interest,
                                           hospitals,
                                           controls,
                                           indicator,
                                           plotting_variable,
                                           frequency) {
   site_code_of_interest <- hospitals |>
-    dplyr::filter(alias == hospital_of_interest) |>
+    dplyr::filter(organisation_code == org_code_of_interest) |>
     dplyr::pull(site_code)
   
   sbr_date <- hospitals |>
     dplyr::filter(site_code == site_code_of_interest) |>
-    dplyr::pull(date_sbr)
+    dplyr::pull(switch_month)
   
   site_of_interest <- indicator |>
     dplyr::filter(site_code == site_code_of_interest)
@@ -333,8 +329,9 @@ indicator_availability_over_time <-
     
     
     a <-
-      ggplot(data = (indicators |> filter(group == "Productivity & Efficiency")), aes(y =
-                                                                                        measure, x = range)) +
+      ggplot(data = (indicators |> 
+                       filter(group == "Productivity & Efficiency")), 
+             aes(y = measure, x = range)) +
       geom_path(lineend = "round",
                 color = "#f9bf07",
                 linewidth = 5) +
@@ -389,8 +386,9 @@ indicator_availability_over_time <-
       coord_cartesian(clip = 'off')
     
     b <-
-      ggplot(data = (indicators |> filter(group == "Health & Safety")), aes(y =
-                                                                              measure, x = range)) +
+      ggplot(data = (indicators |> 
+                       filter(group == "Health & Safety")), 
+             aes(y = measure, x = range)) +
       geom_path(lineend = "round",
                 color = "#f9bf07",
                 linewidth = 5) +
@@ -417,8 +415,9 @@ indicator_availability_over_time <-
       coord_cartesian(clip = 'off')
     
     c <-
-      ggplot(data = (indicators |> filter(group == "Patient & Staff Experience")), aes(y =
-                                                                                         measure, x = range)) +
+      ggplot(data = (indicators |> 
+                       filter(group == "Patient & Staff Experience")), 
+             aes(y = measure, x = range)) +
       geom_path(lineend = "round",
                 color = "#f9bf07",
                 linewidth = 5) +

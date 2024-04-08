@@ -678,6 +678,28 @@ list(
       )
     )
   ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_emergency_readmissions,
+      get_indicator_site_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        emergency_readmissions_cia_format,
+        "perc",
+        "month"
+      )
+    )
+  ),
   
   #----------------------------------------------------------------------------#
   #### Maps ####

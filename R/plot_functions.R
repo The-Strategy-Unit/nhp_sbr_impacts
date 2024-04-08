@@ -50,6 +50,10 @@ get_y_axis_for_indicator_plots <- function(plotting_variable) {
     y_axis <- "Single beds as % of all"
   }
   
+  if (plotting_variable == "perc") {
+    y_axis <- "Percentage of emergency readmissions"
+  }
+  
   return(y_axis)
   
 }

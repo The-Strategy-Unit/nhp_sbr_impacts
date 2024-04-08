@@ -538,6 +538,59 @@ tar_read(plot_friends_and_family_RWF) |>
   ggplotly()
 ```
 
+## Readmissions
+
+These are the charts for the percentage of emergency readmissions.
+
+### Royal Liverpool
+
+```{r royal_liverpool_emergency_readmissions}
+tar_read(plot_emergency_readmissions_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_emergency_readmissions}
+tar_read(plot_emergency_readmissions_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RWF) |> 
+  ggplotly()
+```
+
 ## Staff turnover
 
 These are the charts for the number of staff leavers over the number of

@@ -216,6 +216,7 @@ indicator_availability_over_time <-
   function(friends_and_family_cia_format,
            staff_turnover_cia_format,
            staff_sickness_cia_format,
+           staff_survey_cia_format,
            hcai_cia_format,
            falls_and_fractures_cia_format,
            sus_deaths_cia_format,
@@ -228,6 +229,7 @@ indicator_availability_over_time <-
         "Patient experience-\nfriends and family test",
         "Staff turnover",
         "Staff sickness",
+        "Staff survey",
         "Healthcare acquired infections",
         "Falls and fractures",
         "Hospital deaths",
@@ -241,6 +243,7 @@ indicator_availability_over_time <-
         "trust",
         "trust",
         "trust",
+        "trust",
         "site",
         "site",
         "trust",
@@ -249,6 +252,7 @@ indicator_availability_over_time <-
         "site")
     group <-
       c(
+        "Patient & Staff Experience",
         "Patient & Staff Experience",
         "Patient & Staff Experience",
         "Patient & Staff Experience",
@@ -265,6 +269,7 @@ indicator_availability_over_time <-
         min(friends_and_family_cia_format$month),
         min(staff_turnover_cia_format$month),
         min(staff_sickness_cia_format$month),
+        min(staff_survey_cia_format$month),
         min(hcai_cia_format$month),
         min(falls_and_fractures_cia_format$month),
         min(sus_deaths_cia_format$month),
@@ -278,6 +283,7 @@ indicator_availability_over_time <-
         max(friends_and_family_cia_format$month),
         max(staff_turnover_cia_format$month),
         max(staff_sickness_cia_format$month),
+        max(staff_survey_cia_format$month),
         max(hcai_cia_format$month),
         max(falls_and_fractures_cia_format$month),
         max(sus_deaths_cia_format$month),
@@ -298,6 +304,7 @@ indicator_availability_over_time <-
           "Staff turnover",
           "Staff sickness",
           "Patient experience-\nfriends and family test",
+          "Staff survey",
           "Healthcare acquired infections",
           "Falls and fractures",
           "Hospital deaths",
@@ -446,7 +453,7 @@ indicator_availability_over_time <-
       scale_x_date(
         date_breaks = "1 year",
         date_labels = "%Y",
-        limits = as.Date(c('2008-04-01', '2023-11-01'))
+        limits = as.Date(c('2008-04-01', '2023-12-31'))
       ) +
       coord_cartesian(clip = 'off')
     
@@ -461,6 +468,7 @@ indicator_availability_by_site <-
   function(friends_and_family_cia_format,
            staff_turnover_cia_format,
            staff_sickness_cia_format,
+           staff_survey_cia_format,
            hcai_cia_format,
            falls_and_fractures_cia_format,
            sus_deaths_cia_format,
@@ -473,6 +481,7 @@ indicator_availability_by_site <-
         "Patient experience-\nfriends and family test",
         "Staff turnover",
         "Staff sickness",
+        "Staff survey",
         "Healthcare acquired infections",
         "Falls and fractures",
         "Hospital deaths",
@@ -486,6 +495,7 @@ indicator_availability_by_site <-
         "trust",
         "trust",
         "trust",
+        "trust",
         "site",
         "site",
         "trust",
@@ -494,6 +504,7 @@ indicator_availability_by_site <-
         "site")
     group <-
       c(
+        "Patient & Staff Experience",
         "Patient & Staff Experience",
         "Patient & Staff Experience",
         "Patient & Staff Experience",
@@ -510,6 +521,7 @@ indicator_availability_by_site <-
         min(friends_and_family_cia_format$month),
         min(staff_turnover_cia_format$month),
         min(staff_sickness_cia_format$month),
+        min(staff_survey_cia_format$month),
         min(hcai_cia_format$month),
         min(falls_and_fractures_cia_format$month),
         min(sus_deaths_cia_format$month),
@@ -523,6 +535,7 @@ indicator_availability_by_site <-
         max(friends_and_family_cia_format$month),
         max(staff_turnover_cia_format$month),
         max(staff_sickness_cia_format$month),
+        max(staff_survey_cia_format$month),
         max(hcai_cia_format$month),
         max(falls_and_fractures_cia_format$month),
         max(sus_deaths_cia_format$month),
@@ -543,6 +556,7 @@ indicator_availability_by_site <-
           "Staff turnover",
           "Staff sickness",
           "Patient experience-\nfriends and family test",
+          "Staff survey",
           "Healthcare acquired infections",
           "Falls and fractures",
           "Hospital deaths",
@@ -582,7 +596,7 @@ indicator_availability_by_site <-
       cross_join(sites) |>
       filter(type == "start_date") |>
       mutate(difference = as.numeric(date - range)) |> #difference in days
-      mutate(sufficient_baseline = ifelse(difference >= 730, "yes", "no")) |>
+      mutate(sufficient_baseline = ifelse(difference >= 730|measure=="Staff survey", "yes", "no")) |>
       select(-difference, -date, -range, -type) |>
       pivot_wider(names_from = name, values_from = sufficient_baseline) |>
       mutate(measure = factor(
@@ -591,6 +605,7 @@ indicator_availability_by_site <-
           "Patient experience-\nfriends and family test",
           "Staff sickness",
           "Staff turnover",
+          "Staff survey",
           "Hospital deaths",
           "Falls and fractures",
           "Healthcare acquired infections",
@@ -654,7 +669,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(8:10) |>
+      slice(8:11) |>
       select(-group) |>
       as.matrix()
     
@@ -669,7 +684,7 @@ indicator_availability_by_site <-
       bg(bg = "#f9bf07", part = "header") |>
       bg(i = 2:5, part = "body", bg = colormatrix1) |>
       bg(i = 7:9, bg = colormatrix2) |>
-      bg(i = 11:13, bg = colormatrix3) |>
+      bg(i = 11:14, bg = colormatrix3) |>
       align(
         j = 1,
         i = ~ !is.na(group),

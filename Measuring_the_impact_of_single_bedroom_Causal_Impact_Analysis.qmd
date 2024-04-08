@@ -244,7 +244,6 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 ```
 :::
 
-
 ### Increase
 
 #### Tunbridge Wells
@@ -262,7 +261,6 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
 cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01-01")
 ```
-
 :::
 
 ## Waiting time - Total number waiting
@@ -1087,6 +1085,7 @@ cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 
 ::: {.column width="50%"}
 #### Tunbridge Wells
+
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
 sus_deaths_RWF<-tar_read(sus_deaths_RWF)

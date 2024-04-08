@@ -197,11 +197,12 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
     su_theme() +
     labs(title = NULL, y = ylab) +
     theme(
-      axis.text = element_text(size = 9.5),
+      axis.text = element_text(size = 9),
       axis.title = element_text(size = 11),
       legend.title = element_blank(),
       legend.text = element_text(size = 10),
-      legend.position = "top"
+      legend.position = "top",
+      plot.margin = margin(10, 10, 15, 10)
     ) +
     annotate(
       geom = "text",
@@ -226,7 +227,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
   # Plot pointwise effect
   b <- model_results$PlotPointEffect +
     su_theme() +
-    theme(axis.text = element_text(size = 9.5),
+    theme(axis.text = element_text(size = 9),
           axis.title = element_text(size = 11)) +
     geom_hline(
       aes(yintercept = 0),
@@ -245,7 +246,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
   # Plot out cumulative effect
   c <- model_results$PlotCumulativeEffect +
     su_theme() +
-    theme(axis.text = element_text(size = 9.5),
+    theme(axis.text = element_text(size = 9),
           axis.title = element_text(size = 11)) +
     geom_hline(
       aes(yintercept = 0),
@@ -784,7 +785,8 @@ summary_table_indicators_and_sites <-
            falls_and_fractures_output,
            sus_deaths_output,
            friends_and_family_output,
-           staff_sickness_output)   {
+           staff_sickness_output,
+           staff_survey_output)   {
     waiting_time_median_output <- waiting_time_median_output |>
       mutate(measure = "Waiting time (median)")
     waiting_time_number_output <- waiting_time_number_output |>
@@ -806,7 +808,8 @@ summary_table_indicators_and_sites <-
       mutate(measure = "Patient experience- friends and family test")
     staff_sickness_output  <- staff_sickness_output |>
       mutate(measure = "Staff sickness")
-    
+    staff_survey_output  <- staff_survey_output |>
+      mutate(measure = "Staff survey")
     
     combined_outputs <-
       rbind(
@@ -819,7 +822,8 @@ summary_table_indicators_and_sites <-
         falls_and_fractures_output,
         sus_deaths_output,
         friends_and_family_output,
-        staff_sickness_output
+        staff_sickness_output,
+        staff_survey_output
       ) |>
       mutate(sig = case_when(
         RelEffect > 0 & p < 0.05 ~ "\U2191",
@@ -840,12 +844,13 @@ summary_table_indicators_and_sites <-
           combined_outputs == "\U2191" &
             (
               combined_outputs$measure != "Patient experience- friends and family test" &
-                combined_outputs$measure != "Bed occupancy"
+                combined_outputs$measure != "Bed occupancy" &
+                combined_outputs$measure != "Staff survey"
             )
         ) |
           ((
-            combined_outputs$measure == "Patient experience- friends and family test" |
-              combined_outputs$measure == "Bed occupancy"
+            combined_outputs$measure %in% c("Patient experience- friends and family test" ,
+             "Bed occupancy", "Staff survey")
           ) &
             combined_outputs == "\U2193"
           ),
@@ -868,12 +873,13 @@ summary_table_indicators_and_sites <-
           combined_outputs == "\U2191" &
             (
               combined_outputs$measure != "Patient experience- friends and family test" &
-                combined_outputs$measure != "Bed occupancy"
+                combined_outputs$measure != "Bed occupancy"&
+                combined_outputs$measure != "Staff survey"
             )
         ) |
           ((
-            combined_outputs$measure == "Patient experience- friends and family test" |
-              combined_outputs$measure == "Bed occupancy"
+            combined_outputs$measure %in% c("Patient experience- friends and family test" ,
+                                            "Bed occupancy", "Staff survey")
           )
           &
             combined_outputs == "\U2193"

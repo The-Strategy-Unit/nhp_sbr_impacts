@@ -78,9 +78,15 @@ falls_and_fractures<- tar_read(falls_and_fractures_cia_format)
 # SUS death rate (deaths/1000 admissions)
 sus_deaths<- tar_read(sus_deaths_cia_format)
 
+#Staff survey
+staff_survey<-tar_read(staff_survey_cia_format)
+
 
 #Loading control data
 single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
+
+test<-single_bedroom_matches_final|>
+  filter(organisation_code=="REN")
 
 source("R/CIA_Functions.R")
 
@@ -391,24 +397,18 @@ cia_summary_plots(waiting_time_number_RWF, "Number waiting", "2011-01-01")
 :::
 
 ::: {.column width="50%"}
+#### Clatterbridge
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-#### Clatterbridge
+waiting_time_number_REN<-tar_read(waiting_time_number_REN)
 
-#? Remove as switch happened during COVID and there is an increase at the other sites similar to Clatterbridge but this doesn't appear in expected. Also errorbars go negative
-
-#waiting_time_number_REN<-tar_read(waiting_time_number_REN)
-
-#evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.01, waiting_time_number_REN, single_bedroom_matches_final)
-
-#test<-rtt_waiting_time|>
-#  filter(organisation_code=="REN")
+evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.1, waiting_time_number_REN, single_bedroom_matches_final)
 
 ```
 
 ```{r, include=TRUE, fig.width=5, fig.height=6}
 
-#cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
+cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
 ```
 :::
 :::
@@ -551,7 +551,7 @@ cia_summary_plots(LoS_RWF,"Average LoS (days)", "2011-01-01")
 
 LoS_REN<-tar_read(LoS_REN)
 
-#evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.1, LoS_REN, single_bedroom_matches_final)
+evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.1, LoS_REN, single_bedroom_matches_final)
 
 ```
 
@@ -702,6 +702,8 @@ cia_summary_plots(emergency_readmissions_RAL,"% readmissions", "2018-09-01")
 pred <- emergency_readmissions_RAL$Predictions
 
 ```
+
+Controls for Chase Farm do not show the same trends; Chase Farm emergency readmissions were decreasing from 2012 while for the controls emergency readmissions were stay stable or increasing.
 
 #### Southmead
 
@@ -1403,20 +1405,110 @@ cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 ```
 :::
 
+## Staff survey
+
+### Summary
+
+Points to the right indicate a increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+staff_survey_output<-tar_read(staff_survey_output)
+
+forest_plot(staff_survey_output)
+
+model_effects_table(staff_survey_output)
+
+```
+
+```{r, fig.width=8, fig.height=2}
+
+mean_forest_plot_DGH_Acute(staff_survey_output)
+
+```
+
+
+
+
+#### Royal Liverpool (REM)
 ```{r, include=FALSE, fig.width=8, fig.height=8}
 
-# Staff survey
-#### Southmead (RVJ)
-formatted_staff_survey_data<-tar_read(formatted_staff_survey_data)|>
-    mutate(month=paste0(year,"-01-01"))|>
- mutate(month=as.Date(month))|>
-  filter(!is.na(positive_responses))
 
-#model<-cia_analysis("RVJ", NA, formatted_staff_survey_data, 2014, "positive_responses", 0.05, single_bedroom_matches_final )
+staff_survey_REM<-tar_read(staff_survey_REM)
+  
+#evaluating_model("REM", NA,staff_survey,"2022-10-01", "positive_responses", 0.01, staff_survey_REM, single_bedroom_matches_final)
 
-#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_final)
-#cia_analysis\<-function(organisation, site, data, switch_month, variable, prior_sd, single_bedroom_matches )
+
 ```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots( staff_survey_REM, "Positive Responses (%)", "2022-10-01")
+```
+
+
+#### Clatterbridge (REN)
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_survey_REN<-tar_read(staff_survey_REN)
+  
+evaluating_model("REN", NA,staff_survey,"2020-06-01", "positive_responses", 0.01, staff_survey_REN, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+cia_summary_plots( staff_survey_REN, "Positive Responses (%)", "2020-06-01")
+```
+
+#### Papworth (RGM)
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+staff_survey_RGM<-tar_read(staff_survey_RGM)
+  
+evaluating_model("RGM", NA,staff_survey,"2019-05-01", "positive_responses", 0.01, staff_survey_RGM, single_bedroom_matches_final)
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
+```
+
+
+#### Chase Farm (RAL)
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+
+staff_survey_RAL<-tar_read(staff_survey_RAL)
+  
+evaluating_model("RAL", NA,staff_survey,"2018-09-01", "positive_responses", 0.01, staff_survey_RAL, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots( staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
+```
+
+
+#### Southmead (RVJ)
+```{r, include=FALSE, fig.width=8, fig.height=8}
+
+
+staff_survey_RVJ<-tar_read(staff_survey_RVJ)
+  
+#evaluating_model("RVJ", NA,staff_survey,"2014-05-01", "positive_responses", 0.01, staff_survey_RVJ, single_bedroom_matches_final)
+
+
+```
+
+```{r, include=TRUE, fig.width=5, fig.height=6}
+
+cia_summary_plots( staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
+```
+
+
 
 ## Summary of effects across sites
 

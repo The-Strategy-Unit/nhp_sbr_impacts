@@ -365,6 +365,13 @@ list(
     emergency_readmissions_cia_formatting(sus_readmit)
   ),
   
+  # staff survey
+  tar_target(
+    staff_survey_cia_format,
+    staff_survey_cia_formatting(formatted_staff_survey_data)
+  ),
+  
+  
   # Single bed rooms
   tar_target(
     sbr_percent_cia_format,
@@ -850,15 +857,15 @@ list(
     )
   ),
   
-  #tar_target(
-  #  waiting_time_number_REN,
-  #  cia_analysis("REN",
-  #               rtt_waiting_time_cia_format,
-  #               "number_incomplete",
-  #               0.1,
-  #               single_bedroom_matches_final,
-  # hospitals)
-  #),
+ tar_target(
+    waiting_time_number_REN,
+    cia_analysis("REN",
+                rtt_waiting_time_cia_format,
+                "number_incomplete",
+                0.1,
+                 single_bedroom_matches_final,
+  hospitals)
+  ),
   
   tar_target(
     waiting_time_number_RGM,
@@ -1470,6 +1477,35 @@ list(
       hospitals
     )
   ),
+ 
+ #Staff survey
+ 
+prior_sd_staff_survey <- tibble::tribble(
+   ~org_code_of_interest, ~prior_sd,
+    "REM", 0.01,
+    "REN", 0.01,
+    "RGM", 0.01,
+    "RAL", 0.01,
+    "RVJ", 0.01
+ ),
+ 
+ list(
+   tarchetypes::tar_map(
+     values = prior_sd_staff_survey,
+     names = org_code_of_interest,
+     targets::tar_target(staff_survey,
+                         cia_analysis(
+                           org_code_of_interest,
+                           staff_survey_cia_format,
+                           "positive_responses",
+                           prior_sd,
+                           single_bedroom_matches_final,
+                           hospitals
+                         )
+                         )
+   )
+ ),
+ 
   
   #------------------------------------------------------------------------------#
   #### Presenting CIA outputs ####
@@ -1597,7 +1633,20 @@ list(
       staff_sickness_RVJ,
       NA
     )
+  ),
+
+tar_target(
+  staff_survey_output,
+  model_output(
+    staff_survey_REM,
+    staff_survey_REN,
+    staff_survey_RGM,
+    NA,
+    staff_survey_RAL,
+    staff_survey_RVJ,
+    NA
   )
+)
   
   
 )

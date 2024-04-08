@@ -224,8 +224,7 @@ sus_deaths_cia_formatting <- function(data) {
     ) |> #recalculate rate following merging sites
     mutate(hosp_rate_1000 = (death_hosp / discharges) * 1000) |> #in hospital deaths/1000 discharges
     mutate(all_rate_1000 = ((death_hosp + death_30days) / discharges) * 1000) |> #all deaths/1000 discharges
-    filter(site_code != "REN22" |
-             (site_code == "REN22" &
+    filter(site_code!="REN" | (site_code == "REN22" &
                 month >= '2013-01-01')) #Remove part before 2013 where Clatterbridge has -ive CIs.
   
   return(sus_deaths_cia_format)
@@ -263,9 +262,9 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
         organisation_code != "RJE" &
         organisation_code != "RQW" &
         organisation_code != "RHW" &
-        organisation_code != "RHQ" &
-        organisation_code != "RX1" &
-        organisation_code != "RA7"
+        organisation_code != "RX1" & 
+        organisation_code != "RA9" &
+        organisation_code!="RR8"
     ) #Removing poss control due to data issues
   
   return(rtt_waiting_time_cia_format)
@@ -328,7 +327,10 @@ length_of_stay_cia_formatting <- function(data) {
     mutate(avg_los = los / spells) |>
     filter(site_code != "RVR05" &
              site_code != "RNLAY" &
-             site_code != "RNLBX")
+             site_code != "RNLBX" &
+             site_code != "RX1CC" & 
+             site_code!="RR813"&
+             site_code!="RA901")
   
   return(length_of_stay_cia_format)
   
@@ -382,10 +384,37 @@ emergency_readmissions_cia_formatting <- function(data) {
         site_code != "RPA02" &
         site_code != "RNLAY" &
         site_code != "RNLBX"
-    )#removing control data with issues
+    )|> #removing control data with issues
+  filter(site_code != "RALC7" | (site_code=="RALC7" &
+           month < '2020-01-01')) #Remove part affected by COVID-19 for Chase farm
   
   return(emergency_readmissions_cia_format)
 }
+
+#Staff survey
+staff_survey_cia_formatting<-function(data) {
+  
+  staff_survey_cia_format<-data|>
+  mutate(month=paste0(year,"-12-31"))|>
+  mutate(month=as.Date(month))|>
+  filter(!is.na(positive_responses))|>
+    mutate(
+      organisation_code = ifelse((organisation_code == "REM" |
+                                    organisation_code == "RQ6"),
+                                 "REM",
+                                 organisation_code
+      ),
+      #merge historical Royal Liverpool codes
+      organisation_code = ifelse((organisation_code == "RAL" |
+                                    organisation_code == "RVL"),
+                                 "RAL",
+                                 organisation_code
+      )
+    ) |> #merge historical Chase Farm codes  
+    summarise(positive_responses=mean(positive_responses, na.rm=TRUE), .by = c(month, organisation_code))
+}
+
+
 
 # SBR percentages
 sbr_percent_cia_formatting <- function(data) {

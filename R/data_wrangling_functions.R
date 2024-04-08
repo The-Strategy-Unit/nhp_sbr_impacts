@@ -914,7 +914,8 @@ staff_survey_formatting <-
            staff_survey_2019,
            staff_survey_2020,
            staff_survey_2021,
-           staff_survey_2022) {
+           staff_survey_2022,
+           staff_survey_2023) {
     survey_data_2008 <- read.csv(staff_survey_2008)
     survey_data_2009 <- read.csv(staff_survey_2009)
     survey_data_2010 <- read.csv(staff_survey_2010)
@@ -930,6 +931,7 @@ staff_survey_formatting <-
     survey_data_2020 <- read.csv(staff_survey_2020)
     survey_data_2021 <- read.csv(staff_survey_2021)
     survey_data_2022 <- read.csv(staff_survey_2022)
+    survey_data_2023 <- read.csv(staff_survey_2023)
     
     
     survey_data <- survey_data_2008 |>
@@ -947,6 +949,7 @@ staff_survey_formatting <-
       full_join(survey_data_2020, by = c("organisation_code")) |>
       full_join(survey_data_2021, by = c("organisation_code")) |>
       full_join(survey_data_2022, by = c("organisation_code")) |>
+      full_join(survey_data_2023, by = c("organisation_code")) |>
       gather(key = "year", value = "positive_responses", -organisation_code) |>
       mutate(year = str_sub(year, -4, -1))
     

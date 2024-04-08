@@ -186,7 +186,8 @@ list(
       "Data/staff_survey_2019.csv",
       "Data/staff_survey_2020.csv",
       "Data/staff_survey_2021.csv",
-      "Data/staff_survey_2022.csv"
+      "Data/staff_survey_2022.csv",
+      "Data/staff_survey_2023.csv"
     )
   ),
   
@@ -748,6 +749,7 @@ list(
       friends_and_family_cia_format,
       staff_turnover_cia_format,
       staff_sickness_cia_format,
+      staff_survey_cia_format,
       hcai_cia_format,
       falls_and_fractures_cia_format,
       sus_deaths_cia_format,
@@ -765,6 +767,7 @@ list(
       friends_and_family_cia_format,
       staff_turnover_cia_format,
       staff_sickness_cia_format,
+      staff_survey_cia_format,
       hcai_cia_format,
       falls_and_fractures_cia_format,
       sus_deaths_cia_format,
@@ -1457,7 +1460,7 @@ list(
       "REN",
       staff_sickness_cia_format,
       "staff_sickness_percent",
-      0.05,
+      0.1,
       single_bedroom_matches_final,
       hospitals
     )
@@ -1499,6 +1502,21 @@ list(
       hospitals
     )
   ),
+ 
+ # Staff turnover
+ 
+ tar_target(
+   staff_turnover_REM,
+   cia_analysis(
+     "REM",
+     staff_turnover_cia_format,
+     "leaving_rate",
+     0.1,
+     single_bedroom_matches_final,
+     hospitals
+   )
+ ),
+ 
  
  #Staff survey
  

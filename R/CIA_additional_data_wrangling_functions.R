@@ -64,7 +64,10 @@ friends_and_family_cia_formatting <- function(data) {
     summarise(friends_and_family_percent = mean(percent, na.rm = TRUE)) |>
     filter(!is.na(friends_and_family_percent)) |>
     filter(site_code != "N6J7V" &
-             site_code != "E0A3H") # removing control sites with issues
+             site_code != "E0A3H") |># removing control sites with issues
+    filter(site_code!="RX1CC"&
+             site_code!="RR813"&
+             site_code!="RA901")# removing inappropriate Clatterbridge controls
   
   return(friends_and_family_cia_format)
 }
@@ -138,7 +141,10 @@ staff_sickness_cia_formatting <- function(data) {
       fte_days_available = sum(fte_days_available),
       .by = c(month, organisation_code)
     ) |> #regroup following merging the organisation codes
-    mutate(staff_sickness_percent = (fte_days_sick / fte_days_available) * 100)
+    mutate(staff_sickness_percent = (fte_days_sick / fte_days_available) * 100)|>
+    filter(organisation_code!="RX1"& 
+             organisation_code!="RR8"& 
+             organisation_code!="RA9" ) #Removing inappropriate controls for Clatterbridge
   
   return(staff_sickness_cia_format)
   
@@ -224,8 +230,11 @@ sus_deaths_cia_formatting <- function(data) {
     ) |> #recalculate rate following merging sites
     mutate(hosp_rate_1000 = (death_hosp / discharges) * 1000) |> #in hospital deaths/1000 discharges
     mutate(all_rate_1000 = ((death_hosp + death_30days) / discharges) * 1000) |> #all deaths/1000 discharges
-    filter(site_code!="REN" | (site_code == "REN22" &
-                month >= '2013-01-01')) #Remove part before 2013 where Clatterbridge has -ive CIs.
+    filter(site_code!="REN22" | (site_code == "REN22" &
+                month > '2012-12-01'))|> #Remove part before 2013 where Clatterbridge has -ive CIs.
+   filter(site_code!="RX1CC"&
+            site_code!="RR813"&
+            site_code!="RA901")# removing inappropriate Clatterbridge controls
   
   return(sus_deaths_cia_format)
   
@@ -305,8 +314,11 @@ bed_occupancy_cia_formatting <- function(data) {
                 month <= '2020-03-01')) |> #Remove part of Chase farm outcome period affected by covid
     filter(organisation_code != "RGM" |
              (organisation_code == "RGM" &
-                month <= '2020-03-01')) #Remove part of Papworth outcome period affected by covid
-
+                month <= '2020-03-01')) |>#Remove part of Papworth outcome period affected by covid
+  filter(organisation_code!="RA9" &
+           organisation_code!="RX1" & 
+           organisation_code!="RR8"
+           ) # Remove inappropriate controls for Clatterbridge
 
   return(bed_occupancy_cia_format)
 }
@@ -383,7 +395,10 @@ emergency_readmissions_cia_formatting <- function(data) {
         site_code != "RDEEB" &
         site_code != "RPA02" &
         site_code != "RNLAY" &
-        site_code != "RNLBX"
+        site_code != "RNLBX" &
+        site_code != "RR813" &
+        site_code != "RA901" &
+        site_code != "RX1CC"
     )|> #removing control data with issues
   filter(site_code != "RALC7" | (site_code=="RALC7" &
            month < '2020-01-01')) #Remove part affected by COVID-19 for Chase farm
@@ -411,7 +426,12 @@ staff_survey_cia_formatting<-function(data) {
                                  organisation_code
       )
     ) |> #merge historical Chase Farm codes  
-    summarise(positive_responses=mean(positive_responses, na.rm=TRUE), .by = c(month, organisation_code))
+    summarise(positive_responses=mean(positive_responses, na.rm=TRUE), .by = c(month, organisation_code))|>
+    filter(organisation_code!="RX1"& 
+             organisation_code!="RR8"& 
+             organisation_code!="RA9" ) #Removing inappropriate controls for Clatterbridge
+  
+  return(staff_survey_cia_format)
 }
 
 

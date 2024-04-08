@@ -85,6 +85,7 @@ plot_indicator <- function(site_of_interest,
                           ggplot2::aes(month,
                                        !!sym(plotting_variable))) +
     ggplot2::geom_line() +
+    ggplot2::geom_point(size = 0.5) +
     
     # controls
     ggplot2::geom_line(data = controls,
@@ -127,9 +128,9 @@ plot_indicator <- function(site_of_interest,
     ggplot2::scale_x_date(breaks = seq.Date(as.Date("2008-03-01"),
                                             as.Date("2023-10-01"),
                                             "year"),
-                          # minor_breaks = seq.Date(as.Date("2008-03-01"),
-                          #                   as.Date("2023-10-01"),
-                          #                   frequency),
+                          minor_breaks = seq.Date(as.Date("2008-03-01"),
+                                            as.Date("2023-10-01"),
+                                            frequency),
                           date_labels = "%b%y") +
     ggplot2::theme_bw() +
     ggplot2::theme(axis.text.x = element_text(angle = 90))

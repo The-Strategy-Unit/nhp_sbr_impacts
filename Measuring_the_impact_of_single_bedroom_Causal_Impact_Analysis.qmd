@@ -128,15 +128,13 @@ tar_read(indicator_availability_plot)
 
 ```
 
+
+
 ```{r}
 
 tar_read(indicator_availability_table)
 
 ```
-
-# Methods
-
-#Extra header
 
 # Productivity and Efficiency
 
@@ -249,6 +247,8 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 ### Increase
 
+:::columns
+::: {.column width="50%"}
 #### Tunbridge Wells
 
 ```{r, fig.width=6, fig.height=5}
@@ -259,6 +259,9 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
 cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01-01")
 ```
+:::
+:::
+
 :::
 
 ## Waiting time - Total number waiting
@@ -599,7 +602,7 @@ cia_summary_plots(emergency_readmissions_RGM, "% readmissions", "2019-05-01")
 
 emergency_readmissions_RAL<-tar_read(emergency_readmissions_RAL)
 
-evaluating_model("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL, single_bedroom_matches_final)
+#evaluating_model("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.05, emergency_readmissions_RAL, single_bedroom_matches_final)
 
 cia_summary_plots(emergency_readmissions_RAL,"% readmissions", "2018-09-01")
 
@@ -688,8 +691,6 @@ bed_occupancy_REM<-tar_read(bed_occupancy_REM)
 cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
 ```
 
-Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-
 #### Clatterbridge
 
 ```{r,  fig.width=5, fig.height=6}
@@ -714,8 +715,12 @@ bed_occupancy_RVJ<-tar_read(bed_occupancy_RVJ)
 cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 ```
 
-Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
+
 :::
+:::
+
+::: {.smaller}
+Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 :::
 
@@ -899,10 +904,9 @@ mean_forest_plot_DGH_Acute(sus_deaths_output)
 
 ### Decrease
 
-#### Peterborough
-
 ::: columns
 ::: {.column width="50%"}
+#### Peterborough
 ```{r, fig.width=5, fig.height=6}
 
 sus_deaths_RGN<-tar_read(sus_deaths_RGN)
@@ -915,7 +919,6 @@ cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 
 ::: {.column width="50%"}
 #### Tunbridge Wells
-
 ```{r, fig.width=5, fig.height=6}
 
 sus_deaths_RWF<-tar_read(sus_deaths_RWF)
@@ -950,6 +953,9 @@ cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
 
 #cia_summary_plots(sus_deaths_RGM, "No./per 1,000 discharges", "2019-05-01")
 
+```
+
+```{r, include=FALSE}
 
 sapply(file.path(tempdir(), list.files(tempdir())), unlink)
 ```
@@ -972,7 +978,7 @@ sapply(file.path(tempdir(), list.files(tempdir())), unlink)
 
 sus_deaths_RVJ<-tar_read(sus_deaths_RVJ)
 
-evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.01, sus_deaths_RVJ, single_bedroom_matches_final)
+#evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.01, sus_deaths_RVJ, single_bedroom_matches_final)
 
 cia_summary_plots(sus_deaths_RVJ,"No./per 1,000 discharges", "2014-05-01")
 ```
@@ -991,10 +997,13 @@ sus_deaths_REN<-tar_read(sus_deaths_REN)
 
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 
+#sus_deaths_REN$CausalImpactObject$report
 ```
 :::
 
 # Patient and Staff Experience
+
+It should be noted that for the friends and family test scores there is significant missing data from March 2020 until late/early 2021, therefore for both Papworth and Clatterbridge there is missing data during the post switch period, although data is missing for both these study sites and for there control sites.
 
 ## Patient experience - Friends and Family scores
 
@@ -1026,7 +1035,7 @@ friends_and_family_REN<-tar_read(friends_and_family_REN)
 cia_summary_plots(friends_and_family_REN,"Positive responses (%)", "2020-06-01")
 
 #Last data point prior to switch was about 4 months prior then no data for 8 months after, as switch came during COVID
-
+friends_and_family_REN$CausalImpactObject$report
 ```
 
 ### No Change
@@ -1035,11 +1044,11 @@ cia_summary_plots(friends_and_family_REN,"Positive responses (%)", "2020-06-01")
 ::: {.column width="50%"}
 #### Royal Liverpool (REMRQ)
 
-```{r, fig.height=5, fig.width=6}
+```{r, fig.width=5,fig.height=6 }
 
 friends_and_family_REM<-tar_read(friends_and_family_REM)
 
-evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.1, friends_and_family_REM, single_bedroom_matches_final)
+#evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.1, friends_and_family_REM, single_bedroom_matches_final)
 
 cia_summary_plots(friends_and_family_REM, "Positive responses (%)", "2022-10-01")
 
@@ -1056,6 +1065,7 @@ friends_and_family_RGM<-tar_read(friends_and_family_RGM)
 #evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.1, friends_and_family_RGM, single_bedroom_matches_final)
 
 cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01")
+
 ```
 :::
 
@@ -1072,6 +1082,7 @@ cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01"
 ```
 :::
 :::
+
 :::
 
 ## Staff sickness
@@ -1155,7 +1166,7 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 
 #### Southmead (RVJ)
 
-```{r, include=FALSE, fig.width=5, fig.height=6}
+```{r, fig.width=5, fig.height=6}
 
 staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
 
@@ -1167,6 +1178,21 @@ cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 
 ## Staff turnover
 
+::: panel-tabset
+### Summary
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+staff_turnover_output<-tar_read(staff_turnover_output)
+
+forest_plot(staff_turnover_output)
+
+model_effects_table(staff_turnover_output)
+
+```
+
+### No change
+
 #### Royal Liverpool (REM)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1177,6 +1203,7 @@ staff_turnover_REM<-tar_read(staff_turnover_REM)
 
 cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 ```
+:::
 
 ## Staff survey
 
@@ -1213,7 +1240,9 @@ staff_survey_REN<-tar_read(staff_survey_REN)
 
 cia_summary_plots( staff_survey_REN, "Positive Responses (%)", "2020-06-01")
 ```
-
+::: {.smaller}
+Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
+:::
 ### No change
 
 ::: columns
@@ -1255,6 +1284,10 @@ cia_summary_plots( staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
 :::
 :::
 
+::: {.smaller}
+Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
+:::
+
 ### Increase
 
 #### Papworth (RGM)
@@ -1267,7 +1300,13 @@ staff_survey_RGM<-tar_read(staff_survey_RGM)
 
 cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 ```
+::: {.smaller}
+Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
+
+:::
+
+
 
 ## Cleaning costs
 
@@ -1298,7 +1337,9 @@ cleaning_costs_RGM<-tar_read(cleaning_costs_RGM)
 
 cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 ```
-
+::: {.smaller}
+Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
+:::
 ### Increase
 
 ::: columns
@@ -1320,7 +1361,7 @@ cia_summary_plots( cleaning_costs_REM, "Cost", "2022-10-01")
 
 cleaning_costs_RAL<-tar_read(cleaning_costs_RAL)
   
-evaluating_model("RAL", "RALC7",cleaning_costs,"2018-09-01", "cleaning_service_cost", 0.01, cleaning_costs_RAL, single_bedroom_matches_final)
+#evaluating_model("RAL", "RALC7",cleaning_costs,"2018-09-01", "cleaning_service_cost", 0.01, cleaning_costs_RAL, single_bedroom_matches_final)
 
 cia_summary_plots(cleaning_costs_RAL, "Cost", "2018-09-01")
 ```
@@ -1333,14 +1374,17 @@ cia_summary_plots(cleaning_costs_RAL, "Cost", "2018-09-01")
 
 cleaning_costs_REN<-tar_read(cleaning_costs_REN)
   
-evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_cost", 0.01, cleaning_costs_REN, single_bedroom_matches_final)
+#evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_cost", 0.01, cleaning_costs_REN, single_bedroom_matches_final)
 
 cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
 ```
 :::
 :::
 
-### Increase
+::: {.smaller}
+Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
+:::
+
 :::
 
 ## Summary of effects across sites
@@ -1350,13 +1394,14 @@ summary_table_indicators_and_sites(waiting_time_median_output,
                                              waiting_time_number_output,
                                              LoS_output,
                                              emergency_readmissions_output,
+                                             cleaning_costs_output,
                                              bed_occupancy_output,
                                              hcai_output,
                                              falls_and_fractures_output,
                                              sus_deaths_output,
                                              friends_and_family_output,
                                              staff_sickness_output,
-                                            staff_survey_output) 
+                                             staff_survey_output) 
 
 
 

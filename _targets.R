@@ -1546,6 +1546,34 @@ prior_sd_staff_survey <- tibble::tribble(
    )
  ),
  
+
+# Cleaning costs
+
+prior_sd_cleaning_costs <- tibble::tribble(
+  ~org_code_of_interest, ~prior_sd,
+  "REM", 0.01,
+  "REN", 0.01,
+  "RGM", 0.01,
+  "RAL", 0.01
+),
+
+list(
+  tarchetypes::tar_map(
+    values = prior_sd_cleaning_costs,
+    names = org_code_of_interest,
+    targets::tar_target(cleaning_costs,
+                        cia_analysis(
+                          org_code_of_interest,
+                          cleaning_costs_cia_format,
+                          "cleaning_service_cost",
+                          prior_sd,
+                          single_bedroom_matches_final,
+                          hospitals
+                        )
+    )
+  )
+),
+
   
   #------------------------------------------------------------------------------#
   #### Presenting CIA outputs ####
@@ -1686,7 +1714,21 @@ tar_target(
     staff_survey_RVJ,
     NA
   )
-)
+),
   
+tar_target(
+  cleaning_costs_output,
+  model_output(
+    cleaning_costs_REM,
+    cleaning_costs_REN,
+    cleaning_costs_RGM,
+    NA,
+    cleaning_costs_RAL,
+    NA,
+    NA
+  )
+)
+
+
   
 )

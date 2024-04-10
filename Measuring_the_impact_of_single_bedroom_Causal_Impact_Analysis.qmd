@@ -108,7 +108,15 @@ rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ## Royal Liverpool
 
+## Clatterbridge Cancer Centre
+
+## Royal Papworth
+
+## Chase Farm
+
 ## Southmead
+
+## Tunbridge Wells
 
 ## Peterborough
 

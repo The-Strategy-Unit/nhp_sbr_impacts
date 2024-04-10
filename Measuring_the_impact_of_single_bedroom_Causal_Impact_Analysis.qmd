@@ -122,6 +122,10 @@ tar_read(indicator_availability_table)
 
 ```
 
+# Methods
+
+#Extra header
+
 # Productivity and Efficiency
 
 ## Waiting time- Median (in weeks)

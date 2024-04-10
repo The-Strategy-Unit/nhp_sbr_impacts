@@ -108,6 +108,10 @@ rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ## Royal Liverpool
 
+## Southmead
+
+## Peterborough
+
 # Availability of indicators by site
 
 ```{r, fig.height=6, fig.width=10}

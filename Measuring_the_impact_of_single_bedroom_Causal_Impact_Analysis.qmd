@@ -81,12 +81,11 @@ sus_deaths<- tar_read(sus_deaths_cia_format)
 #Staff survey
 staff_survey<-tar_read(staff_survey_cia_format)
 
+# Cleaning costs
+cleaning_costs<-tar_read(cleaning_costs_cia_format)
 
 #Loading control data
 single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
-
-test<-single_bedroom_matches_final|>
-  filter(organisation_code=="REN")
 
 source("R/CIA_Functions.R")
 
@@ -157,7 +156,6 @@ waiting_time_median_REN<-tar_read(waiting_time_median_REN)
 cia_summary_plots(waiting_time_median_REN, "Median waiting time (wks)", "2020-06-01")
 
 ```
-
 :::
 
 ::: {.column width="50%"}
@@ -172,7 +170,6 @@ waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11-01")
 
 ```
-
 :::
 :::
 
@@ -190,7 +187,6 @@ waiting_time_median_REM<-tar_read(waiting_time_median_REM)
 
 cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10-01")
 ```
-
 :::
 
 ::: {.column width="50%"}
@@ -205,7 +201,6 @@ waiting_time_median_RGM<-tar_read(waiting_time_median_RGM)
 cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05-01")
 
 ```
-
 :::
 
 ```{r, fig.width=5, fig.height=6}
@@ -218,7 +213,6 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 ```
 
-
 ```{r, fig.width=5, fig.height=6}
 #### Southmead
 #waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
@@ -227,7 +221,6 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 #cia_summary_plots(waiting_time_median_RVJ, "Median waiting time (wks)", "2014-05-01")
 ```
-
 :::
 
 ### Increase
@@ -242,7 +235,6 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
 cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01-01")
 ```
-
 :::
 
 ## Waiting time - Total number waiting
@@ -347,6 +339,7 @@ cia_summary_plots(waiting_time_number_RWF, "Number waiting", "2011-01-01")
 
 ::: {.column width="50%"}
 #### Clatterbridge
+
 ```{r, fig.width=5, fig.height=6}
 
 waiting_time_number_REN<-tar_read(waiting_time_number_REN)
@@ -409,7 +402,6 @@ LoS_RGN<-tar_read(LoS_RGN)
 cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
 ```
 
-
 #### Chase Farm
 
 ```{r, fig.width=5, fig.height=6}
@@ -420,7 +412,6 @@ LoS_RAL<-tar_read(LoS_RAL)
 
 cia_summary_plots(LoS_RAL,"Average LoS (days)", "2018-09-01")
 ```
-
 :::
 
 ::: {.column width="50%"}
@@ -435,7 +426,6 @@ LoS_RVJ<-tar_read(LoS_RVJ)
 cia_summary_plots(LoS_RVJ,"Average LoS (days)", "2014-05-01")
 ```
 
-
 #### Royal Liverpool
 
 ```{r, fig.width=5, fig.height=6}
@@ -446,7 +436,6 @@ LoS_REM<-tar_read(LoS_REM)
 
 cia_summary_plots(LoS_REM, "Average LoS (days)", "2022-10-01")
 ```
-
 :::
 :::
 
@@ -660,10 +649,6 @@ bed_occupancy_RAL<-tar_read(bed_occupancy_RAL)
 cia_summary_plots(bed_occupancy_RAL, "Percentage", "2018-09-01")
 ```
 
-
-
-
-
 ### Increase
 
 ::: columns
@@ -678,6 +663,7 @@ bed_occupancy_REM<-tar_read(bed_occupancy_REM)
 
 cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
 ```
+
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 
 #### Clatterbridge
@@ -690,7 +676,6 @@ bed_occupancy_REN<-tar_read(bed_occupancy_REN)
 
 cia_summary_plots(bed_occupancy_REN,"Percentage", "2020-06-01")
 ```
-
 :::
 
 ::: {.column width="50%"}
@@ -704,6 +689,7 @@ bed_occupancy_RVJ<-tar_read(bed_occupancy_RVJ)
 
 cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 ```
+
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 :::
@@ -953,10 +939,6 @@ sapply(file.path(tempdir(), list.files(tempdir())), unlink)
 
 #cia_summary_plots(sus_deaths_RAL, "No./per 1,000 discharges", "2018-09-01")
 ```
-
-
-
-
 :::
 
 ::: {.column width="50%"}
@@ -986,8 +968,6 @@ sus_deaths_REN<-tar_read(sus_deaths_REN)
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 
 ```
-
-
 :::
 
 # Patient and Staff Experience
@@ -1174,8 +1154,8 @@ staff_turnover_REM<-tar_read(staff_turnover_REM)
 cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 ```
 
-
 ## Staff survey
+
 ::: panel-tabset
 ### Summary
 
@@ -1197,10 +1177,10 @@ mean_forest_plot_DGH_Acute(staff_survey_output)
 
 ```
 
-
 ### Decrease
 
 #### Clatterbridge (REN)
+
 ```{r,  fig.width=5, fig.height=6}
 
 staff_survey_REN<-tar_read(staff_survey_REN)
@@ -1210,36 +1190,36 @@ staff_survey_REN<-tar_read(staff_survey_REN)
 cia_summary_plots( staff_survey_REN, "Positive Responses (%)", "2020-06-01")
 ```
 
-
 ### No change
-:::columns
+
+::: columns
 ::: {.column width="50%"}
 #### Royal Liverpool (REM)
+
 ```{r, fig.width=5, fig.height=6}
 
 staff_survey_REM<-tar_read(staff_survey_REM)
   
-evaluating_model("REM", NA,staff_survey,"2022-10-01", "positive_responses", 0.01, staff_survey_REM, single_bedroom_matches_final)
+#evaluating_model("REM", NA,staff_survey,"2022-10-01", "positive_responses", 0.01, staff_survey_REM, single_bedroom_matches_final)
 
 cia_summary_plots( staff_survey_REM, "Positive Responses (%)", "2022-10-01")
 ```
 
-
-
 #### Chase Farm (RAL)
+
 ```{r,  fig.width=5, fig.height=6}
 
 staff_survey_RAL<-tar_read(staff_survey_RAL)
   
-evaluating_model("RAL", NA,staff_survey,"2018-09-01", "positive_responses", 0.01, staff_survey_RAL, single_bedroom_matches_final)
+#evaluating_model("RAL", NA,staff_survey,"2018-09-01", "positive_responses", 0.01, staff_survey_RAL, single_bedroom_matches_final)
 
 cia_summary_plots( staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
 ```
 :::
 
 ::: {.column width="50%"}
-
 #### Southmead (RVJ)
+
 ```{r, fig.width=5, fig.height=6}
 
 staff_survey_RVJ<-tar_read(staff_survey_RVJ)
@@ -1250,9 +1230,11 @@ cia_summary_plots( staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
 ```
 :::
 :::
+
 ### Increase
 
 #### Papworth (RGM)
+
 ```{r, fig.width=5, fig.height=6}
 
 staff_survey_RGM<-tar_read(staff_survey_RGM)
@@ -1261,6 +1243,85 @@ staff_survey_RGM<-tar_read(staff_survey_RGM)
 
 cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 ```
+:::
+
+
+## Cleaning costs
+
+::: panel-tabset
+### Summary
+
+Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
+```{r, include=TRUE, fig.width=8, fig.height=4}
+
+cleaning_costs_output<-tar_read(cleaning_costs_output)
+
+forest_plot(cleaning_costs_output)
+
+model_effects_table(cleaning_costs_output)
+
+```
+
+
+### No change
+
+#### Papworth (RGM)
+
+```{r, fig.width=5, fig.height=6}
+
+cleaning_costs_RGM<-tar_read(cleaning_costs_RGM)
+  
+#evaluating_model("RGM", "RGM22",cleaning_costs,"2019-05-01","cleaning_service_cost", 0.01, cleaning_costs_RGM, single_bedroom_matches_final)
+
+cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
+```
+
+### Increase
+
+::: columns
+::: {.column width="50%"}
+#### Royal Liverpool (REM)
+
+```{r, fig.width=5, fig.height=6}
+
+cleaning_costs_REM<-tar_read(cleaning_costs_REM)
+  
+#evaluating_model("REM","REMRQ",cleaning_costs,"2022-10-01", "cleaning_service_cost", 0.01, cleaning_costs_REM, single_bedroom_matches_final)
+
+cia_summary_plots( cleaning_costs_REM, "Cost", "2022-10-01")
+```
+
+#### Chase Farm (RAL)
+
+```{r,  fig.width=5, fig.height=6}
+
+cleaning_costs_RAL<-tar_read(cleaning_costs_RAL)
+  
+evaluating_model("RAL", "RALC7",cleaning_costs,"2018-09-01", "cleaning_service_cost", 0.01, cleaning_costs_RAL, single_bedroom_matches_final)
+
+cia_summary_plots(cleaning_costs_RAL, "Cost", "2018-09-01")
+```
+:::
+
+::: {.column width="50%"}
+
+#### Clatterbridge (REN)
+
+```{r,  fig.width=5, fig.height=6}
+
+cleaning_costs_REN<-tar_read(cleaning_costs_REN)
+  
+evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_cost", 0.01, cleaning_costs_REN, single_bedroom_matches_final)
+
+cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
+```
+
+:::
+:::
+
+### Increase
+
 
 :::
 
@@ -1278,5 +1339,8 @@ summary_table_indicators_and_sites(waiting_time_median_output,
                                              friends_and_family_output,
                                              staff_sickness_output,
                                             staff_survey_output) 
+
+
+
 
 ```

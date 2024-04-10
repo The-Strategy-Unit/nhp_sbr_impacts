@@ -370,7 +370,9 @@ cleaning_costs_cia_formatting <- function(data) {
       cleaning_service_cost = sum(as.numeric(cleaning_service_cost),
                                   na.rm = TRUE),
       .by = c(site_code, month)
-    )
+    )|>
+    filter(site_code!="RNLAY" &
+            site_code!="RNLBX")
   
   return(cleaning_costs_cia_format)
 }

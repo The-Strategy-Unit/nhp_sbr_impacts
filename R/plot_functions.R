@@ -223,7 +223,8 @@ indicator_availability_over_time <-
            rtt_waiting_time_cia_format,
            bed_occupancy_cia_format,
            length_of_stay_cia_format,
-           emergency_readmissions_cia_format) {
+           emergency_readmissions_cia_format,
+           cleaning_costs_cia_format) {
     measure <-
       c(
         "Patient experience-\nfriends and family test",
@@ -236,7 +237,8 @@ indicator_availability_over_time <-
         "RTT waiting times",
         "Bed occupancy",
         "Length of stay",
-        "Emergency readmissions"
+        "Emergency readmissions",
+        "Cleaning costs"
       )
     level <-
       c("site",
@@ -249,6 +251,7 @@ indicator_availability_over_time <-
         "trust",
         "trust",
         "site",
+        "site",
         "site")
     group <-
       c(
@@ -259,6 +262,7 @@ indicator_availability_over_time <-
         "Health & Safety",
         "Health & Safety",
         "Health & Safety",
+        "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
@@ -276,7 +280,8 @@ indicator_availability_over_time <-
         min(rtt_waiting_time_cia_format$month),
         min(bed_occupancy_cia_format$month),
         min(length_of_stay_cia_format$month),
-        min(emergency_readmissions_cia_format$month)
+        min(emergency_readmissions_cia_format$month),
+        min(cleaning_costs_cia_format$month)
       )
     end_date <-
       c(
@@ -290,7 +295,8 @@ indicator_availability_over_time <-
         max(rtt_waiting_time_cia_format$month),
         max(bed_occupancy_cia_format$month),
         max(length_of_stay_cia_format$month),
-        max(emergency_readmissions_cia_format$month)
+        max(emergency_readmissions_cia_format$month),
+        max(cleaning_costs_cia_format$month)
       )
     
     
@@ -308,6 +314,7 @@ indicator_availability_over_time <-
           "Healthcare acquired infections",
           "Falls and fractures",
           "Hospital deaths",
+          "Cleaning costs",
           "Emergency readmissions",
           "Bed occupancy",
           "RTT waiting times",
@@ -475,7 +482,8 @@ indicator_availability_by_site <-
            rtt_waiting_time_cia_format,
            bed_occupancy_cia_format,
            length_of_stay_cia_format,
-           emergency_readmissions_cia_format) {
+           emergency_readmissions_cia_format,
+           cleaning_costs_cia_format) {
     measure <-
       c(
         "Patient experience-\nfriends and family test",
@@ -488,7 +496,8 @@ indicator_availability_by_site <-
         "RTT waiting times",
         "Bed occupancy",
         "Length of stay",
-        "Emergency readmissions"
+        "Emergency readmissions",
+        "Cleaning costs"
       )
     level <-
       c("site",
@@ -501,6 +510,7 @@ indicator_availability_by_site <-
         "trust",
         "trust",
         "site",
+        "site",
         "site")
     group <-
       c(
@@ -511,6 +521,7 @@ indicator_availability_by_site <-
         "Health & Safety",
         "Health & Safety",
         "Health & Safety",
+        "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
@@ -528,7 +539,8 @@ indicator_availability_by_site <-
         min(rtt_waiting_time_cia_format$month),
         min(bed_occupancy_cia_format$month),
         min(length_of_stay_cia_format$month),
-        min(emergency_readmissions_cia_format$month)
+        min(emergency_readmissions_cia_format$month),
+        min(cleaning_costs_cia_format$month)
       )
     end_date <-
       c(
@@ -542,7 +554,8 @@ indicator_availability_by_site <-
         max(rtt_waiting_time_cia_format$month),
         max(bed_occupancy_cia_format$month),
         max(length_of_stay_cia_format$month),
-        max(emergency_readmissions_cia_format$month)
+        max(emergency_readmissions_cia_format$month),
+        max(cleaning_costs_cia_format$month)
       )
     
     
@@ -563,7 +576,8 @@ indicator_availability_by_site <-
           "Emergency readmissions",
           "Bed occupancy",
           "RTT waiting times",
-          "Length of stay"
+          "Length of stay",
+          "Cleaning costs"
         )
       ))
     
@@ -612,7 +626,8 @@ indicator_availability_by_site <-
           "Length of stay" ,
           "RTT waiting times",
           "Bed occupancy",
-          "Emergency readmissions"
+          "Emergency readmissions",
+          "Cleaning costs"
         )
       )) |>
       arrange(measure) |>
@@ -637,7 +652,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(1:4) |>
+      slice(1:5) |>
       select(-group) |>
       as.matrix()
     
@@ -652,7 +667,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(5:7) |>
+      slice(6:8) |>
       select(-group) |>
       as.matrix()
     
@@ -669,7 +684,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(8:11) |>
+      slice(9:12) |>
       select(-group) |>
       as.matrix()
     
@@ -682,9 +697,9 @@ indicator_availability_by_site <-
       align(part = "body", align = "center") |>
       align(j = 1:2,  align = "left") |>
       bg(bg = "#f9bf07", part = "header") |>
-      bg(i = 2:5, part = "body", bg = colormatrix1) |>
-      bg(i = 7:9, bg = colormatrix2) |>
-      bg(i = 11:14, bg = colormatrix3) |>
+      bg(i = 2:6, part = "body", bg = colormatrix1) |>
+      bg(i = 8:10, bg = colormatrix2) |>
+      bg(i = 12:15, bg = colormatrix3) |>
       align(
         j = 1,
         i = ~ !is.na(group),

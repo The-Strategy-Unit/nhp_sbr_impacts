@@ -756,7 +756,8 @@ list(
       rtt_waiting_time_cia_format,
       bed_occupancy_cia_format,
       length_of_stay_cia_format,
-      emergency_readmissions_cia_format
+      emergency_readmissions_cia_format,
+      cleaning_costs_cia_format
     )
   ),
   
@@ -774,7 +775,8 @@ list(
       rtt_waiting_time_cia_format,
       bed_occupancy_cia_format,
       length_of_stay_cia_format,
-      emergency_readmissions_cia_format
+      emergency_readmissions_cia_format,
+      cleaning_costs_cia_format
     )
   ),
   
@@ -1702,6 +1704,19 @@ list(
       NA
     )
   ),
+
+tar_target(
+  staff_turnover_output,
+  model_output(
+    staff_sickness_REM,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA
+  )
+),
 
 tar_target(
   staff_survey_output,

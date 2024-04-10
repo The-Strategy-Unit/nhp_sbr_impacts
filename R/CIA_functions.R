@@ -222,7 +222,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
     scale_color_manual(values = c("#f9bf07", "#2c2825")) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
     guides(colour = guide_legend(reverse = T)) +
-    scale_y_continuous(limits = c(0, max(max) * 1.1))
+    scale_y_continuous(limits = c(0, max(max) * 1.1),labels = scales::comma)
   
   # Plot pointwise effect
   b <- model_results$PlotPointEffect +
@@ -780,6 +780,7 @@ summary_table_indicators_and_sites <-
            waiting_time_number_output,
            LoS_output,
            emergency_readmissions_output,
+           cleaning_costs_output,
            bed_occupancy_output,
            hcai_output,
            falls_and_fractures_output,
@@ -796,6 +797,9 @@ summary_table_indicators_and_sites <-
     emergency_readmissions_output  <-
       emergency_readmissions_output |>
       mutate(measure = "Emergency readmissions")
+    cleaning_costs_output  <-
+      cleaning_costs_output |>
+      mutate(measure = "Cleaning costs")
     bed_occupancy_output  <- bed_occupancy_output |>
       mutate(measure = "Bed occupancy")
     hcai_output  <- hcai_output |>
@@ -817,6 +821,7 @@ summary_table_indicators_and_sites <-
         waiting_time_number_output,
         LoS_output,
         emergency_readmissions_output,
+        cleaning_costs_output,
         bed_occupancy_output,
         hcai_output,
         falls_and_fractures_output,

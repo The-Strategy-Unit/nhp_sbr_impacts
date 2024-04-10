@@ -89,6 +89,13 @@ single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
 source("R/CIA_Functions.R")
 
+test<-single_bedroom_matches_final|>
+  filter(organisation_code=="RGM")
+
+test2<-single_bedroom_matches_final|>
+  filter(organisation_code=="RAL")
+
+
 ```
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
@@ -112,7 +119,7 @@ rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ## Peterborough
 
-# Availability of indicators by site
+### Availability of indicators over time 
 
 ```{r, fig.height=6, fig.width=10}
 
@@ -120,7 +127,7 @@ tar_read(indicator_availability_plot)
 
 ```
 
-
+### Availability of indicators by site
 
 ```{r}
 
@@ -366,6 +373,13 @@ waiting_time_number_REN<-tar_read(waiting_time_number_REN)
 #evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "number_incomplete", 0.1, waiting_time_number_REN, single_bedroom_matches_final)
 
 cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
+
+#rtt_waiting_time|>
+#  filter(organisation_code=="REN")|>
+#  ggplot()+
+# geom_line(aes(y=number_incomplete, x=month))+
+#  scale_y_continuous(limits=c(0,1200))
+
 ```
 :::
 :::
@@ -985,11 +999,11 @@ cia_summary_plots(sus_deaths_RVJ,"No./per 1,000 discharges", "2014-05-01")
 
 sus_deaths_REN<-tar_read(sus_deaths_REN)
 
-#evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN, single_bedroom_matches_final )
+#evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.1, sus_deaths_REN, single_bedroom_matches_final )
 
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 
-#sus_deaths_REN$CausalImpactObject$report
+
 ```
 :::
 
@@ -1291,6 +1305,16 @@ staff_survey_RGM<-tar_read(staff_survey_RGM)
 #evaluating_model("RGM", NA,staff_survey,"2019-05-01", "positive_responses", 0.01, staff_survey_RGM, single_bedroom_matches_final)
 
 cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
+
+
+matches<-select_matches("RGN",
+           NA,
+           staff_survey,
+           "2010-11-01",
+           "positive_responses",
+           single_bedroom_matches_final) 
+
+
 ```
 ::: {.smaller}
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms

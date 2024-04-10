@@ -277,7 +277,7 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
         organisation_code!="RR8"
     )|> #Removing poss control due to data issues
   filter(organisation_code!="REN"| (organisation_code=="REN" &
-           month<'2022-10-01') )
+           month<'2021-11-01') )
   
   
   return(rtt_waiting_time_cia_format)

@@ -1326,7 +1326,7 @@ list(
       "REN",
       sus_deaths_cia_format,
       "hosp_rate_1000",
-      0.05,
+      0.1,
       single_bedroom_matches_final,
       hospitals
     )
@@ -1597,7 +1597,7 @@ list(
     waiting_time_number_output,
     model_output(
       waiting_time_number_REM,
-      NA,
+      waiting_time_number_REN,
       waiting_time_number_RGM,
       waiting_time_number_RGN,
       NA,

@@ -610,7 +610,7 @@ indicator_availability_by_site <-
       cross_join(sites) |>
       filter(type == "start_date") |>
       mutate(difference = as.numeric(date - range)) |> #difference in days
-      mutate(sufficient_baseline = ifelse(difference >= 730|measure=="Staff survey", "yes", "no")) |>
+      mutate(sufficient_baseline = ifelse(difference < 730|(difference<1095 & measure=="Staff survey"), "x", "\U2714")) |>
       select(-difference, -date, -range, -type) |>
       pivot_wider(names_from = name, values_from = sufficient_baseline) |>
       mutate(measure = factor(
@@ -643,10 +643,10 @@ indicator_availability_by_site <-
     
     colormatrix1 <-
       ifelse(
-        indicator_availability_by_site == "no",
+        indicator_availability_by_site == "x",
         "#FBE0DC",
         ifelse(
-          indicator_availability_by_site == "yes",
+          indicator_availability_by_site == "\U2714",
           "#d5eed1",
           "#FFFFFF"
         )
@@ -658,10 +658,10 @@ indicator_availability_by_site <-
     
     colormatrix2 <-
       ifelse(
-        indicator_availability_by_site == "no",
+        indicator_availability_by_site == "x",
         "#FBE0DC",
         ifelse(
-          indicator_availability_by_site == "yes",
+          indicator_availability_by_site == "\U2714",
           "#d5eed1",
           "#FFFFFF"
         )
@@ -675,12 +675,58 @@ indicator_availability_by_site <-
     
     colormatrix3 <-
       ifelse(
-        indicator_availability_by_site == "no",
+        indicator_availability_by_site == "x",
         "#FBE0DC",
         ifelse(
-          indicator_availability_by_site == "yes",
+          indicator_availability_by_site == "\U2714",
           "#d5eed1",
           "#FFFFFF"
+        )
+      ) |>
+      as.data.frame() |>
+      slice(9:12) |>
+      select(-group) |>
+      as.matrix()
+    
+    
+    colormatrix4 <-
+      ifelse(
+        indicator_availability_by_site == "x",
+        "#ec6555",
+        ifelse(
+          indicator_availability_by_site == "\U2714",
+          "#6C9380",
+          "black"
+        )
+      ) |>
+      as.data.frame() |>
+      slice(1:5) |>
+      select(-group) |>
+      as.matrix()
+    
+    colormatrix5 <-
+      ifelse(
+        indicator_availability_by_site == "x",
+        "#ec6555",
+        ifelse(
+          indicator_availability_by_site == "\U2714",
+          "#6C9380",
+          "black"
+        )
+      ) |>
+      as.data.frame() |>
+      slice(6:8) |>
+      select(-group) |>
+      as.matrix()
+    
+    colormatrix6 <-
+      ifelse(
+        indicator_availability_by_site == "x",
+        "#ec6555",
+        ifelse(
+          indicator_availability_by_site == "\U2714",
+          "#6C9380",
+          "black"
         )
       ) |>
       as.data.frame() |>
@@ -697,7 +743,10 @@ indicator_availability_by_site <-
       align(part = "body", align = "center") |>
       align(j = 1:2,  align = "left") |>
       bg(bg = "#f9bf07", part = "header") |>
-      bg(i = 2:6, part = "body", bg = colormatrix1) |>
+      color(i = 2:6, color = colormatrix4) |>
+      color(i = 8:10, color= colormatrix5) |>
+      color(i = 12:15, color = colormatrix6) |>
+      bg(i = 2:6, bg = colormatrix1) |>
       bg(i = 8:10, bg = colormatrix2) |>
       bg(i = 12:15, bg = colormatrix3) |>
       align(

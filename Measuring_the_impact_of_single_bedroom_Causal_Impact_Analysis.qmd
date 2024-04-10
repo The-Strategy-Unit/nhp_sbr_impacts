@@ -100,6 +100,14 @@ rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ```
 
+# Introduction
+
+# Executive Summary
+
+# Hospital Background
+
+## Royal Liverpool
+
 # Availability of indicators by site
 
 ```{r, fig.height=6, fig.width=10}
@@ -1245,7 +1253,6 @@ cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 ```
 :::
 
-
 ## Cleaning costs
 
 ::: panel-tabset
@@ -1262,7 +1269,6 @@ forest_plot(cleaning_costs_output)
 model_effects_table(cleaning_costs_output)
 
 ```
-
 
 ### No change
 
@@ -1305,7 +1311,6 @@ cia_summary_plots(cleaning_costs_RAL, "Cost", "2018-09-01")
 :::
 
 ::: {.column width="50%"}
-
 #### Clatterbridge (REN)
 
 ```{r,  fig.width=5, fig.height=6}
@@ -1316,13 +1321,10 @@ evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_c
 
 cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
 ```
-
 :::
 :::
 
 ### Increase
-
-
 :::
 
 ## Summary of effects across sites

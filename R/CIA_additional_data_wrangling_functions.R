@@ -67,7 +67,8 @@ friends_and_family_cia_formatting <- function(data) {
              site_code != "E0A3H") |># removing control sites with issues
     filter(site_code!="RX1CC"&
              site_code!="RR813"&
-             site_code!="RA901")# removing inappropriate Clatterbridge controls
+             site_code!="RA901" &# removing inappropriate Clatterbridge controls
+             site_code!="RXL01")
   
   return(friends_and_family_cia_format)
 }
@@ -274,7 +275,10 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
         organisation_code != "RX1" & 
         organisation_code != "RA9" &
         organisation_code!="RR8"
-    ) #Removing poss control due to data issues
+    )|> #Removing poss control due to data issues
+  filter(organisation_code!="REN"| (organisation_code=="REN" &
+           month<'2022-10-01') )
+  
   
   return(rtt_waiting_time_cia_format)
   
@@ -431,7 +435,8 @@ staff_survey_cia_formatting<-function(data) {
     summarise(positive_responses=mean(positive_responses, na.rm=TRUE), .by = c(month, organisation_code))|>
     filter(organisation_code!="RX1"& 
              organisation_code!="RR8"& 
-             organisation_code!="RA9" ) #Removing inappropriate controls for Clatterbridge
+             organisation_code!="RA9") #Removing inappropriate controls for Clatterbridge
+      
   
   return(staff_survey_cia_format)
 }

@@ -54,6 +54,10 @@ get_y_axis_for_indicator_plots <- function(plotting_variable) {
     y_axis <- "Percentage of emergency readmissions"
   }
   
+  if (plotting_variable == "positive_responses") {
+    y_axis <- "Percentage of positive responses"
+  }
+  
   return(y_axis)
   
 }

@@ -100,6 +100,10 @@ rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ```
 
+# Foreword??
+
+Ask Cheryl / Eammon to write...otherwise omit.
+
 # Introduction and background
 
 Taken from initial plan and NHP update slides.

@@ -699,6 +699,60 @@ tar_read(plot_staff_sickness_RWF) |>
   ggplotly()
 ```
 
+## Staff survey
+
+These are the charts for the percentage of positive responses to the staff 
+survey.
+
+### Royal Liverpool
+
+```{r royal_liverpool_staff_survey}
+tar_read(plot_staff_survey_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_staff_survey}
+tar_read(plot_staff_survey_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_staff_survey}
+tar_read(plot_staff_survey_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_staff_survey}
+tar_read(plot_staff_survey_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_staff_survey}
+tar_read(plot_staff_survey_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_staff_survey}
+tar_read(plot_staff_survey_RVJ) |>
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_staff_survey}
+tar_read(plot_staff_survey_RWF) |> 
+  ggplotly()
+```
+
 ## Waiting time
 
 These are the charts for the median RTT waiting time in weeks.

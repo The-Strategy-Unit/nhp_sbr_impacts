@@ -127,7 +127,7 @@ rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ## Peterborough
 
-### Availability of indicators over time 
+### Availability of indicators over time
 
 ```{r, fig.height=6, fig.width=10}
 
@@ -254,7 +254,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 ### Increase
 
-:::columns
+::: columns
 ::: {.column width="50%"}
 #### Tunbridge Wells
 
@@ -268,7 +268,6 @@ cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01
 ```
 :::
 :::
-
 :::
 
 ## Waiting time - Total number waiting
@@ -728,12 +727,10 @@ bed_occupancy_RVJ<-tar_read(bed_occupancy_RVJ)
 
 cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 ```
-
-
 :::
 :::
 
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 :::
@@ -921,6 +918,7 @@ mean_forest_plot_DGH_Acute(sus_deaths_output)
 ::: columns
 ::: {.column width="50%"}
 #### Peterborough
+
 ```{r, fig.width=5, fig.height=6}
 
 sus_deaths_RGN<-tar_read(sus_deaths_RGN)
@@ -933,6 +931,7 @@ cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 
 ::: {.column width="50%"}
 #### Tunbridge Wells
+
 ```{r, fig.width=5, fig.height=6}
 
 sus_deaths_RWF<-tar_read(sus_deaths_RWF)
@@ -1096,7 +1095,6 @@ cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01"
 ```
 :::
 :::
-
 :::
 
 ## Staff sickness
@@ -1254,9 +1252,11 @@ staff_survey_REN<-tar_read(staff_survey_REN)
 
 cia_summary_plots( staff_survey_REN, "Positive Responses (%)", "2020-06-01")
 ```
-::: {.smaller}
+
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
+
 ### No change
 
 ::: columns
@@ -1298,7 +1298,7 @@ cia_summary_plots( staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
 :::
 :::
 
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 
@@ -1324,13 +1324,11 @@ matches<-select_matches("RGN",
 
 
 ```
-::: {.smaller}
+
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
-
 :::
-
-
 
 ## Cleaning costs
 
@@ -1361,9 +1359,11 @@ cleaning_costs_RGM<-tar_read(cleaning_costs_RGM)
 
 cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 ```
-::: {.smaller}
+
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
+
 ### Increase
 
 ::: columns
@@ -1405,10 +1405,9 @@ cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
 :::
 :::
 
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
-
 :::
 
 ## Summary of effects across sites

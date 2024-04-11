@@ -89,24 +89,6 @@ single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
 source("R/CIA_Functions.R")
 
-<<<<<<< HEAD
-test<-single_bedroom_matches_final|>
-  filter(organisation_code=="REN")
-
-test2<-single_bedroom_matches_final|>
-  filter(organisation_code=="RAL")
-
-test3<-single_bedroom_matches_final|>
-  filter(organisation_code=="REM")
-
-test4<-single_bedroom_matches_final|>
-  filter(organisation_code=="RWF")
-
-test5<-single_bedroom_matches_final|>
-  filter(organisation_code=="RVJ")
-
-=======
->>>>>>> 0398c8451d62216991dd725e034b3ac28bf01d60
 ```
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
@@ -1071,10 +1053,6 @@ sus_deaths_REN<-tar_read(sus_deaths_REN)
 
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 
-<<<<<<< HEAD
-=======
-#sus_deaths_REN$CausalImpactObject$report
->>>>>>> 0398c8451d62216991dd725e034b3ac28bf01d60
 ```
 
 :::
@@ -1381,10 +1359,7 @@ staff_survey_RGM<-tar_read(staff_survey_RGM)
 #evaluating_model("RGM", NA,staff_survey,"2019-05-01", "positive_responses", 0.01, staff_survey_RGM, single_bedroom_matches_final)
 
 cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
-<<<<<<< HEAD
 
-=======
->>>>>>> 0398c8451d62216991dd725e034b3ac28bf01d60
 ```
 :::
 

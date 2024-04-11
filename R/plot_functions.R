@@ -216,35 +216,41 @@ indicator_availability_over_time <-
   function(friends_and_family_cia_format,
            staff_turnover_cia_format,
            staff_sickness_cia_format,
+           staff_survey_cia_format,
            hcai_cia_format,
            falls_and_fractures_cia_format,
            sus_deaths_cia_format,
            rtt_waiting_time_cia_format,
            bed_occupancy_cia_format,
            length_of_stay_cia_format,
-           emergency_readmissions_cia_format) {
+           emergency_readmissions_cia_format,
+           cleaning_costs_cia_format) {
     measure <-
       c(
         "Patient experience-\nfriends and family test",
         "Staff turnover",
         "Staff sickness",
+        "Staff survey",
         "Healthcare acquired infections",
         "Falls and fractures",
         "Hospital deaths",
         "RTT waiting times",
         "Bed occupancy",
         "Length of stay",
-        "Emergency readmissions"
+        "Emergency readmissions",
+        "Cleaning costs"
       )
     level <-
       c("site",
         "trust",
         "trust",
         "trust",
+        "trust",
         "site",
         "site",
         "trust",
         "trust",
+        "site",
         "site",
         "site")
     group <-
@@ -252,9 +258,11 @@ indicator_availability_over_time <-
         "Patient & Staff Experience",
         "Patient & Staff Experience",
         "Patient & Staff Experience",
+        "Patient & Staff Experience",
         "Health & Safety",
         "Health & Safety",
         "Health & Safety",
+        "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
@@ -265,26 +273,30 @@ indicator_availability_over_time <-
         min(friends_and_family_cia_format$month),
         min(staff_turnover_cia_format$month),
         min(staff_sickness_cia_format$month),
+        min(staff_survey_cia_format$month),
         min(hcai_cia_format$month),
         min(falls_and_fractures_cia_format$month),
         min(sus_deaths_cia_format$month),
         min(rtt_waiting_time_cia_format$month),
         min(bed_occupancy_cia_format$month),
         min(length_of_stay_cia_format$month),
-        min(emergency_readmissions_cia_format$month)
+        min(emergency_readmissions_cia_format$month),
+        min(cleaning_costs_cia_format$month)
       )
     end_date <-
       c(
         max(friends_and_family_cia_format$month),
         max(staff_turnover_cia_format$month),
         max(staff_sickness_cia_format$month),
+        max(staff_survey_cia_format$month),
         max(hcai_cia_format$month),
         max(falls_and_fractures_cia_format$month),
         max(sus_deaths_cia_format$month),
         max(rtt_waiting_time_cia_format$month),
         max(bed_occupancy_cia_format$month),
         max(length_of_stay_cia_format$month),
-        max(emergency_readmissions_cia_format$month)
+        max(emergency_readmissions_cia_format$month),
+        max(cleaning_costs_cia_format$month)
       )
     
     
@@ -298,9 +310,11 @@ indicator_availability_over_time <-
           "Staff turnover",
           "Staff sickness",
           "Patient experience-\nfriends and family test",
+          "Staff survey",
           "Healthcare acquired infections",
           "Falls and fractures",
           "Hospital deaths",
+          "Cleaning costs",
           "Emergency readmissions",
           "Bed occupancy",
           "RTT waiting times",
@@ -446,7 +460,7 @@ indicator_availability_over_time <-
       scale_x_date(
         date_breaks = "1 year",
         date_labels = "%Y",
-        limits = as.Date(c('2008-04-01', '2023-11-01'))
+        limits = as.Date(c('2008-04-01', '2023-12-31'))
       ) +
       coord_cartesian(clip = 'off')
     
@@ -461,35 +475,41 @@ indicator_availability_by_site <-
   function(friends_and_family_cia_format,
            staff_turnover_cia_format,
            staff_sickness_cia_format,
+           staff_survey_cia_format,
            hcai_cia_format,
            falls_and_fractures_cia_format,
            sus_deaths_cia_format,
            rtt_waiting_time_cia_format,
            bed_occupancy_cia_format,
            length_of_stay_cia_format,
-           emergency_readmissions_cia_format) {
+           emergency_readmissions_cia_format,
+           cleaning_costs_cia_format) {
     measure <-
       c(
         "Patient experience-\nfriends and family test",
         "Staff turnover",
         "Staff sickness",
+        "Staff survey",
         "Healthcare acquired infections",
         "Falls and fractures",
         "Hospital deaths",
         "RTT waiting times",
         "Bed occupancy",
         "Length of stay",
-        "Emergency readmissions"
+        "Emergency readmissions",
+        "Cleaning costs"
       )
     level <-
       c("site",
         "trust",
         "trust",
         "trust",
+        "trust",
         "site",
         "site",
         "trust",
         "trust",
+        "site",
         "site",
         "site")
     group <-
@@ -497,9 +517,11 @@ indicator_availability_by_site <-
         "Patient & Staff Experience",
         "Patient & Staff Experience",
         "Patient & Staff Experience",
+        "Patient & Staff Experience",
         "Health & Safety",
         "Health & Safety",
         "Health & Safety",
+        "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
@@ -510,26 +532,30 @@ indicator_availability_by_site <-
         min(friends_and_family_cia_format$month),
         min(staff_turnover_cia_format$month),
         min(staff_sickness_cia_format$month),
+        min(staff_survey_cia_format$month),
         min(hcai_cia_format$month),
         min(falls_and_fractures_cia_format$month),
         min(sus_deaths_cia_format$month),
         min(rtt_waiting_time_cia_format$month),
         min(bed_occupancy_cia_format$month),
         min(length_of_stay_cia_format$month),
-        min(emergency_readmissions_cia_format$month)
+        min(emergency_readmissions_cia_format$month),
+        min(cleaning_costs_cia_format$month)
       )
     end_date <-
       c(
         max(friends_and_family_cia_format$month),
         max(staff_turnover_cia_format$month),
         max(staff_sickness_cia_format$month),
+        max(staff_survey_cia_format$month),
         max(hcai_cia_format$month),
         max(falls_and_fractures_cia_format$month),
         max(sus_deaths_cia_format$month),
         max(rtt_waiting_time_cia_format$month),
         max(bed_occupancy_cia_format$month),
         max(length_of_stay_cia_format$month),
-        max(emergency_readmissions_cia_format$month)
+        max(emergency_readmissions_cia_format$month),
+        max(cleaning_costs_cia_format$month)
       )
     
     
@@ -543,13 +569,15 @@ indicator_availability_by_site <-
           "Staff turnover",
           "Staff sickness",
           "Patient experience-\nfriends and family test",
+          "Staff survey",
           "Healthcare acquired infections",
           "Falls and fractures",
           "Hospital deaths",
           "Emergency readmissions",
           "Bed occupancy",
           "RTT waiting times",
-          "Length of stay"
+          "Length of stay",
+          "Cleaning costs"
         )
       ))
     
@@ -582,7 +610,7 @@ indicator_availability_by_site <-
       cross_join(sites) |>
       filter(type == "start_date") |>
       mutate(difference = as.numeric(date - range)) |> #difference in days
-      mutate(sufficient_baseline = ifelse(difference >= 730, "yes", "no")) |>
+      mutate(sufficient_baseline = ifelse(difference < 730|(difference<1095 & measure=="Staff survey"), "x", "\U2714")) |>
       select(-difference, -date, -range, -type) |>
       pivot_wider(names_from = name, values_from = sufficient_baseline) |>
       mutate(measure = factor(
@@ -591,13 +619,15 @@ indicator_availability_by_site <-
           "Patient experience-\nfriends and family test",
           "Staff sickness",
           "Staff turnover",
+          "Staff survey",
           "Hospital deaths",
           "Falls and fractures",
           "Healthcare acquired infections",
           "Length of stay" ,
           "RTT waiting times",
           "Bed occupancy",
-          "Emergency readmissions"
+          "Emergency readmissions",
+          "Cleaning costs"
         )
       )) |>
       arrange(measure) |>
@@ -613,31 +643,31 @@ indicator_availability_by_site <-
     
     colormatrix1 <-
       ifelse(
-        indicator_availability_by_site == "no",
+        indicator_availability_by_site == "x",
         "#FBE0DC",
         ifelse(
-          indicator_availability_by_site == "yes",
+          indicator_availability_by_site == "\U2714",
           "#d5eed1",
           "#FFFFFF"
         )
       ) |>
       as.data.frame() |>
-      slice(1:4) |>
+      slice(1:5) |>
       select(-group) |>
       as.matrix()
     
     colormatrix2 <-
       ifelse(
-        indicator_availability_by_site == "no",
+        indicator_availability_by_site == "x",
         "#FBE0DC",
         ifelse(
-          indicator_availability_by_site == "yes",
+          indicator_availability_by_site == "\U2714",
           "#d5eed1",
           "#FFFFFF"
         )
       ) |>
       as.data.frame() |>
-      slice(5:7) |>
+      slice(6:8) |>
       select(-group) |>
       as.matrix()
     
@@ -645,16 +675,62 @@ indicator_availability_by_site <-
     
     colormatrix3 <-
       ifelse(
-        indicator_availability_by_site == "no",
+        indicator_availability_by_site == "x",
         "#FBE0DC",
         ifelse(
-          indicator_availability_by_site == "yes",
+          indicator_availability_by_site == "\U2714",
           "#d5eed1",
           "#FFFFFF"
         )
       ) |>
       as.data.frame() |>
-      slice(8:10) |>
+      slice(9:12) |>
+      select(-group) |>
+      as.matrix()
+    
+    
+    colormatrix4 <-
+      ifelse(
+        indicator_availability_by_site == "x",
+        "#ec6555",
+        ifelse(
+          indicator_availability_by_site == "\U2714",
+          "#6C9380",
+          "black"
+        )
+      ) |>
+      as.data.frame() |>
+      slice(1:5) |>
+      select(-group) |>
+      as.matrix()
+    
+    colormatrix5 <-
+      ifelse(
+        indicator_availability_by_site == "x",
+        "#ec6555",
+        ifelse(
+          indicator_availability_by_site == "\U2714",
+          "#6C9380",
+          "black"
+        )
+      ) |>
+      as.data.frame() |>
+      slice(6:8) |>
+      select(-group) |>
+      as.matrix()
+    
+    colormatrix6 <-
+      ifelse(
+        indicator_availability_by_site == "x",
+        "#ec6555",
+        ifelse(
+          indicator_availability_by_site == "\U2714",
+          "#6C9380",
+          "black"
+        )
+      ) |>
+      as.data.frame() |>
+      slice(9:12) |>
       select(-group) |>
       as.matrix()
     
@@ -667,9 +743,12 @@ indicator_availability_by_site <-
       align(part = "body", align = "center") |>
       align(j = 1:2,  align = "left") |>
       bg(bg = "#f9bf07", part = "header") |>
-      bg(i = 2:5, part = "body", bg = colormatrix1) |>
-      bg(i = 7:9, bg = colormatrix2) |>
-      bg(i = 11:13, bg = colormatrix3) |>
+      color(i = 2:6, color = colormatrix4) |>
+      color(i = 8:10, color= colormatrix5) |>
+      color(i = 12:15, color = colormatrix6) |>
+      bg(i = 2:6, bg = colormatrix1) |>
+      bg(i = 8:10, bg = colormatrix2) |>
+      bg(i = 12:15, bg = colormatrix3) |>
       align(
         j = 1,
         i = ~ !is.na(group),

@@ -186,7 +186,8 @@ list(
       "Data/staff_survey_2019.csv",
       "Data/staff_survey_2020.csv",
       "Data/staff_survey_2021.csv",
-      "Data/staff_survey_2022.csv"
+      "Data/staff_survey_2022.csv",
+      "Data/staff_survey_2023.csv"
     )
   ),
   
@@ -364,6 +365,13 @@ list(
     emergency_readmissions_cia_format,
     emergency_readmissions_cia_formatting(sus_readmit)
   ),
+  
+  # staff survey
+  tar_target(
+    staff_survey_cia_format,
+    staff_survey_cia_formatting(formatted_staff_survey_data)
+  ),
+  
   
   # Single bed rooms
   tar_target(
@@ -741,13 +749,15 @@ list(
       friends_and_family_cia_format,
       staff_turnover_cia_format,
       staff_sickness_cia_format,
+      staff_survey_cia_format,
       hcai_cia_format,
       falls_and_fractures_cia_format,
       sus_deaths_cia_format,
       rtt_waiting_time_cia_format,
       bed_occupancy_cia_format,
       length_of_stay_cia_format,
-      emergency_readmissions_cia_format
+      emergency_readmissions_cia_format,
+      cleaning_costs_cia_format
     )
   ),
   
@@ -758,13 +768,15 @@ list(
       friends_and_family_cia_format,
       staff_turnover_cia_format,
       staff_sickness_cia_format,
+      staff_survey_cia_format,
       hcai_cia_format,
       falls_and_fractures_cia_format,
       sus_deaths_cia_format,
       rtt_waiting_time_cia_format,
       bed_occupancy_cia_format,
       length_of_stay_cia_format,
-      emergency_readmissions_cia_format
+      emergency_readmissions_cia_format,
+      cleaning_costs_cia_format
     )
   ),
   
@@ -872,15 +884,15 @@ list(
     )
   ),
   
-  #tar_target(
-  #  waiting_time_number_REN,
-  #  cia_analysis("REN",
-  #               rtt_waiting_time_cia_format,
-  #               "number_incomplete",
-  #               0.1,
-  #               single_bedroom_matches_final,
-  # hospitals)
-  #),
+ tar_target(
+    waiting_time_number_REN,
+    cia_analysis("REN",
+                rtt_waiting_time_cia_format,
+                "number_incomplete",
+                0.1,
+                 single_bedroom_matches_final,
+  hospitals)
+  ),
   
   tar_target(
     waiting_time_number_RGM,
@@ -1314,7 +1326,7 @@ list(
       "REN",
       sus_deaths_cia_format,
       "hosp_rate_1000",
-      0.05,
+      0.1,
       single_bedroom_matches_final,
       hospitals
     )
@@ -1450,7 +1462,7 @@ list(
       "REN",
       staff_sickness_cia_format,
       "staff_sickness_percent",
-      0.05,
+      0.1,
       single_bedroom_matches_final,
       hospitals
     )
@@ -1492,6 +1504,78 @@ list(
       hospitals
     )
   ),
+ 
+ # Staff turnover
+ 
+ tar_target(
+   staff_turnover_REM,
+   cia_analysis(
+     "REM",
+     staff_turnover_cia_format,
+     "leaving_rate",
+     0.1,
+     single_bedroom_matches_final,
+     hospitals
+   )
+ ),
+ 
+ 
+ #Staff survey
+ 
+prior_sd_staff_survey <- tibble::tribble(
+   ~org_code_of_interest, ~prior_sd,
+    "REM", 0.01,
+    "REN", 0.01,
+    "RGM", 0.01,
+    "RAL", 0.01,
+    "RVJ", 0.01
+ ),
+ 
+ list(
+   tarchetypes::tar_map(
+     values = prior_sd_staff_survey,
+     names = org_code_of_interest,
+     targets::tar_target(staff_survey,
+                         cia_analysis(
+                           org_code_of_interest,
+                           staff_survey_cia_format,
+                           "positive_responses",
+                           prior_sd,
+                           single_bedroom_matches_final,
+                           hospitals
+                         )
+                         )
+   )
+ ),
+ 
+
+# Cleaning costs
+
+prior_sd_cleaning_costs <- tibble::tribble(
+  ~org_code_of_interest, ~prior_sd,
+  "REM", 0.01,
+  "REN", 0.01,
+  "RGM", 0.01,
+  "RAL", 0.01
+),
+
+list(
+  tarchetypes::tar_map(
+    values = prior_sd_cleaning_costs,
+    names = org_code_of_interest,
+    targets::tar_target(cleaning_costs,
+                        cia_analysis(
+                          org_code_of_interest,
+                          cleaning_costs_cia_format,
+                          "cleaning_service_cost",
+                          prior_sd,
+                          single_bedroom_matches_final,
+                          hospitals
+                        )
+    )
+  )
+),
+
   
   #------------------------------------------------------------------------------#
   #### Presenting CIA outputs ####
@@ -1513,7 +1597,7 @@ list(
     waiting_time_number_output,
     model_output(
       waiting_time_number_REM,
-      NA,
+      waiting_time_number_REN,
       waiting_time_number_RGM,
       waiting_time_number_RGN,
       NA,
@@ -1619,7 +1703,47 @@ list(
       staff_sickness_RVJ,
       NA
     )
+  ),
+
+tar_target(
+  staff_turnover_output,
+  model_output(
+    staff_sickness_REM,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA,
+    NA
   )
+),
+
+tar_target(
+  staff_survey_output,
+  model_output(
+    staff_survey_REM,
+    staff_survey_REN,
+    staff_survey_RGM,
+    NA,
+    staff_survey_RAL,
+    staff_survey_RVJ,
+    NA
+  )
+),
   
+tar_target(
+  cleaning_costs_output,
+  model_output(
+    cleaning_costs_REM,
+    cleaning_costs_REN,
+    cleaning_costs_RGM,
+    NA,
+    cleaning_costs_RAL,
+    NA,
+    NA
+  )
+)
+
+
   
 )

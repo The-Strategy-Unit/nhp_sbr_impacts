@@ -9,7 +9,7 @@ select_matches <-
            single_bedroom_matches) {
     matches <- (single_bedroom_matches) |>
       filter(organisation_code == organisation) |>
-      filter(rank_of_ranks <= 10)
+      filter(rank_of_ranks <= 20)
     
     if (is.na(site)) {
       dataset <- data |>
@@ -192,6 +192,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
       model_results$PlotActualVersusExpected$data$upper_bound,
       model_results$PlotActualVersusExpected$data$Response
     )
+
   
   a <- model_results$PlotActualVersusExpected +
     su_theme() +
@@ -222,7 +223,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
     scale_color_manual(values = c("#f9bf07", "#2c2825")) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
     guides(colour = guide_legend(reverse = T)) +
-    scale_y_continuous(limits = c(0, max(max) * 1.1),labels = scales::comma)
+    scale_y_continuous(limits = c(0, max(max)*1.1),labels = scales::comma)
   
   # Plot pointwise effect
   b <- model_results$PlotPointEffect +
@@ -354,10 +355,12 @@ forest_plot <- function(data) {
   results_data <- data |>
     filter(!is.na(site)) |>
     mutate(sig = case_when(
-      p >= 0.05 ~ "Non-sig",
-      (p < 0.05 &
+      (RelEffect.upper >0 & RelEffect < 0)|
+        (RelEffect.lower < 0 & RelEffect > 0) 
+        ~ "Non-sig",
+      (RelEffect.upper < 0 &
          RelEffect < 0) ~ "Positive Effect",
-      (p < 0.05 &
+      (RelEffect.lower > 0 &
          RelEffect > 0) ~ "Negative Effect"
     ))
   
@@ -368,10 +371,12 @@ forest_plot <- function(data) {
                      "friends_and_family_output")) {
     results_data <- results_data |>
       mutate(sig = case_when(
-        p >= 0.05 ~ "Non-sig",
-        (p < 0.05 &
+        (RelEffect.upper >0 & RelEffect < 0)|
+          (RelEffect.lower < 0 & RelEffect > 0) 
+        ~ "Non-sig",
+        (RelEffect.upper < 0 &
            RelEffect < 0) ~ "Negative Effect",
-        (p < 0.05 &
+        (RelEffect.lower > 0 &
            RelEffect > 0) ~ "Positive Effect"
       ))
   }
@@ -380,19 +385,22 @@ forest_plot <- function(data) {
   results_data <- results_data |>
     mutate(site = fct_reorder(site, RelEffect)) |>
     mutate(site = fct_rev(site)) |>
-    mutate(p = as.character(p)) |>
+    mutate(p=round(((1-p)*100),1))|>
+    mutate(p = paste0(as.character(p),"%") )|>
     mutate(id = RelEffect) |>
     bind_rows(data.frame(Effect = "Relative Effect (95% CI)",
-                         p = "p-value",
+                         p = "Prob of CI",
                          id = 100))
+
   
-  a <- min(results_data$RelEffect.lower, na.rm = TRUE)
-  b <- max(results_data$RelEffect.upper, na.rm = TRUE)
+  max1<-max(results_data$RelEffect.upper,
+            -(results_data$RelEffect.lower), na.rm=TRUE  )
   
-  if (((b - 0) / -(a - 0)) > 2) {
-    a <- a * (1.7)
-  }
+  low<-min((results_data$RelEffect.lower),
+           -(max1/2), na.rm=TRUE)
   
+  up<-max(results_data$RelEffect.upper,
+          (max1/2), na.rm=TRUE)
   
   p_mid <- results_data |>
     ggplot(aes(x = RelEffect, y = (fct_reorder(site, id)))) +
@@ -415,11 +423,11 @@ forest_plot <- function(data) {
     ) +
     labs(x = "Relative Effect Size", y = "") +
     coord_cartesian(ylim = c(1, nrow(results_data)),
-                    xlim = c(min(a) - 0.02,
-                             max(b) + 0.02)) +
+                    xlim = c(low*1.03,
+                             up*1.03)) +
     annotate(
       "text",
-      x = min(a) / 1.5,
+      x = low / 1.5,
       y = nrow(results_data),
       size = 3,
       label = "Decrease with SBR",
@@ -427,7 +435,7 @@ forest_plot <- function(data) {
     ) +
     annotate(
       "text",
-      x = max(b) / 2,
+      x = up / 2,
       y = nrow(results_data),
       size = 3,
       label = "Increase with SBR",
@@ -513,10 +521,12 @@ mean_forest_plot_DGH_Acute <- function(data) {
              site != "Clatterbridge" &
              site != "Chase Farm") |>
     mutate(sig = case_when(
-      p >= 0.05 ~ "Non-sig",
-      (p < 0.05 &
+      (RelEffect.upper >0 & RelEffect < 0)|
+        (RelEffect.lower < 0 & RelEffect > 0) 
+      ~ "Non-sig",
+      (RelEffect.upper < 0 &
          RelEffect < 0) ~ "Positive Effect",
-      (p < 0.05 &
+      (RelEffect.lower > 0 &
          RelEffect > 0) ~ "Negative Effect"
     )) |>
     mutate(group = "individual")
@@ -528,11 +538,13 @@ mean_forest_plot_DGH_Acute <- function(data) {
                      "friends_and_family_output")) {
     results_data <- results_data |>
       mutate(sig = case_when(
-        p >= 0.05 ~ "Non-sig",
-        (p < 0.05 &
-           RelEffect < 0) ~ "Negative Effect",
-        (p < 0.05 &
-           RelEffect > 0) ~ "Positive Effect"
+        (RelEffect.upper >0 & RelEffect < 0)|
+          (RelEffect.lower < 0 & RelEffect > 0) 
+        ~ "Non-sig",
+        (RelEffect.upper < 0 &
+         RelEffect < 0) ~ "Negative Effect",
+        (RelEffect.lower > 0 &
+         RelEffect > 0) ~ "Positive Effect"
       ))
   }
   
@@ -573,7 +585,8 @@ mean_forest_plot_DGH_Acute <- function(data) {
   results_data <- results_data |>
     mutate(site = fct_reorder(site, RelEffect)) |>
     mutate(site = fct_rev(site)) |>
-    mutate(p = as.character(p)) |>
+    mutate(p=round(((1-p)*100),1))|>
+    mutate(p = paste0(as.character(p),"%") )|>
     mutate(id = RelEffect) |>
     cbind(weights) |>
     rename(weight = `weights(output)`) |>
@@ -598,7 +611,7 @@ mean_forest_plot_DGH_Acute <- function(data) {
       )
     ) |>
     bind_rows(data.frame(Effect = "Relative Effect (95% CI)",
-                         p = "p-value",
+                         p = "Prob of CI",
                          id = 100))
   
   a <- min(results_data$RelEffect.lower, na.rm = TRUE)
@@ -739,11 +752,14 @@ model_effects_table <- function(data) {
     arrange(desc(RelEffect)) |>
     mutate(
       sig = case_when(
-        RelEffect > 0 & p < 0.05 ~ "Sig Increase",
-        RelEffect < 0 & p < 0.05 ~ "Sig Decrease",
-        p >= 0.05 ~ "Non-sig"
+        RelEffect > 0 & RelEffect.lower > 0 ~ "Sig Increase",
+        RelEffect < 0 & RelEffect.upper < 0 ~ "Sig Decrease",
+        (RelEffect.upper >0 & RelEffect < 0)|
+          (RelEffect.lower < 0 & RelEffect > 0) 
+        ~ "Non-sig",
       )
     ) |>
+    mutate(p=round(((1-p)*100),1))|>
     select(site, Actual, Predicted, Absolute, Effect, p, sig) |>
     flextable() |>
     set_header_labels(
@@ -752,7 +768,7 @@ model_effects_table <- function(data) {
       Predicted = "Predicted Effect \n(95% CI)",
       Absolute = "Absolute Effect \n(95% CI)",
       Effect = "Relative Effect \n(95% CI)",
-      p = "p-value",
+      p = "Probability \nof CI (%)",
       sig = "Significance"
     ) |>
     align(part = "header", align = "center") |>

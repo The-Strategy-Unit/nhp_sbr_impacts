@@ -108,7 +108,7 @@ Ask Cheryl / Eammon to write...otherwise omit.
 
 Taken from initial plan and NHP update slides.
 
-<<include overview map>>
+\<<include overview map>\>
 
 # Executive Summary
 
@@ -162,7 +162,7 @@ Royal Papwroth hospital is a specialist centre for cardiothoracic (heart and lun
 
 ## D.Provider and site codes?
 
---------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
 # Availability of indicators by site
 
@@ -171,8 +171,6 @@ Royal Papwroth hospital is a specialist centre for cardiothoracic (heart and lun
 tar_read(indicator_availability_plot)
 
 ```
-
-
 
 ```{r}
 
@@ -185,8 +183,6 @@ tar_read(indicator_availability_table)
 ## Waiting time- Median (in weeks)
 
 ## Methodology
-
-
 
 ::: panel-tabset
 ### Summary
@@ -211,13 +207,12 @@ mean_forest_plot_DGH_Acute(waiting_time_median_output)
 
 ```
 
-While the median waiting time does increase at Tunbridge Wells this appears to be a temporary effect that occurs during the first year post switch; in the second year the observed median is similar to the expected values.   
+While the median waiting time does increase at Tunbridge Wells this appears to be a temporary effect that occurs during the first year post switch; in the second year the observed median is similar to the expected values.
 
 ### Decrease
 
 ::: columns
 ::: {.column width="50%"}
-
 #### Royal Liverpool
 
 ```{r, fig.width=5, fig.height=6}
@@ -260,7 +255,6 @@ waiting_time_median_REN<-tar_read(waiting_time_median_REN)
 cia_summary_plots(waiting_time_median_REN, "Median waiting time (wks)", "2020-06-01")
 
 ```
-
 :::
 
 ::: {.column width="50%"}
@@ -299,7 +293,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 
 ### Increase
 
-:::columns
+::: columns
 ::: {.column width="50%"}
 #### Tunbridge Wells
 
@@ -311,10 +305,8 @@ waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
 cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01-01")
 ```
-
 :::
 :::
-
 :::
 
 ## Waiting time - Total number waiting
@@ -409,14 +401,12 @@ waiting_time_number_RWF<-tar_read(waiting_time_number_RWF)
 
 cia_summary_plots(waiting_time_number_RWF, "Number waiting", "2011-01-01")
 ```
-
 :::
 :::
 
 ### Increase
 
 ::: columns
-
 ::: {.column width="50%"}
 #### Clatterbridge
 
@@ -716,7 +706,8 @@ mean_forest_plot_DGH_Acute(bed_occupancy_output)
 ```
 
 ### No change
-:::columms
+
+::: columms
 ::: {.column width="50%"}
 #### Chase Farm
 
@@ -771,12 +762,10 @@ bed_occupancy_RVJ<-tar_read(bed_occupancy_RVJ)
 
 cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 ```
-
-
 :::
 :::
 
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 :::
@@ -964,6 +953,7 @@ mean_forest_plot_DGH_Acute(sus_deaths_output)
 ::: columns
 ::: {.column width="50%"}
 #### Peterborough
+
 ```{r, fig.width=5, fig.height=6}
 
 sus_deaths_RGN<-tar_read(sus_deaths_RGN)
@@ -975,7 +965,6 @@ cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 :::
 
 ::: {.column width="50%"}
-
 :::
 :::
 
@@ -1020,6 +1009,7 @@ sapply(file.path(tempdir(), list.files(tempdir())), unlink)
 ```
 
 #### Tunbridge Wells
+
 ```{r, fig.width=5, fig.height=6}
 
 sus_deaths_RWF<-tar_read(sus_deaths_RWF)
@@ -1028,7 +1018,6 @@ sus_deaths_RWF<-tar_read(sus_deaths_RWF)
 
 cia_summary_plots(sus_deaths_RWF, "No./per 1,000 discharges", "2011-01-01")
 ```
-
 :::
 
 ::: {.column width="50%"}
@@ -1054,10 +1043,8 @@ sus_deaths_REN<-tar_read(sus_deaths_REN)
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 
 ```
-
 :::
 :::
-
 :::
 
 # Patient and Staff Experience
@@ -1141,7 +1128,6 @@ cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01"
 ```
 :::
 :::
-
 :::
 
 ## Staff sickness
@@ -1196,7 +1182,6 @@ staff_sickness_REN$CausalImpactObject$summary
 
 ```
 
-
 #### Southmead (RVJ)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1207,8 +1192,6 @@ staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
 
 cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 ```
-
-
 :::
 
 ::: {.column width="50%"}
@@ -1235,7 +1218,6 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 ```
 :::
 :::
-
 :::
 
 ## Staff turnover
@@ -1292,7 +1274,7 @@ mean_forest_plot_DGH_Acute(staff_survey_output)
 
 ### Decrease
 
-:::columns
+::: columns
 ::: {.column width="50%"}
 #### Clatterbridge (REN)
 
@@ -1319,12 +1301,11 @@ cia_summary_plots( staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
 ```
 :::
 
-
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
-
 :::
+
 ### No change
 
 #### Royal Liverpool (REM)
@@ -1339,16 +1320,13 @@ cia_summary_plots( staff_survey_REM, "Positive Responses (%)", "2022-10-01")
 
 ```
 
-
-
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 
 ### Increase
 
-
-:::columns
+::: columns
 ::: {.column width="50%"}
 #### Papworth (RGM)
 
@@ -1374,19 +1352,13 @@ staff_survey_RAL<-tar_read(staff_survey_RAL)
 
 cia_summary_plots( staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
 ```
-
 :::
 :::
 
-
-
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
-
 :::
-
-
 
 ## Cleaning costs
 
@@ -1406,6 +1378,7 @@ model_effects_table(cleaning_costs_output)
 ```
 
 ### No change
+
 ::: columns
 ::: {.column width="50%"}
 #### Papworth (RGM)
@@ -1434,11 +1407,10 @@ cia_summary_plots(cleaning_costs_RAL, "Cost", "2018-09-01")
 :::
 :::
 
-
-
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
+
 ### Increase
 
 ::: columns
@@ -1453,8 +1425,6 @@ cleaning_costs_REM<-tar_read(cleaning_costs_REM)
 
 cia_summary_plots( cleaning_costs_REM, "Cost", "2022-10-01")
 ```
-
-
 :::
 
 ::: {.column width="50%"}
@@ -1471,10 +1441,9 @@ cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
 :::
 :::
 
-::: {.smaller}
+::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
-
 :::
 
 ## Summary of effects across sites
@@ -1498,11 +1467,8 @@ summary_table_indicators_and_sites(waiting_time_median_output,
 
 ```
 
-Notes:
-For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period.
-For some sites the outcome period is impacted by COVID-19, while COVID-19 effects are also present in the matched control sites, the magnitude of effects varies between hospitals/areas. 
-There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden jumps, which has meant the outcome period has been cut short.
+Notes: For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period. For some sites the outcome period is impacted by COVID-19, while COVID-19 effects are also present in the matched control sites, the magnitude of effects varies between hospitals/areas. There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden jumps, which has meant the outcome period has been cut short.
 
 Staff survey and cleaning costs data are an annual measure so there is limited data with only 2 data points in the outcome period.
 
-Staff survey the data is collected over a period of time in the autumn each year, but for analysis purposes we have set the date as the last day of the year in which the data was collected. Both Chase Farm and Royal Liverpool switched to single rooms during the autumn, so the data for the first data point in the outcome period would actually have been collected during the transition period which may have had an impact on the results. 
+Staff survey the data is collected over a period of time in the autumn each year, but for analysis purposes we have set the date as the last day of the year in which the data was collected. Both Chase Farm and Royal Liverpool switched to single rooms during the autumn, so the data for the first data point in the outcome period would actually have been collected during the transition period which may have had an impact on the results.

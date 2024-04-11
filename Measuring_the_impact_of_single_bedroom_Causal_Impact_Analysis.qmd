@@ -89,6 +89,7 @@ single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
 source("R/CIA_Functions.R")
 
+<<<<<<< HEAD
 test<-single_bedroom_matches_final|>
   filter(organisation_code=="REN")
 
@@ -104,6 +105,8 @@ test4<-single_bedroom_matches_final|>
 test5<-single_bedroom_matches_final|>
   filter(organisation_code=="RVJ")
 
+=======
+>>>>>>> 0398c8451d62216991dd725e034b3ac28bf01d60
 ```
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
@@ -115,17 +118,33 @@ rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ```
 
-# Introduction
+# Foreword??
+
+Ask Cheryl / Eammon to write...otherwise omit.
+
+# Introduction and background
+
+Taken from initial plan and NHP update slides.
+
+<<include overview map>>
 
 # Executive Summary
 
+# What we already know
+
+Previous literature [@ref] and evidence [@ref] reviews have....
+
 # Hospital Background
 
-## Royal Liverpool
+## Royal Liverpool University Hospital
+
+Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@ref]. Provider also manage Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating 16.6% single bed room accommodation [@ERIC].
 
 ## Clatterbridge Cancer Centre
 
 ## Royal Papworth
+
+Royal Papwroth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@ref]. The move to single bed accommodation occured in May 2019. Prior to the change, the site had been operating 32.8% single bed room accommodation [@ERIC].
 
 ## Chase Farm
 
@@ -135,7 +154,35 @@ rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
 
 ## Peterborough
 
-### Availability of indicators over time 
+# Impact measures and data sources
+
+# Description of methods
+
+## CIA intro
+
+## Finding control hospitals
+
+## Aggregate (meta) analysis
+
+# Main results (including related notes from lookback exercise)
+
+# Limitations and discussion
+
+# Reccommendations for modelling and future evaluation
+
+# Appendices
+
+## A.CIA charts by indicator and hospital site/provider
+
+## B.Notes on data quality and suitability (for CIA)
+
+## C.List of control sites/providers by indicator
+
+## D.Provider and site codes?
+
+--------------------------------------------------------------------------------
+
+# Availability of indicators by site
 
 ```{r, fig.height=6, fig.width=10}
 
@@ -143,7 +190,7 @@ tar_read(indicator_availability_plot)
 
 ```
 
-### Availability of indicators by site
+
 
 ```{r}
 
@@ -1020,10 +1067,14 @@ cia_summary_plots(sus_deaths_RVJ,"No./per 1,000 discharges", "2014-05-01")
 
 sus_deaths_REN<-tar_read(sus_deaths_REN)
 
-#evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.1, sus_deaths_REN, single_bedroom_matches_final )
+#evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN, single_bedroom_matches_final )
 
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 
+<<<<<<< HEAD
+=======
+#sus_deaths_REN$CausalImpactObject$report
+>>>>>>> 0398c8451d62216991dd725e034b3ac28bf01d60
 ```
 
 :::
@@ -1330,7 +1381,10 @@ staff_survey_RGM<-tar_read(staff_survey_RGM)
 #evaluating_model("RGM", NA,staff_survey,"2019-05-01", "positive_responses", 0.01, staff_survey_RGM, single_bedroom_matches_final)
 
 cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0398c8451d62216991dd725e034b3ac28bf01d60
 ```
 :::
 

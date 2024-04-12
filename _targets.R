@@ -282,10 +282,23 @@ list(
     control_stage3(single_bedroom_matches_2, med_age_matches)
   ),
   
+  ## adding data on elective ratio:
+  tar_target(elec_ratio,
+             get_elec_ratio_by_site("Data/nhp_sbr_bedmix.csv")),
+  
+  tar_target(elec_ratio_matches,
+             combine_elec_ratio_matches(elec_ratio)),
+  
+  # adding elective ratio matches to control df
+  tar_target(
+    single_bedroom_matches_4,
+    control_stage4(single_bedroom_matches_3, elec_ratio_matches)
+  ),
+  
   # ranking the secondary matching variables
   tar_target(
     single_bedroom_matches_final,
-    ranking_control_var(single_bedroom_matches_3)
+    ranking_control_var(single_bedroom_matches_4)
   ),
   
   #----------------------------------------------------------------------------#

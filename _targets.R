@@ -1162,7 +1162,7 @@ prior_sd_cleaning_costs <- tibble::tribble(
   "REM", 0.01,
   "REN", 0.01,
   "RGM", 0.01,
-  "RAL", 0.01
+  "RAL", 0.001
 ),
 
 list(
@@ -1344,7 +1344,7 @@ tar_target(
     cleaning_costs_REN,
     cleaning_costs_RGM,
     NA,
-    cleaning_costs_RAL,
+    NA,
     NA,
     NA
   )

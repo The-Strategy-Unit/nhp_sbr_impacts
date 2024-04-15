@@ -68,7 +68,8 @@ friends_and_family_cia_formatting <- function(data) {
     filter(site_code!="RX1CC"&
              site_code!="RR813"&
              site_code!="RA901" &# removing inappropriate Clatterbridge controls
-             site_code!="RXL01")
+             site_code!="RXL01" &
+             site_code!="R0A09")
   
   return(friends_and_family_cia_format)
 }
@@ -208,7 +209,8 @@ falls_and_fractures_cia_formatting <- function(data) {
     filter(site_code != "RVJ01" |
              (site_code == "RVJ01" &
                 month <= '2015-10-01')) |> #Remove part of Southmead where rate jumps
-    filter(site_code != "RQWG0") #remove control site with jumps in time series
+    filter(site_code != "RQWG0" &
+             site_code!="RC979") #remove control site with jumps in time series
   
   
   return(falls_and_fractures_cia_format)
@@ -376,7 +378,8 @@ cleaning_costs_cia_formatting <- function(data) {
       .by = c(site_code, month)
     )|>
     filter(site_code!="RNLAY" &
-            site_code!="RNLBX")
+            site_code!="RNLBX")|>
+    mutate(cleaning_service_cost=cleaning_service_cost/1000000) #Covert to million£
   
   return(cleaning_costs_cia_format)
 }
@@ -404,10 +407,17 @@ emergency_readmissions_cia_formatting <- function(data) {
         site_code != "RNLBX" &
         site_code != "RR813" &
         site_code != "RA901" &
-        site_code != "RX1CC"
+        site_code != "RX1CC" &
+        site_code!="RA710" &
+        site_code!="RTGFA" &
+        site_code!="RD130" &
+        site_code!="RP5MM"
     )|> #removing control data with issues
   filter(site_code != "RALC7" | (site_code=="RALC7" &
-           month < '2020-01-01')) #Remove part affected by COVID-19 for Chase farm
+           month < '2019-11-01')) |> #Remove part affected by COVID-19 for Chase farm
+    filter(site_code != "RALC7" | (site_code=="RALC7" &
+                                     month > '2015-01-01')) #Remove data from pre 2014 when it has emergency dept
+    
   
   return(emergency_readmissions_cia_format)
 }

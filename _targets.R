@@ -282,10 +282,23 @@ list(
     control_stage3(single_bedroom_matches_2, med_age_matches)
   ),
   
+  ## adding data on elective ratio:
+  tar_target(elec_ratio,
+             get_elec_ratio_by_site("Data/nhp_sbr_bedmix.csv")),
+  
+  tar_target(elec_ratio_matches,
+             combine_elec_ratio_matches(elec_ratio)),
+  
+  # adding elective ratio matches to control df
+  tar_target(
+    single_bedroom_matches_4,
+    control_stage4(single_bedroom_matches_3, elec_ratio_matches)
+  ),
+  
   # ranking the secondary matching variables
   tar_target(
     single_bedroom_matches_final,
-    ranking_control_var(single_bedroom_matches_3)
+    ranking_control_var(single_bedroom_matches_4)
   ),
   
   #----------------------------------------------------------------------------#
@@ -805,412 +818,149 @@ list(
   #### CIA models ####
   
   #Waiting time- median
-  tar_target(
-    waiting_time_median_REM,
-    cia_analysis(
-      "REM",
-      rtt_waiting_time_cia_format,
-      "median_by_prov",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
+  
+  prior_sd_waiting_time_median <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.05,
+    "REN", 0.05,
+    "RGM", 0.05,
+    "RGN", 0.01,
+    "RVJ", 0.1,
+    "RAL", 0.01,
+    "RWF", 0.01
   ),
   
-  tar_target(
-    waiting_time_median_REN,
-    cia_analysis(
-      "REN",
-      rtt_waiting_time_cia_format,
-      "median_by_prov",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_waiting_time_median,
+      names = org_code_of_interest,
+      targets::tar_target(waiting_time_median,
+                          cia_analysis(
+                            org_code_of_interest,
+                            rtt_waiting_time_cia_format,
+                            "median_by_prov",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
-  
-  tar_target(
-    waiting_time_median_RGM,
-    cia_analysis(
-      "RGM",
-      rtt_waiting_time_cia_format,
-      "median_by_prov",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    waiting_time_median_RGN,
-    cia_analysis(
-      "RGN",
-      rtt_waiting_time_cia_format,
-      "median_by_prov",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    waiting_time_median_RAL,
-    cia_analysis(
-      "RAL",
-      rtt_waiting_time_cia_format,
-      "median_by_prov",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    waiting_time_median_RVJ,
-    cia_analysis(
-      "RVJ",
-      rtt_waiting_time_cia_format,
-      "median_by_prov",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    waiting_time_median_RWF,
-    cia_analysis(
-      "RWF",
-      rtt_waiting_time_cia_format,
-      "median_by_prov",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
   
   #Waiting time -number
+  prior_sd_waiting_time_number <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.1,
+    "REN", 0.1,
+    "RGM", 0.05,
+    "RGN", 0.1,
+    "RVJ", 0.1,
+    "RAL", 0.01,
+    "RWF", 0.1
+  ),
   
-  tar_target(
-    waiting_time_number_REM,
-    cia_analysis(
-      "REM",
-      rtt_waiting_time_cia_format,
-      "number_incomplete",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_waiting_time_number,
+      names = org_code_of_interest,
+      targets::tar_target(waiting_time_number,
+                          cia_analysis(
+                            org_code_of_interest,
+                            rtt_waiting_time_cia_format,
+                            "number_incomplete",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
   
- tar_target(
-    waiting_time_number_REN,
-    cia_analysis("REN",
-                rtt_waiting_time_cia_format,
-                "number_incomplete",
-                0.1,
-                 single_bedroom_matches_final,
-  hospitals)
-  ),
-  
-  tar_target(
-    waiting_time_number_RGM,
-    cia_analysis(
-      "RGM",
-      rtt_waiting_time_cia_format,
-      "number_incomplete",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    waiting_time_number_RGN,
-    cia_analysis(
-      "RGN",
-      rtt_waiting_time_cia_format,
-      "number_incomplete",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    waiting_time_number_RAL,
-    cia_analysis(
-      "RAL",
-      rtt_waiting_time_cia_format,
-      "number_incomplete",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    waiting_time_number_RVJ,
-    cia_analysis(
-      "RVJ",
-      rtt_waiting_time_cia_format,
-      "number_incomplete",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    waiting_time_number_RWF,
-    cia_analysis(
-      "RWF",
-      rtt_waiting_time_cia_format,
-      "number_incomplete",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
   
   #Length of Stay
-  
-  tar_target(
-    LoS_REM,
-    cia_analysis(
-      "REM",
-      length_of_stay_cia_format,
-      "avg_los",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
+  prior_sd_LoS <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.05,
+    "REN", 0.1,
+    "RGM", 0.05,
+    "RGN", 0.01,
+    "RVJ", 0.01,
+    "RAL", 0.1,
+    "RWF", 0.05
   ),
   
-  tar_target(
-    LoS_REN,
-    cia_analysis(
-      "REN",
-      length_of_stay_cia_format,
-      "avg_los",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_LoS,
+      names = org_code_of_interest,
+      targets::tar_target(LoS,
+                          cia_analysis(
+                            org_code_of_interest,
+                            length_of_stay_cia_format,
+                            "avg_los",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
-  
-  tar_target(
-    LoS_RGM,
-    cia_analysis(
-      "RGM",
-      length_of_stay_cia_format,
-      "avg_los",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    LoS_RGN,
-    cia_analysis(
-      "RGN",
-      length_of_stay_cia_format,
-      "avg_los",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    LoS_RAL,
-    cia_analysis(
-      "RAL",
-      length_of_stay_cia_format,
-      "avg_los",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    LoS_RVJ,
-    cia_analysis(
-      "RVJ",
-      length_of_stay_cia_format,
-      "avg_los",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    LoS_RWF,
-    cia_analysis(
-      "RWF",
-      length_of_stay_cia_format,
-      "avg_los",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
+
   #Emergency Readmissions
+  prior_sd_emergency_readmissions <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.1,
+    "REN", 0.1,
+    "RGM", 0.1,
+    "RGN", 0.1,
+    "RVJ", 0.05,
+    "RAL", 0.01,
+    "RWF", 0.01
+  ),
   
-  tar_target(
-    emergency_readmissions_REM,
-    cia_analysis(
-      "REM",
-      emergency_readmissions_cia_format,
-      "perc",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_emergency_readmissions,
+      names = org_code_of_interest,
+      targets::tar_target(emergency_readmissions,
+                          cia_analysis(
+                            org_code_of_interest,
+                            emergency_readmissions_cia_format,
+                            "perc",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
   
-  tar_target(
-    emergency_readmissions_REN,
-    cia_analysis(
-      "REN",
-      emergency_readmissions_cia_format,
-      "perc",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    emergency_readmissions_RGM,
-    cia_analysis(
-      "RGM",
-      emergency_readmissions_cia_format,
-      "perc",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    emergency_readmissions_RGN,
-    cia_analysis(
-      "RGN",
-      emergency_readmissions_cia_format,
-      "perc",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    emergency_readmissions_RAL,
-    cia_analysis(
-      "RAL",
-      emergency_readmissions_cia_format,
-      "perc",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    emergency_readmissions_RVJ,
-    cia_analysis(
-      "RVJ",
-      emergency_readmissions_cia_format,
-      "perc",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    emergency_readmissions_RWF,
-    cia_analysis(
-      "RWF",
-      emergency_readmissions_cia_format,
-      "perc",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
+
   #Bed Occupancy
-  
-  tar_target(
-    bed_occupancy_REM,
-    cia_analysis(
-      "REM",
-      bed_occupancy_cia_format,
-      "bed_occupancy",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
+  prior_sd_bed_occupancy <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.05,
+    "REN", 0.1,
+    "RGM", 0.05,
+    "RVJ", 0.05,
+    "RAL", 0.1,
+
   ),
   
-  tar_target(
-    bed_occupancy_REN,
-    cia_analysis(
-      "REN",
-      bed_occupancy_cia_format,
-      "bed_occupancy",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    bed_occupancy_RGM,
-    cia_analysis(
-      "RGM",
-      bed_occupancy_cia_format,
-      "bed_occupancy",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    bed_occupancy_RAL,
-    cia_analysis(
-      "RAL",
-      bed_occupancy_cia_format,
-      "bed_occupancy",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    bed_occupancy_RVJ,
-    cia_analysis(
-      "RVJ",
-      bed_occupancy_cia_format,
-      "bed_occupancy",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_bed_occupancy,
+      names = org_code_of_interest,
+      targets::tar_target(bed_occupancy,
+                          cia_analysis(
+                            org_code_of_interest,
+                            bed_occupancy_cia_format,
+                            "bed_occupancy",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
   
@@ -1242,289 +992,124 @@ list(
   ),
   
   # Falls and Fractures in hospital
-  tar_target(
-    falls_and_fractures_REM,
-    cia_analysis(
-      "REM",
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
+  prior_sd_falls_and_fractures <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.05,
+    "REN", 0.05,
+    "RGM", 0.05,
+    "RGN", 0.01,
+    "RVJ", 0.05,
+    "RAL", 0.05,
+    "RWF",0.05
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_falls_and_fractures,
+      names = org_code_of_interest,
+      targets::tar_target(falls_and_fractures,
+                          cia_analysis(
+                            org_code_of_interest,
+                            falls_and_fractures_cia_format,
+                            "ff_rate",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
   
-  tar_target(
-    falls_and_fractures_REN,
-    cia_analysis(
-      "REN",
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    falls_and_fractures_RGM,
-    cia_analysis(
-      "RGM",
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    falls_and_fractures_RGN,
-    cia_analysis(
-      "RGN",
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    falls_and_fractures_RAL,
-    cia_analysis(
-      "RAL",
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    falls_and_fractures_RVJ,
-    cia_analysis(
-      "RVJ",
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    falls_and_fractures_RWF,
-    cia_analysis(
-      "RWF",
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
   
   
   # SUS deaths in hospital
-  tar_target(
-    sus_deaths_REM,
-    cia_analysis(
-      "REM",
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
+  prior_sd_sus_deaths <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.05,
+    "REN", 0.1,
+    "RGM", 0.05,
+    "RGN", 0.1,
+    "RVJ", 0.01,
+    "RAL", 0.05,
+    "RWF",0.01
+    
   ),
   
-  tar_target(
-    sus_deaths_REN,
-    cia_analysis(
-      "REN",
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_sus_deaths,
+      names = org_code_of_interest,
+      targets::tar_target(sus_deaths,
+                          cia_analysis(
+                            org_code_of_interest,
+                            sus_deaths_cia_format,
+                            "hosp_rate_1000",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
-  
-  tar_target(
-    sus_deaths_RGM,
-    cia_analysis(
-      "RGM",
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    sus_deaths_RGN,
-    cia_analysis(
-      "RGN",
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    sus_deaths_RAL,
-    cia_analysis(
-      "RAL",
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    sus_deaths_RVJ,
-    cia_analysis(
-      "RVJ",
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    sus_deaths_RWF,
-    cia_analysis(
-      "RWF",
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
+
   
   # Friends and family test
-  tar_target(
-    friends_and_family_REM,
-    cia_analysis(
-      "REM",
-      friends_and_family_cia_format,
-      "friends_and_family_percent",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
+  prior_sd_friends_and_family <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.1,
+    "REN", 0.1,
+    "RGM", 0.1,
+    "RAL", 0.01
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_friends_and_family,
+      names = org_code_of_interest,
+      targets::tar_target(friends_and_family,
+                          cia_analysis(
+                            org_code_of_interest,
+                            friends_and_family_cia_format,
+                            "friends_and_family_percent",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
   
-  tar_target(
-    friends_and_family_REN,
-    cia_analysis(
-      "REN",
-      friends_and_family_cia_format,
-      "friends_and_family_percent",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    friends_and_family_RGM,
-    cia_analysis(
-      "RGM",
-      friends_and_family_cia_format,
-      "friends_and_family_percent",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    friends_and_family_RAL,
-    cia_analysis(
-      "RAL",
-      friends_and_family_cia_format,
-      "friends_and_family_percent",
-      0.01,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
   
   #Staff sickness
+  prior_sd_staff_sickness <- tibble::tribble(
+    ~org_code_of_interest, ~prior_sd,
+    "REM", 0.05,
+    "REN", 0.05,
+    "RGM", 0.05,
+    "RAL", 0.05,
+    "RVJ", 0.05
+    
+  ),
   
-  tar_target(
-    staff_sickness_REM,
-    cia_analysis(
-      "REM",
-      staff_sickness_cia_format,
-      "staff_sickness_percent",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_staff_sickness,
+      names = org_code_of_interest,
+      targets::tar_target(staff_sickness,
+                          cia_analysis(
+                            org_code_of_interest,
+                            staff_sickness_cia_format,
+                            "staff_sickness_percent",
+                            prior_sd,
+                            single_bedroom_matches_final,
+                            hospitals
+                          )
+      )
     )
   ),
   
-  tar_target(
-    staff_sickness_REN,
-    cia_analysis(
-      "REN",
-      staff_sickness_cia_format,
-      "staff_sickness_percent",
-      0.1,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    staff_sickness_RGM,
-    cia_analysis(
-      "RGM",
-      staff_sickness_cia_format,
-      "staff_sickness_percent",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  
-  tar_target(
-    staff_sickness_RAL,
-    cia_analysis(
-      "RAL",
-      staff_sickness_cia_format,
-      "staff_sickness_percent",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
-  
-  tar_target(
-    staff_sickness_RVJ,
-    cia_analysis(
-      "RVJ",
-      staff_sickness_cia_format,
-      "staff_sickness_percent",
-      0.05,
-      single_bedroom_matches_final,
-      hospitals
-    )
-  ),
  
  # Staff turnover
  
@@ -1577,7 +1162,7 @@ prior_sd_cleaning_costs <- tibble::tribble(
   "REM", 0.01,
   "REN", 0.01,
   "RGM", 0.01,
-  "RAL", 0.01
+  "RAL", 0.001
 ),
 
 list(
@@ -1759,7 +1344,7 @@ tar_target(
     cleaning_costs_REN,
     cleaning_costs_RGM,
     NA,
-    cleaning_costs_RAL,
+    NA,
     NA,
     NA
   )

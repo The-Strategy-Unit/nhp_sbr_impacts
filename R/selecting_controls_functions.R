@@ -381,8 +381,8 @@ find_med_age_matches <- function(data,
   
 }
 
-# To create a dataframe of all the sites with their matching sites for floor
-# space. By necessity some of the codes and dates of sites are changed
+# To create a dataframe of all the sites with their matching sites for patient
+# age. By necessity some of the codes and dates of sites are changed
 # to ensure baseline size is captured
 
 combine_med_age_matches <- function(med_age) {
@@ -441,7 +441,114 @@ control_stage3 <- function(data1, data2) {
   
 }
 
-# rank floor space and age variables (unsigned differences) for each site
+# To get the elective ratio by sites and date:
+get_elec_ratio_by_site <- function(filepth) {
+  elec_ratio <- read.csv(filepth) |>
+    janitor::clean_names() |>
+    filter(!is.na(elec_emrg_ratio))
+  
+  return(elec_ratio)
+  
+}
+
+# To find sites with similar elective ratio. Default is
+# to look at sites with ratio that is +/- 5 years of the
+# base sites.
+
+find_elec_ratio_matches <- function(data,
+                                 year_pre_single_bedrooms,
+                                 site_code_pick,
+                                 range = 0.2) {
+  # Get the median of the sites we want
+  # to find matches for:
+  elec_ratio_base <- data |>
+    dplyr::filter(der_financial_year == year_pre_single_bedrooms
+                  & der_provider_site_code == site_code_pick) |>
+    dplyr::pull(elec_emrg_ratio)
+  
+  ratio_high <- elec_ratio_base * (1+range)
+  ratio_low <- elec_ratio_base * (1-range)
+  
+  # Find other sites at the same time that have a similar ratio:
+  similar_sites <- data |>
+    dplyr::filter(der_financial_year == year_pre_single_bedrooms,
+                  #elec_ratio_base > ratio_low,
+                  #elec_ratio_base < ratio_high,
+                  der_provider_site_code != site_code_pick) |>
+    dplyr::mutate(
+      difference_elec_ratio = round(((
+        elec_emrg_ratio - elec_ratio_base
+      ) / elec_ratio_base), 2),
+      site_code_og = site_code_pick,
+      org_code_og = stringr::str_sub(site_code_og, 1, 3)
+    ) |>
+    select(9, 8, 2, 3:7)
+  
+  return(similar_sites)
+  
+}
+
+# To create a dataframe of all the sites with their matching sites for patient
+# age. By necessity some of the codes and dates of sites are changed
+# to ensure baseline size is captured
+
+combine_elec_ratio_matches <- function(elec_ratio) {
+  data <- rbind(
+    # royal_liverpool_matches
+    find_elec_ratio_matches(elec_ratio,
+                         "2022/23",
+                         "REMRQ"),
+    # clatterbridge_matches
+    find_elec_ratio_matches(elec_ratio,
+                         "2020/21",
+                         "REN22"),
+    # royal_papworth_matches
+    find_elec_ratio_matches(elec_ratio,
+                         "2019/20",
+                         "RGM22"),
+    # peterborough_matches
+    find_elec_ratio_matches(elec_ratio,
+                         "2011/12",
+                         "RGN80"),
+    # chase_farm_matches
+    find_elec_ratio_matches(elec_ratio,
+                         "2019/20",
+                         "RALC7"),
+    # southmead_matches
+    find_elec_ratio_matches(elec_ratio,
+                         "2014/15",
+                         "RVJ01"),
+    # tunbridge_wells_matches
+    find_elec_ratio_matches(elec_ratio,
+                         "2011/12",
+                         "RWFTW")
+  )
+  
+  return(data)
+  
+}
+
+# join elective ratio to single-bed matches
+
+control_stage4 <- function(data1, data2) {
+  data <- data1 |>
+    left_join(
+      data2 |> select(
+        org_code_og,
+        der_provider_site_code,
+        elec_emrg_ratio,
+        difference_elec_ratio
+      ),
+      by = c("organisation_code" = "org_code_og",
+             "site_code" = "der_provider_site_code")
+    )# |>
+  #mutate(age_match = if_else(is.na(difference_med_age),0,1))
+  
+  return(data)
+  
+}
+
+# rank floor space, age and elective ratio variables (unsigned differences) for each site
 
 ranking_control_var <- function(df) {
   data <- df |>
@@ -449,6 +556,7 @@ ranking_control_var <- function(df) {
     mutate(
       floor_rank = rank(abs(difference_floor_space), ties.method = "average"),
       age_rank = rank(abs(difference_med_age), ties.method = "average"),
+      elec_rank = rank(abs(difference_elec_ratio), ties.method = "average")
       ##put any additional ranking variables/steps in here,
     ) |>
     mutate(sum_ranks = rowSums(across(contains("_rank")))) |>

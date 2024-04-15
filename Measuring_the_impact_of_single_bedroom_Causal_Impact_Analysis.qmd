@@ -1466,18 +1466,18 @@ Black dotted line indicates the time of the last data point prior to the switch 
 ## Summary of effects across sites
 
 ```{r}
-summary_table_indicators_and_sites(waiting_time_median_output,
-                                             waiting_time_number_output,
-                                             LoS_output,
-                                             emergency_readmissions_output,
-                                             cleaning_costs_output,
-                                             bed_occupancy_output,
-                                             hcai_output,
-                                             falls_and_fractures_output,
-                                             sus_deaths_output,
-                                             friends_and_family_output,
-                                             staff_sickness_output,
-                                             staff_survey_output) 
+#summary_table_indicators_and_sites(waiting_time_median_output,
+#                                             waiting_time_number_output,
+#                                             LoS_output,
+#                                             emergency_readmissions_output,
+#                                             cleaning_costs_output,
+#                                             bed_occupancy_output,
+#                                             hcai_output,
+#                                             falls_and_fractures_output,
+#                                             sus_deaths_output,
+#                                             friends_and_family_output,
+#                                             staff_sickness_output,
+#                                             staff_survey_output) 
 
 
 

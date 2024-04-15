@@ -207,7 +207,7 @@ mean_forest_plot_DGH_Acute(waiting_time_median_output)
 
 ```
 
-While the median waiting time does increase at Tunbridge Wells this appears to be a temporary effect that occurs during the first year post switch; in the second year the observed median is similar to the expected values.
+While the median waiting time does increase at Tunbridge Wells this appears to be a temporary effect that occurs during the first year post switch; in the second year the observed median waiting time is similar to the expected values.
 
 ### Decrease
 
@@ -325,12 +325,26 @@ forest_plot(waiting_time_number_output)
 model_effects_table(waiting_time_number_output)
 
 ```
-
+#### Mean effect on number of patients waiting for DGH/Acute hospitals
 ```{r, fig.width=8, fig.height=2.5}
 
 mean_forest_plot_DGH_Acute(waiting_time_number_output)
 
 ```
+
+### Decrease
+#### Royal Liverpool
+
+```{r, fig.width=5, fig.height=6}
+
+waiting_time_number_REM<-tar_read(waiting_time_number_REM)
+
+#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.1, waiting_time_number_REM, single_bedroom_matches_final)
+
+cia_summary_plots(waiting_time_number_REM, "Number waiting", "2022-10-01")
+
+```
+
 
 ### No change
 
@@ -365,21 +379,6 @@ cia_summary_plots(waiting_time_number_RGM, "Number waiting", "2019-05-01")
 
 #cia_summary_plots(waiting_time_number_RVJ, "Number waiting", "2014-05-01")
 ```
-
-#### Royal Liverpool
-
-```{r, fig.width=5, fig.height=6}
-
-waiting_time_number_REM<-tar_read(waiting_time_number_REM)
-
-#evaluating_model("REM", NA, rtt_waiting_time, "2022-10-01", "number_incomplete", 0.1, waiting_time_number_REM, single_bedroom_matches_final)
-
-cia_summary_plots(waiting_time_number_REM, "Number waiting", "2022-10-01")
-
-```
-:::
-
-::: {.column width="50%"}
 #### Peterborough
 
 ```{r, fig.width=5, fig.height=6}
@@ -390,6 +389,11 @@ waiting_time_number_RGN<-tar_read(waiting_time_number_RGN)
 
 cia_summary_plots(waiting_time_number_RGN, "Number waiting", "2010-11-01")
 ```
+
+
+:::
+
+::: {.column width="50%"}
 
 #### Tunbridge Wells
 
@@ -438,7 +442,7 @@ forest_plot(LoS_output)
 model_effects_table(LoS_output)
 
 ```
-
+#### Mean effect on length of stay DGH/Acute hospitals
 ```{r, fig.width=8, fig.height=2.5}
 
 mean_forest_plot_DGH_Acute(LoS_output)
@@ -496,6 +500,26 @@ LoS_RVJ<-tar_read(LoS_RVJ)
 cia_summary_plots(LoS_RVJ,"Average LoS (days)", "2014-05-01")
 ```
 
+:::
+:::
+
+### No change
+::: columns
+::: {.column width="50%"}
+#### Tunbridge Wells
+
+```{r, fig.width=5, fig.height=6}
+
+LoS_RWF<-tar_read(LoS_RWF)
+
+#evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF, single_bedroom_matches_final)
+
+cia_summary_plots(LoS_RWF,"Average LoS (days)", "2011-01-01")
+
+```
+:::
+
+::: {.column width="50%"}
 #### Royal Liverpool
 
 ```{r, fig.width=5, fig.height=6}
@@ -508,20 +532,6 @@ cia_summary_plots(LoS_REM, "Average LoS (days)", "2022-10-01")
 ```
 :::
 :::
-
-### No change
-
-#### Tunbridge Wells
-
-```{r, fig.width=5, fig.height=6}
-
-LoS_RWF<-tar_read(LoS_RWF)
-
-#evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF, single_bedroom_matches_final)
-
-cia_summary_plots(LoS_RWF,"Average LoS (days)", "2011-01-01")
-
-```
 
 ### Increase
 
@@ -560,7 +570,7 @@ model_effects_table(emergency_readmissions_output)
 
 ```
 
-Mean effect for DGH/Acute hospitals
+#### Mean effect on rate of emergency readmissions for DGH/Acute hospitals
 
 ```{r, fig.width=8, fig.height=2.5}
 
@@ -671,7 +681,7 @@ cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 ::: panel-tabset
 ### Summary
 
-Points to the right indicate a increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
+Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
 
 ```{r, fig.width=8, fig.height=4}
 
@@ -683,8 +693,7 @@ model_effects_table(bed_occupancy_output)
 
 
 ```
-
-Mean effect for DGH/Acute hospitals
+#### Mean effect on bed occupancy for DGH/Acute hospitals
 
 ```{r, fig.width=8, fig.height=2.5}
 
@@ -707,7 +716,7 @@ mean_forest_plot_DGH_Acute(bed_occupancy_output)
 
 ### No change
 
-::: columms
+::: columns
 ::: {.column width="50%"}
 #### Chase Farm
 
@@ -831,7 +840,7 @@ forest_plot(falls_and_fractures_output)
 model_effects_table(falls_and_fractures_output)
 
 ```
-
+#### Mean effect on rate of falls, fracture and injuries while in hospital for DGH/Acute hospitals
 ```{r, fig.width=8, fig.height=2}
 
 mean_forest_plot_DGH_Acute(falls_and_fractures_output)
@@ -941,7 +950,7 @@ forest_plot(sus_deaths_output)
 model_effects_table(sus_deaths_output)
 
 ```
-
+#### Mean effect on death rate in DGH/Acute hospitals
 ```{r, fig.width=8, fig.height=2}
 
 mean_forest_plot_DGH_Acute(sus_deaths_output)
@@ -1056,7 +1065,7 @@ It should be noted that for the friends and family test scores there is signific
 ::: panel-tabset
 ### Summary
 
-Points to the right indicate a increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
+Points to the right indicate an increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -1146,11 +1155,25 @@ forest_plot(staff_sickness_output)
 model_effects_table(staff_sickness_output)
 
 ```
-
+#### Mean effect on rate of staff sickness for DGH/Acute hospitals
 ```{r, fig.width=8, fig.height=2}
 
 mean_forest_plot_DGH_Acute(staff_sickness_output)
 
+```
+While there is an increase in staff sickness at Southmead this seems to be due to a larger winter peak at Southmead in 2015/2016, with sickness rates falling in line with the expected rates during the second year of the outcome period.
+
+### Increase
+
+#### Southmead (RVJ)
+
+```{r, fig.width=5, fig.height=6}
+
+staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
+
+#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_final)
+
+cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 ```
 
 ### No change
@@ -1178,20 +1201,9 @@ staff_sickness_REN<-tar_read(staff_sickness_REN)
 #evaluating_model("REN", NA,staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN, single_bedroom_matches_final )
 
 cia_summary_plots(staff_sickness_REN, "Sickness Rate (%)", "2020-06-01")
-staff_sickness_REN$CausalImpactObject$summary
 
 ```
 
-#### Southmead (RVJ)
-
-```{r, fig.width=5, fig.height=6}
-
-staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
-
-#evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_final)
-
-cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
-```
 :::
 
 ::: {.column width="50%"}
@@ -1254,7 +1266,7 @@ cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 ::: panel-tabset
 ### Summary
 
-Points to the right indicate a increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
+Points to the right indicate an increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -1264,8 +1276,9 @@ forest_plot(staff_survey_output)
 
 model_effects_table(staff_survey_output)
 
+  name <- deparse(substitute(cleaning_costs_REM))
 ```
-
+#### Mean effect on rate of positive responses to the the staff survey for DGH/Acute hospitals
 ```{r, fig.width=8, fig.height=2}
 
 mean_forest_plot_DGH_Acute(staff_survey_output)
@@ -1307,7 +1320,8 @@ Black dotted line indicates the time of the last data point prior to the switch 
 :::
 
 ### No change
-
+:::columns
+::: {.column width="50%"}
 #### Royal Liverpool (REM)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1319,6 +1333,20 @@ staff_survey_REM<-tar_read(staff_survey_REM)
 cia_summary_plots( staff_survey_REM, "Positive Responses (%)", "2022-10-01")
 
 ```
+:::
+::: {.column width="50%"}
+#### Chase Farm (RAL)
+
+```{r,  fig.width=5, fig.height=6}
+
+staff_survey_RAL<-tar_read(staff_survey_RAL)
+  
+#evaluating_model("RAL", NA,staff_survey,"2018-09-01", "positive_responses", 0.01, staff_survey_RAL, single_bedroom_matches_final)
+
+cia_summary_plots( staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
+```
+:::
+:::
 
 ::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
@@ -1341,18 +1369,7 @@ cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 ```
 :::
 
-::: {.column width="50%"}
-#### Chase Farm (RAL)
 
-```{r,  fig.width=5, fig.height=6}
-
-staff_survey_RAL<-tar_read(staff_survey_RAL)
-  
-#evaluating_model("RAL", NA,staff_survey,"2018-09-01", "positive_responses", 0.01, staff_survey_RAL, single_bedroom_matches_final)
-
-cia_summary_plots( staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
-```
-:::
 :::
 
 ::: smaller
@@ -1360,7 +1377,7 @@ Black dotted line indicates the time of the last data point prior to the switch 
 :::
 :::
 
-## Cleaning costs
+## Cleaning costs 
 
 ::: panel-tabset
 ### Summary
@@ -1394,15 +1411,25 @@ cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 :::
 
 ::: {.column width="50%"}
-#### Chase Farm (RAL)
 
 ```{r,  fig.width=5, fig.height=6}
+#### Chase Farm (RAL)
 
-cleaning_costs_RAL<-tar_read(cleaning_costs_RAL)
+#cleaning_costs_RAL<-tar_read(cleaning_costs_RAL)
   
-#evaluating_model("RAL", "RALC7",cleaning_costs,"2018-09-01", "cleaning_service_cost", 0.01, cleaning_costs_RAL, single_bedroom_matches_final)
+#evaluating_model("RAL", "RALC7",cleaning_costs,"2018-09-01", "cleaning_service_cost", 0.001, cleaning_costs_RAL, single_bedroom_matches_final)
 
-cia_summary_plots(cleaning_costs_RAL, "Cost", "2018-09-01")
+#cia_summary_plots(cleaning_costs_RAL, "Cost", "2018-09-01")
+
+#test<-single_bedroom_matches_final|>
+#  filter(organisation_code=="RAL")|>
+# filter(rank_of_ranks<=20)
+
+#test2<-cleaning_costs|>
+#  filter(site_code %in% test$site_code)|>
+#  pivot_wider(names_from=site_code, values_from=cleaning_service_cost)
+
+
 ```
 :::
 :::
@@ -1467,7 +1494,9 @@ summary_table_indicators_and_sites(waiting_time_median_output,
 
 ```
 
-Notes: For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period. For some sites the outcome period is impacted by COVID-19, while COVID-19 effects are also present in the matched control sites, the magnitude of effects varies between hospitals/areas. There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden jumps, which has meant the outcome period has been cut short.
+Notes: 
+
+For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period. For some sites the outcome period is impacted by COVID-19, while COVID-19 effects are also present in the matched control sites, the magnitude of effects varies between hospitals/regions. There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden jumps, which has meant the outcome period has been cut short.
 
 Staff survey and cleaning costs data are an annual measure so there is limited data with only 2 data points in the outcome period.
 

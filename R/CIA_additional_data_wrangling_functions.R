@@ -378,7 +378,8 @@ cleaning_costs_cia_formatting <- function(data) {
       .by = c(site_code, month)
     )|>
     filter(site_code!="RNLAY" &
-            site_code!="RNLBX")
+            site_code!="RNLBX")|>
+    mutate(cleaning_service_cost=cleaning_service_cost/1000000) #Covert to million£
   
   return(cleaning_costs_cia_format)
 }
@@ -408,10 +409,12 @@ emergency_readmissions_cia_formatting <- function(data) {
         site_code != "RA901" &
         site_code != "RX1CC" &
         site_code!="RA710" &
-        site_code!="RTGFA"
+        site_code!="RTGFA" &
+        site_code!="RD130" &
+        site_code!="RP5MM"
     )|> #removing control data with issues
   filter(site_code != "RALC7" | (site_code=="RALC7" &
-           month < '2020-06-01')) |> #Remove part affected by COVID-19 for Chase farm
+           month < '2019-11-01')) |> #Remove part affected by COVID-19 for Chase farm
     filter(site_code != "RALC7" | (site_code=="RALC7" &
                                      month > '2015-01-01')) #Remove data from pre 2014 when it has emergency dept
     

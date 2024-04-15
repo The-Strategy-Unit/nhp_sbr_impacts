@@ -561,7 +561,7 @@ mean_forest_plot_DGH_Acute <- function(data) {
   
   if (count(results_data) > 1) {
     output <-
-      rma.uni(RelEffect, (RelEffect.sd) ^ 2, data = results_data)
+      rma.uni(RelEffect, (RelEffect.sd) ^ 2, method="DL", data = results_data) 
     
     df <- as.data.frame(output$b) |>
       rename(mean = V1) |>

@@ -87,6 +87,21 @@ cleaning_costs<-tar_read(cleaning_costs_cia_format)
 #Loading control data
 single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
 
+#Model outputs
+waiting_time_median_output<-tar_read(waiting_time_median_output)
+waiting_time_number_output<-tar_read(waiting_time_number_output)
+LoS_output<-tar_read(LoS_output)
+emergency_readmissions_output<-tar_read(emergency_readmissions_output)
+bed_occupancy_output<-tar_read(bed_occupancy_output)
+hcai_output<-tar_read(hcai_output)
+falls_and_fractures_output<-tar_read(falls_and_fractures_output)
+sus_deaths_output<-tar_read(sus_deaths_output)
+friends_and_family_output<-tar_read(friends_and_family_output)
+staff_sickness_output<-tar_read(staff_sickness_output)
+staff_turnover_output<-tar_read(staff_turnover_output)
+staff_survey_output<-tar_read(staff_survey_output)
+cleaning_costs_output<-tar_read(cleaning_costs_output)
+
 source("R/CIA_Functions.R")
 
 ```
@@ -94,10 +109,20 @@ source("R/CIA_Functions.R")
 ```{r, include=FALSE, fig.height=6, fig.width=10}
 
 LoS_output<-tar_read(LoS_output)|>
-filter(!is.na(site))
+filter(!is.na(site))|>
+  mutate(group=ifelse(site %in% c("Royal Liverpool", "Tunbridge Wells", "Southmead", "Peterborough"), "DGH", "Specialist" ))
 
-rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, data=LoS_output)
+LoS_output_DGH<-LoS_output|>
+  filter(group=="DGH")
 
+test<-rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, method="REML", data=LoS_output_DGH)
+forest(test)
+
+test2<-rma.mv(RelEffect, (RelEffect.sd)^2,  mod=~group, method="REML", data=LoS_output)
+forest(test2)
+
+res <- rma.mv(RelEffect, (RelEffect.sd)^2,  random = ~ 1 | group/site,  data=LoS_output)
+forest(res)
 ```
 
 # Foreword??
@@ -138,6 +163,17 @@ Royal Papwroth hospital is a specialist centre for cardiothoracic (heart and lun
 
 # Impact measures and data sources
 
+
+
+#### Availability of indicators over time
+```{r, fig.height=6, fig.width=10}
+tar_read(indicator_availability_plot)
+```
+#### Availability of indicators by site
+```{r}
+tar_read(indicator_availability_table)
+```
+
 # Description of methods
 
 ## CIA intro
@@ -148,50 +184,13 @@ Royal Papwroth hospital is a specialist centre for cardiothoracic (heart and lun
 
 # Main results (including related notes from lookback exercise)
 
-# Limitations and discussion
+## Productivity and Efficiency
 
-# Reccommendations for modelling and future evaluation
-
-# Appendices
-
-## A.CIA charts by indicator and hospital site/provider
-
-## B.Notes on data quality and suitability (for CIA)
-
-## C.List of control sites/providers by indicator
-
-## D.Provider and site codes?
-
-------------------------------------------------------------------------
-
-# Availability of indicators by site
-
-```{r, fig.height=6, fig.width=10}
-
-tar_read(indicator_availability_plot)
-
-```
-
-```{r}
-
-tar_read(indicator_availability_table)
-
-```
-
-# Productivity and Efficiency
-
-## Waiting time- Median (in weeks)
-
-## Methodology
-
-::: panel-tabset
-### Summary
+### Waiting time- Median (in weeks)
 
 Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
 
 ```{r, fig.width=8, fig.height=4}
-
-waiting_time_median_output<-tar_read(waiting_time_median_output)
 
 forest_plot(waiting_time_median_output)
 
@@ -199,8 +198,7 @@ model_effects_table(waiting_time_median_output)
 
 ```
 
-#### Mean effect on median waiting time for DGH/Acute hospitals
-
+Mean effect on median waiting time for DGH/Acute hospitals
 ```{r, fig.width=8, fig.height=2.5}
 
 mean_forest_plot_DGH_Acute(waiting_time_median_output)
@@ -209,6 +207,98 @@ mean_forest_plot_DGH_Acute(waiting_time_median_output)
 
 While the median waiting time does increase at Tunbridge Wells this appears to be a temporary effect that occurs during the first year post switch; in the second year the observed median waiting time is similar to the expected values.
 
+### Waiting time - Total number of patients waiting
+
+Points to the left indicate a decrease in number of patients on waiting lists following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
+```{r, fig.width=8, fig.height=4}
+
+forest_plot(waiting_time_number_output)
+
+model_effects_table(waiting_time_number_output)
+
+```
+
+Mean effect on number of patients waiting for DGH/Acute hospitals
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(waiting_time_number_output)
+
+```
+
+### Length of stay
+
+Points to the left indicate a decrease in average length of stay following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
+```{r, fig.width=8, fig.height=4}
+
+forest_plot(LoS_output)
+
+model_effects_table(LoS_output)
+
+```
+Mean effect on length of stay DGH/Acute hospitals
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(LoS_output)
+
+```
+
+
+### Emergency Readmissions
+
+Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+
+```{r, fig.width=8, fig.height=4}
+
+forest_plot(emergency_readmissions_output)
+
+model_effects_table(emergency_readmissions_output)
+
+```
+
+Mean effect on rate of emergency readmissions for DGH/Acute hospitals
+
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(emergency_readmissions_output)
+
+```
+
+### Bed Occupancy
+
+Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
+
+```{r, fig.width=8, fig.height=4}
+
+forest_plot(bed_occupancy_output)
+
+model_effects_table(bed_occupancy_output)
+
+
+```
+
+Mean effect on bed occupancy for DGH/Acute hospitals
+
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(bed_occupancy_output)
+
+```
+
+
+
+
+# Limitations and discussion
+
+# Reccommendations for modelling and future evaluation
+
+# Appendices
+
+## A.CIA charts by indicator and hospital site/provider
+
+### Waiting time- Median (in weeks)
+::: panel-tabset
 ### Decrease
 
 ::: columns
@@ -309,28 +399,9 @@ cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01
 :::
 :::
 
-## Waiting time - Total number waiting
+### Waiting time - Total number of patients waiting
 
 ::: panel-tabset
-### Summary
-
-Points to the left indicate a decrease in number of patients on waiting lists following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
-```{r, fig.width=8, fig.height=4}
-
-waiting_time_number_output<-tar_read(waiting_time_number_output)
-
-forest_plot(waiting_time_number_output)
-
-model_effects_table(waiting_time_number_output)
-
-```
-#### Mean effect on number of patients waiting for DGH/Acute hospitals
-```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(waiting_time_number_output)
-
-```
 
 ### Decrease
 #### Royal Liverpool
@@ -426,29 +497,9 @@ cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
 :::
 :::
 
-## Length of stay
+### Length of stay
 
 ::: panel-tabset
-### Summary
-
-Points to the left indicate a decrease in average length of stay following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
-```{r, fig.width=8, fig.height=4}
-
-LoS_output<-tar_read(LoS_output)
-
-forest_plot(LoS_output)
-
-model_effects_table(LoS_output)
-
-```
-#### Mean effect on length of stay DGH/Acute hospitals
-```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(LoS_output)
-
-```
-
 ### Decrease
 
 ```{r, fig.width=5, fig.height=6}
@@ -552,37 +603,16 @@ cia_summary_plots(LoS_REN,"Average LoS (days)", "2020-06-01")
 :::
 :::
 
-## Emergency Readmissions
+### Emergency Readmissions
 
 ::: panel-tabset
-### Summary
-
-Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
-```{r, fig.width=8, fig.height=4}
-
-emergency_readmissions_output<-tar_read(emergency_readmissions_output)
-
-forest_plot(emergency_readmissions_output)
-
-model_effects_table(emergency_readmissions_output)
-
-
-```
-
-#### Mean effect on rate of emergency readmissions for DGH/Acute hospitals
-
-```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(emergency_readmissions_output)
-
-```
 
 ### Decrease
 
 ::: columns
 ::: {.column width="50%"}
-#### Clatterbridge
+
+####Clatterbridge
 
 ```{r, fig.width=5, fig.height=6}
 
@@ -676,43 +706,9 @@ cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 :::
 :::
 
-## Bed Occupancy
+### Bed Occupancy
 
 ::: panel-tabset
-### Summary
-
-Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
-
-```{r, fig.width=8, fig.height=4}
-
-bed_occupancy_output<-tar_read(bed_occupancy_output)
-
-forest_plot(bed_occupancy_output)
-
-model_effects_table(bed_occupancy_output)
-
-
-```
-#### Mean effect on bed occupancy for DGH/Acute hospitals
-
-```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(bed_occupancy_output)
-
-```
-
-```{r, fig.width=5, fig.height=6}
-
-#### Papworth - Only 4 points post switch and last one might be impacted by COVID
-
-#Post switch period is impacted by COVID-19
-
-#bed_occupancy_RGM<-tar_read(bed_occupancy_RGM)
-
-#evaluating_model("RGM",NA, bed_occupancy, "2019-05-01", "bed_occupancy", 0.05, bed_occupancy_RGM, single_bedroom_matches_final)
-
-#cia_summary_plots(bed_occupancy_RGM,"Percentage", "2019-05-01")
-```
 
 ### No change
 
@@ -779,6 +775,16 @@ Black dotted line indicates the time of the last data point prior to the switch 
 :::
 :::
 
+
+## B.Notes on data quality and suitability (for CIA)
+
+## C.List of control sites/providers by indicator
+
+## D.Provider and site codes?
+
+------------------------------------------------------------------------
+
+
 # Health and Safety
 
 ## Healthcare acquired infections
@@ -789,8 +795,6 @@ Grey indicates no significant change in the combined rate of healthcare acquired
 ### Summary
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
-
-hcai_output<-tar_read(hcai_output)
 
 forest_plot(hcai_output)
 
@@ -832,8 +836,6 @@ cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
 Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
-
-falls_and_fractures_output<-tar_read(falls_and_fractures_output)
 
 forest_plot(falls_and_fractures_output)
 
@@ -942,8 +944,6 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 Points to the left indicate a decrease in hospital deaths following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
-
-sus_deaths_output<-tar_read(sus_deaths_output)
 
 forest_plot(sus_deaths_output)
 
@@ -1069,8 +1069,6 @@ Points to the right indicate an increase in positive scores on the Friends and F
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-friends_and_family_output<-tar_read(friends_and_family_output)
-
 forest_plot(friends_and_family_output)
 
 model_effects_table(friends_and_family_output)
@@ -1147,8 +1145,6 @@ cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01"
 Points to the left indicate a decrease in staff sickness following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
-
-staff_sickness_output<-tar_read(staff_sickness_output)
 
 forest_plot(staff_sickness_output)
 
@@ -1239,8 +1235,6 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-staff_turnover_output<-tar_read(staff_turnover_output)
-
 forest_plot(staff_turnover_output)
 
 model_effects_table(staff_turnover_output)
@@ -1269,8 +1263,6 @@ cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 Points to the right indicate an increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
-
-staff_survey_output<-tar_read(staff_survey_output)
 
 forest_plot(staff_survey_output)
 
@@ -1385,8 +1377,6 @@ Black dotted line indicates the time of the last data point prior to the switch 
 Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
-
-cleaning_costs_output<-tar_read(cleaning_costs_output)
 
 forest_plot(cleaning_costs_output)
 

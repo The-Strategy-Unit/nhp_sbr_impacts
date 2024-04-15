@@ -378,7 +378,8 @@ cleaning_costs_cia_formatting <- function(data) {
       .by = c(site_code, month)
     )|>
     filter(site_code!="RNLAY" &
-            site_code!="RNLBX")
+            site_code!="RNLBX")|>
+    mutate(cleaning_service_cost=cleaning_service_cost/1000000) #Covert to million£
   
   return(cleaning_costs_cia_format)
 }

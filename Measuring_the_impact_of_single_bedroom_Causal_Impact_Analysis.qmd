@@ -175,11 +175,24 @@ Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened 
 
 # Impact measures and data sources
 
-#### Availability of indicators over time
+Categorisation of the evidence suggests that impacts can be considered under one or more of health & safety, staff & patient experience and productivity & efficiency. A long list of potential impacts were drawn from the existing evidence reviews and measures were sought from published data that were specific to the logic/causal relationship or were proxies for the suggested effect. Measures were screened into the study if there were sufficient time series, if the data were consistent, if the data were available at least at provider level.
+
+Where existing data sources were lacking, and for those impacts based on hospital data, we derived suitable measures from Secondary User Service (SUS) data held within NCDR [@ncdr].
+
+Our final set of impact measures are thus:
+
+[](images/indicators.png)
+
+<<table with further detail when decided format>> 
+
+### Availability of indicators over time
+
+The chart below demonstrates the availability of indicator datasets over time and the 'intervention' dates of the 7 sites to allow for general assessment of suitability for testing. Additional data issues have been uncovered during preparation of the data for analysis and some further omissions of some indicator/site combinations have been made. Full notes on data availability and suitability in relation to the analysis can be found in Appendix B.
+
 ```{r, fig.height=6, fig.width=10}
 tar_read(indicator_availability_plot)
 ```
-#### Availability of indicators by site
+### Availability of indicators by site
 ```{r}
 tar_read(indicator_availability_table)
 ```

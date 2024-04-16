@@ -28,6 +28,8 @@ format:
       margin-width: 0px
       gutter-width: 1.5rem
 css: styles.css
+
+bibliography: references.bib
 ---
 
 ```{r, include=FALSE}
@@ -145,25 +147,33 @@ Previous literature [@ref] and evidence [@ref] reviews have....
 
 ## Royal Liverpool University Hospital
 
-Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@ref]. Provider also manage Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating 16.6% single bed room accommodation [@ERIC].
+Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. Provider also manages Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating 16.6% single bed room accommodation [@eric].
 
 ## Clatterbridge Cancer Centre
 
+The Clatterbridge Trust operates 3 cancer centres in the Cheshire and Merseyside area. The Liverpool centre moved to fully single-bed rooms in June 2020 having previously been at 41% SBR [@eric]. The centre offers the full range of cancer treatment, both routine and surgical as well as diagnostics, outpatient appointments and associated support services [@ccc_liverpool]. 
+
 ## Royal Papworth
 
-Royal Papwroth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@ref]. The move to single bed accommodation occured in May 2019. Prior to the change, the site had been operating 32.8% single bed room accommodation [@ERIC].
+Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to single bed accommodation occured in May 2019. Prior to the change, the site had been operating 32.8% single bed room accommodation [@eric].
 
 ## Chase Farm
 
+Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018, has 90% single bed rooms having previously had 29.4% [@eric].
+
 ## Southmead
+
+Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with 75% single bed ensuite rooms. Previously the SBR provision for the trusts main sites was around 10% [@eric].
 
 ## Tunbridge Wells
 
+The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in 2 phases in January 2011 (maternity and children) and September 2011 (other inpatient services). According to ERIC [@eric] the site has 80% single bed inpatient rooms, with levels prior to 2011 being 28.3%.     
+
 ## Peterborough
 
+Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened in November 2010 offering a range of acute and specialist services [@peterborough_web]. The site went from 10% single bed inpatient rooms to 98% SBR [@eric].
+
 # Impact measures and data sources
-
-
 
 #### Availability of indicators over time
 ```{r, fig.height=6, fig.width=10}

@@ -110,24 +110,22 @@ source("R/plot_functions.R")
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
 
-LoS_output<-tar_read(LoS_output)|>
-filter(!is.na(site))|>
-  mutate(group=ifelse(site %in% c("Royal Liverpool", "Tunbridge Wells", "Southmead", "Peterborough"), "DGH", "Specialist" ))
+#LoS_output_test<-tar_read(LoS_output)|>
+#filter(!is.na(site))|>
+#  mutate(group=ifelse(site %in% c("Royal Liverpool", "Tunbridge Wells", "Southmead", "Peterborough"), "DGH", #"Specialist" ))
 
-LoS_output_DGH<-LoS_output|>
-  filter(group=="DGH")
+#LoS_output_DGH<-LoS_output_test|>
+#  filter(group=="DGH")
 
-test<-rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, method="REML", data=LoS_output_DGH)
-forest(test)
+#test<-rma.uni(yi=RelEffect, vi=(RelEffect.sd)^2, method="REML", data=LoS_output_DGH)
+#forest(test)
 
-test2<-rma.mv(RelEffect, (RelEffect.sd)^2,  mod=~group, method="REML", data=LoS_output)
-forest(test2)
+#test2<-rma.mv(RelEffect, (RelEffect.sd)^2,  mod=~group, method="REML", data=LoS_output_test)
+#forest(test2)
 
-res <- rma.mv(RelEffect, (RelEffect.sd)^2,  random = ~ 1 | group/site,  data=LoS_output)
-forest(res)
+#res <- rma.mv(RelEffect, (RelEffect.sd)^2,  random = ~ 1 | group/site,  data=LoS_output_test)
+#forest(res)
 ```
-
-
 
 # Foreword??
 
@@ -148,8 +146,6 @@ Previous literature [@ref] and evidence [@ref] reviews have....
 # Hospital Background
 
 ## Royal Liverpool University Hospital
-
-
 
 Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. Provider also manages Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating 16.6% single bed room accommodation [@eric].
 
@@ -189,7 +185,6 @@ Our final set of impact measures are thus:
 
 ##table with further detail when decided format
 
-
 ## Availability of indicators over time and for each site
 
 The chart below demonstrates the availability of indicator datasets over time and the 'intervention' dates of the 7 sites to allow for general assessment of suitability for testing.
@@ -210,21 +205,43 @@ tar_read(indicator_availability_table)
 
 ```
 
-For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period. 
+For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period.
 
-For some sites (i.e Chase Farm, Clatterbridge and Papworth) the outcome period is impacted by COVID-19, while COVID-19 effects are also present in the matched control sites, the magnitude of effects varies between hospitals/regions. 
+For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects are also present in the matched control sites, the magnitude of effects varies between hospitals/regions.
 
-There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden jumps, which has meant the outcome period has been cut short. 
-
+There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short.
 
 # Description of methods
 
-## CIA intro
-
+Causal Impact Analysis is a technique that uses a control group to estimate the post-intervention counterfactual against which to measure study group impacts [@broderson2015]. We have used this method to quantify the change in the study hospitals following their switch to single-bed rooms by comparing the actual effects to a control group (similar hospital providers, patient case-mix and prior trends) that have been used to predict what would have happened to the outcome of interest had there been no switch.
 
 ## Finding control hospitals
 
+## Causal Impact Analysis
+
+The causal impact analysis is implemented using the MarketMatching package in R [@MarketMatching], which uses the dtw and CausalImpact R packages [@dtw] [@CausalImpact], to provide a simple way to find the most appropriate control matches using dynamic time warping and then use these controls for causal impact analysis using Bayesian structural time-series models.
+
+Once suitable matches for each study site were determined and ranked, and the top ranking 20 sites for each study site were selected and fed into the MarketMatching package, for the final selection of control sites. This step selects the best matched control sites based on them having similar trends in the variable of interest over time to the study site. Up to 5 control sites were selected for each study site, but for some site, particularly the specialist centres, the number of appropriate matches was smaller and so fewer than 5 control sites were selected. Controls sites are selected for each site and indicator variable and as this matching of controls is based on similar trends over time a study site may have different control sites selected for different indicators.
+
+The causal impact models were generated if there was at least 2 years of data prior to the switch to single bedrooms and at least 1 year of outcome period after the switch. Where possible a 2-year outcome period was used. The Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic of the models were checked, and the prior local level standard error adjusted if required to ensure a good historical model fit while minimising the forecasting intervals.
+
+### Outputs of the causal impact analysis
+
+The plots show:
+
+1\) The expected value of the indicator in the outcome period, compared to the actual values of the study site.
+
+2\) The point estimate shows the difference between the expected values and actual values over time, so at time points where the posterior intervals do not include zero there is a significant difference.
+
+3\) The cumulative difference between the expected and actual values over the outcome period.
+
+The values given in the tables and on forest plots are the average effects over the outcome period. Since the length of outcome period varies between sites due to availability of data/data issues the cumulative effect is not always comparable across sites.
+
 ## Aggregate (meta) analysis
+
+Where possible, for each indicator variable a meta-analysis was conducted using only the data for district general and acute hospitals; the specialist hospital sites were excluded from this analysis.
+
+A random-effects meta-analysis was conducted using the metafor R package [@metafor] and weighting the relative effects for each site using the inverse variance, as used for meta-analysis of causal impact models by [@Schmitt2017ExtendingBS].
 
 # Main results (including related notes from lookback exercise)
 
@@ -249,7 +266,6 @@ Mean effect on length of stay DGH/Acute hospitals
 mean_forest_plot_DGH_Acute(LoS_output)
 
 ```
-
 
 ### Waiting time- Median (in weeks)
 
@@ -334,8 +350,6 @@ mean_forest_plot_DGH_Acute(emergency_readmissions_output)
 
 ```
 
-
-
 ### Cleaning costs
 
 Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
@@ -372,7 +386,6 @@ mean_forest_plot_DGH_Acute(sus_deaths_output)
 
 ```
 
-
 ### Falls, Fractures and injuries in hospital
 
 Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
@@ -404,7 +417,6 @@ forest_plot(hcai_output)
 model_effects_table(hcai_output)
 
 ```
-
 
 ## Patient and Staff Experience
 
@@ -477,21 +489,22 @@ mean_forest_plot_DGH_Acute(staff_survey_output)
 
 Staff survey is an annual measure so there is limited data, with only 1 or 2 data points in the outcome period. The staff survey data is collected over a period of time in the autumn each year, but for analysis purposes we have set the date as the last day of the year in which the data was collected. Both Chase Farm and Royal Liverpool switched to single rooms during the autumn, so the data for the first data point in the outcome period would actually have been collected during the transition period which may have had an impact on the results.
 
-## Summary of effects across sites
+## Summary of results
 
 ```{r}
-summary_table_indicators_and_sites(waiting_time_median_output,
-                                             waiting_time_number_output,
-                                             LoS_output,
-                                             emergency_readmissions_output,
-                                           bed_occupancy_output,
-                                            cleaning_costs_output,                                                                             hcai_output,
-                                            falls_and_fractures_output,
-                                            sus_deaths_output,
-                                            friends_and_family_output,
-                                             staff_sickness_output,
-                                            staff_survey_output) 
-
+summary_table_indicators_and_sites(LoS_output,
+                                    waiting_time_median_output,
+                                    waiting_time_number_output,
+                                    bed_occupancy_output,
+                                    emergency_readmissions_output,
+                                    cleaning_costs_output,
+                                    sus_deaths_output,
+                                    falls_and_fractures_output,
+                                    hcai_output,
+                                    friends_and_family_output,
+                                    staff_sickness_output,
+                                    staff_turnover_output,
+                                    staff_survey_output) 
 
 ```
 
@@ -609,7 +622,6 @@ cia_summary_plots(LoS_REN,"Average LoS (days)", "2020-06-01")
 :::
 :::
 :::
-
 
 ### Waiting time- Median (in weeks)
 
@@ -790,8 +802,6 @@ cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
 :::
 :::
 
-
-
 ### Bed Occupancy
 
 ::: panel-tabset
@@ -859,7 +869,6 @@ cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 :::
-
 
 ### Emergency Readmissions
 
@@ -961,7 +970,6 @@ cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 :::
 :::
 :::
-
 
 ### Cleaning costs
 
@@ -1330,7 +1338,6 @@ staff_turnover_REM<-tar_read(staff_turnover_REM)
 cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 ```
 
-
 ### Staff survey
 
 ::: panel-tabset
@@ -1428,46 +1435,25 @@ Black dotted line indicates the time of the last data point prior to the switch 
 
 ## B.Notes on data quality and suitability (for CIA)
 
-RTT waiting time data
-- Only available at trust level 
-- Chase Farm was excluded as there was only 4 months of data available in the outcome period. 
-- Southmead was excluded due to a period of missing data in the 2 years prior to the switch to single rooms.
+RTT waiting time data - Only available at trust level - Chase Farm was excluded as there was only 4 months of data available in the outcome period. - Southmead was excluded due to a period of missing data in the 2 years prior to the switch to single rooms.
 
-Length of stay
-- Papworth was excluded as there were 2 large COVID-19 related spikes in length of stay in the outcome period that were significantly larger than the COVID-19 effects in the control sites, so it was not possible to determine if there would have been a change in length of stay without COVID-19.
+Length of stay - Papworth was excluded as there were 2 large COVID-19 related spikes in length of stay in the outcome period that were significantly larger than the COVID-19 effects in the control sites, so it was not possible to determine if there would have been a change in length of stay without COVID-19.
 
-Bed occupancy
-- Only available at trust level 
-- This is a quarterly measure so there is more limited data and depending on the time point at which the switch to single bedrooms occurred the may be no data until 3 months after the switch or the last point of baseline may be 3 months prior to the switch.
+Bed occupancy - Only available at trust level - This is a quarterly measure so there is more limited data and depending on the time point at which the switch to single bedrooms occurred the may be no data until 3 months after the switch or the last point of baseline may be 3 months prior to the switch.
 
-Cleaning costs
-- This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
-- The limited data meant that for Chase Farm only 1 control site could be matched and there was insufficient data to fit a suitable model.
+Cleaning costs - This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period. - The limited data meant that for Chase Farm only 1 control site could be matched and there was insufficient data to fit a suitable model.
 
-Healthcare acquired infections
-- Only available at trust level
-- Data is only available for Royal Liverpool
-- Clatterbridge was excluded as the rate was generally low, often zero, but there were also significant spikes, which meant it was not possible to fit a suitable model.
+Healthcare acquired infections - Only available at trust level - Data is only available for Royal Liverpool - Clatterbridge was excluded as the rate was generally low, often zero, but there were also significant spikes, which meant it was not possible to fit a suitable model.
 
-Falls, fractures and injuries in hospital
-- Clatterbridge, Papworth and Chase Farm were all excluded as the rates were very low, often zero, so it wasn't possible to fit suitable models to the data.
+Falls, fractures and injuries in hospital - Clatterbridge, Papworth and Chase Farm were all excluded as the rates were very low, often zero, so it wasn't possible to fit suitable models to the data.
 
-Deaths in hospital
-- Papworth was excluded due to a large COVID-19 spike in the outcome period that was greater than that seen in the control sites, so it was not possible to determine if there would have been a change had COVID-19 not occurred.
-- Chase Farm was excluded as the rate was very low, often zero, so it wasn't possible to fit a suitable model, this low rate is unsurprising given it is only conducting elective care.
+Deaths in hospital - Papworth was excluded due to a large COVID-19 spike in the outcome period that was greater than that seen in the control sites, so it was not possible to determine if there would have been a change had COVID-19 not occurred. - Chase Farm was excluded as the rate was very low, often zero, so it wasn't possible to fit a suitable model, this low rate is unsurprising given it is only conducting elective care.
 
-Staff sickness
-- Only available at trust level
+Staff sickness - Only available at trust level
 
-Staff turnover
-- Only available at trust level
-- Data is only available for Royal Liverpool
+Staff turnover - Only available at trust level - Data is only available for Royal Liverpool
 
-Staff survey
-- Only available at trust level
-- This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
-
-
+Staff survey - Only available at trust level - This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
 
 ## C.List of control sites/providers by indicator
 

@@ -249,14 +249,13 @@ A random-effects meta-analysis was conducted using the metafor R package [@metaf
 
 ### Length of stay
 
-Points to the left indicate a decrease in average length of stay following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
+Length of stay decreases following at switch to single rooms at Southmead, Peterborough and Chase Farm, it is unchanged at Royal Liverpool and Tunbridge Wells, but does significantly increase at Clatterbridge. Clatterbridge is a specialist cancer centre so it is possible the switch to single bed rooms is having a different impact on length of stay due to the nature of the activity at the site.
 
 ```{r, fig.width=8, fig.height=4}
 
-forest_plot(LoS_output)
+forest_plot(LoS_output, "Points to the left indicate a decrease in average length of stay following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.")
 
 model_effects_table(LoS_output)
-
 ```
 
 Mean effect on length of stay DGH/Acute hospitals
@@ -269,11 +268,9 @@ mean_forest_plot_DGH_Acute(LoS_output)
 
 ### Waiting time- Median (in weeks)
 
-Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
 ```{r, fig.width=8, fig.height=4}
 
-forest_plot(waiting_time_median_output)
+forest_plot(waiting_time_median_output, "Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are indicated red. Grey indicates no significant change.")
 
 model_effects_table(waiting_time_median_output)
 
@@ -291,11 +288,9 @@ While the median waiting time does increase at Tunbridge Wells this appears to b
 
 ### Waiting time - Total number of patients waiting
 
-Points to the left indicate a decrease in number of patients on waiting lists following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
 ```{r, fig.width=8, fig.height=4}
 
-forest_plot(waiting_time_number_output)
+forest_plot(waiting_time_number_output, "Points to the left indicate a decrease in number of patients on waiting lists following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.")
 
 model_effects_table(waiting_time_number_output)
 
@@ -311,11 +306,9 @@ mean_forest_plot_DGH_Acute(waiting_time_number_output)
 
 ### Bed Occupancy
 
-Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
-
 ```{r, fig.width=8, fig.height=4}
 
-forest_plot(bed_occupancy_output)
+forest_plot(bed_occupancy_output, "Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are indicated red. Grey indicates no significant change.")
 
 model_effects_table(bed_occupancy_output)
 
@@ -332,11 +325,9 @@ mean_forest_plot_DGH_Acute(bed_occupancy_output)
 
 ### Emergency Readmissions
 
-Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
 ```{r, fig.width=8, fig.height=4}
 
-forest_plot(emergency_readmissions_output)
+forest_plot(emergency_readmissions_output, "Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.")
 
 model_effects_table(emergency_readmissions_output)
 
@@ -352,11 +343,9 @@ mean_forest_plot_DGH_Acute(emergency_readmissions_output)
 
 ### Cleaning costs
 
-Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-forest_plot(cleaning_costs_output)
+forest_plot(cleaning_costs_output, "Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.")
 
 model_effects_table(cleaning_costs_output)
 
@@ -368,11 +357,9 @@ Cleaning costs data are an annual measure so there is limited data with only 1 o
 
 ### Deaths in hospital
 
-Points to the left indicate a decrease in hospital deaths following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-forest_plot(sus_deaths_output)
+forest_plot(sus_deaths_output, "Points to the left indicate a decrease in hospital deaths following a switch to single bed rooms, which is considered a positive effect. Significant positive effects green, while significant negative effects (on the right) are red. Grey indicates no significant change.")
 
 model_effects_table(sus_deaths_output)
 
@@ -388,11 +375,9 @@ mean_forest_plot_DGH_Acute(sus_deaths_output)
 
 ### Falls, Fractures and injuries in hospital
 
-Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-forest_plot(falls_and_fractures_output)
+forest_plot(falls_and_fractures_output, "Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.")
 
 model_effects_table(falls_and_fractures_output)
 
@@ -408,11 +393,9 @@ mean_forest_plot_DGH_Acute(falls_and_fractures_output)
 
 ### Healthcare acquired infections
 
-Grey indicates no significant change in the combined rate of healthcare acquired infections (number per 10,000 beddays) following a switch to single bed rooms.
-
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-forest_plot(hcai_output)
+forest_plot(hcai_output, "Grey indicates no significant change in the combined rate of healthcare acquired infections following a switch to single bed rooms.")
 
 model_effects_table(hcai_output)
 
@@ -424,11 +407,9 @@ It should be noted that for the friends and family test scores there is signific
 
 ### Patient experience - Friends and Family scores
 
-Points to the right indicate an increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
-
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-forest_plot(friends_and_family_output)
+forest_plot(friends_and_family_output, "Points to the right indicate an increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.")
 
 model_effects_table(friends_and_family_output)
 
@@ -436,11 +417,9 @@ model_effects_table(friends_and_family_output)
 
 ### Staff sickness
 
-Points to the left indicate a decrease in staff sickness following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the right) are indicated in red. Grey indicates no significant change.
-
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-forest_plot(staff_sickness_output)
+forest_plot(staff_sickness_output, "Points to the left indicate a decrease in staff sickness following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.")
 
 model_effects_table(staff_sickness_output)
 
@@ -454,13 +433,13 @@ mean_forest_plot_DGH_Acute(staff_sickness_output)
 
 ```
 
-While there is an increase in staff sickness at Southmead this seems to be due to a larger winter peak at Southmead in 2015/2016, with sickness rates falling in line with the expected rates during the second year of the outcome perio
+While there is an increase in staff sickness at Southmead this seems to be due to a larger winter peak at Southmead in 2015/2016, with sickness rates falling in line with the expected rates during the second year of the outcome period.
 
 ### Staff turnover
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-forest_plot(staff_turnover_output)
+forest_plot(staff_turnover_output, "Grey indicates no significant change in staff turnover following a switch to single bed rooms.")
 
 model_effects_table(staff_turnover_output)
 
@@ -468,15 +447,12 @@ model_effects_table(staff_turnover_output)
 
 ### Staff survey
 
-Points to the right indicate an increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are in green, while significant negative effects (those on the left) are indicated in red. Grey indicates no significant change.
-
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
-forest_plot(staff_survey_output)
+forest_plot(staff_survey_output,"Points to the right indicate an increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change." )
 
 model_effects_table(staff_survey_output)
 
-  name <- deparse(substitute(cleaning_costs_REM))
 ```
 
 Mean effect on rate of positive responses to the the staff survey for DGH/Acute hospitals
@@ -865,9 +841,7 @@ cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 :::
 :::
 
-::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
 :::
 
 ### Emergency Readmissions
@@ -991,9 +965,7 @@ cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 :::
 :::
 
-::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
 
 #### Increase
 
@@ -1025,9 +997,7 @@ cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
 :::
 :::
 
-::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
 :::
 
 ### Deaths in hospital
@@ -1370,9 +1340,7 @@ cia_summary_plots( staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
 ```
 :::
 
-::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
 :::
 
 #### No change
@@ -1406,9 +1374,7 @@ cia_summary_plots( staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
 :::
 :::
 
-::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
 
 #### Increase
 
@@ -1428,9 +1394,7 @@ cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 :::
 :::
 
-::: smaller
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
 :::
 
 ## B.Notes on data quality and suitability (for CIA)

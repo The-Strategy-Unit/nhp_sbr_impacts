@@ -359,7 +359,7 @@ model_output <- function(rem, ren, rgm, rgn, ral, rvj, rwf) {
 
 # Function to generate forest plot
 
-forest_plot <- function(data) {
+forest_plot <- function(data, caption) {
   results_data <- data |>
     filter(!is.na(site)) |>
     mutate(sig = case_when(
@@ -430,7 +430,9 @@ forest_plot <- function(data) {
         "Negative Effect" = "#ec6555"
       )
     ) +
-    labs(x = "Relative Effect Size", y = "") +
+    labs(x = "Relative Effect Size", y = "",
+         subtitle= NULL,
+         title=NULL) +
     coord_cartesian(ylim = c(1, nrow(results_data)),
                     xlim = c(low*1.03,
                              up*1.03)) +
@@ -455,7 +457,7 @@ forest_plot <- function(data) {
       axis.line.y = element_blank(),
       axis.ticks.y = element_blank(),
       axis.text.y = element_blank(),
-      axis.title.y = element_blank()
+      axis.title.y = element_blank(),
     )
   
   
@@ -517,7 +519,10 @@ forest_plot <- function(data) {
     r = 15
   ))
   # final plot arrangement
-  p_left + p_mid + p_right + plot_layout(design = layout)
+  (p_left + p_mid + p_right + plot_layout(design = layout))+ 
+    plot_annotation(caption= str_wrap(caption,150)) +
+    theme(plot.caption=element_text(hjust=0, size=10))
+
   
 }
 

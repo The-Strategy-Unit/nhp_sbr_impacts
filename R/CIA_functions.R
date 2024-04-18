@@ -561,7 +561,7 @@ mean_forest_plot_DGH_Acute <- function(data) {
   
   if (count(results_data) > 1) {
     output <-
-      rma.uni(RelEffect, (RelEffect.sd) ^ 2, data = results_data)
+      rma.uni(RelEffect, (RelEffect.sd) ^ 2, method="DL", data = results_data) 
     
     df <- as.data.frame(output$b) |>
       rename(mean = V1) |>
@@ -812,60 +812,65 @@ model_effects_table <- function(data) {
 # Function for summary table of all sites and indicators
 
 summary_table_indicators_and_sites <-
-  function(waiting_time_median_output,
+  function(LoS_output,
+           waiting_time_median_output,
            waiting_time_number_output,
-           LoS_output,
+           bed_occupancy_output,
            emergency_readmissions_output,
            cleaning_costs_output,
-           bed_occupancy_output,
-           hcai_output,
-           falls_and_fractures_output,
            sus_deaths_output,
+           falls_and_fractures_output,
+           hcai_output,
            friends_and_family_output,
            staff_sickness_output,
+           staff_turnover_output,
            staff_survey_output)   {
-    waiting_time_median_output <- waiting_time_median_output |>
+    
+    waiting_time_median_output2 <- waiting_time_median_output |>
       mutate(measure = "Waiting time (median)")
-    waiting_time_number_output <- waiting_time_number_output |>
+    waiting_time_number_output2 <- waiting_time_number_output |>
       mutate(measure = "Waiting time (number)")
-    LoS_output  <- LoS_output |>
+    LoS_output2  <- LoS_output |>
       mutate(measure = "Length of stay")
-    emergency_readmissions_output  <-
+    emergency_readmissions_output2  <-
       emergency_readmissions_output |>
       mutate(measure = "Emergency readmissions")
-    cleaning_costs_output  <-
+    cleaning_costs_output2  <-
       cleaning_costs_output |>
       mutate(measure = "Cleaning costs")
-    bed_occupancy_output  <- bed_occupancy_output |>
+    bed_occupancy_output2  <- bed_occupancy_output |>
       mutate(measure = "Bed occupancy")
-    hcai_output  <- hcai_output |>
+    hcai_output2  <- hcai_output |>
       mutate(measure = "Healthcare acquired infections")
-    falls_and_fractures_output  <- falls_and_fractures_output |>
+    falls_and_fractures_output2  <- falls_and_fractures_output |>
       mutate(measure = "Falls and fractures")
-    sus_deaths_output  <- sus_deaths_output |>
+    sus_deaths_output2  <- sus_deaths_output |>
       mutate(measure = "Hospital deaths")
-    friends_and_family_output  <- friends_and_family_output |>
+    friends_and_family_output2  <- friends_and_family_output |>
       mutate(measure = "Patient experience- friends and family test")
-    staff_sickness_output  <- staff_sickness_output |>
+    staff_sickness_output2  <- staff_sickness_output |>
       mutate(measure = "Staff sickness")
-    staff_survey_output  <- staff_survey_output |>
+    staff_survey_output2  <- staff_survey_output |>
       mutate(measure = "Staff survey")
+    staff_turnover_output2  <- staff_turnover_output |>
+      mutate(measure = "Staff turnover")
     
     combined_outputs <-
-      rbind(
-        waiting_time_median_output,
-        waiting_time_number_output,
-        LoS_output,
-        emergency_readmissions_output,
-        cleaning_costs_output,
-        bed_occupancy_output,
-        hcai_output,
-        falls_and_fractures_output,
-        sus_deaths_output,
-        friends_and_family_output,
-        staff_sickness_output,
-        staff_survey_output
+      rbind(LoS_output2,
+        waiting_time_median_output2,
+        waiting_time_number_output2,
+        bed_occupancy_output2,
+        emergency_readmissions_output2,
+        cleaning_costs_output2,
+        sus_deaths_output2,
+        falls_and_fractures_output2,
+        hcai_output2,
+        friends_and_family_output2,
+        staff_sickness_output2,
+        staff_turnover_output2,
+        staff_survey_output2
       ) |>
+      filter(!is.na(site)) |>
       mutate(p=p*2)|> # convert from 1 to 2-tailed p value
       mutate(sig = case_when(
         RelEffect > 0 & p < 0.05 ~ "\U2191",
@@ -873,9 +878,8 @@ summary_table_indicators_and_sites <-
         p >= 0.05 ~ "-"
       )) |>
       select(site, measure, sig) |>
-      filter(!is.na(site)) |>
-      pivot_wider(names_from = site, values_from = sig)
-    
+      pivot_wider(names_from = site, values_from = sig)|>
+      select(measure, `Royal Liverpool`, Clatterbridge, Papworth, `Chase Farm`, Southmead, `Tunbridge Wells`, Peterborough)
     colormatrix <- ifelse(
       is.na(combined_outputs),
       "grey80" ,
@@ -961,8 +965,7 @@ summary_table_indicators_and_sites <-
                '-' indicates a non-significant change, which is shown in yellow.
                Grey shading indicates where there was insufficient data to analyse."
         )
-      )) |>
-      htmltools_value(ft.align = "left")
+      )) 
     
     
     

@@ -614,7 +614,15 @@ indicator_availability_by_site <-
       cross_join(sites) |>
       filter(type == "start_date") |>
       mutate(difference = as.numeric(date - range)) |> #difference in days
-      mutate(sufficient_baseline = ifelse(difference < 730|(difference<1095 & measure=="Staff survey"), "x", "\U2714")) |>
+      mutate(sufficient_baseline = case_when(difference < 730|(difference<1095 & measure=="Staff survey") ~ "x",
+                                             measure=="RTT waiting times" & (name=="Chase Farm"|name=="Southmead") ~ "-",
+                                             measure=="Length of stay" & (name=="Papworth") ~ "-",
+                                             measure=="Bed occupancy" & (name=="Papworth") ~ "-",
+                                             measure=="Healthcare acquired infections" & (name=="Clatterbridge") ~ "-",
+                                             measure=="Falls and fractures" & (name=="Clatterbridge"|name=="Papworth"|name=="Chase Farm") ~ "-",
+                                             measure=="Hospital deaths" & (name=="Papworth"|name=="Chase Farm") ~ "-",
+                                             measure=="Cleaning costs" & (name=="Chase Farm") ~ "-",
+                                            TRUE ~ "\U2714")) |>
       select(-difference, -date, -range, -type) |>
       pivot_wider(names_from = name, values_from = sufficient_baseline) |>
       mutate(measure = factor(
@@ -652,7 +660,11 @@ indicator_availability_by_site <-
         ifelse(
           indicator_availability_by_site == "\U2714",
           "#d5eed1",
-          "#FFFFFF"
+          ifelse(
+            indicator_availability_by_site == "-",
+            "#FBE8E0",
+            "#FFFFFF"
+          )
         )
       ) |>
       as.data.frame() |>
@@ -667,7 +679,11 @@ indicator_availability_by_site <-
         ifelse(
           indicator_availability_by_site == "\U2714",
           "#d5eed1",
-          "#FFFFFF"
+          ifelse(
+            indicator_availability_by_site == "-",
+            "#FBE8E0",
+            "#FFFFFF"
+          )
         )
       ) |>
       as.data.frame() |>
@@ -684,7 +700,11 @@ indicator_availability_by_site <-
         ifelse(
           indicator_availability_by_site == "\U2714",
           "#d5eed1",
-          "#FFFFFF"
+          ifelse(
+            indicator_availability_by_site == "-",
+           "#FBE8E0",
+            "#FFFFFF"
+          )
         )
       ) |>
       as.data.frame() |>
@@ -700,7 +720,11 @@ indicator_availability_by_site <-
         ifelse(
           indicator_availability_by_site == "\U2714",
           "#6C9380",
-          "black"
+          ifelse(
+            indicator_availability_by_site == "-",
+            "#E98458",
+            "black"
+          )
         )
       ) |>
       as.data.frame() |>
@@ -715,7 +739,11 @@ indicator_availability_by_site <-
         ifelse(
           indicator_availability_by_site == "\U2714",
           "#6C9380",
-          "black"
+          ifelse(
+            indicator_availability_by_site == "-",
+            "#E98458",
+            "black"
+          )
         )
       ) |>
       as.data.frame() |>
@@ -730,7 +758,11 @@ indicator_availability_by_site <-
         ifelse(
           indicator_availability_by_site == "\U2714",
           "#6C9380",
-          "black"
+          ifelse(
+            indicator_availability_by_site == "-",
+            "#E98458",
+            "black"
+          )
         )
       ) |>
       as.data.frame() |>
@@ -739,7 +771,7 @@ indicator_availability_by_site <-
       as.matrix()
     
     
-    as_grouped_data(indicator_availability_by_site, groups = "group") |>
+    table<-as_grouped_data(indicator_availability_by_site, groups = "group") |>
       as_flextable(hide_grouplabel = TRUE) |>
       set_header_labels(measure = "Variable",
                         level = "Level") |>
@@ -767,7 +799,16 @@ indicator_availability_by_site <-
       padding(padding = 2,
               part = "all",
               padding.top = NULL) |>
-      autofit() |>
-      htmltools_value(ft.align = "left")
+      add_footer_lines(value = c(
+        paste0(
+          "\U2714",
+          " indicates there was sufficient/suitable data to conduct causal impact analysis.",
+          "'x' indicates that there was not sufficient time series data available to analyse. 
+          '-' indicates data issues that meant it was not possible to conduct causal impact analysis."
+        )
+      )) |>
+      autofit() 
+    
+    return(table)
     
   }

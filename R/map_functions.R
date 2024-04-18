@@ -59,7 +59,8 @@ map_controls <- function(org_code_of_interest,
     left_join(ods_sites |> select(site_code, long, lat), by = 'site_code')
   
   controls <- controls |>
-    dplyr::filter(organisation_code == site_code_of_interest$organisation_code) |>
+    dplyr::filter(organisation_code == site_code_of_interest$organisation_code
+                  & rank_of_ranks <= 20) |>
     select(matching_organisation_code, site_code, site_name) |>
     left_join(ods_sites |> select(site_code, long, lat), by = 'site_code')
   

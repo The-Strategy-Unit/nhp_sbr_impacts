@@ -399,31 +399,32 @@ list(
     grViz(
       "digraph flowchart {
         # Starts and Ends
-        A[shape = box, label = \"All NHS England sites\"]
-        Y[shape = box, label = \"Control Pool\"]
-        Z[shape = box, label = \"Excluded\"]
+        A[shape = box, label = \"All NHS England sites\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
+        Y[shape = box, label = \"Control Pool\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
+        Z[shape = box, label = \"Excluded\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
       
         # Questions
-        B[shape = ellipse, label = \"Does the type of site match?\"]
-        C[shape = ellipse, label = \"Is it another intervention site?\"]
-        D[shape = ellipse, label = \"Does it have a similar SBR % before the switch?\"]
-        E[shape = ellipse, label = \"Is the SBR % stable after the switch?\"]
-        F[shape = ellipse, label = \"Is the similarity rank <= 20?\"]
+  node[fillcolor = red]
+        B[shape = ellipse, label = \"Does the type of site match?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
+        C[shape = ellipse, label = \"Is it another intervention site?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
+        D[shape = ellipse, label = \"Does it have a similar SBR % before the switch?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
+        E[shape = ellipse, label = \"Is the SBR % stable after the switch?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
+        F[shape = ellipse, label = \"Is the similarity rank <= 20?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
       
         # Inclusions
-        A -> B
-        B -> C [label = \"Yes\"]
-        C -> D [label = \"No\"]
-        D -> E [label = \"Yes\"]
-        E -> F [label = \"Yes\"]
-        F -> Y [label = \"Yes\"]
+        A -> B [color = \"#333739\"]
+        B -> C [label = \"Yes\", color = \"#333739\"]
+        C -> D [label = \"No\", color = \"#333739\"]
+        D -> E [label = \"Yes\", color = \"#333739\"]
+        E -> F [label = \"Yes\", color = \"#333739\"]
+        F -> Y [label = \"Yes\", color = \"#333739\"]
       
         # Exclusions
-        D -> Z [label = \"No\"]
-        E -> Z [label = \"No\"]
-        B -> Z [label = \"No\"]
-        C -> Z [label = \"Yes\"]
-        F -> Z [label = \"No\"]
+        D -> Z [label = \"No\", color = \"#333739\"]
+        E -> Z [label = \"No\", color = \"#333739\"]
+        B -> Z [label = \"No\", color = \"#333739\"]
+        C -> Z [label = \"Yes\", color = \"#333739\"]
+        F -> Z [label = \"No\", color = \"#333739\"]
 
     }"
     )

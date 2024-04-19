@@ -217,6 +217,31 @@ Causal Impact Analysis is a technique that uses a control group to estimate the 
 
 ## Finding control hospitals
 
+There was a multi-phase selection process to create a pool of controls for each
+site. A summary of these steps is presented in @fig-flow-controls.
+
+```{r flow_chart_selecting_controls}
+#| label: fig-flow-controls
+#| fig-cap: "Flow chart of the multi-phase process used to select the top 20 controls for each site."
+tar_read(flow_chart_selecting_controls)
+```
+
+The first step was to match the intervention site and controls on type of 
+site. For Clatterbridge the pool was limited to other cancer sites, for Royal 
+Papworth cardiac sites and for all other sites general acute sites. Other 
+intervention sites were excluded from the pool.
+
+Controls were then matched on the percentage of single bed rooms available at
+the provider. Providers were excluded if the difference between their SBR 
+percentage and the intervention's provider was greater than 5% at the time of 
+the SBR switch. Then providers were excluded if their SBR percentage increased
+by 5% or more after this point.
+
+Differences in floor space, median age and elective:non-elective ratios were
+calculated between the controls and intervention sites and ranked. The sum of 
+these ranks were then ranked and the top 20 sites were chosen to form the
+control pool for further analysis.
+
 ## Causal Impact Analysis
 
 The causal impact analysis is implemented using the MarketMatching package in R [@MarketMatching], which uses the dtw and CausalImpact R packages [@dtw] [@CausalImpact], to provide a simple way to find the most appropriate control matches using dynamic time warping and then use these controls for causal impact analysis using Bayesian structural time-series models.

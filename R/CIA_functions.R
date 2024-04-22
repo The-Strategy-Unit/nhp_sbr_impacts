@@ -359,7 +359,7 @@ model_output <- function(rem, ren, rgm, rgn, ral, rvj, rwf) {
 
 # Function to generate forest plot
 
-forest_plot <- function(data, caption) {
+forest_plot <- function(data, caption, subtitle) {
   results_data <- data |>
     filter(!is.na(site)) |>
     mutate(sig = case_when(
@@ -520,15 +520,16 @@ forest_plot <- function(data, caption) {
   ))
   # final plot arrangement
   (p_left + p_mid + p_right + plot_layout(design = layout))+ 
-    plot_annotation(caption= str_wrap(caption,150)) +
-    theme(plot.caption=element_text(hjust=0, size=10))
+    plot_annotation(caption= str_wrap(caption,135),
+                    subtitle= str_wrap(subtitle,90),
+                    theme=theme(plot.caption=element_text(hjust=0, size=10),
+                                plot.subtitle=element_text(hjust=0, size=13, face="bold", colour="#686f73") ))
 
-  
 }
 
 # Function to generate mean forest plot for DGHs
 
-mean_forest_plot_DGH_Acute <- function(data) {
+mean_forest_plot_DGH_Acute <- function(data, subtitle) {
   results_data <- data |>
     filter(!is.na(site)) |>
     filter(site != "Papworth" &
@@ -752,8 +753,9 @@ mean_forest_plot_DGH_Acute <- function(data) {
     r = 15
   ))
   # final plot arrangement
-  p_left + p_mid + p_right + plot_layout(design = layout)
-  
+  p_left + p_mid + p_right + plot_layout(design = layout)+
+  plot_annotation(subtitle= subtitle,
+                  theme=theme(plot.subtitle=element_text(hjust=0, size=13,face="bold", colour="#686f73") ))
 }
 
 
@@ -761,7 +763,7 @@ mean_forest_plot_DGH_Acute <- function(data) {
 
 
 # Function for model output table
-model_effects_table <- function(data) {
+model_effects_table <- function(data, title) {
   
   name <- deparse(substitute(data))
   
@@ -795,19 +797,27 @@ model_effects_table <- function(data) {
       p = "p-value",
       sig = "Significance"
     ) |>
-    align(part = "header", align = "center") |>
+    add_header_lines(values = title)|>
+    align(i=2, part = "header", align = "center") |>
+    align(i=1, part = "header", align = "left") |>
     align(part = "body", align = "center") |>
     align(j = 2:7, align = "right") |>
     align(j = 2:7,
           align = "right",
           part = "header") |>
     align(j = 1,  align = "left") |>
-    bg(bg = "#f9bf07", part = "header") |>
+    bg(i=2, bg = "#f9bf07",  part = "header") |>
     bold(bold = TRUE, part = "header") |>
     fontsize(size = 10.5, part = "all") |>
+    fontsize(i=1, part="header", size=13)|>
     padding(padding = 2,
             part = "all",
             padding.top = NULL) |>
+    padding(i=1,
+            padding = 6,
+            part = "header") |>
+    hline_top(border = fp_border_default(width = 0), part = "header")|>
+    color(i=1, color="#686f73", part="header")|>
     add_footer_lines(value=note)|>
     autofit() |>
     htmltools_value(ft.align = "left")
@@ -965,10 +975,8 @@ summary_table_indicators_and_sites <-
           "\U2191",
           " indicates a significant increase post-switch to single rooms, while",
           " \U2193",
-          " indicates a significant decrease.
-               Where a result is considered positive, e.g. decreased length of stay or increased patient experience score, it is coloured green, while a negative result is shown in red.
-               '-' indicates a non-significant change, which is shown in yellow.
-               Grey shading indicates where there was insufficient data to analyse."
+          " indicates a significant decrease. Where a result is considered positive, e.g. decreased length of stay or increased patient experience score, it is coloured green, while a negative result is shown in red.
+               '-' indicates a non-significant change, which is shown in yellow. Grey shading indicates where there was insufficient data to analyse."
         )
       )) 
     

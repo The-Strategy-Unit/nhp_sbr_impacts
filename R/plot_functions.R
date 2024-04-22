@@ -504,18 +504,18 @@ indicator_availability_by_site <-
         "Cleaning costs"
       )
     level <-
-      c("site",
-        "trust",
-        "trust",
-        "trust",
-        "trust",
-        "site",
-        "site",
-        "trust",
-        "trust",
-        "site",
-        "site",
-        "site")
+      c("Site",
+        "Provider",
+        "Provider",
+        "Provider",
+        "Provider",
+        "Site",
+        "Site",
+        "Provider",
+        "Provider",
+        "Site",
+        "Site",
+        "Site")
     group <-
       c(
         "Patient & Staff Experience",
@@ -803,8 +803,7 @@ indicator_availability_by_site <-
         paste0(
           "\U2714",
           " indicates there was sufficient/suitable data to conduct causal impact analysis.",
-          "'x' indicates that there was not sufficient time series data available to analyse. 
-          '-' indicates data issues that meant it was not possible to conduct causal impact analysis."
+          "'x' indicates that there was not sufficient time series data available to analyse.'-' indicates data issues that meant it was not possible to conduct causal impact analysis."
         )
       )) |>
       autofit() 

@@ -304,8 +304,46 @@ list(
     ranking_control_var(single_bedroom_matches_4)
   ),
   
+  tar_target(
+    flow_chart_selecting_controls,
+    grViz(
+      "digraph flowchart {
+
+        # Starts and Ends
+       node[shape = box, style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
+        A[shape = box, label = \"All NHS England sites\"]
+        Y[shape = box, label = \"Control Pool\"]
+        Z[shape = box, label = \"Excluded\"]
+
+        # Questions
+      node[shape = ellipse]
+        B[label = \"Does the type of site match?\"]
+        C[label = \"Is it another intervention site?\"]
+        D[label = \"Does it have a similar SBR % before the switch?\"]
+        E[label = \"Is the SBR % stable after the switch?\"]
+        F[label = \"Is the similarity rank* <= 20?\"]
+
+        # Inclusions
+        A -> B [color = \"#333739\"]
+        B -> C [label = \"Yes\", color = \"#333739\"]
+        C -> D [label = \"No\", color = \"#333739\"]
+        D -> E [label = \"Yes\", color = \"#333739\"]
+        E -> F [label = \"Yes\", color = \"#333739\"]
+        F -> Y [label = \"Yes\", color = \"#333739\"]
+
+        # Exclusions
+        D -> Z [label = \"No\", color = \"#333739\"]
+        E -> Z [label = \"No\", color = \"#333739\"]
+        B -> Z [label = \"No\", color = \"#333739\"]
+        C -> Z [label = \"Yes\", color = \"#333739\"]
+        F -> Z [label = \"No\", color = \"#333739\"]
+
+    }"
+    )
+  ),
+  
   #----------------------------------------------------------------------------#
-  #### Causal Impact Analysis additional formatting
+  #### Causal Impact Analysis additional formatting ####
   
   # Friends and Family test additional formatting
   tar_target(
@@ -394,1083 +432,1061 @@ list(
     sbr_percent_cia_format,
     sbr_percent_cia_formatting(single_bedrooms)
   ),
+  #----------------------------------------------------------------------------#
+  #### Standard charts ####
   tar_target(
-    flow_chart_selecting_controls,
-    grViz(
-      "digraph flowchart {
-        # Starts and Ends
-        A[shape = box, label = \"All NHS England sites\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-        Y[shape = box, label = \"Control Pool\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-        Z[shape = box, label = \"Excluded\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-      
-        # Questions
-  node[fillcolor = red]
-        B[shape = ellipse, label = \"Does the type of site match?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-        C[shape = ellipse, label = \"Is it another intervention site?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-        D[shape = ellipse, label = \"Does it have a similar SBR % before the switch?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-        E[shape = ellipse, label = \"Is the SBR % stable after the switch?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-        F[shape = ellipse, label = \"Is the similarity rank <= 20?\", style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-      
-        # Inclusions
-        A -> B [color = \"#333739\"]
-        B -> C [label = \"Yes\", color = \"#333739\"]
-        C -> D [label = \"No\", color = \"#333739\"]
-        D -> E [label = \"Yes\", color = \"#333739\"]
-        E -> F [label = \"Yes\", color = \"#333739\"]
-        F -> Y [label = \"Yes\", color = \"#333739\"]
-      
-        # Exclusions
-        D -> Z [label = \"No\", color = \"#333739\"]
-        E -> Z [label = \"No\", color = \"#333739\"]
-        B -> Z [label = \"No\", color = \"#333739\"]
-        C -> Z [label = \"Yes\", color = \"#333739\"]
-        F -> Z [label = \"No\", color = \"#333739\"]
-
-    }"
+    hospitals,
+    data.frame(
+      "name" = c(
+        "Royal Liverpool",
+        "Clatterbridge Cancer Centre",
+        "Royal Papworth",
+        "Peterborough (district) Hospital",
+        "Chase Farm Hospital",
+        "Southmead Hospital",
+        "Tunbridge Wells"
+      ),
+      "organisation_code" = c("REM",
+                              "REN",
+                              "RGM",
+                              "RGN",
+                              "RAL",
+                              "RVJ",
+                              "RWF"),
+      "site_code" = c("REMRQ",
+                      "REN22",
+                      "RGM22",
+                      "RGN80",
+                      "RALC7",
+                      "RVJ01",
+                      "RWFTW"),
+      "switch_month" = c(
+        as.Date("2022-10-01"),
+        as.Date("2020-06-01"),
+        as.Date("2019-05-01"),
+        as.Date("2010-11-01"),
+        as.Date("2018-09-01"),
+        as.Date("2014-05-01"),
+        as.Date("2011-01-01")
+      )
     )
   ),
-
-#----------------------------------------------------------------------------#
-#### Standard charts ####
-tar_target(
-  hospitals,
-  data.frame(
-    "name" = c(
-      "Royal Liverpool",
-      "Clatterbridge Cancer Centre",
-      "Royal Papworth",
-      "Peterborough (district) Hospital",
-      "Chase Farm Hospital",
-      "Southmead Hospital",
-      "Tunbridge Wells"
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
     ),
-    "organisation_code" = c("REM",
-                            "REN",
-                            "RGM",
-                            "RGN",
-                            "RAL",
-                            "RVJ",
-                            "RWF"),
-    "site_code" = c("REMRQ",
-                    "REN22",
-                    "RGM22",
-                    "RGN80",
-                    "RALC7",
-                    "RVJ01",
-                    "RWFTW"),
-    "switch_month" = c(
-      as.Date("2022-10-01"),
-      as.Date("2020-06-01"),
-      as.Date("2019-05-01"),
-      as.Date("2010-11-01"),
-      as.Date("2018-09-01"),
-      as.Date("2014-05-01"),
-      as.Date("2011-01-01")
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_bed_occupancy,
-    get_indicator_organisation_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      bed_occupancy_cia_format,
-      "bed_occupancy",
-      "quarter"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_staff_turnover,
-    get_indicator_organisation_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      staff_turnover_cia_format,
-      "leaving_rate",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_staff_sickness,
-    get_indicator_organisation_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      staff_sickness_cia_format,
-      "staff_sickness_percent",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_hcai,
-    get_indicator_organisation_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      hcai_cia_format,
-      "combined_rate",
-      "month"
-    )
-  )
-),
-
-
-# site code plots
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_cleaning_staff,
-    get_indicator_site_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      cleaning_staff_cia_format,
-      "cleaning_staff_wte",
-      "year"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_cleaning_costs,
-    get_indicator_site_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      cleaning_costs_cia_format,
-      "cleaning_service_cost",
-      "year"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_friends_and_family,
-    get_indicator_site_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      friends_and_family_cia_format,
-      "friends_and_family_percent",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_falls_and_fractures,
-    get_indicator_site_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      falls_and_fractures_cia_format,
-      "ff_rate",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_sus_deaths,
-    get_indicator_site_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      sus_deaths_cia_format,
-      "hosp_rate_1000",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_rtt_waiting_time,
-    get_indicator_organisation_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      rtt_waiting_time_cia_format,
-      "median_by_prov",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_length_of_stay,
-    get_indicator_site_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      length_of_stay_cia_format,
-      "avg_los",
-      "month"
-    )
-  )
-  
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_sbr_percent,
-    get_indicator_organisation_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      sbr_percent_cia_format,
-      "percentage_single_bedrooms",
-      "year"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_emergency_readmissions,
-    get_indicator_site_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      emergency_readmissions_cia_format,
-      "perc",
-      "month"
-    )
-  )
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    plot_staff_survey,
-    get_indicator_organisation_level_plot(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      staff_survey_cia_format,
-      "positive_responses",
-      "year"
-    )
-  )
-),
-#----------------------------------------------------------------------------#
-#### Maps ####
-
-tar_target(
-  map_all_sites,
-  map_all("Map of SBR intervention sites",
-          hospitals,
-          ods_sites)
-),
-tarchetypes::tar_map(
-  list(
-    org_code_of_interest = c("REM",
-                             "REN",
-                             "RGM",
-                             "RGN",
-                             "RAL",
-                             "RVJ",
-                             "RWF")
-  ),
-  tar_target(
-    map,
-    map_controls(
-      org_code_of_interest,
-      hospitals,
-      single_bedroom_matches_final,
-      ods_sites
-    )
-  )
-),
-
-#-----------------------------------------------------------------------------#
-#### Indicator availability plots ####
-
-#Indicator availability over time
-tar_target(
-  indicator_availability_plot,
-  indicator_availability_over_time(
-    friends_and_family_cia_format,
-    staff_turnover_cia_format,
-    staff_sickness_cia_format,
-    staff_survey_cia_format,
-    hcai_cia_format,
-    falls_and_fractures_cia_format,
-    sus_deaths_cia_format,
-    rtt_waiting_time_cia_format,
-    bed_occupancy_cia_format,
-    length_of_stay_cia_format,
-    emergency_readmissions_cia_format,
-    cleaning_costs_cia_format
-  )
-),
-
-#Indicator availability by site table
-tar_target(
-  indicator_availability_table,
-  indicator_availability_by_site(
-    friends_and_family_cia_format,
-    staff_turnover_cia_format,
-    staff_sickness_cia_format,
-    staff_survey_cia_format,
-    hcai_cia_format,
-    falls_and_fractures_cia_format,
-    sus_deaths_cia_format,
-    rtt_waiting_time_cia_format,
-    bed_occupancy_cia_format,
-    length_of_stay_cia_format,
-    emergency_readmissions_cia_format,
-    cleaning_costs_cia_format
-  )
-),
-
-#-----------------------------------------------------------------------------#
-#### CIA models ####
-
-#Waiting time- median
-
-prior_sd_waiting_time_median <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.05,
-  "REN",
-  0.05,
-  "RGM",
-  0.05,
-  "RGN",
-  0.01,
-  "RVJ",
-  0.1,
-  "RAL",
-  0.01,
-  "RWF",
-  0.01
-),
-
-list(
-  tarchetypes::tar_map(
-    values = prior_sd_waiting_time_median,
-    names = org_code_of_interest,
-    targets::tar_target(
-      waiting_time_median,
-      cia_analysis(
+    tar_target(
+      plot_bed_occupancy,
+      get_indicator_organisation_level_plot(
         org_code_of_interest,
-        rtt_waiting_time_cia_format,
-        "median_by_prov",
-        prior_sd,
+        hospitals,
         single_bedroom_matches_final,
-        hospitals
-      )
-    )
-  )
-),
-
-#Waiting time -number
-prior_sd_waiting_time_number <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.1,
-  "REN",
-  0.1,
-  "RGM",
-  0.05,
-  "RGN",
-  0.1,
-  "RVJ",
-  0.1,
-  "RAL",
-  0.01,
-  "RWF",
-  0.1
-),
-
-list(
-  tarchetypes::tar_map(
-    values = prior_sd_waiting_time_number,
-    names = org_code_of_interest,
-    targets::tar_target(
-      waiting_time_number,
-      cia_analysis(
-        org_code_of_interest,
-        rtt_waiting_time_cia_format,
-        "number_incomplete",
-        prior_sd,
-        single_bedroom_matches_final,
-        hospitals
-      )
-    )
-  )
-),
-
-
-#Length of Stay
-prior_sd_LoS <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.05,
-  "REN",
-  0.1,
-  "RGM",
-  0.05,
-  "RGN",
-  0.01,
-  "RVJ",
-  0.01,
-  "RAL",
-  0.1,
-  "RWF",
-  0.05
-),
-
-list(
-  tarchetypes::tar_map(
-    values = prior_sd_LoS,
-    names = org_code_of_interest,
-    targets::tar_target(
-      LoS,
-      cia_analysis(
-        org_code_of_interest,
-        length_of_stay_cia_format,
-        "avg_los",
-        prior_sd,
-        single_bedroom_matches_final,
-        hospitals
-      )
-    )
-  )
-),
-
-#Emergency Readmissions
-prior_sd_emergency_readmissions <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.1,
-  "REN",
-  0.1,
-  "RGM",
-  0.1,
-  "RGN",
-  0.1,
-  "RVJ",
-  0.05,
-  "RAL",
-  0.01,
-  "RWF",
-  0.01
-),
-
-list(
-  tarchetypes::tar_map(
-    values = prior_sd_emergency_readmissions,
-    names = org_code_of_interest,
-    targets::tar_target(
-      emergency_readmissions,
-      cia_analysis(
-        org_code_of_interest,
-        emergency_readmissions_cia_format,
-        "perc",
-        prior_sd,
-        single_bedroom_matches_final,
-        hospitals
-      )
-    )
-  )
-),
-
-
-#Bed Occupancy
-prior_sd_bed_occupancy <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.05,
-  "REN",
-  0.1,
-  "RGM",
-  0.05,
-  "RVJ",
-  0.05,
-  "RAL",
-  0.1,
-  
-),
-
-list(
-  tarchetypes::tar_map(
-    values = prior_sd_bed_occupancy,
-    names = org_code_of_interest,
-    targets::tar_target(
-      bed_occupancy,
-      cia_analysis(
-        org_code_of_interest,
         bed_occupancy_cia_format,
         "bed_occupancy",
-        prior_sd,
-        single_bedroom_matches_final,
-        hospitals
+        "quarter"
       )
     )
-  )
-),
-
-
-# Healthcare acquired infections
-
-tar_target(
-  hcai_REM,
-  cia_analysis(
-    "REM",
-    hcai_cia_format,
-    "combined_rate",
-    0.1,
-    single_bedroom_matches_final,
-    hospitals
-  )
-),
-
-tar_target(
-  hcai_REN,
-  cia_analysis(
-    "REN",
-    hcai_cia_format,
-    "combined_rate",
-    0.05,
-    single_bedroom_matches_final,
-    hospitals
-  )
-),
-
-# Falls and Fractures in hospital
-prior_sd_falls_and_fractures <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.05,
-  "REN",
-  0.05,
-  "RGM",
-  0.05,
-  "RGN",
-  0.01,
-  "RVJ",
-  0.05,
-  "RAL",
-  0.05,
-  "RWF",
-  0.05
-  
-),
-
-list(
+  ),
   tarchetypes::tar_map(
-    values = prior_sd_falls_and_fractures,
-    names = org_code_of_interest,
-    targets::tar_target(
-      falls_and_fractures,
-      cia_analysis(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_staff_turnover,
+      get_indicator_organisation_level_plot(
         org_code_of_interest,
-        falls_and_fractures_cia_format,
-        "ff_rate",
-        prior_sd,
+        hospitals,
         single_bedroom_matches_final,
-        hospitals
+        staff_turnover_cia_format,
+        "leaving_rate",
+        "month"
       )
     )
-  )
-),
-
-
-
-# SUS deaths in hospital
-prior_sd_sus_deaths <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.05,
-  "REN",
-  0.1,
-  "RGM",
-  0.05,
-  "RGN",
-  0.1,
-  "RVJ",
-  0.01,
-  "RAL",
-  0.05,
-  "RWF",
-  0.01
-  
-),
-
-list(
+  ),
   tarchetypes::tar_map(
-    values = prior_sd_sus_deaths,
-    names = org_code_of_interest,
-    targets::tar_target(
-      sus_deaths,
-      cia_analysis(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_staff_sickness,
+      get_indicator_organisation_level_plot(
         org_code_of_interest,
-        sus_deaths_cia_format,
-        "hosp_rate_1000",
-        prior_sd,
+        hospitals,
         single_bedroom_matches_final,
-        hospitals
-      )
-    )
-  )
-),
-
-
-# Friends and family test
-prior_sd_friends_and_family <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.1,
-  "REN",
-  0.1,
-  "RGM",
-  0.1,
-  "RAL",
-  0.01
-  
-),
-
-list(
-  tarchetypes::tar_map(
-    values = prior_sd_friends_and_family,
-    names = org_code_of_interest,
-    targets::tar_target(
-      friends_and_family,
-      cia_analysis(
-        org_code_of_interest,
-        friends_and_family_cia_format,
-        "friends_and_family_percent",
-        prior_sd,
-        single_bedroom_matches_final,
-        hospitals
-      )
-    )
-  )
-),
-
-
-#Staff sickness
-prior_sd_staff_sickness <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.05,
-  "REN",
-  0.05,
-  "RGM",
-  0.05,
-  "RAL",
-  0.05,
-  "RVJ",
-  0.05
-  
-),
-
-list(
-  tarchetypes::tar_map(
-    values = prior_sd_staff_sickness,
-    names = org_code_of_interest,
-    targets::tar_target(
-      staff_sickness,
-      cia_analysis(
-        org_code_of_interest,
         staff_sickness_cia_format,
         "staff_sickness_percent",
-        prior_sd,
-        single_bedroom_matches_final,
-        hospitals
+        "month"
       )
     )
-  )
-),
-
-
-# Staff turnover
-
-tar_target(
-  staff_turnover_REM,
-  cia_analysis(
-    "REM",
-    staff_turnover_cia_format,
-    "leaving_rate",
-    0.1,
-    single_bedroom_matches_final,
-    hospitals
-  )
-),
-
-
-#Staff survey
-
-prior_sd_staff_survey <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.01,
-  "REN",
-  0.01,
-  "RGM",
-  0.01,
-  "RAL",
-  0.01,
-  "RVJ",
-  0.01
-),
-
-list(
+  ),
   tarchetypes::tar_map(
-    values = prior_sd_staff_survey,
-    names = org_code_of_interest,
-    targets::tar_target(
-      staff_survey,
-      cia_analysis(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_hcai,
+      get_indicator_organisation_level_plot(
         org_code_of_interest,
-        staff_survey_cia_format,
-        "positive_responses",
-        prior_sd,
+        hospitals,
         single_bedroom_matches_final,
-        hospitals
+        hcai_cia_format,
+        "combined_rate",
+        "month"
       )
     )
-  )
-),
-
-
-# Cleaning costs
-
-prior_sd_cleaning_costs <- tibble::tribble(
-  ~ org_code_of_interest,
-  ~ prior_sd,
-  "REM",
-  0.01,
-  "REN",
-  0.01,
-  "RGM",
-  0.01,
-  "RAL",
-  0.001
-),
-
-list(
+  ),
+  
+  
+  # site code plots
   tarchetypes::tar_map(
-    values = prior_sd_cleaning_costs,
-    names = org_code_of_interest,
-    targets::tar_target(
-      cleaning_costs,
-      cia_analysis(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_cleaning_staff,
+      get_indicator_site_level_plot(
         org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        cleaning_staff_cia_format,
+        "cleaning_staff_wte",
+        "year"
+      )
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_cleaning_costs,
+      get_indicator_site_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
         cleaning_costs_cia_format,
         "cleaning_service_cost",
-        prior_sd,
-        single_bedroom_matches_final,
-        hospitals
+        "year"
       )
     )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_friends_and_family,
+      get_indicator_site_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        friends_and_family_cia_format,
+        "friends_and_family_percent",
+        "month"
+      )
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_falls_and_fractures,
+      get_indicator_site_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        falls_and_fractures_cia_format,
+        "ff_rate",
+        "month"
+      )
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_sus_deaths,
+      get_indicator_site_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        sus_deaths_cia_format,
+        "hosp_rate_1000",
+        "month"
+      )
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_rtt_waiting_time,
+      get_indicator_organisation_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        rtt_waiting_time_cia_format,
+        "median_by_prov",
+        "month"
+      )
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_length_of_stay,
+      get_indicator_site_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        length_of_stay_cia_format,
+        "avg_los",
+        "month"
+      )
+    )
+    
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_sbr_percent,
+      get_indicator_organisation_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        sbr_percent_cia_format,
+        "percentage_single_bedrooms",
+        "year"
+      )
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_emergency_readmissions,
+      get_indicator_site_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        emergency_readmissions_cia_format,
+        "perc",
+        "month"
+      )
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      plot_staff_survey,
+      get_indicator_organisation_level_plot(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        staff_survey_cia_format,
+        "positive_responses",
+        "year"
+      )
+    )
+  ),
+  #----------------------------------------------------------------------------#
+  #### Maps ####
+  
+  tar_target(
+    map_all_sites,
+    map_all("Map of SBR intervention sites",
+            hospitals,
+            ods_sites)
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      map,
+      map_controls(
+        org_code_of_interest,
+        hospitals,
+        single_bedroom_matches_final,
+        ods_sites
+      )
+    )
+  ),
+  
+  #-----------------------------------------------------------------------------#
+  #### Indicator availability plots ####
+  
+  #Indicator availability over time
+  tar_target(
+    indicator_availability_plot,
+    indicator_availability_over_time(
+      friends_and_family_cia_format,
+      staff_turnover_cia_format,
+      staff_sickness_cia_format,
+      staff_survey_cia_format,
+      hcai_cia_format,
+      falls_and_fractures_cia_format,
+      sus_deaths_cia_format,
+      rtt_waiting_time_cia_format,
+      bed_occupancy_cia_format,
+      length_of_stay_cia_format,
+      emergency_readmissions_cia_format,
+      cleaning_costs_cia_format
+    )
+  ),
+  
+  #Indicator availability by site table
+  tar_target(
+    indicator_availability_table,
+    indicator_availability_by_site(
+      friends_and_family_cia_format,
+      staff_turnover_cia_format,
+      staff_sickness_cia_format,
+      staff_survey_cia_format,
+      hcai_cia_format,
+      falls_and_fractures_cia_format,
+      sus_deaths_cia_format,
+      rtt_waiting_time_cia_format,
+      bed_occupancy_cia_format,
+      length_of_stay_cia_format,
+      emergency_readmissions_cia_format,
+      cleaning_costs_cia_format
+    )
+  ),
+  
+  #-----------------------------------------------------------------------------#
+  #### CIA models ####
+  
+  #Waiting time- median
+  
+  prior_sd_waiting_time_median <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.05,
+    "REN",
+    0.05,
+    "RGM",
+    0.05,
+    "RGN",
+    0.01,
+    "RVJ",
+    0.1,
+    "RAL",
+    0.01,
+    "RWF",
+    0.01
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_waiting_time_median,
+      names = org_code_of_interest,
+      targets::tar_target(
+        waiting_time_median,
+        cia_analysis(
+          org_code_of_interest,
+          rtt_waiting_time_cia_format,
+          "median_by_prov",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  #Waiting time -number
+  prior_sd_waiting_time_number <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.1,
+    "REN",
+    0.1,
+    "RGM",
+    0.05,
+    "RGN",
+    0.1,
+    "RVJ",
+    0.1,
+    "RAL",
+    0.01,
+    "RWF",
+    0.1
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_waiting_time_number,
+      names = org_code_of_interest,
+      targets::tar_target(
+        waiting_time_number,
+        cia_analysis(
+          org_code_of_interest,
+          rtt_waiting_time_cia_format,
+          "number_incomplete",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  #Length of Stay
+  prior_sd_LoS <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.05,
+    "REN",
+    0.1,
+    "RGM",
+    0.05,
+    "RGN",
+    0.01,
+    "RVJ",
+    0.01,
+    "RAL",
+    0.1,
+    "RWF",
+    0.05
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_LoS,
+      names = org_code_of_interest,
+      targets::tar_target(
+        LoS,
+        cia_analysis(
+          org_code_of_interest,
+          length_of_stay_cia_format,
+          "avg_los",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  #Emergency Readmissions
+  prior_sd_emergency_readmissions <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.1,
+    "REN",
+    0.1,
+    "RGM",
+    0.1,
+    "RGN",
+    0.1,
+    "RVJ",
+    0.05,
+    "RAL",
+    0.01,
+    "RWF",
+    0.01
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_emergency_readmissions,
+      names = org_code_of_interest,
+      targets::tar_target(
+        emergency_readmissions,
+        cia_analysis(
+          org_code_of_interest,
+          emergency_readmissions_cia_format,
+          "perc",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  #Bed Occupancy
+  prior_sd_bed_occupancy <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.05,
+    "REN",
+    0.1,
+    "RGM",
+    0.05,
+    "RVJ",
+    0.05,
+    "RAL",
+    0.1,
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_bed_occupancy,
+      names = org_code_of_interest,
+      targets::tar_target(
+        bed_occupancy,
+        cia_analysis(
+          org_code_of_interest,
+          bed_occupancy_cia_format,
+          "bed_occupancy",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  # Healthcare acquired infections
+  
+  tar_target(
+    hcai_REM,
+    cia_analysis(
+      "REM",
+      hcai_cia_format,
+      "combined_rate",
+      0.1,
+      single_bedroom_matches_final,
+      hospitals
+    )
+  ),
+  
+  tar_target(
+    hcai_REN,
+    cia_analysis(
+      "REN",
+      hcai_cia_format,
+      "combined_rate",
+      0.05,
+      single_bedroom_matches_final,
+      hospitals
+    )
+  ),
+  
+  # Falls and Fractures in hospital
+  prior_sd_falls_and_fractures <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.05,
+    "REN",
+    0.05,
+    "RGM",
+    0.05,
+    "RGN",
+    0.01,
+    "RVJ",
+    0.05,
+    "RAL",
+    0.05,
+    "RWF",
+    0.05
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_falls_and_fractures,
+      names = org_code_of_interest,
+      targets::tar_target(
+        falls_and_fractures,
+        cia_analysis(
+          org_code_of_interest,
+          falls_and_fractures_cia_format,
+          "ff_rate",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  
+  # SUS deaths in hospital
+  prior_sd_sus_deaths <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.05,
+    "REN",
+    0.1,
+    "RGM",
+    0.05,
+    "RGN",
+    0.1,
+    "RVJ",
+    0.01,
+    "RAL",
+    0.05,
+    "RWF",
+    0.01
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_sus_deaths,
+      names = org_code_of_interest,
+      targets::tar_target(
+        sus_deaths,
+        cia_analysis(
+          org_code_of_interest,
+          sus_deaths_cia_format,
+          "hosp_rate_1000",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  # Friends and family test
+  prior_sd_friends_and_family <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.1,
+    "REN",
+    0.1,
+    "RGM",
+    0.1,
+    "RAL",
+    0.01
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_friends_and_family,
+      names = org_code_of_interest,
+      targets::tar_target(
+        friends_and_family,
+        cia_analysis(
+          org_code_of_interest,
+          friends_and_family_cia_format,
+          "friends_and_family_percent",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  #Staff sickness
+  prior_sd_staff_sickness <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.05,
+    "REN",
+    0.05,
+    "RGM",
+    0.05,
+    "RAL",
+    0.05,
+    "RVJ",
+    0.05
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_staff_sickness,
+      names = org_code_of_interest,
+      targets::tar_target(
+        staff_sickness,
+        cia_analysis(
+          org_code_of_interest,
+          staff_sickness_cia_format,
+          "staff_sickness_percent",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  # Staff turnover
+  
+  tar_target(
+    staff_turnover_REM,
+    cia_analysis(
+      "REM",
+      staff_turnover_cia_format,
+      "leaving_rate",
+      0.1,
+      single_bedroom_matches_final,
+      hospitals
+    )
+  ),
+  
+  
+  #Staff survey
+  
+  prior_sd_staff_survey <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.01,
+    "REN",
+    0.01,
+    "RGM",
+    0.01,
+    "RAL",
+    0.01,
+    "RVJ",
+    0.01
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_staff_survey,
+      names = org_code_of_interest,
+      targets::tar_target(
+        staff_survey,
+        cia_analysis(
+          org_code_of_interest,
+          staff_survey_cia_format,
+          "positive_responses",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  # Cleaning costs
+  
+  prior_sd_cleaning_costs <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.01,
+    "REN",
+    0.01,
+    "RGM",
+    0.01,
+    "RAL",
+    0.001
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_cleaning_costs,
+      names = org_code_of_interest,
+      targets::tar_target(
+        cleaning_costs,
+        cia_analysis(
+          org_code_of_interest,
+          cleaning_costs_cia_format,
+          "cleaning_service_cost",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  #------------------------------------------------------------------------------#
+  #### Presenting CIA outputs ####
+  
+  tar_target(
+    waiting_time_median_output,
+    model_output(
+      waiting_time_median_REM,
+      waiting_time_median_REN,
+      waiting_time_median_RGM,
+      waiting_time_median_RGN,
+      NA,
+      NA,
+      waiting_time_median_RWF
+    )
+  ),
+  
+  tar_target(
+    waiting_time_number_output,
+    model_output(
+      waiting_time_number_REM,
+      waiting_time_number_REN,
+      waiting_time_number_RGM,
+      waiting_time_number_RGN,
+      NA,
+      NA,
+      waiting_time_number_RWF
+    )
+  ),
+  
+  tar_target(
+    LoS_output,
+    model_output(LoS_REM,
+                 LoS_REN,
+                 NA,
+                 LoS_RGN,
+                 LoS_RAL,
+                 LoS_RVJ,
+                 LoS_RWF)
+  ),
+  
+  tar_target(
+    emergency_readmissions_output,
+    model_output(
+      emergency_readmissions_REM,
+      emergency_readmissions_REN,
+      emergency_readmissions_RGM,
+      emergency_readmissions_RGN,
+      emergency_readmissions_RAL,
+      emergency_readmissions_RVJ,
+      emergency_readmissions_RWF
+    )
+  ),
+  
+  tar_target(
+    bed_occupancy_output,
+    model_output(
+      bed_occupancy_REM,
+      bed_occupancy_REN,
+      NA,
+      NA,
+      bed_occupancy_RAL,
+      bed_occupancy_RVJ,
+      NA
+    )
+  ),
+  
+  tar_target(hcai_output,
+             model_output(hcai_REM,
+                          NA,
+                          NA,
+                          NA,
+                          NA,
+                          NA,
+                          NA)),
+  
+  tar_target(
+    falls_and_fractures_output,
+    model_output(
+      falls_and_fractures_REM,
+      NA,
+      NA,
+      falls_and_fractures_RGN,
+      NA,
+      falls_and_fractures_RVJ,
+      falls_and_fractures_RWF
+    )
+  ),
+  
+  
+  tar_target(
+    sus_deaths_output,
+    model_output(
+      sus_deaths_REM,
+      sus_deaths_REN,
+      NA,
+      sus_deaths_RGN,
+      NA,
+      sus_deaths_RVJ,
+      sus_deaths_RWF
+    )
+  ),
+  
+  tar_target(
+    friends_and_family_output,
+    model_output(
+      friends_and_family_REM,
+      friends_and_family_REN,
+      friends_and_family_RGM,
+      NA,
+      friends_and_family_RAL,
+      NA,
+      NA
+    )
+  ),
+  
+  tar_target(
+    staff_sickness_output,
+    model_output(
+      staff_sickness_REM,
+      staff_sickness_REN,
+      staff_sickness_RGM,
+      NA,
+      staff_sickness_RAL,
+      staff_sickness_RVJ,
+      NA
+    )
+  ),
+  
+  tar_target(
+    staff_turnover_output,
+    model_output(staff_sickness_REM,
+                 NA,
+                 NA,
+                 NA,
+                 NA,
+                 NA,
+                 NA)
+  ),
+  
+  tar_target(
+    staff_survey_output,
+    model_output(
+      staff_survey_REM,
+      staff_survey_REN,
+      staff_survey_RGM,
+      NA,
+      staff_survey_RAL,
+      staff_survey_RVJ,
+      NA
+    )
+  ),
+  
+  tar_target(
+    cleaning_costs_output,
+    model_output(
+      cleaning_costs_REM,
+      cleaning_costs_REN,
+      cleaning_costs_RGM,
+      NA,
+      NA,
+      NA,
+      NA
+    )
+  ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      controls_table,
+      get_controls_table(single_bedroom_matches_final, org_code_of_interest)
+    )
   )
-),
-
-
-#------------------------------------------------------------------------------#
-#### Presenting CIA outputs ####
-
-tar_target(
-  waiting_time_median_output,
-  model_output(
-    waiting_time_median_REM,
-    waiting_time_median_REN,
-    waiting_time_median_RGM,
-    waiting_time_median_RGN,
-    NA,
-    NA,
-    waiting_time_median_RWF
-  )
-),
-
-tar_target(
-  waiting_time_number_output,
-  model_output(
-    waiting_time_number_REM,
-    waiting_time_number_REN,
-    waiting_time_number_RGM,
-    waiting_time_number_RGN,
-    NA,
-    NA,
-    waiting_time_number_RWF
-  )
-),
-
-tar_target(
-  LoS_output,
-  model_output(LoS_REM,
-               LoS_REN,
-               NA,
-               LoS_RGN,
-               LoS_RAL,
-               LoS_RVJ,
-               LoS_RWF)
-),
-
-tar_target(
-  emergency_readmissions_output,
-  model_output(
-    emergency_readmissions_REM,
-    emergency_readmissions_REN,
-    emergency_readmissions_RGM,
-    emergency_readmissions_RGN,
-    emergency_readmissions_RAL,
-    emergency_readmissions_RVJ,
-    emergency_readmissions_RWF
-  )
-),
-
-tar_target(
-  bed_occupancy_output,
-  model_output(
-    bed_occupancy_REM,
-    bed_occupancy_REN,
-    NA,
-    NA,
-    bed_occupancy_RAL,
-    bed_occupancy_RVJ,
-    NA
-  )
-),
-
-tar_target(hcai_output,
-           model_output(hcai_REM,
-                        NA,
-                        NA,
-                        NA,
-                        NA,
-                        NA,
-                        NA)),
-
-tar_target(
-  falls_and_fractures_output,
-  model_output(
-    falls_and_fractures_REM,
-    NA,
-    NA,
-    falls_and_fractures_RGN,
-    NA,
-    falls_and_fractures_RVJ,
-    falls_and_fractures_RWF
-  )
-),
-
-
-tar_target(
-  sus_deaths_output,
-  model_output(
-    sus_deaths_REM,
-    sus_deaths_REN,
-    NA,
-    sus_deaths_RGN,
-    NA,
-    sus_deaths_RVJ,
-    sus_deaths_RWF
-  )
-),
-
-tar_target(
-  friends_and_family_output,
-  model_output(
-    friends_and_family_REM,
-    friends_and_family_REN,
-    friends_and_family_RGM,
-    NA,
-    friends_and_family_RAL,
-    NA,
-    NA
-  )
-),
-
-tar_target(
-  staff_sickness_output,
-  model_output(
-    staff_sickness_REM,
-    staff_sickness_REN,
-    staff_sickness_RGM,
-    NA,
-    staff_sickness_RAL,
-    staff_sickness_RVJ,
-    NA
-  )
-),
-
-tar_target(
-  staff_turnover_output,
-  model_output(staff_sickness_REM,
-               NA,
-               NA,
-               NA,
-               NA,
-               NA,
-               NA)
-),
-
-tar_target(
-  staff_survey_output,
-  model_output(
-    staff_survey_REM,
-    staff_survey_REN,
-    staff_survey_RGM,
-    NA,
-    staff_survey_RAL,
-    staff_survey_RVJ,
-    NA
-  )
-),
-
-tar_target(
-  cleaning_costs_output,
-  model_output(
-    cleaning_costs_REM,
-    cleaning_costs_REN,
-    cleaning_costs_RGM,
-    NA,
-    NA,
-    NA,
-    NA
-  )
-)
-
 )

@@ -212,25 +212,31 @@ For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the
 
 There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short.
 
-# Description of methods
+# Description of methods {#sec-methods}
 
 Causal Impact Analysis is a technique that uses a control group to estimate the post-intervention counterfactual against which to measure study group impacts [@broderson2015]. We have used this method to quantify the change in the study hospitals following their switch to single-bed rooms by comparing the actual effects to a control group (similar hospital providers, patient case-mix and prior trends) that have been used to predict what would have happened to the outcome of interest had there been no switch.
 
-## Finding control hospitals
+## Finding control hospitals {#sec-methods-controls}
 
-There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls.
+There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to other cancer sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
 
-```{r flow_chart_selecting_controls}
+```{r selecting_controls_flow_chart}
 #| label: fig-flow-controls
-#| fig-cap: "Flow chart of the multi-phase process used to select the top 20 controls for each site."
+#| fig-cap: "Flow chart of the multi-phase process used to select the top 20 controls for each site. *The similarity rank is calculated as the sum of the ranked difference of floor space, median age of patients and the elective:non-elective ratio of admissions."
 tar_read(flow_chart_selecting_controls)
 ```
 
-The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to other cancer sites, for Royal Papworth cardiac sites and for all other sites general acute sites. Other intervention sites were excluded from the pool.
+```{r selecting_controls_number_sites}
+number_control_sites <- tar_read(single_bedroom_matches_final) |>
+  filter(rank_of_ranks <= 20) |>
+  summarise(n(), .by = organisation_code)
+```
 
 Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the intervention's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
 
-Differences in floor space, median age and elective:non-elective ratios were calculated between the controls and intervention sites and ranked. The sum of these ranks were then ranked and the top 20 sites were chosen to form the control pool for further analysis.
+Differences in floor space, the median age of inpatients and the elective:non-elective ratio of admissions were calculated between the controls and intervention sites and ranked. A similarity rank was calculated by ranking the sum of these three ranks and sites with a similarity rank less than or equal to 20 formed the control pool for further analysis. Due to Clatterbridge and Royal Papworth being specialist trusts, there were only `r number_control_sites |> filter(organisation_code == "REN") |> pull()` and `r number_control_sites |> filter(organisation_code == "RGM") |> pull()` sites respectively in the control pools.
+
+A full list and map of the sites in the control pools for each intervention site can be found in @sec-appendix-C.
 
 ## Causal Impact Analysis
 
@@ -536,7 +542,7 @@ summary_table_indicators_and_sites(LoS_output,
 
 # Appendices
 
-## A.CIA charts by indicator and hospital site/provider
+## A. CIA charts by indicator and hospital site/provider
 
 ### Length of stay
 
@@ -1530,7 +1536,7 @@ cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 
-## B.Notes on data quality and suitability (for CIA)
+## B. Notes on data quality and suitability (for CIA)
 
 RTT waiting time data - Only available at trust level - Chase Farm was excluded as there was only 4 months of data available in the outcome period. - Southmead was excluded due to a period of missing data in the 2 years prior to the switch to single rooms.
 
@@ -1554,8 +1560,87 @@ Staff turnover - Only available at trust level - Data is only available for Roya
 
 Staff survey - Only available at trust level - This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
 
-## C.List of control sites/providers by indicator
+## C. List of control sites/providers by indicator {#sec-appendix-C}
 
-## D.Provider and site codes?
+As outlined in @sec-methods-controls, there was a multi-phase control selection
+process to create a pool of control sites for each intervention site for further
+analysis. The control sites for each intervention site are shown below.
+
+::: panel-tabset
+
+### Royal Liverpool
+```{r royal_liverpool_map}
+tar_read(map_REM)
+```
+
+```{r royal_liverpool_controls_table}
+tar_read(controls_table_REM)
+```
+
+### Clatterbridge
+
+```{r clatterbridge_map}
+tar_read(map_REN)
+```
+
+```{r clatterbridge_controls_table}
+tar_read(controls_table_REN)
+```
+
+### Royal Papworth
+
+```{r royal_papworth_map}
+tar_read(map_RGM)
+```
+
+```{r royal_papworth_controls_table}
+tar_read(controls_table_RGM)
+```
+
+### Peterborough
+
+```{r peterborough_map}
+tar_read(map_RGN)
+```
+
+```{r peterborough_controls_table}
+tar_read(controls_table_RGN)
+```
+
+### Chase Farm
+
+```{r chase_farm_map}
+tar_read(map_RAL)
+```
+
+```{r chase_farm_controls_table}
+tar_read(controls_table_RAL)
+```
+
+### Southmead
+
+```{r southmead_map}
+tar_read(map_RVJ)
+```
+
+```{r southmead_controls_table}
+tar_read(controls_table_RVJ)
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_map}
+tar_read(map_RWF)
+```
+
+```{r tunbridge_wells_controls_table}
+tar_read(controls_table_RWF)
+```
+
+:::
+
+
+
+## D. Provider and site codes?
 
 ------------------------------------------------------------------------

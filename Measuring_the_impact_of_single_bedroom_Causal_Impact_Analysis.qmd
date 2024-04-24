@@ -57,62 +57,62 @@ library(leaflet)
 library(leaflet.providers)
 
 ## RTT waiting time
-rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) 
+rtt_waiting_time <- tar_read(rtt_waiting_time_cia_format)
 
 ## Bed occupancy
-bed_occupancy<-tar_read(bed_occupancy_cia_format)
+bed_occupancy <- tar_read(bed_occupancy_cia_format)
 
 ## Length of Stay
-length_of_stay<- tar_read(length_of_stay_cia_format)
+length_of_stay <- tar_read(length_of_stay_cia_format)
 
 ## Emergency readmissions
-emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
+emergency_readmissions <-
+  tar_read(emergency_readmissions_cia_format)
 
 ## Friends & Family
-friends_and_family<-tar_read(friends_and_family_cia_format)
+friends_and_family <- tar_read(friends_and_family_cia_format)
 
 ## Staff turnover
-staff_turnover<-tar_read(staff_turnover_cia_format)
+staff_turnover <- tar_read(staff_turnover_cia_format)
 
 ## Staff sickness
-staff_sickness<-tar_read(staff_sickness_cia_format)
+staff_sickness <- tar_read(staff_sickness_cia_format)
 
 ## Healthcare acquired infections - Infection rate per 10,000 bed days
-hcai<-tar_read(hcai_cia_format)
+hcai <- tar_read(hcai_cia_format)
 
 ## In-hospital Falls and Fractures - Fall rate per 1000 bed days
-falls_and_fractures<- tar_read(falls_and_fractures_cia_format)
+falls_and_fractures <- tar_read(falls_and_fractures_cia_format)
 
 # SUS death rate (deaths/1000 admissions)
-sus_deaths<- tar_read(sus_deaths_cia_format)
+sus_deaths <- tar_read(sus_deaths_cia_format)
 
 #Staff survey
-staff_survey<-tar_read(staff_survey_cia_format)
+staff_survey <- tar_read(staff_survey_cia_format)
 
 # Cleaning costs
-cleaning_costs<-tar_read(cleaning_costs_cia_format)
+cleaning_costs <- tar_read(cleaning_costs_cia_format)
 
 #Loading control data
-single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
+single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
 
 #Model outputs
-waiting_time_median_output<-tar_read(waiting_time_median_output)
-waiting_time_number_output<-tar_read(waiting_time_number_output)
-LoS_output<-tar_read(LoS_output)
-emergency_readmissions_output<-tar_read(emergency_readmissions_output)
-bed_occupancy_output<-tar_read(bed_occupancy_output)
-hcai_output<-tar_read(hcai_output)
-falls_and_fractures_output<-tar_read(falls_and_fractures_output)
-sus_deaths_output<-tar_read(sus_deaths_output)
-friends_and_family_output<-tar_read(friends_and_family_output)
-staff_sickness_output<-tar_read(staff_sickness_output)
-staff_turnover_output<-tar_read(staff_turnover_output)
-staff_survey_output<-tar_read(staff_survey_output)
-cleaning_costs_output<-tar_read(cleaning_costs_output)
+waiting_time_median_output <- tar_read(waiting_time_median_output)
+waiting_time_number_output <- tar_read(waiting_time_number_output)
+LoS_output <- tar_read(LoS_output)
+emergency_readmissions_output <- tar_read(emergency_readmissions_output)
+bed_occupancy_output <- tar_read(bed_occupancy_output)
+hcai_output <- tar_read(hcai_output)
+falls_and_fractures_output <- tar_read(falls_and_fractures_output)
+sus_deaths_output <- tar_read(sus_deaths_output)
+friends_and_family_output <- tar_read(friends_and_family_output)
+staff_sickness_output <- tar_read(staff_sickness_output)
+staff_turnover_output <- tar_read(staff_turnover_output)
+staff_survey_output <- tar_read(staff_survey_output)
+cleaning_costs_output <- tar_read(cleaning_costs_output)
 
 source("R/CIA_Functions.R")
 source("R/plot_functions.R")
-
 ```
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
@@ -151,6 +151,54 @@ Taken from initial plan and NHP update slides.
 Previous literature [@ref] and evidence [@ref] reviews have....
 
 # Hospital Background
+
+An overview of the seven hospitals switch to SBR is shown in @tbl-sbr-switch.
+ 
+```{r table_sbr_switch}
+#| label: tbl-sbr_switch
+#| tbl-cap: "Details of the switch to single bed accommodation at the seven intervention sites."
+
+sbr_percent_cia_format <- tar_read(sbr_percent_cia_format)
+
+tar_read(hospitals) |>
+  mutate(last_march = as.Date(
+    case_when(
+      month(switch_month) < 3 ~ format(switch_month, 
+                                       str_replace("%Y-03-01", 
+                                                   "Y", 
+                                                   as.character(year(switch_month) - 1))),
+      month(switch_month) > 3 ~ format(switch_month, "%Y-03-01"),
+      TRUE ~ as.character(switch_month)
+    )
+  ),
+  next_march = last_march + years(1)) |>
+  left_join(sbr_percent_cia_format,
+            by = c("last_march" = "month", "organisation_code")) |>
+  left_join(sbr_percent_cia_format,
+            by = c("next_march" = "month", "organisation_code")) |>
+  mutate(across(contains("percentage"), ~round(., 2)),
+         switch_month = format(switch_month, "%b %Y")) |>
+  select("Hospital" = name,
+         "SBR switch month" = switch_month,
+         "SBR % before switch" = percentage_single_bedrooms.x,
+         "SBR % after switch" = percentage_single_bedrooms.y) |>
+    as_flextable(
+      hide_grouplabel = TRUE,
+      max_row = 20,
+      show_coltype = FALSE
+    ) |>
+    align(part = "header", align = "center") |>
+    bg(bg = "#f9bf07", part = "header") |>
+    bold(bold = TRUE, part = "header") |>
+    fontsize(size = 12, part = "all") |>
+    padding(
+      padding = 2,
+      part = "all",
+      padding.top = NULL
+    ) |>
+    autofit()
+```
+ 
 
 ## Royal Liverpool University Hospital
 

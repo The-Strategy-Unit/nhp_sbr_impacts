@@ -36,7 +36,8 @@ map_all <- function(title,
   
   map <- leaflet(data = sites,
                  options = leafletOptions(zoomControl = FALSE)) |>
-    addProviderTiles(providers$CartoDB) |>
+    addTiles(urlTemplate ="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png")|>
+   # addProviderTiles(providers$CartoDB) |>
     setView(lng = -1.75,
             lat = 52.5,
             zoom = 7) |>
@@ -65,7 +66,8 @@ map_controls <- function(org_code_of_interest,
     left_join(ods_sites |> select(site_code, long, lat), by = 'site_code')
   
   map <- leaflet(options = leafletOptions(zoomControl = FALSE)) |>
-    addProviderTiles(providers$CartoDB) |>
+    addTiles(urlTemplate ="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png")|>
+    # addProviderTiles(providers$CartoDB) |>
     setView(lng = -1.75,
             lat = 52.5,
             zoom = 6) |>

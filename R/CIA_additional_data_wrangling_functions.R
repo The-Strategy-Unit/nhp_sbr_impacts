@@ -176,6 +176,41 @@ hcai_cia_formatting <- function(bedday_data, hcai_data) {
   
 }
 
+#C.difficile only additional formatting
+cdiff_cia_formatting <- function(bedday_data, hcai_data) {
+  beddays_by_prov <- beddays_by_provider_function(bedday_data)
+
+  cdiff_cia_format <- hcai_data|>
+  filter(collection=="C.difficile")|>
+  left_join(beddays_by_prov[, c("organisation_code", "yearmon", "beddays")],
+            by = c("organisation_code", "month" = "yearmon")) |>
+  mutate(
+    organisation_code = ifelse((organisation_code == "REM" |
+                                  organisation_code == "RQ6"),
+                               "REM",
+                               organisation_code
+    ),
+    #merge historical Royal Liverpool codes
+    organisation_code = ifelse((organisation_code == "RAL" |
+                                  organisation_code == "RVL"),
+                               "RAL",
+                               organisation_code
+    ) 
+    #merge historical Chase Farm codes
+  ) |>
+    summarise(count_of_cases = sum(count_of_cases),
+              beddays=sum(beddays),
+              .by = c(month, organisation_code)) |>
+   mutate(rate = (count_of_cases / beddays) * 10000 ) |>#cases per 10,000 beddays
+    filter(organisation_code != "RAL" |
+             month >= '2016-03-01') |> #remove data pre-merger where there is considerable variability
+    filter(organisation_code != "RNL" ) #remove as missing data
+  
+return(cdiff_cia_format)
+    
+}   
+    
+
 #Falls and fractures additional formatting
 falls_and_fractures_cia_formatting <- function(data) {
   falls_and_fractures_cia_format <- data |>

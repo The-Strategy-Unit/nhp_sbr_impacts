@@ -746,7 +746,7 @@ hcai_formatting <-
     HCAI_data <- rbind(
       hai_cdiff_data,
       hai_klebsiella_data,
-      hai_ecoli_data,
+    #  hai_ecoli_data, #e.coli excluded as transmitted through food
       hai_mssa_data,
       hai_mrsa_data ,
       hai_p_aeruginosa_data

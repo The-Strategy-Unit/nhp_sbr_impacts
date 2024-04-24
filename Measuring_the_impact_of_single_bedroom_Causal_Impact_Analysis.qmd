@@ -53,8 +53,6 @@ library(patchwork)
 library(metafor)
 library(bayesmeta)
 library(DiagrammeR)
-library(leaflet)
-library(leaflet.providers)
 
 ## RTT waiting time
 rtt_waiting_time <- tar_read(rtt_waiting_time_cia_format)
@@ -81,6 +79,8 @@ staff_sickness <- tar_read(staff_sickness_cia_format)
 ## Healthcare acquired infections - Infection rate per 10,000 bed days
 hcai <- tar_read(hcai_cia_format)
 
+cdiff<-tar_read(cdiff_cia_format)
+
 ## In-hospital Falls and Fractures - Fall rate per 1000 bed days
 falls_and_fractures <- tar_read(falls_and_fractures_cia_format)
 
@@ -97,19 +97,20 @@ cleaning_costs <- tar_read(cleaning_costs_cia_format)
 single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
 
 #Model outputs
-waiting_time_median_output <- tar_read(waiting_time_median_output)
-waiting_time_number_output <- tar_read(waiting_time_number_output)
-LoS_output <- tar_read(LoS_output)
-emergency_readmissions_output <- tar_read(emergency_readmissions_output)
-bed_occupancy_output <- tar_read(bed_occupancy_output)
-hcai_output <- tar_read(hcai_output)
-falls_and_fractures_output <- tar_read(falls_and_fractures_output)
-sus_deaths_output <- tar_read(sus_deaths_output)
-friends_and_family_output <- tar_read(friends_and_family_output)
-staff_sickness_output <- tar_read(staff_sickness_output)
-staff_turnover_output <- tar_read(staff_turnover_output)
-staff_survey_output <- tar_read(staff_survey_output)
-cleaning_costs_output <- tar_read(cleaning_costs_output)
+waiting_time_median_output<-tar_read(waiting_time_median_output)
+waiting_time_number_output<-tar_read(waiting_time_number_output)
+LoS_output<-tar_read(LoS_output)
+emergency_readmissions_output<-tar_read(emergency_readmissions_output)
+bed_occupancy_output<-tar_read(bed_occupancy_output)
+hcai_output<-tar_read(hcai_output)
+cdiff_output<-tar_read(cdiff_output)
+falls_and_fractures_output<-tar_read(falls_and_fractures_output)
+sus_deaths_output<-tar_read(sus_deaths_output)
+friends_and_family_output<-tar_read(friends_and_family_output)
+staff_sickness_output<-tar_read(staff_sickness_output)
+staff_turnover_output<-tar_read(staff_turnover_output)
+staff_survey_output<-tar_read(staff_survey_output)
+cleaning_costs_output<-tar_read(cleaning_costs_output)
 
 source("R/CIA_Functions.R")
 source("R/plot_functions.R")
@@ -272,7 +273,7 @@ Causal Impact Analysis is a technique that uses a control group to estimate the 
 
 ## Finding control hospitals {#sec-methods-controls}
 
-There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to other cancer sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
+There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to other cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
 
 ```{r selecting_controls_flow_chart}
 #| label: fig-flow-controls
@@ -284,6 +285,7 @@ tar_read(flow_chart_selecting_controls)
 number_control_sites <- tar_read(single_bedroom_matches_final) |>
   filter(rank_of_ranks <= 20) |>
   summarise(n(), .by = organisation_code)
+
 ```
 
 Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the intervention's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
@@ -470,7 +472,7 @@ mean_forest_plot_DGH_Acute(falls_and_fractures_output, "Mean effect on rate of f
 
 ```
 
-### Healthcare acquired infections
+### Healthcare acquired infections- Combined rate
 
 The combined rate of healthcare acquired infections could only be analysed for Royal Liverpool, and no significant change was seen. The combined rate of healthcare acquired infections is the sum of the rates (cases per 10,000 bed days) of C.difficile, MSSA, MRSA, Klebsiella and P.Aeruginosa.
 
@@ -480,6 +482,25 @@ forest_plot(hcai_output, "Grey indicates no significant change in the combined r
              "Average relative effect of switching to single bedrooms on rate of healthcare acquired infections")
 
 model_effects_table(hcai_output, "Average effects of switching to single bedrooms on cases of healthcare acquired infections /10,000 bed days")
+
+```
+
+### Healthcare acquired infections- C.Difficile
+
+The rate of healthcare acquired C.Difficile infections (cases per 10,000 bed days) decreased at 2/3 sites (Chase Farm and Southmead) but was unchanged at Royal Liverpool.
+
+```{r, fig.width=8, fig.height=4}
+
+forest_plot(cdiff_output, "Points to the left indicate a decrease in healthcare acquired C.Difficile infections  following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green. Grey indicates no significant change.",
+             "Average relative effect of switching to single bedrooms on rate of healthcare acquired C.Difficile infections")
+
+model_effects_table(cdiff_output, "Average effects of switching to single bedrooms on cases of healthcare acquired C.Difficile infections /10,000 bed days")
+
+```
+
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(cdiff_output, "Mean effect on the rate heathlcare acquired C.Difficile infections at general/acute hospitals")
 
 ```
 
@@ -517,7 +538,7 @@ model_effects_table(staff_sickness_output, "Average effects of switching to sing
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on rate of staff sickness at general/acute hospitals")
+mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on the rate of staff sickness at general/acute hospitals")
 
 ```
 
@@ -1232,7 +1253,7 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 :::
 :::
 
-### Healthcare acquired infections
+### Healthcare acquired infections- combined rate
 
 #### No change
 
@@ -1247,6 +1268,44 @@ hcai_REM<-tar_read(hcai_REM)
 cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
 ```
 
+### Healthcare acquired infections- C.Difficile
+
+#### Decrease
+
+Chase Farm
+```{r, fig.width=5, fig.height=6}
+
+cdiff_RAL<-tar_read(cdiff_RAL)
+
+#evaluating_model("RAL", NA, cdiff, "2018-09-01", "rate", 0.1, cdiff_RAL, single_bedroom_matches_final)
+
+cia_summary_plots(cdiff_RAL, "Rate/10,000 beddays", "2018-09-01")
+```
+
+Southmead
+```{r, fig.width=5, fig.height=6}
+
+cdiff_RVJ<-tar_read(cdiff_RVJ)
+
+evaluating_model("RVJ", NA, cdiff, "2014-05-01", "rate", 0.1, cdiff_RVJ, single_bedroom_matches_final)
+
+cia_summary_plots(cdiff_RVJ, "Rate/10,000 beddays", "2014-05-01")
+```
+
+
+#### No change
+
+Royal Liverpool
+
+```{r, fig.width=5, fig.height=6}
+
+cdiff_REM<-tar_read(cdiff_REM)
+
+#evaluating_model("REM", NA, cdiff, "2022-10-01", "rate", 0.1, cdiff_REM, single_bedroom_matches_final)
+
+cia_summary_plots(cdiff_REM, "Rate/10,000 beddays", "2022-10-01")
+```
+
 ```{r, include=FALSE, fig.width=5, fig.height=6}
 
 hcai_REN<-tar_read(hcai_REN)
@@ -1255,7 +1314,6 @@ hcai_REN<-tar_read(hcai_REN)
 
 cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2022-10-01")
 ```
-
 
 ### Patient experience - Friends and Family scores
 

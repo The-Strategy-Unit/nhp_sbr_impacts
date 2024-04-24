@@ -385,6 +385,10 @@ list(
     hcai_cia_formatting(beddays, formatted_HCAI_data)
   ),
   
+  tar_target(
+    cdiff_cia_format,
+    cdiff_cia_formatting(beddays, formatted_HCAI_data)
+  ),
   
   #Falls and fractures additional formatting
   tar_target(
@@ -1089,6 +1093,38 @@ list(
     )
   ),
   
+  # C.Difficile
+  prior_sd_cdiff <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.1,
+    "RVJ",
+    0.001,
+    "RAL",
+    0.01
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_cdiff,
+      names = org_code_of_interest,
+      targets::tar_target(
+        cdiff,
+        cia_analysis(
+          org_code_of_interest,
+          cdiff_cia_format,
+          "rate",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
   # Falls and Fractures in hospital
   prior_sd_falls_and_fractures <- tibble::tribble(
     ~ org_code_of_interest,
@@ -1398,6 +1434,15 @@ list(
                           NA,
                           NA,
                           NA,
+                          NA)),
+  
+  tar_target(cdiff_output,
+             model_output(cdiff_REM,
+                          NA,
+                          NA,
+                          NA,
+                          cdiff_RAL,
+                          cdiff_RVJ,
                           NA)),
   
   tar_target(

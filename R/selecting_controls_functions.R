@@ -541,7 +541,10 @@ control_stage4 <- function(data1, data2) {
       ),
       by = c("organisation_code" = "org_code_og",
              "site_code" = "der_provider_site_code")
-    )# |>
+    )|>
+        mutate(not_cancer_only=ifelse(matching_organisation_code %in% c("RA9", "RX1", "RR8"), 1, 0 ))|>
+     filter(organisation_code!="REN" | not_cancer_only!=1)
+   # |>
   #mutate(age_match = if_else(is.na(difference_med_age),0,1))
   
   return(data)

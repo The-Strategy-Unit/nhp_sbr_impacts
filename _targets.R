@@ -844,6 +844,7 @@ list(
       staff_sickness_cia_format,
       staff_survey_cia_format,
       hcai_cia_format,
+      cdiff_cia_format,
       falls_and_fractures_cia_format,
       sus_deaths_cia_format,
       rtt_waiting_time_cia_format,
@@ -863,6 +864,7 @@ list(
       staff_sickness_cia_format,
       staff_survey_cia_format,
       hcai_cia_format,
+      cdiff_cia_format,
       falls_and_fractures_cia_format,
       sus_deaths_cia_format,
       rtt_waiting_time_cia_format,
@@ -871,7 +873,7 @@ list(
       emergency_readmissions_cia_format,
       cleaning_costs_cia_format
     )
-  ),
+ ),
   
   #-----------------------------------------------------------------------------#
   #### CIA models ####

@@ -222,6 +222,7 @@ indicator_availability_over_time <-
            staff_sickness_cia_format,
            staff_survey_cia_format,
            hcai_cia_format,
+           cdiff_cia_format,
            falls_and_fractures_cia_format,
            sus_deaths_cia_format,
            rtt_waiting_time_cia_format,
@@ -235,7 +236,8 @@ indicator_availability_over_time <-
         "Staff turnover",
         "Staff sickness",
         "Staff survey",
-        "Healthcare acquired infections",
+        "Healthcare acquired infections- combined",
+        "Healthcare acquired infections- C.Difficile",
         "Falls and fractures",
         "Hospital deaths",
         "RTT waiting times",
@@ -246,6 +248,7 @@ indicator_availability_over_time <-
       )
     level <-
       c("site",
+        "trust",
         "trust",
         "trust",
         "trust",
@@ -266,6 +269,7 @@ indicator_availability_over_time <-
         "Health & Safety",
         "Health & Safety",
         "Health & Safety",
+        "Health & Safety",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
@@ -279,6 +283,7 @@ indicator_availability_over_time <-
         min(staff_sickness_cia_format$month),
         min(staff_survey_cia_format$month),
         min(hcai_cia_format$month),
+        min(cdiff_cia_format$month),
         min(falls_and_fractures_cia_format$month),
         min(sus_deaths_cia_format$month),
         min(rtt_waiting_time_cia_format$month),
@@ -294,6 +299,7 @@ indicator_availability_over_time <-
         max(staff_sickness_cia_format$month),
         max(staff_survey_cia_format$month),
         max(hcai_cia_format$month),
+        max(cdiff_cia_format$month),
         max(falls_and_fractures_cia_format$month),
         max(sus_deaths_cia_format$month),
         max(rtt_waiting_time_cia_format$month),
@@ -315,7 +321,8 @@ indicator_availability_over_time <-
           "Staff sickness",
           "Patient experience-\nfriends and family test",
           "Staff survey",
-          "Healthcare acquired infections",
+          "Healthcare acquired infections- combined",
+          "Healthcare acquired infections- C.Difficile",
           "Falls and fractures",
           "Hospital deaths",
           "Cleaning costs",
@@ -481,6 +488,7 @@ indicator_availability_by_site <-
            staff_sickness_cia_format,
            staff_survey_cia_format,
            hcai_cia_format,
+           cdiff_cia_format,
            falls_and_fractures_cia_format,
            sus_deaths_cia_format,
            rtt_waiting_time_cia_format,
@@ -494,7 +502,8 @@ indicator_availability_by_site <-
         "Staff turnover",
         "Staff sickness",
         "Staff survey",
-        "Healthcare acquired infections",
+        "Healthcare acquired infections- combined",
+        "Healthcare acquired infections- C.Difficile",
         "Falls and fractures",
         "Hospital deaths",
         "RTT waiting times",
@@ -505,6 +514,7 @@ indicator_availability_by_site <-
       )
     level <-
       c("Site",
+        "Provider",
         "Provider",
         "Provider",
         "Provider",
@@ -525,6 +535,7 @@ indicator_availability_by_site <-
         "Health & Safety",
         "Health & Safety",
         "Health & Safety",
+        "Health & Safety",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
@@ -538,6 +549,7 @@ indicator_availability_by_site <-
         min(staff_sickness_cia_format$month),
         min(staff_survey_cia_format$month),
         min(hcai_cia_format$month),
+        min(cdiff_cia_format$month),
         min(falls_and_fractures_cia_format$month),
         min(sus_deaths_cia_format$month),
         min(rtt_waiting_time_cia_format$month),
@@ -553,6 +565,7 @@ indicator_availability_by_site <-
         max(staff_sickness_cia_format$month),
         max(staff_survey_cia_format$month),
         max(hcai_cia_format$month),
+        max(cdiff_cia_format$month),
         max(falls_and_fractures_cia_format$month),
         max(sus_deaths_cia_format$month),
         max(rtt_waiting_time_cia_format$month),
@@ -574,7 +587,8 @@ indicator_availability_by_site <-
           "Staff sickness",
           "Patient experience-\nfriends and family test",
           "Staff survey",
-          "Healthcare acquired infections",
+          "Healthcare acquired infections- combined",
+          "Healthcare acquired infections- C.Difficile",
           "Falls and fractures",
           "Hospital deaths",
           "Emergency readmissions",
@@ -618,7 +632,8 @@ indicator_availability_by_site <-
                                              measure=="RTT waiting times" & (name=="Chase Farm"|name=="Southmead") ~ "-",
                                              measure=="Length of stay" & (name=="Papworth") ~ "-",
                                              measure=="Bed occupancy" & (name=="Papworth") ~ "-",
-                                             measure=="Healthcare acquired infections" & (name=="Clatterbridge") ~ "-",
+                                             measure=="Healthcare acquired infections- combined" & (name=="Clatterbridge") ~ "-",
+                                             measure=="Healthcare acquired infections- C.Difficile" & (name=="Clatterbridge"|name=="Papworth") ~ "-",
                                              measure=="Falls and fractures" & (name=="Clatterbridge"|name=="Papworth"|name=="Chase Farm") ~ "-",
                                              measure=="Hospital deaths" & (name=="Papworth"|name=="Chase Farm") ~ "-",
                                              measure=="Cleaning costs" & (name=="Chase Farm") ~ "-",
@@ -634,7 +649,8 @@ indicator_availability_by_site <-
           "Staff survey",
           "Hospital deaths",
           "Falls and fractures",
-          "Healthcare acquired infections",
+          "Healthcare acquired infections- combined",
+          "Healthcare acquired infections- C.Difficile",
           "Length of stay" ,
           "RTT waiting times",
           "Bed occupancy",
@@ -687,7 +703,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(6:8) |>
+      slice(6:9) |>
       select(-group) |>
       as.matrix()
     
@@ -708,7 +724,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(9:12) |>
+      slice(10:13) |>
       select(-group) |>
       as.matrix()
     
@@ -747,7 +763,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(6:8) |>
+      slice(6:9) |>
       select(-group) |>
       as.matrix()
     
@@ -766,7 +782,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(9:12) |>
+      slice(10:13) |>
       select(-group) |>
       as.matrix()
     
@@ -780,11 +796,11 @@ indicator_availability_by_site <-
       align(j = 1:2,  align = "left") |>
       bg(bg = "#f9bf07", part = "header") |>
       color(i = 2:6, color = colormatrix4) |>
-      color(i = 8:10, color= colormatrix5) |>
-      color(i = 12:15, color = colormatrix6) |>
+      color(i = 8:11, color= colormatrix5) |>
+      color(i = 13:16, color = colormatrix6) |>
       bg(i = 2:6, bg = colormatrix1) |>
-      bg(i = 8:10, bg = colormatrix2) |>
-      bg(i = 12:15, bg = colormatrix3) |>
+      bg(i = 8:11, bg = colormatrix2) |>
+      bg(i = 13:16, bg = colormatrix3) |>
       align(
         j = 1,
         i = ~ !is.na(group),

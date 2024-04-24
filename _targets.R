@@ -341,6 +341,21 @@ list(
     }"
     )
   ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      controls_table,
+      get_controls_table(single_bedroom_matches_final, org_code_of_interest)
+    )
+  ),
   
   #----------------------------------------------------------------------------#
   #### Causal Impact Analysis additional formatting ####
@@ -1472,21 +1487,6 @@ list(
       NA,
       NA,
       NA
-    )
-  ),
-  tarchetypes::tar_map(
-    list(
-      org_code_of_interest = c("REM",
-                               "REN",
-                               "RGM",
-                               "RGN",
-                               "RAL",
-                               "RVJ",
-                               "RWF")
-    ),
-    tar_target(
-      controls_table,
-      get_controls_table(single_bedroom_matches_final, org_code_of_interest)
     )
   )
 )

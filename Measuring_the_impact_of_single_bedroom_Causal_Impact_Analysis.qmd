@@ -32,9 +32,6 @@ css: styles.css
 bibliography: references.bib
 ---
 
-
-
-
 ```{r, include=FALSE}
 
 library(tidyverse)
@@ -148,7 +145,29 @@ Taken from initial plan and NHP update slides.
 
 # What we already know
 
-Previous literature [@ref] and evidence [@ref] reviews have....
+There have been 2 NHP commissioned pieces of work in the recent past aiming to better understand the nature and scale of any impacts related to switching from multi-occupancy hospital rooms to single-bed rooms.
+
+The Health Economics Unit undertook a literature review [@HEU_2022] primarily around clinical impacts, patient/staff experience and the economic impacts of the structural changes. The review highlighted, from evidence, the following with potential to be impacted in some way:
+
+-   Mortality
+-   Complications of disease
+-   HCAI
+-   Falls and patient safety
+-   Readmissions
+-   Privacy
+-   Loneliness
+-   Disturbance
+-   Quality of Life
+-   Length of stay
+-   Costs of care
+
+The conclusions of the review were that **"moving adult and child inpatients from older hospitals with largely shared rooms to fully single-room accommodation is unlikely to lead to a meaningful difference in clinical outcomes, may reduce overall costs per patient, and will lead to greater satisfaction in a majority of patients. However, switching to 100% single rooms will leave a substantial minority of people feeling lonely and socially isolated, with many patients preferring to be in a shared room. A compromise approach – where accommodation is largely in single rooms but includes some bays with two to four beds – may provide maximum satisfaction and minimise overall costs without adversely affecting clinical outcomes."**
+
+More latterly, the Innovations team at NHP have created a living evidence review [@innovations_2024] on the topic to identify new and emerging evidence of effects and their potential scale. The review highlighted the ongoing variable nature of impacts i.e. both positive, negative and neutral impacts across length of stay, mortality, patient experience and staff attitudes.
+
+Broadly speaking, the evidence points towards an increase in falls/fall risk, improved infection control and increased patient satisfaction with admitted care. More positive outcome impacts were generally demonstrated for specific clinical subgroups of patients notably intensive care; maternal and neonates; oncology.
+
+The review summary suggests that **"Overall, 87% of studies analysed by Taylor et al., 2018 reported advantages associated with single patient rooms. Of these, 27% reported a combination of advantages and disadvantages, while 22% of the studies reported a combination of advantages and neutral results. "**
 
 # Hospital Background
 
@@ -1208,7 +1227,6 @@ hcai_REN<-tar_read(hcai_REN)
 cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2022-10-01")
 ```
 
-
 ### Patient experience - Friends and Family scores
 
 ::: panel-tabset
@@ -1560,7 +1578,7 @@ Staff survey - Only available at trust level - This is an annual measure, so the
 
 ## C. List of control sites/providers by indicator {#sec-appendix-C}
 
-As outlined in @sec-methods-controls, there was a multi-phase control selection process to create a pool of control sites for each intervention site for further analysis. The control sites for each intervention site are shown below.
+As outlined in @sec-methods-controls, there was a multi-phase control selection process to create a pool of control sites for each intervention site for further analysis. The most similar control sites for each intervention site are shown below. Note that, whilst controls will always be selected from within these sets, the exact controls will not be the same for every indicator as the CIA approach further refines matches based on similar pre-intervention time series.
 
 ::: panel-tabset
 ### Royal Liverpool

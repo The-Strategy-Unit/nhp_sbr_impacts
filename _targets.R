@@ -341,6 +341,21 @@ list(
     }"
     )
   ),
+  tarchetypes::tar_map(
+    list(
+      org_code_of_interest = c("REM",
+                               "REN",
+                               "RGM",
+                               "RGN",
+                               "RAL",
+                               "RVJ",
+                               "RWF")
+    ),
+    tar_target(
+      controls_table,
+      get_controls_table(single_bedroom_matches_final, org_code_of_interest)
+    )
+  ),
   
   #----------------------------------------------------------------------------#
   #### Causal Impact Analysis additional formatting ####
@@ -370,6 +385,10 @@ list(
     hcai_cia_formatting(beddays, formatted_HCAI_data)
   ),
   
+  tar_target(
+    cdiff_cia_format,
+    cdiff_cia_formatting(beddays, formatted_HCAI_data)
+  ),
   
   #Falls and fractures additional formatting
   tar_target(
@@ -825,6 +844,7 @@ list(
       staff_sickness_cia_format,
       staff_survey_cia_format,
       hcai_cia_format,
+      cdiff_cia_format,
       falls_and_fractures_cia_format,
       sus_deaths_cia_format,
       rtt_waiting_time_cia_format,
@@ -844,6 +864,7 @@ list(
       staff_sickness_cia_format,
       staff_survey_cia_format,
       hcai_cia_format,
+      cdiff_cia_format,
       falls_and_fractures_cia_format,
       sus_deaths_cia_format,
       rtt_waiting_time_cia_format,
@@ -852,7 +873,7 @@ list(
       emergency_readmissions_cia_format,
       cleaning_costs_cia_format
     )
-  ),
+ ),
   
   #-----------------------------------------------------------------------------#
   #### CIA models ####
@@ -1073,6 +1094,38 @@ list(
       hospitals
     )
   ),
+  
+  # C.Difficile
+  prior_sd_cdiff <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.1,
+    "RVJ",
+    0.001,
+    "RAL",
+    0.01
+    
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_cdiff,
+      names = org_code_of_interest,
+      targets::tar_target(
+        cdiff,
+        cia_analysis(
+          org_code_of_interest,
+          cdiff_cia_format,
+          "rate",
+          prior_sd,
+          single_bedroom_matches_final,
+          hospitals
+        )
+      )
+    )
+  ),
+  
   
   # Falls and Fractures in hospital
   prior_sd_falls_and_fractures <- tibble::tribble(
@@ -1385,6 +1438,15 @@ list(
                           NA,
                           NA)),
   
+  tar_target(cdiff_output,
+             model_output(cdiff_REM,
+                          NA,
+                          NA,
+                          NA,
+                          cdiff_RAL,
+                          cdiff_RVJ,
+                          NA)),
+  
   tar_target(
     falls_and_fractures_output,
     model_output(
@@ -1472,21 +1534,6 @@ list(
       NA,
       NA,
       NA
-    )
-  ),
-  tarchetypes::tar_map(
-    list(
-      org_code_of_interest = c("REM",
-                               "REN",
-                               "RGM",
-                               "RGN",
-                               "RAL",
-                               "RVJ",
-                               "RWF")
-    ),
-    tar_target(
-      controls_table,
-      get_controls_table(single_bedroom_matches_final, org_code_of_interest)
     )
   )
 )

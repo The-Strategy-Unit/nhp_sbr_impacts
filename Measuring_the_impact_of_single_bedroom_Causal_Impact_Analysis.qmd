@@ -50,47 +50,48 @@ library(patchwork)
 library(metafor)
 library(bayesmeta)
 library(DiagrammeR)
-library(leaflet)
-library(leaflet.providers)
 
 ## RTT waiting time
-rtt_waiting_time<-tar_read(rtt_waiting_time_cia_format) 
+rtt_waiting_time <- tar_read(rtt_waiting_time_cia_format)
 
 ## Bed occupancy
-bed_occupancy<-tar_read(bed_occupancy_cia_format)
+bed_occupancy <- tar_read(bed_occupancy_cia_format)
 
 ## Length of Stay
-length_of_stay<- tar_read(length_of_stay_cia_format)
+length_of_stay <- tar_read(length_of_stay_cia_format)
 
 ## Emergency readmissions
-emergency_readmissions<-tar_read(emergency_readmissions_cia_format)
+emergency_readmissions <-
+  tar_read(emergency_readmissions_cia_format)
 
 ## Friends & Family
-friends_and_family<-tar_read(friends_and_family_cia_format)
+friends_and_family <- tar_read(friends_and_family_cia_format)
 
 ## Staff turnover
-staff_turnover<-tar_read(staff_turnover_cia_format)
+staff_turnover <- tar_read(staff_turnover_cia_format)
 
 ## Staff sickness
-staff_sickness<-tar_read(staff_sickness_cia_format)
+staff_sickness <- tar_read(staff_sickness_cia_format)
 
 ## Healthcare acquired infections - Infection rate per 10,000 bed days
-hcai<-tar_read(hcai_cia_format)
+hcai <- tar_read(hcai_cia_format)
+
+cdiff<-tar_read(cdiff_cia_format)
 
 ## In-hospital Falls and Fractures - Fall rate per 1000 bed days
-falls_and_fractures<- tar_read(falls_and_fractures_cia_format)
+falls_and_fractures <- tar_read(falls_and_fractures_cia_format)
 
 # SUS death rate (deaths/1000 admissions)
-sus_deaths<- tar_read(sus_deaths_cia_format)
+sus_deaths <- tar_read(sus_deaths_cia_format)
 
 #Staff survey
-staff_survey<-tar_read(staff_survey_cia_format)
+staff_survey <- tar_read(staff_survey_cia_format)
 
 # Cleaning costs
-cleaning_costs<-tar_read(cleaning_costs_cia_format)
+cleaning_costs <- tar_read(cleaning_costs_cia_format)
 
 #Loading control data
-single_bedroom_matches_final<-tar_read(single_bedroom_matches_final)
+single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
 
 #Model outputs
 waiting_time_median_output<-tar_read(waiting_time_median_output)
@@ -99,6 +100,7 @@ LoS_output<-tar_read(LoS_output)
 emergency_readmissions_output<-tar_read(emergency_readmissions_output)
 bed_occupancy_output<-tar_read(bed_occupancy_output)
 hcai_output<-tar_read(hcai_output)
+cdiff_output<-tar_read(cdiff_output)
 falls_and_fractures_output<-tar_read(falls_and_fractures_output)
 sus_deaths_output<-tar_read(sus_deaths_output)
 friends_and_family_output<-tar_read(friends_and_family_output)
@@ -109,7 +111,6 @@ cleaning_costs_output<-tar_read(cleaning_costs_output)
 
 source("R/CIA_Functions.R")
 source("R/plot_functions.R")
-
 ```
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
@@ -170,6 +171,53 @@ Broadly speaking, the evidence points towards an increase in falls/fall risk, im
 The review summary suggests that **"Overall, 87% of studies analysed by Taylor et al., 2018 reported advantages associated with single patient rooms. Of these, 27% reported a combination of advantages and disadvantages, while 22% of the studies reported a combination of advantages and neutral results. "**
 
 # Hospital Background
+
+An overview of the seven hospitals switch to SBR is shown in @tbl-sbr-switch.
+
+```{r table_sbr_switch}
+#| label: tbl-sbr_switch
+#| tbl-cap: "Details of the switch to single bed accommodation at the seven intervention sites."
+
+sbr_percent_cia_format <- tar_read(sbr_percent_cia_format)
+
+tar_read(hospitals) |>
+  mutate(last_march = as.Date(
+    case_when(
+      month(switch_month) < 3 ~ format(switch_month, 
+                                       str_replace("%Y-03-01", 
+                                                   "Y", 
+                                                   as.character(year(switch_month) - 1))),
+      month(switch_month) > 3 ~ format(switch_month, "%Y-03-01"),
+      TRUE ~ as.character(switch_month)
+    )
+  ),
+  next_march = last_march + years(1)) |>
+  left_join(sbr_percent_cia_format,
+            by = c("last_march" = "month", "organisation_code")) |>
+  left_join(sbr_percent_cia_format,
+            by = c("next_march" = "month", "organisation_code")) |>
+  mutate(across(contains("percentage"), ~round(., 2)),
+         switch_month = format(switch_month, "%b %Y")) |>
+  select("Hospital" = name,
+         "SBR switch month" = switch_month,
+         "SBR % before switch" = percentage_single_bedrooms.x,
+         "SBR % after switch" = percentage_single_bedrooms.y) |>
+    as_flextable(
+      hide_grouplabel = TRUE,
+      max_row = 20,
+      show_coltype = FALSE
+    ) |>
+    align(part = "header", align = "center") |>
+    bg(bg = "#f9bf07", part = "header") |>
+    bold(bold = TRUE, part = "header") |>
+    fontsize(size = 12, part = "all") |>
+    padding(
+      padding = 2,
+      part = "all",
+      padding.top = NULL
+    ) |>
+    autofit()
+```
 
 ## Royal Liverpool University Hospital
 
@@ -237,13 +285,16 @@ For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the
 
 There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short.
 
+For some indicator variables data is only available at a provider level, this means that where the switch to single bedrooms occurred at a provider with multiple sites the effects of the switch will be diluted by the lack the change in single bedroom percentage at the other sites.
+
+
 # Description of methods {#sec-methods}
 
 Causal Impact Analysis is a technique that uses a control group to estimate the post-intervention counterfactual against which to measure study group impacts [@broderson2015]. We have used this method to quantify the change in the study hospitals following their switch to single-bed rooms by comparing the actual effects to a control group (similar hospital providers, patient case-mix and prior trends) that have been used to predict what would have happened to the outcome of interest had there been no switch.
 
 ## Finding control hospitals {#sec-methods-controls}
 
-There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to other cancer sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
+There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to other cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
 
 ```{r selecting_controls_flow_chart}
 #| label: fig-flow-controls
@@ -255,6 +306,7 @@ tar_read(flow_chart_selecting_controls)
 number_control_sites <- tar_read(single_bedroom_matches_final) |>
   filter(rank_of_ranks <= 20) |>
   summarise(n(), .by = organisation_code)
+
 ```
 
 Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the intervention's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
@@ -326,7 +378,7 @@ model_effects_table(waiting_time_median_output, "Average effects of switching to
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(waiting_time_median_output, "Mean effect on median waiting time at general/acute hospitals")
+mean_forest_plot_DGH_Acute(waiting_time_median_output, "Mean effect on median waiting time at general acute hospitals")
 
 ```
 
@@ -345,7 +397,7 @@ model_effects_table(waiting_time_number_output, "Average effects of switching to
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(waiting_time_number_output, "Mean effect on number of patients on waiting lists at general/acute hospitals")
+mean_forest_plot_DGH_Acute(waiting_time_number_output, "Mean effect on number of patients on waiting lists at general acute hospitals")
 
 ```
 
@@ -365,7 +417,7 @@ model_effects_table(bed_occupancy_output, "Average effects of switching to singl
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(bed_occupancy_output, "Mean effect on bed occupancy at general/acute hospitals")
+mean_forest_plot_DGH_Acute(bed_occupancy_output, "Mean effect on bed occupancy at general acute hospitals")
 
 ```
 
@@ -384,7 +436,7 @@ model_effects_table(emergency_readmissions_output, "Average effects of switching
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(emergency_readmissions_output, "Mean effect on emergency readmission rate at general/acute hospitals")
+mean_forest_plot_DGH_Acute(emergency_readmissions_output, "Mean effect on emergency readmission rate at general acute hospitals")
 
 ```
 
@@ -418,7 +470,7 @@ model_effects_table(sus_deaths_output, "Average effects of switching to single b
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(sus_deaths_output, "Mean effect on in-hospital death rate at general/acute hospitals")
+mean_forest_plot_DGH_Acute(sus_deaths_output, "Mean effect on in-hospital death rate at general acute hospitals")
 
 ```
 
@@ -437,11 +489,11 @@ model_effects_table(falls_and_fractures_output, "Average effects of switching to
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(falls_and_fractures_output, "Mean effect on rate of falls, fractures and injuries while in hospital at general/acute hospitals")
+mean_forest_plot_DGH_Acute(falls_and_fractures_output, "Mean effect on rate of falls, fractures and injuries while in hospital at general acute hospitals")
 
 ```
 
-### Healthcare acquired infections
+### Healthcare acquired infections- Combined rate
 
 The combined rate of healthcare acquired infections could only be analysed for Royal Liverpool, and no significant change was seen. The combined rate of healthcare acquired infections is the sum of the rates (cases per 10,000 bed days) of C.difficile, MSSA, MRSA, Klebsiella and P.Aeruginosa.
 
@@ -451,6 +503,25 @@ forest_plot(hcai_output, "Grey indicates no significant change in the combined r
              "Average relative effect of switching to single bedrooms on rate of healthcare acquired infections")
 
 model_effects_table(hcai_output, "Average effects of switching to single bedrooms on cases of healthcare acquired infections /10,000 bed days")
+
+```
+
+### Healthcare acquired infections- C.Difficile
+
+The rate of healthcare acquired C.Difficile infections (cases per 10,000 bed days) decreased at 2/3 sites (Chase Farm and Southmead) but was unchanged at Royal Liverpool.
+
+```{r, fig.width=8, fig.height=4}
+
+forest_plot(cdiff_output, "Points to the left indicate a decrease in healthcare acquired C.Difficile infections  following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green. Grey indicates no significant change.",
+             "Average relative effect of switching to single bedrooms on rate of healthcare acquired C.Difficile infections")
+
+model_effects_table(cdiff_output, "Average effects of switching to single bedrooms on cases of healthcare acquired C.Difficile infections /10,000 bed days")
+
+```
+
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(cdiff_output, "Mean effect on the rate heathlcare acquired C.Difficile infections at general acute hospitals")
 
 ```
 
@@ -488,7 +559,7 @@ model_effects_table(staff_sickness_output, "Average effects of switching to sing
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on rate of staff sickness at general/acute hospitals")
+mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on the rate of staff sickness at general acute hospitals")
 
 ```
 
@@ -523,7 +594,7 @@ model_effects_table(staff_survey_output, "Average effects of switching to single
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(staff_survey_output, "Mean effect on percentage of staff that would recommend their trust as a place to work at general/acute hospitals")
+mean_forest_plot_DGH_Acute(staff_survey_output, "Mean effect on percentage of staff that would recommend their trust as a place to work at general acute hospitals")
 
 ```
 
@@ -539,6 +610,7 @@ summary_table_indicators_and_sites(LoS_output,
                                     sus_deaths_output,
                                     falls_and_fractures_output,
                                     hcai_output,
+                                    cdiff_output,
                                     friends_and_family_output,
                                     staff_sickness_output,
                                     staff_turnover_output,
@@ -548,6 +620,35 @@ summary_table_indicators_and_sites(LoS_output,
 ```
 
 # Limitations and discussion
+
+**Data quality and availability**
+
+Our analyses rely on historical data collections, some of which do not go back as far as 2008. There are also gaps/anomalous data in the time series for some providers and potential control sites. How some metrics have been measured is likely to have changed over time, although the causal impact analysis uses control data from sites without interventions which will help to correct for any changes occurring at all sites. Some study sites have been involved in trust mergers/site changes in the time period prior to switching to single bedrooms; we have merged historic data where appropriate, but these mergers may have impacted the time series. 
+
+Some variables that are only available at provider level so where providers have more than one site any change that may occur following a switch to single bedrooms at one site will be diluted by a lack of change at the providers other sites. 
+
+Also the variables that we have measured are not always be specific to the impact we are trying to measure, e.g. using staff sickness as a proxy for staff experience. 
+
+Some measures are recorded quarterly or annually so we have less data points with which to fit our models and assess outcomes and less temporal specificity to detect changes. 
+
+COVID-19 has impacted many of the variables for sites that switched just before or after the pandemic (Royal Liverpool, Clatterbridge and Papworth). While the causal impact analysis does use control sites to account for changes over time that would have happened without the intervention, the impact of the COVID-19 was variable between study sites and their controls. 
+
+**Model fit and methodology**
+
+Model fit was assessed using the Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic of the models were checked, and adjustments made to try to ensure a good historical model fit while minimising the forecasting intervals. However, for some data the models will be a less good fit and there will have large credible intervals in the outcome period due to the variability in the indicator not being well explained by control time series.
+
+Three of the seven study sites were specialist sites (Papworth is a specialist cardiothoracic/transplant centre, Clatterbridge is a cancer centre and Chase Farm only conducts elective care), making it more difficult to select well matched control sites. The number if control sites was very limited for both Clatterbridge and Papworth, which may impact the quality of the model fit and reliability of the outcome. 
+
+The three specialist provider sites were excluded from the meta-analysis as the impacts on these sites may be less generalisable to new general acute hospitals that may be built in the future, so the meta-analyses are limited to just a few sites. The meta-analyses were weighted based on the inverse variance in of the relative effects, but other factors that may influence how much weight should be given to a particular site were not included.
+
+**General**
+
+For our analysis we have had to specify the month in which the switch to single bedrooms occurred. However, at some sites the switch was done over a longer period of time with certain services moving at different stages, so our analysis does not account for this. 
+
+When the sites switched to single bedrooms there are likely to have been other changes to how services operate and at multi-site providers there may also have been changes to what services are provided at which sites, so there are likely to be confounding factors that influence our results.
+
+The sites that switched to single bedrooms will have had different designs and the difference in results between sites may be due to different single bedroom designs working better, or worse, than others. It is also possible that the best design may vary by hospital type and a design that suits a general acute hospital may work less well at a specialist site. Where there are potential negative impacts of a switch to single bedrooms some sites may have had mitigating factors in place from the start while at other schemes any mitigating factors may have occurred later. 
+
 
 # Reccommendations for modelling and future evaluation
 
@@ -1203,7 +1304,7 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 :::
 :::
 
-### Healthcare acquired infections
+### Healthcare acquired infections- combined rate
 
 #### No change
 
@@ -1216,6 +1317,45 @@ hcai_REM<-tar_read(hcai_REM)
 #evaluating_model("REM", NA, hcai, "2022-10-01", "combined_rate", 0.1, hcai_REM, single_bedroom_matches_final)
 
 cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
+```
+
+### Healthcare acquired infections- C.Difficile
+
+#### Decrease
+
+Chase Farm
+
+```{r, fig.width=5, fig.height=6}
+
+cdiff_RAL<-tar_read(cdiff_RAL)
+
+#evaluating_model("RAL", NA, cdiff, "2018-09-01", "rate", 0.1, cdiff_RAL, single_bedroom_matches_final)
+
+cia_summary_plots(cdiff_RAL, "Rate/10,000 beddays", "2018-09-01")
+```
+
+Southmead
+
+```{r, fig.width=5, fig.height=6}
+
+cdiff_RVJ<-tar_read(cdiff_RVJ)
+
+evaluating_model("RVJ", NA, cdiff, "2014-05-01", "rate", 0.1, cdiff_RVJ, single_bedroom_matches_final)
+
+cia_summary_plots(cdiff_RVJ, "Rate/10,000 beddays", "2014-05-01")
+```
+
+#### No change
+
+Royal Liverpool
+
+```{r, fig.width=5, fig.height=6}
+
+cdiff_REM<-tar_read(cdiff_REM)
+
+#evaluating_model("REM", NA, cdiff, "2022-10-01", "rate", 0.1, cdiff_REM, single_bedroom_matches_final)
+
+cia_summary_plots(cdiff_REM, "Rate/10,000 beddays", "2022-10-01")
 ```
 
 ```{r, include=FALSE, fig.width=5, fig.height=6}
@@ -1554,27 +1694,59 @@ Black dotted line indicates the time of the last data point prior to the switch 
 
 ## B. Notes on data quality and suitability (for CIA)
 
-RTT waiting time data - Only available at trust level - Chase Farm was excluded as there was only 4 months of data available in the outcome period. - Southmead was excluded due to a period of missing data in the 2 years prior to the switch to single rooms.
+**RTT waiting time data**
 
-Length of stay - Papworth was excluded as there were 2 large COVID-19 related spikes in length of stay in the outcome period that were significantly larger than the COVID-19 effects in the control sites, so it was not possible to determine if there would have been a change in length of stay without COVID-19.
+-   Only available at provider level
+-   Chase Farm was excluded as there was only 4 months of data available in the outcome period.
+-   Southmead was excluded due to a period of missing data in the 2 years prior to the switch to single rooms.
 
-Bed occupancy - Only available at trust level - This is a quarterly measure so there is more limited data and depending on the time point at which the switch to single bedrooms occurred the may be no data until 3 months after the switch or the last point of baseline may be 3 months prior to the switch.
+**Length of stay**
 
-Cleaning costs - This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period. - The limited data meant that for Chase Farm only 1 control site could be matched and there was insufficient data to fit a suitable model.
+-   Papworth was excluded as there were 2 large COVID-19 related spikes in length of stay in the outcome period that were significantly larger than the COVID-19 effects in the control sites, so it was not possible to determine if there would have been a change in length of stay without COVID-19.
 
-Healthcare acquired infections - Only available at trust level - Data is only available for Royal Liverpool - Clatterbridge was excluded as the rate was generally low, often zero, but there were also significant spikes, which meant it was not possible to fit a suitable model.
+**Bed occupancy**
 
-Falls, fractures and injuries in hospital - Clatterbridge, Papworth and Chase Farm were all excluded as the rates were very low, often zero, so it wasn't possible to fit suitable models to the data.
+-   Only available at provider level
+-   This is a quarterly measure so there is more limited data and depending on the time point at which the switch to single bedrooms occurred the may be no data until 3 months after the switch or the last point of baseline may be 3 months prior to the switch.
 
-Deaths in hospital - Papworth was excluded due to a large COVID-19 spike in the outcome period that was greater than that seen in the control sites, so it was not possible to determine if there would have been a change had COVID-19 not occurred. - Chase Farm was excluded as the rate was very low, often zero, so it wasn't possible to fit a suitable model, this low rate is unsurprising given it is only conducting elective care.
+**Cleaning costs**
 
-Patient experience - There is around a year of missing Friends and Family Test data for all sites during the COVID-19 pandemic (March 2020 until late 2020/early 2021), this means that there is some missing data in the baseline period for Royal Liverpool and some missing data in the outcome periods for Clatterbridge, Papworth and Chase Farm.
+-   This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
+-   The limited data meant that for Chase Farm only 1 control site could be matched and there was insufficient data to fit a suitable model.
 
-Staff sickness - Only available at trust level
+**Healthcare acquired infections**
 
-Staff turnover - Only available at trust level - Data is only available for Royal Liverpool
+-   Only available at provider level
+-   Data on C.Difficile is available from April 2012. MSSA, Klebsiella and P.Aeruginosa data is available  from April 2017 and MRSA is available from March 2018.
+-   Combined infections data is only available for Royal Liverpool. Clatterbridge was excluded as the rate was generally low, often zero, but there were also significant spikes, which meant it was not possible to fit a suitable model.
+-   C.Difficile infection rates could not be analysed for Clatterbridge or Papworth as the rates were low, often zero, and so combined with the high level of variability in the data it meant it was not possible to fit a suitable model for these sites. 
 
-Staff survey - Only available at trust level - This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
+**Falls, fractures and injuries in hospital**
+
+-   Clatterbridge, Papworth and Chase Farm were all excluded as the rates were very low, often zero, so it wasn't possible to fit suitable models to the data.
+
+**Deaths in hospital**
+
+-   Papworth was excluded due to a large COVID-19 spike in the outcome period that was greater than that seen in the control sites, so it was not possible to determine if there would have been a change had COVID-19 not occurred.
+-   Chase Farm was excluded as the rate was very low, often zero, so it wasn't possible to fit a suitable model, this low rate is unsurprising given it is only conducting elective care.
+
+**Patient experience**
+
+-   There is around a year of missing Friends and Family Test data for all sites during the COVID-19 pandemic (March 2020 until late 2020/early 2021), this means that there is some missing data in the baseline period for Royal Liverpool and some missing data in the outcome periods for Clatterbridge, Papworth and Chase Farm.
+
+**Staff sickness**
+
+-   Only available at provider level
+
+**Staff turnover**
+
+-   Only available at provider level
+-   Data is only available for Royal Liverpool
+
+**Staff survey**
+
+-   Only available at provider level 
+-   This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
 
 ## C. List of control sites/providers by indicator {#sec-appendix-C}
 

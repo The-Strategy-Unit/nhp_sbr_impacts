@@ -836,6 +836,7 @@ summary_table_indicators_and_sites <-
            sus_deaths_output,
            falls_and_fractures_output,
            hcai_output,
+           cdiff_output,
            friends_and_family_output,
            staff_sickness_output,
            staff_turnover_output,
@@ -856,7 +857,9 @@ summary_table_indicators_and_sites <-
     bed_occupancy_output2  <- bed_occupancy_output |>
       mutate(measure = "Bed occupancy")
     hcai_output2  <- hcai_output |>
-      mutate(measure = "Healthcare acquired infections")
+      mutate(measure = "Healthcare acquired infections- combined rate")
+    cdiff_output2  <- cdiff_output |>
+      mutate(measure = "Healthcare acquired C.Difficile")
     falls_and_fractures_output2  <- falls_and_fractures_output |>
       mutate(measure = "Falls and fractures")
     sus_deaths_output2  <- sus_deaths_output |>
@@ -880,6 +883,7 @@ summary_table_indicators_and_sites <-
         sus_deaths_output2,
         falls_and_fractures_output2,
         hcai_output2,
+        cdiff_output2,
         friends_and_family_output2,
         staff_sickness_output2,
         staff_turnover_output2,

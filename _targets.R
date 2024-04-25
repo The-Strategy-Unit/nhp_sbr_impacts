@@ -1307,7 +1307,9 @@ list(
     "RAL",
     0.01,
     "RVJ",
-    0.01
+    0.01,
+    "RWF",
+    0.001
   ),
   
   list(
@@ -1520,7 +1522,7 @@ list(
       NA,
       staff_survey_RAL,
       staff_survey_RVJ,
-      NA
+      staff_survey_RWF
     )
   ),
   

@@ -337,9 +337,11 @@ model_effects_table(LoS_output, "Average effects of switching to single bedrooms
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(LoS_output, "Mean effect on length of stay at general/acute hospitals")
+mean_forest_plot_DGH_Acute(LoS_output, "Mean effect on length of stay at general acute hospitals")
 
 ```
+
+The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay. 
 
 ### Waiting time- Median (in weeks)
 
@@ -360,6 +362,8 @@ mean_forest_plot_DGH_Acute(waiting_time_median_output, "Mean effect on median wa
 
 ```
 
+The effect on median waiting time varied from a 12% reduction to a 15% increase. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time.
+
 ### Waiting time - Total number of patients waiting
 
 The total number of patients on waiting lists significantly decreased at 1/5 sites (Royal Liverpool) and was unchanged at 3/5 sites (Papworth, Peterborough and Tunbridge Wells). Total waiting list size increased at Clatterbridge, although it should be noted that Clatterbridge switched to single bedrooms mid-2020 so the outcome period is affected by COVID-19, with a large spike in patients waiting to be seen in early 2021. It is possible the impact of COVID-19 was greater at Clatterbridge than at the other cancer centres used as controls.
@@ -378,6 +382,9 @@ model_effects_table(waiting_time_number_output, "Average effects of switching to
 mean_forest_plot_DGH_Acute(waiting_time_number_output, "Mean effect on number of patients on waiting lists at general acute hospitals")
 
 ```
+
+The effect on the total number of patients on waiting lists varied from a 12% reduction to a 88% increase at Clatterbridge (a specialist cancer centre). While the number of patients on the waiting list significantly increased for Clatterbridge, their median waiting time did not significantly increase. Waiting list size and waiting time will not only reflect the productivity and efficiency of the hospital, but also demand for services which may be impacted by different needs in different areas and by the availability of other services in the area. The mean effect at general acute hospitals was a non-significant 6% reduction in median waiting time.
+
 
 ### Bed Occupancy
 
@@ -398,6 +405,8 @@ model_effects_table(bed_occupancy_output, "Average effects of switching to singl
 mean_forest_plot_DGH_Acute(bed_occupancy_output, "Mean effect on bed occupancy at general acute hospitals")
 
 ```
+
+Bed occupancy either remains unchanged or increases by up to 13%, the mean effect at the 2 general acute hospitals is a non-significant 4% increase in bed occupancy. 
 
 ### Emergency Readmissions
 
@@ -560,7 +569,7 @@ To assess staff experience the NHS staff survey was used and we analysed the per
 
 The staff survey data is collected over a period of time in the autumn each year, but for analysis purposes we have set the date as the last day of the year in which the data was collected. Both Chase Farm and Royal Liverpool switched to single rooms during the autumn, so the data for the first data point in the outcome period would actually have been collected during the transition period which may have had an impact on the results.
 
-The percentage of staff that would recommend their trust as a place to work significantly increased at 1/5 sites (Papworth), and was unchanged at 2/5 (Chase Farm and Royal Liverpool). At 2/5 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work. At Southmead the decrease appears to be temporary, occurring in the first year post-switch to single bed rooms with positive responses increase back to the expected level in the second year of the outcome period.
+The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth), and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work. At Southmead the decrease appears to be temporary, occurring in the first year post-switch to single bed rooms with positive responses increase back to the expected level in the second year of the outcome period.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -1546,7 +1555,7 @@ Tunbridge_matches<-single_bedroom_matches_final|>
 Tunbridge_analysis<-staff_survey|>
   filter(organisation_code=="RWF" | (organisation_code %in% (Tunbridge_matches$matching_organisation_code)))
 
-mm <- MarketMatching::best_matches(
+  MarketMatching::best_matches(
       data = Tunbridge_analysis,
       id_variable = "organisation_code",
       date_variable = "month",
@@ -1561,6 +1570,21 @@ mm <- MarketMatching::best_matches(
 
 mm<-mm$BestMatches|>
   filter(organisation_code=="RWF")
+
+
+ model_results <-
+      MarketMatching::inference(
+        matched_markets = mm,
+        analyze_betas = TRUE,
+        test_market = "RWF",
+        end_post_period = (as.Date('2011-01-01') %m+% months(24)),
+        alpha = 0.05,
+        prior_level_sd = 0.05
+      )
+
+ cia_summary_plots(model_results, "rate",'2011-01-01')
+ 
+ 
 
 Tunbridge_analysis|>
   filter(organisation_code=="RWF" | (organisation_code %in% mm$BestControl))|>
@@ -1631,6 +1655,19 @@ staff_survey_REM<-tar_read(staff_survey_REM)
 cia_summary_plots( staff_survey_REM, "Positive Responses (%)", "2022-10-01")
 
 ```
+
+Tunbridge Wells (RWF)
+
+```{r, fig.width=5, fig.height=6}
+
+staff_survey_RWF<-tar_read(staff_survey_RWF)
+  
+#evaluating_model("RWF", NA,staff_survey,"2011-01-01", "positive_responses", 0.001, staff_survey_RWF, single_bedroom_matches_final)
+
+cia_summary_plots( staff_survey_RWF, "Positive Responses (%)", "2011-01-01")
+
+```
+For Tunbridge Wells due to the limited data the controls have been matched using purely correlation rather than dynamic time warping. 
 :::
 
 ::: {.column width="50%"}

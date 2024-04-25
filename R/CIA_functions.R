@@ -33,6 +33,12 @@ select_matches <-
       # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
     }
     
+    if (organisation=="RWF" & variable=="positive_responses") {
+         number<-0
+    }
+    else{number=1}
+    
+    
     # Find best matches
     cia_matches <- MarketMatching::best_matches(
       data = dataset,
@@ -45,7 +51,7 @@ select_matches <-
       },
       parallel = FALSE,
       warping_limit = 1,
-      dtw_emphasis = 1,
+      dtw_emphasis = number,
       matches = 5,
       start_match_period = (as.Date(switch_month) %m-% months(120)),
       end_match_period = (as.Date(switch_month))

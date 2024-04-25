@@ -993,3 +993,252 @@ summary_table_indicators_and_sites <-
     
     
   }
+
+
+# summary forest plot of main effects- TO BE FINISHED- NOT WORKING YET
+
+summary_forest_plot <- function(LoS_output,
+                                       waiting_time_median_output,
+                                       waiting_time_number_output,
+                                       bed_occupancy_output,
+                                       emergency_readmissions_output,
+                                       cleaning_costs_output,
+                                       sus_deaths_output,
+                                       falls_and_fractures_output,
+                                       cdiff_output,
+                                       staff_sickness_output,
+                                       staff_survey_output
+    
+){ 
+  
+  waiting_time_median_output2 <- waiting_time_median_output |>
+  mutate(measure = "Waiting time (median)")
+waiting_time_number_output2 <- waiting_time_number_output |>
+  mutate(measure = "Waiting time (number)")
+LoS_output2  <- LoS_output |>
+  mutate(measure = "Length of stay")
+emergency_readmissions_output2  <-
+  emergency_readmissions_output |>
+  mutate(measure = "Emergency readmissions")
+cleaning_costs_output2  <-
+  cleaning_costs_output |>
+  mutate(measure = "Cleaning costs")
+bed_occupancy_output2  <- bed_occupancy_output |>
+  mutate(measure = "Bed occupancy")
+cdiff_output2  <- cdiff_output |>
+  mutate(measure = "Healthcare acquired C.Difficile")
+falls_and_fractures_output2  <- falls_and_fractures_output |>
+  mutate(measure = "Falls and fractures")
+sus_deaths_output2  <- sus_deaths_output |>
+  mutate(measure = "Hospital deaths")
+staff_sickness_output2  <- staff_sickness_output |>
+  mutate(measure = "Staff sickness")
+staff_survey_output2  <- staff_survey_output |>
+  mutate(measure = "Staff survey")
+
+  
+combined_outputs <-
+  rbind(LoS_output2,
+        waiting_time_median_output2,
+        waiting_time_number_output2,
+        bed_occupancy_output2,
+        emergency_readmissions_output2,
+        cleaning_costs_output2,
+        sus_deaths_output2,
+        falls_and_fractures_output2,
+        cdiff_output2,
+        staff_sickness_output2,
+        staff_survey_output2)
+
+
+  results_data <- combined_outputs |>
+    filter(!is.na(site)) 
+
+  
+    output <-
+      rma.uni(RelEffect, (RelEffect.sd) ^ 2, method="DL", data = results_data) 
+    
+    df <- as.data.frame(output$b) |>
+      rename(mean = V1) |>
+      cbind(`95% lower` = output$ci.lb) |>
+      cbind(`95% upper` = output$ci.ub)
+    
+    weights <- as.data.frame(weights(output))
+    
+    weights <- weights |>
+      mutate(`weights(output)` = (`weights(output)` / sum(`weights(output)`)) *
+               10)
+    
+    mean_weight <- (mean(weights$`weights(output)`))
+  
+
+  
+  
+  mean <- mean(data$RelEffect, na.rm = TRUE)
+  
+  results_data <- results_data |>
+    mutate(site = fct_reorder(site, RelEffect)) |>
+    mutate(site = fct_rev(site)) |>
+    mutate(p=p*2)|> # convert from 1 to 2-tailed p value
+    mutate(p=as.character(p))|>
+    mutate(id = RelEffect) |>
+    cbind(weights) |>
+    rename(weight = `weights(output)`) |>
+    bind_rows(
+      data.frame(
+        site = "MEAN EFFECT",
+        RelEffect = df$mean,
+        RelEffect.upper = df$`95% upper`,
+        RelEffect.lower = df$`95% lower`,
+        Effect = paste0(
+          round(df$mean, 2),
+          " (",
+          round(df$`95% lower`, 2),
+          " - ",
+          round(df$`95% upper`, 2),
+          ")"
+        ),
+        id = -100,
+        sig = "mean",
+        weight = mean_weight,
+        group = "mean"
+      )
+    ) |>
+    bind_rows(data.frame(Effect = "Relative Effect (95% CI)",
+                         p = "p-value",
+                         id = 100))
+  
+  max1<-max(results_data$RelEffect.upper,
+            -(results_data$RelEffect.lower), na.rm=TRUE  )
+  
+  low<-min((results_data$RelEffect.lower),
+           -(max1/2), na.rm=TRUE)
+  
+  up<-max(results_data$RelEffect.upper,
+          (max1/2), na.rm=TRUE)
+  
+  p_mid <- results_data |>
+    ggplot(aes(x = RelEffect, y = (fct_reorder(site, id)))) +
+    theme_classic() +
+    geom_point(aes(
+      x = RelEffect,
+      colour = sig,
+      size = weight,
+      shape = group
+    )) +
+    geom_linerange(aes(
+      xmin = RelEffect.lower,
+      xmax = RelEffect.upper,
+      colour = sig
+    ),
+    size = 0.7) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    scale_shape_manual(values = c("individual" = 15, "mean" = 16)) +
+    scale_color_manual(
+      values = c(
+        "mean" = "black",
+        "Non-Sig" = "#686f73",
+        "Positive Effect" = "#129957" ,
+        "Negative Effect" = "#ec6555"
+      )
+    ) +
+    labs(x = "Relative Effect Size", y = "",
+         caption = "Square size indicates the weight of each point in calculating the mean (i.e. larger square indicates a greater contribution to the mean)") +
+    coord_cartesian(ylim = c(1, nrow(results_data)),
+                    xlim = c(low,up)) +
+    annotate(
+      "text",
+      x = low / 1.5,
+      y = nrow(results_data),
+      size = 3,
+      label = "Decrease with SBR",
+      colour = "#686f73"
+    ) +
+    annotate(
+      "text",
+      x = up / 2,
+      y = nrow(results_data),
+      size = 3,
+      label = "Increase with SBR",
+      colour = "#686f73"
+    ) +
+    theme(
+      legend.position = "none",
+      axis.line.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.y = element_blank(),
+      plot.caption.position = "panel",
+      plot.caption = element_text(hjust = .85)
+    )
+  
+  
+  
+  p_left <-
+    results_data |>
+    ggplot(aes(y = fct_reorder(site, id))) +
+    geom_text(
+      aes(x = 0, label = site),
+      hjust = 0,
+      size = 3,
+      fontface = "bold"
+    ) +
+    geom_text(
+      aes(x = 2, label = Effect),
+      hjust = 0,
+      size = 3,
+      fontface = ifelse(
+        results_data$Effect == "Relative Effect (95% CI)",
+        "bold",
+        "plain"
+      )
+    ) +
+    theme_void() +
+    coord_cartesian(xlim = c(0, 4))
+  
+  
+  p_right <-
+    results_data |>
+    ggplot() +
+    geom_text(
+      aes(
+        x = 0,
+        y = fct_reorder(site, id),
+        label = p
+      ),
+      hjust = 0,
+      size = 3,
+      fontface = ifelse(results_data$p == "p-value", "bold", "plain")
+    ) +
+    theme_void()
+  
+  layout <- c(area(
+    t = 0,
+    l = 0,
+    b = 17,
+    r = 6
+  ),
+  area(
+    t = 1,
+    l = 7,
+    b = 17,
+    r = 13
+  ),
+  area(
+    t = 0,
+    l = 13,
+    b = 17,
+    r = 15
+  ))
+  # final plot arrangement
+  p_left + p_mid + p_right + plot_layout(design = layout)+
+    plot_annotation(subtitle= subtitle,
+                    theme=theme(plot.subtitle=element_text(hjust=0, size=13,face="bold", colour="#686f73") ))
+}
+
+
+
+
+
+
+

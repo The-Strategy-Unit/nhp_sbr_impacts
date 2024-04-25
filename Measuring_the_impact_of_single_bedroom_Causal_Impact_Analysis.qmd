@@ -61,8 +61,7 @@ bed_occupancy <- tar_read(bed_occupancy_cia_format)
 length_of_stay <- tar_read(length_of_stay_cia_format)
 
 ## Emergency readmissions
-emergency_readmissions <-
-  tar_read(emergency_readmissions_cia_format)
+emergency_readmissions <- tar_read(emergency_readmissions_cia_format)
 
 ## Friends & Family
 friends_and_family <- tar_read(friends_and_family_cia_format)
@@ -76,7 +75,7 @@ staff_sickness <- tar_read(staff_sickness_cia_format)
 ## Healthcare acquired infections - Infection rate per 10,000 bed days
 hcai <- tar_read(hcai_cia_format)
 
-cdiff<-tar_read(cdiff_cia_format)
+cdiff <- tar_read(cdiff_cia_format)
 
 ## In-hospital Falls and Fractures - Fall rate per 1000 bed days
 falls_and_fractures <- tar_read(falls_and_fractures_cia_format)
@@ -94,20 +93,20 @@ cleaning_costs <- tar_read(cleaning_costs_cia_format)
 single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
 
 #Model outputs
-waiting_time_median_output<-tar_read(waiting_time_median_output)
-waiting_time_number_output<-tar_read(waiting_time_number_output)
-LoS_output<-tar_read(LoS_output)
-emergency_readmissions_output<-tar_read(emergency_readmissions_output)
-bed_occupancy_output<-tar_read(bed_occupancy_output)
-hcai_output<-tar_read(hcai_output)
-cdiff_output<-tar_read(cdiff_output)
-falls_and_fractures_output<-tar_read(falls_and_fractures_output)
-sus_deaths_output<-tar_read(sus_deaths_output)
-friends_and_family_output<-tar_read(friends_and_family_output)
-staff_sickness_output<-tar_read(staff_sickness_output)
-staff_turnover_output<-tar_read(staff_turnover_output)
-staff_survey_output<-tar_read(staff_survey_output)
-cleaning_costs_output<-tar_read(cleaning_costs_output)
+waiting_time_median_output <- tar_read(waiting_time_median_output)
+waiting_time_number_output <- tar_read(waiting_time_number_output)
+LoS_output <- tar_read(LoS_output)
+emergency_readmissions_output <- tar_read(emergency_readmissions_output)
+bed_occupancy_output <- tar_read(bed_occupancy_output)
+hcai_output <- tar_read(hcai_output)
+cdiff_output <- tar_read(cdiff_output)
+falls_and_fractures_output <- tar_read(falls_and_fractures_output)
+sus_deaths_output <- tar_read(sus_deaths_output)
+friends_and_family_output <- tar_read(friends_and_family_output)
+staff_sickness_output <- tar_read(staff_sickness_output)
+staff_turnover_output <- tar_read(staff_turnover_output)
+staff_survey_output <- tar_read(staff_survey_output)
+cleaning_costs_output <- tar_read(cleaning_costs_output)
 
 source("R/CIA_Functions.R")
 source("R/plot_functions.R")
@@ -175,77 +174,66 @@ The review summary suggests that **"Overall, 87% of studies analysed by Taylor e
 An overview of the seven hospitals switch to SBR is shown in @tbl-sbr-switch.
 
 ```{r table_sbr_switch}
-#| label: tbl-sbr_switch
+#| label: tbl-sbr-switch
 #| tbl-cap: "Details of the switch to single bed accommodation at the seven intervention sites."
 
-sbr_percent_cia_format <- tar_read(sbr_percent_cia_format)
+sbr_details <- read_excel("hospitals_summary.xlsx") |>
+  mutate(
+    pre_sbr_perc = round(pre_sbr * 100 / post_all, 2),
+    post_sbr_perc = round(post_sbr * 100 / post_all, 2),
+    date = format(date, "%b %Y")
+  )
 
-tar_read(hospitals) |>
-  mutate(last_march = as.Date(
-    case_when(
-      month(switch_month) < 3 ~ format(switch_month, 
-                                       str_replace("%Y-03-01", 
-                                                   "Y", 
-                                                   as.character(year(switch_month) - 1))),
-      month(switch_month) > 3 ~ format(switch_month, "%Y-03-01"),
-      TRUE ~ as.character(switch_month)
-    )
-  ),
-  next_march = last_march + years(1)) |>
-  left_join(sbr_percent_cia_format,
-            by = c("last_march" = "month", "organisation_code")) |>
-  left_join(sbr_percent_cia_format,
-            by = c("next_march" = "month", "organisation_code")) |>
-  mutate(across(contains("percentage"), ~round(., 2)),
-         switch_month = format(switch_month, "%b %Y")) |>
-  select("Hospital" = name,
-         "SBR switch month" = switch_month,
-         "SBR % before switch" = percentage_single_bedrooms.x,
-         "SBR % after switch" = percentage_single_bedrooms.y) |>
-    as_flextable(
-      hide_grouplabel = TRUE,
-      max_row = 20,
-      show_coltype = FALSE
-    ) |>
-    align(part = "header", align = "center") |>
-    bg(bg = "#f9bf07", part = "header") |>
-    bold(bold = TRUE, part = "header") |>
-    fontsize(size = 12, part = "all") |>
-    padding(
-      padding = 2,
-      part = "all",
-      padding.top = NULL
-    ) |>
-    autofit()
+sbr_details |>
+  select(
+    "Hospital" = name,
+    "Switch month" = date,
+    "SBR% before switch" = pre_sbr_perc,
+    "SBR% after switch" = post_sbr_perc
+  ) |>
+  na.omit() |>
+  as_flextable(
+    hide_grouplabel = TRUE,
+    max_row = 20,
+    show_coltype = FALSE
+  ) |>
+  align(part = "header", align = "center") |>
+  bg(bg = "#f9bf07", part = "header") |>
+  bold(bold = TRUE, part = "header") |>
+  fontsize(size = 12, part = "all") |>
+  padding(padding = 2,
+          part = "all",
+          padding.top = NULL) |>
+  autofit()
 ```
 
 ## Royal Liverpool University Hospital
 
-Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. Provider also manages Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating 16.6% single bed room accommodation [@eric].
+Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. Provider also manages Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating `r sbr_details |> filter(name == "Royal Liverpool") |> pull(pre_sbr_perc)`% single bed room accommodation [@eric].
 
 ## Clatterbridge Cancer Centre
 
-The Clatterbridge Trust operates 3 cancer centres in the Cheshire and Merseyside area. The Liverpool centre moved to fully single-bed rooms in June 2020 having previously been at 41% SBR [@eric]. The centre offers the full range of cancer treatment, both routine and surgical as well as diagnostics, outpatient appointments and associated support services [@ccc_liverpool].
+The Clatterbridge Trust operates 3 cancer centres in the Cheshire and Merseyside area. The Liverpool centre moved to fully single-bed rooms in June 2020 having previously been at `r sbr_details |> filter(name == "Clatterbridge Cancer Centre") |> pull(pre_sbr_perc)`% SBR [@eric]. The centre offers the full range of cancer treatment, both routine and surgical as well as diagnostics, outpatient appointments and associated support services [@ccc_liverpool].
 
 ## Royal Papworth
 
-Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to single bed accommodation occurred in May 2019. Prior to the change, the site had been operating 32.8% single bed room accommodation [@eric].
+Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to single bed accommodation occurred in May 2019. Prior to the change, the site had been operating `r sbr_details |> filter(name == "Royal Papworth") |> pull(pre_sbr_perc)`% single bed room accommodation [@eric].
 
 ## Chase Farm
 
-Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018, has 90% single bed rooms having previously had 29.4% [@eric].
+Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018, has `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(post_sbr_perc)`% single bed rooms having previously had `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(pre_sbr_perc)`% [@eric].
 
 ## Southmead
 
-Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with 75% single bed ensuite rooms. Previously the SBR provision for the trusts main sites was around 10% [@eric].
+Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with `r sbr_details |> filter(name == "Southmead Hospital") |> pull(post_sbr_perc)`% single bed ensuite rooms. Previously the SBR provision for the trusts main sites was around `r sbr_details |> filter(name == "Southmead Hospital") |> pull(pre_sbr_perc)`% [@eric].
 
 ## Tunbridge Wells
 
-The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in 2 phases in January 2011 (maternity and children) and September 2011 (other inpatient services). According to ERIC [@eric] the site has 80% single bed inpatient rooms, with levels prior to 2011 being 28.3%.
+The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in 2 phases in January 2011 (maternity and children) and September 2011 (other inpatient services). According to ERIC [@eric] the site has `r sbr_details |> filter(name == "Tunbridge Wells") |> pull(post_sbr_perc)`% single bed inpatient rooms, with levels prior to 2011 being `r sbr_details |> filter(name == "Tunbridge Wells") |> pull(pre_sbr_perc)`%.
 
 ## Peterborough
 
-Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened in November 2010 offering a range of acute and specialist services [@peterborough_web]. The site went from 10% single bed inpatient rooms to 98% SBR [@eric].
+Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened in November 2010 offering a range of acute and specialist services [@peterborough_web]. The site went from `r sbr_details |> filter(name == "Peterborough (city) Hospital") |> pull(pre_sbr_perc)`% single bed inpatient rooms to `r sbr_details |> filter(name == "Peterborough (city) Hospital") |> pull(post_sbr_perc)`% SBR [@eric].
 
 # Impact measures and data sources
 
@@ -1529,7 +1517,7 @@ cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 
 ### Staff survey
 
-```{r, include=FALSE}
+```{r, include=FALSE, eval = FALSE}
 
 Peterborough_matches<-single_bedroom_matches_final|>
   filter(organisation_code=="RGN")|>

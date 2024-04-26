@@ -341,19 +341,23 @@ list(
     }"
     )
   ),
+  tar_target(
+    control_pool,
+    get_controls(single_bedroom_matches_final)
+  ),
   tarchetypes::tar_map(
     list(
-      org_code_of_interest = c("REM",
-                               "REN",
-                               "RGM",
-                               "RGN",
-                               "RAL",
-                               "RVJ",
-                               "RWF")
+     organisation_of_interest = c("REM",
+                   "REN",
+                   "RGM",
+                   "RGN",
+                   "RAL",
+                   "RVJ",
+                   "RWF")
     ),
     tar_target(
       controls_table,
-      get_controls_table(single_bedroom_matches_final, org_code_of_interest)
+      format_controls_table(control_pool, organisation_of_interest)
     )
   ),
   
@@ -910,7 +914,7 @@ list(
           rtt_waiting_time_cia_format,
           "median_by_prov",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -948,7 +952,7 @@ list(
           rtt_waiting_time_cia_format,
           "number_incomplete",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -987,7 +991,7 @@ list(
           length_of_stay_cia_format,
           "avg_los",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1025,7 +1029,7 @@ list(
           emergency_readmissions_cia_format,
           "perc",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1061,7 +1065,7 @@ list(
           bed_occupancy_cia_format,
           "bed_occupancy",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1078,7 +1082,7 @@ list(
       hcai_cia_format,
       "combined_rate",
       0.1,
-      single_bedroom_matches_final,
+      control_pool,
       hospitals
     )
   ),
@@ -1119,7 +1123,7 @@ list(
           cdiff_cia_format,
           "rate",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1159,7 +1163,7 @@ list(
           falls_and_fractures_cia_format,
           "ff_rate",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1200,7 +1204,7 @@ list(
           sus_deaths_cia_format,
           "hosp_rate_1000",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1234,7 +1238,7 @@ list(
           friends_and_family_cia_format,
           "friends_and_family_percent",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1270,7 +1274,7 @@ list(
           staff_sickness_cia_format,
           "staff_sickness_percent",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1287,7 +1291,7 @@ list(
       staff_turnover_cia_format,
       "leaving_rate",
       0.1,
-      single_bedroom_matches_final,
+      control_pool,
       hospitals
     )
   ),
@@ -1323,7 +1327,7 @@ list(
           staff_survey_cia_format,
           "positive_responses",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )
@@ -1357,7 +1361,7 @@ list(
           cleaning_costs_cia_format,
           "cleaning_service_cost",
           prior_sd,
-          single_bedroom_matches_final,
+          control_pool,
           hospitals
         )
       )

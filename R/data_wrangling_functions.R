@@ -8,8 +8,7 @@ scrape_xls <- function(url, sheet = 1, skip = 0) {
                 destfile = tmp,
                 mode = "wb")
   
-  data <-
-    readxl::read_excel(path = tmp,
+  data <- readxl::read_excel(path = tmp,
                        sheet = sheet,
                        skip = skip) |>
     janitor::clean_names()
@@ -955,3 +954,16 @@ staff_survey_formatting <-
     
     return(survey_data)
   }
+
+# Reading in SBR hospitals data.
+get_hospitals_info <- function(filepath) {
+  data <- readxl::read_excel(filepath) |>
+    mutate(switch_month = as.Date(date)) |>
+    select(name,
+           organisation_code,
+           site_code,
+           switch_month) |>
+    na.omit()
+  
+  return(data)
+}

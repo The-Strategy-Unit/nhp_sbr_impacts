@@ -41,6 +41,18 @@ list(
   #----------------------------------------------------------------------------#
   #### Data Wrangling ####
   
+  # SBR hospitals
+  tar_target(
+    hospitals_filepath,
+    "hospitals_summary.xlsx",
+    format = "file"
+  ),
+  
+  tar_target(
+    hospitals,
+    get_hospitals_info(hospitals_filepath)
+  ),
+  
   # Bed occupancy data
   tar_target(
     bed_occupancy_filepath,
@@ -457,43 +469,6 @@ list(
   ),
   #----------------------------------------------------------------------------#
   #### Standard charts ####
-  tar_target(
-    hospitals,
-    data.frame(
-      "name" = c(
-        "Royal Liverpool",
-        "Clatterbridge Cancer Centre",
-        "Royal Papworth",
-        "Peterborough (district) Hospital",
-        "Chase Farm Hospital",
-        "Southmead Hospital",
-        "Tunbridge Wells"
-      ),
-      "organisation_code" = c("REM",
-                              "REN",
-                              "RGM",
-                              "RGN",
-                              "RAL",
-                              "RVJ",
-                              "RWF"),
-      "site_code" = c("REMRQ",
-                      "REN22",
-                      "RGM22",
-                      "RGN80",
-                      "RALC7",
-                      "RVJ01",
-                      "RWFTW"),
-      "switch_month" = c(
-        as.Date("2022-10-01"),
-        as.Date("2020-06-01"),
-        as.Date("2019-05-01"),
-        as.Date("2010-11-01"),
-        as.Date("2018-09-01"),
-        as.Date("2014-05-01"),
-        as.Date("2011-01-01")
-      )
-    )
-  ),
   tarchetypes::tar_map(
     list(
       org_code_of_interest = c("REM",

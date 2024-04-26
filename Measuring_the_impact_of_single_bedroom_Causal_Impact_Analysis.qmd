@@ -314,7 +314,7 @@ A full list and map of the sites in the control pools for each intervention site
 
 ## Causal Impact Analysis {#sec-methods-cia}
 
-The causal impact analysis is implemented using the `MarketMatching` [@MarketMatching] package in R , which uses the `dtw` [@dtw] and `CausalImpact R` [@CausalImpact] packages, to provide a simple way to find the most appropriate control matches using dynamic time warping and then uses these controls for causal impact analysis using Bayesian structural time-series models.
+The causal impact analysis is implemented using the `MarketMatching` [@MarketMatching] package in R , which uses the `dtw` [@dtw] and `CausalImpact` [@CausalImpact] R packages, to provide a simple way to find the most appropriate control matches using dynamic time warping and then uses these controls for causal impact analysis using Bayesian structural time-series models.
 
 Following the multi-phase control selection process outlined in @sec-methods-controls, the control pools for each site were fed into the `MarketMatching` package. This step selects the best matched control sites based on them having similar trends in the variable of interest over time to the study site. Up to 5 control sites were selected for each study site, but for some sites, particularly the specialist centres, the number of appropriate matches was smaller and so fewer than 5 control sites were selected. Controls sites are selected for each site and indicator variable and as this matching of controls is based on similar trends over time a study site may have different control sites selected for different indicators. A list of the control providers/sites for each indicator can be found in Appendix D (@sec-appendix-D).
 

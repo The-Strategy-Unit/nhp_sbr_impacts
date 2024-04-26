@@ -7,7 +7,7 @@ format_controls_table <- function(data, org_code) {
     select(
       "Provider" = trust_name,
       "Provider code" = matching_organisation_code,
-      "Site name" = site_name,
+      "Site" = site_name,
       "Site code" = site_code
     ) |>
     as_flextable(
@@ -93,7 +93,7 @@ get_market_matched_controls_table_site <- function(hospitals,
       name,
       "Provider" = trust_name,
       "Provider code" = matching_organisation_code,
-      "Site name" = site_name,
+      "Site" = site_name,
       "Site code" = matching_site_code
     )  |>
     format_market_matched_controls_table()

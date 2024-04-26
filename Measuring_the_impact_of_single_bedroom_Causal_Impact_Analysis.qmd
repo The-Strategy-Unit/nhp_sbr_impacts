@@ -32,25 +32,34 @@ css: styles.css
 bibliography: references.bib
 ---
 
-```{r, include=FALSE}
-
-library(tidyverse)
-library(MarketMatching)
-library(tsibble)
-library(targets)
-library(janitor)
-library(readxl)
-library(zoo)
-library(lubridate)
-library(ggrepel)
-library(flextable)
-library(egg)
-library(StrategyUnitTheme)
-library(patchwork)
-library(metafor)
+```{r Packages, include=FALSE}
 library(bayesmeta)
 library(DiagrammeR)
+library(egg)
+library(flextable)
+library(ggrepel)
+library(glue)
+library(janitor)
+library(lubridate)
+library(MarketMatching)
+library(metafor)
+library(patchwork)
+library(readxl)
+library(StrategyUnitTheme)
+library(stringr)
+library(targets)
+library(tidyverse)
+library(tsibble)
+library(zoo)
+```
 
+```{r Functions}
+source("R/CIA_Functions.R")
+source("R/plot_functions.R")
+source("R/formatting_outputs_functions.R")
+```
+
+```{r Reading in data}
 ## RTT waiting time
 rtt_waiting_time <- tar_read(rtt_waiting_time_cia_format)
 
@@ -108,8 +117,9 @@ staff_turnover_output <- tar_read(staff_turnover_output)
 staff_survey_output <- tar_read(staff_survey_output)
 cleaning_costs_output <- tar_read(cleaning_costs_output)
 
-source("R/CIA_Functions.R")
-source("R/plot_functions.R")
+hospitals_summary <- read_excel("hospitals_summary.xlsx")
+controls <- tar_read(control_pool)
+hospitals <- tar_read(hospitals)
 ```
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
@@ -177,7 +187,7 @@ An overview of the seven hospitals switch to SBR is shown in @tbl-sbr-switch.
 #| label: tbl-sbr-switch
 #| tbl-cap: "Details of the switch to single bed accommodation at the seven intervention sites."
 
-sbr_details <- read_excel("hospitals_summary.xlsx") |>
+sbr_details <- hospitals_summary |>
   mutate(
     pre_sbr_perc = round(pre_sbr * 100 / post_all, 2),
     post_sbr_perc = round(post_sbr * 100 / post_all, 2),
@@ -302,7 +312,7 @@ Differences in floor space, the median age of inpatients and the elective:non-el
 
 A full list and map of the sites in the control pools for each intervention site can be found in Appendix C (@sec-appendix-C).
 
-## Causal Impact Analysis
+## Causal Impact Analysis {#sec-methods-cia}
 
 The causal impact analysis is implemented using the `MarketMatching` [@MarketMatching] package in R , which uses the `dtw` [@dtw] and `CausalImpact R` [@CausalImpact] packages, to provide a simple way to find the most appropriate control matches using dynamic time warping and then uses these controls for causal impact analysis using Bayesian structural time-series models.
 
@@ -1274,7 +1284,7 @@ cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 :::
 :::
 
-### Falls, Fractures and injuries in hospital
+### Falls, fractures and injuries in hospital
 
 ::: panel-tabset
 #### Decrease
@@ -1334,7 +1344,7 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 :::
 :::
 
-### Healthcare acquired infections- combined rate
+### Healthcare acquired infections - combined rate
 
 #### No change
 
@@ -1349,7 +1359,7 @@ hcai_REM<-tar_read(hcai_REM)
 cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
 ```
 
-### Healthcare acquired infections- C.Difficile
+### Healthcare acquired infections - C.Difficile
 
 #### Decrease
 
@@ -1824,10 +1834,81 @@ tar_read(controls_table_RWF)
 
 ## D. List of control sites/providers by indicator {#sec-appendix-D}
 
-This would be a list of sites/providers identified by `MarketMatching` for each indicator.
+A different set of controls was identified by `MarketMatching` for each indicator and each intervention hospital for the CIA (@sec-methods-cia). A full list of the sites or providers used in each CIA is available below for each indicator and intervention hospital.
 
+::: panel-tabset
 
+### Length of stay
+```{r LoS_controls}
+get_market_matched_controls_table_site(hospitals, controls, "LoS")
+```
 
+### Waiting time - Median (in weeks)
+```{r waiting_time_median}
+get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_median")
+```
+
+### Waiting time - Total number of patients waiting
+```{r waiting_time_number_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_number")
+```
+
+### Bed occupancy
+```{r bed_occupancy_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "bed_occupancy")
+```
+
+### Emergency readmissions
+```{r emergency_readmissions_controls}
+get_market_matched_controls_table_site(hospitals, controls, "emergency_readmissions")
+```
+
+### Cleaning costs
+```{r cleaning_costs_controls}
+get_market_matched_controls_table_site(hospitals, controls, "cleaning_costs")
+```
+
+### Deaths in hospital
+```{r sus_deaths_controls}
+get_market_matched_controls_table_site(hospitals, controls, "sus_deaths")
+```
+
+### Falls, fractures and injuries in hospital
+```{r falls_and_fractures_controls}
+get_market_matched_controls_table_site(hospitals, controls, "falls_and_fractures")
+```
+
+### Healthcare acquired infections - combined rate
+```{r hcai_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "hcai")
+```
+
+### Healthcare acquired infections - C.Difficile
+```{r cdiff_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "cdiff")
+```
+
+### Patient experience - Friends and Family scores
+```{r friends_and_family_controls}
+get_market_matched_controls_table_site(hospitals, controls, "friends_and_family")
+```
+
+### Staff sickness
+```{r staff_sickness_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "staff_sickness")
+```
+
+### Staff turnover
+```{r staff_turnover_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "staff_turnover")
+```
+
+### Staff survey
+```{r staff_survey_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "staff_survey")
+```
+
+:::
 
 ## E. Provider and site codes? {#sec-appendix-E}
 

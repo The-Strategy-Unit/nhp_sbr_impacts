@@ -533,9 +533,64 @@ forest_plot <- function(data, caption, subtitle) {
   
 }
 
+
+# Function to calculate mean effect for DGHs
+
+meta_analysis<-function(data){
+  
+  results_data <- data |>
+    filter(!is.na(site)) |>
+    filter(site != "Papworth" &
+             site != "Clatterbridge" &
+             site != "Chase Farm") |>
+    mutate(sig = case_when(
+      (RelEffect.upper > 0 & RelEffect < 0) |
+        (RelEffect.lower < 0 & RelEffect > 0)
+      ~ "Non-sig",
+      (RelEffect.upper < 0 &
+         RelEffect < 0) ~ "Positive Effect",
+      (RelEffect.lower > 0 &
+         RelEffect > 0) ~ "Negative Effect"
+    )) |>
+    mutate(group = "individual")
+  
+  dataset <- deparse(substitute(data))
+  
+  if (dataset %in% c("bed_occupancy_output",
+                     "friends_and_family_output",
+                     "staff_survey_output")) {
+    results_data <- results_data |>
+      mutate(sig = case_when(
+        (RelEffect.upper > 0 & RelEffect < 0) |
+          (RelEffect.lower < 0 & RelEffect > 0)
+        ~ "Non-sig",
+        (RelEffect.upper < 0 &
+           RelEffect < 0) ~ "Negative Effect",
+        (RelEffect.lower > 0 &
+           RelEffect > 0) ~ "Positive Effect"
+      ))
+  }
+  
+    output <-
+      rma.uni(RelEffect,
+              (RelEffect.sd) ^ 2,
+              method = "DL",
+              data = results_data)
+    
+    df <- as.data.frame(output$b) |>
+      rename(mean = V1) |>
+      cbind(`95% lower` = output$ci.lb) |>
+      cbind(`95% upper` = output$ci.ub)
+    
+  
+  return(df)
+  
+}
+
 # Function to generate mean forest plot for DGHs
 
 mean_forest_plot_DGH_Acute <- function(data, subtitle) {
+ 
   results_data <- data |>
     filter(!is.na(site)) |>
     filter(site != "Papworth" &
@@ -603,6 +658,7 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
   }
   
   mean <- mean(data$RelEffect, na.rm = TRUE)
+  
   
   results_data <- results_data |>
     mutate(site = fct_reorder(site, RelEffect)) |>
@@ -839,22 +895,18 @@ model_effects_table <- function(data, title) {
 summary_table_indicators_and_sites <-
   function(LoS_output,
            waiting_time_median_output,
-           waiting_time_number_output,
            bed_occupancy_output,
            emergency_readmissions_output,
            cleaning_costs_output,
            sus_deaths_output,
            falls_and_fractures_output,
-           hcai_output,
            cdiff_output,
            friends_and_family_output,
            staff_sickness_output,
            staff_turnover_output,
            staff_survey_output)   {
     waiting_time_median_output2 <- waiting_time_median_output |>
-      mutate(measure = "Waiting time (median)")
-    waiting_time_number_output2 <- waiting_time_number_output |>
-      mutate(measure = "Waiting time (number)")
+      mutate(measure = "Waiting time")
     LoS_output2  <- LoS_output |>
       mutate(measure = "Length of stay")
     emergency_readmissions_output2  <-
@@ -865,16 +917,14 @@ summary_table_indicators_and_sites <-
       mutate(measure = "Cleaning costs")
     bed_occupancy_output2  <- bed_occupancy_output |>
       mutate(measure = "Bed occupancy")
-    hcai_output2  <- hcai_output |>
-      mutate(measure = "Healthcare acquired infections- combined rate")
     cdiff_output2  <- cdiff_output |>
       mutate(measure = "Healthcare acquired C.Difficile")
     falls_and_fractures_output2  <- falls_and_fractures_output |>
-      mutate(measure = "Falls and fractures")
+      mutate(measure = "Falls and injuries")
     sus_deaths_output2  <- sus_deaths_output |>
       mutate(measure = "Hospital deaths")
     friends_and_family_output2  <- friends_and_family_output |>
-      mutate(measure = "Patient experience- friends and family test")
+      mutate(measure = "Patient experience")
     staff_sickness_output2  <- staff_sickness_output |>
       mutate(measure = "Staff sickness")
     staff_survey_output2  <- staff_survey_output |>
@@ -885,13 +935,11 @@ summary_table_indicators_and_sites <-
     combined_outputs <- rbind(
         LoS_output2,
         waiting_time_median_output2,
-        waiting_time_number_output2,
         bed_occupancy_output2,
         emergency_readmissions_output2,
         cleaning_costs_output2,
         sus_deaths_output2,
         falls_and_fractures_output2,
-        hcai_output2,
         cdiff_output2,
         friends_and_family_output2,
         staff_sickness_output2,
@@ -926,14 +974,14 @@ summary_table_indicators_and_sites <-
         ifelse((
           combined_outputs == "\U2191" &
             (
-              combined_outputs$measure != "Patient experience- friends and family test" &
+              combined_outputs$measure != "Patient experience" &
                 combined_outputs$measure != "Bed occupancy" &
                 combined_outputs$measure != "Staff survey"
             )
         ) |
           ((
             combined_outputs$measure %in% c(
-              "Patient experience- friends and family test" ,
+              "Patient experience" ,
               "Bed occupancy",
               "Staff survey"
             )
@@ -958,14 +1006,14 @@ summary_table_indicators_and_sites <-
         ifelse((
           combined_outputs == "\U2191" &
             (
-              combined_outputs$measure != "Patient experience- friends and family test" &
+              combined_outputs$measure != "Patient experience" &
                 combined_outputs$measure != "Bed occupancy" &
                 combined_outputs$measure != "Staff survey"
             )
         ) |
           ((
             combined_outputs$measure %in% c(
-              "Patient experience- friends and family test" ,
+              "Patient experience" ,
               "Bed occupancy",
               "Staff survey"
             )
@@ -1013,7 +1061,6 @@ summary_table_indicators_and_sites <-
 
 summary_forest_plot <- function(LoS_output,
                                 waiting_time_median_output,
-                                waiting_time_number_output,
                                 bed_occupancy_output,
                                 emergency_readmissions_output,
                                 cleaning_costs_output,
@@ -1022,29 +1069,36 @@ summary_forest_plot <- function(LoS_output,
                                 cdiff_output,
                                 staff_sickness_output,
                                 staff_survey_output) {
-  waiting_time_median_output2 <- waiting_time_median_output |>
+  
+  
+  waiting_time_median_output2 <- meta_analysis(waiting_time_median_output) |>
     mutate(measure = "Waiting time (median)")
-  waiting_time_number_output2 <- waiting_time_number_output |>
-    mutate(measure = "Waiting time (number)")
-  LoS_output2  <- LoS_output |>
+  
+  LoS_output2  <- meta_analysis(LoS_output) |>
     mutate(measure = "Length of stay")
-  emergency_readmissions_output2  <-
-    emergency_readmissions_output |>
+  
+  emergency_readmissions_output2  <- meta_analysis(emergency_readmissions_output) |>
     mutate(measure = "Emergency readmissions")
-  cleaning_costs_output2  <-
-    cleaning_costs_output |>
+  
+  cleaning_costs_output2  <- meta_analysis(cleaning_costs_output) |>
     mutate(measure = "Cleaning costs")
-  bed_occupancy_output2  <- bed_occupancy_output |>
+  
+  bed_occupancy_output2  <- meta_analysis(bed_occupancy_output) |>
     mutate(measure = "Bed occupancy")
-  cdiff_output2  <- cdiff_output |>
+  
+  cdiff_output2  <- meta_analysis(cdiff_output) |>
     mutate(measure = "Healthcare acquired C.Difficile")
-  falls_and_fractures_output2  <- falls_and_fractures_output |>
-    mutate(measure = "Falls and fractures")
-  sus_deaths_output2  <- sus_deaths_output |>
+  
+  falls_and_fractures_output2  <- meta_analysis(falls_and_fractures_output) |>
+    mutate(measure = "Falls and injuries")
+  
+  sus_deaths_output2  <- meta_analysis(sus_deaths_output) |>
     mutate(measure = "Hospital deaths")
-  staff_sickness_output2  <- staff_sickness_output |>
+  
+  staff_sickness_output2  <- meta_analysis(staff_sickness_output) |>
     mutate(measure = "Staff sickness")
-  staff_survey_output2  <- staff_survey_output |>
+  
+  staff_survey_output2  <- meta_analysis(staff_survey_output) |>
     mutate(measure = "Staff survey")
   
   combined_outputs <- rbind(
@@ -1060,29 +1114,11 @@ summary_forest_plot <- function(LoS_output,
       staff_sickness_output2,
       staff_survey_output2
     )
+
   
   results_data <- combined_outputs |>
     filter(!is.na(site))
   
-  output <- rma.uni(RelEffect,
-            (RelEffect.sd) ^ 2,
-            method = "DL",
-            data = results_data)
-  
-  df <- as.data.frame(output$b) |>
-    rename(mean = V1) |>
-    cbind(`95% lower` = output$ci.lb) |>
-    cbind(`95% upper` = output$ci.ub)
-  
-  weights <- as.data.frame(weights(output))
-  
-  weights <- weights |>
-    mutate(`weights(output)` = (`weights(output)` / sum(`weights(output)`)) *
-             10)
-  
-  mean_weight <- (mean(weights$`weights(output)`))
-  
-  mean <- mean(data$RelEffect, na.rm = TRUE)
   
   results_data <- results_data |>
     mutate(site = fct_reorder(site, RelEffect)) |>

@@ -221,7 +221,6 @@ indicator_availability_over_time <-
            staff_turnover_cia_format,
            staff_sickness_cia_format,
            staff_survey_cia_format,
-           hcai_cia_format,
            cdiff_cia_format,
            falls_and_fractures_cia_format,
            sus_deaths_cia_format,
@@ -232,13 +231,12 @@ indicator_availability_over_time <-
            cleaning_costs_cia_format) {
     measure <-
       c(
-        "Patient experience-\nfriends and family test",
+        "Patient experience",
         "Staff turnover",
         "Staff sickness",
         "Staff survey",
-        "Healthcare acquired infections- combined",
-        "Healthcare acquired infections- C.Difficile",
-        "Falls and fractures",
+        "Healthcare acquired C.Difficile",
+        "Falls and injuries",
         "Hospital deaths",
         "RTT waiting times",
         "Bed occupancy",
@@ -248,7 +246,6 @@ indicator_availability_over_time <-
       )
     level <-
       c("site",
-        "trust",
         "trust",
         "trust",
         "trust",
@@ -269,7 +266,6 @@ indicator_availability_over_time <-
         "Health & Safety",
         "Health & Safety",
         "Health & Safety",
-        "Health & Safety",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
@@ -282,7 +278,6 @@ indicator_availability_over_time <-
         min(staff_turnover_cia_format$month),
         min(staff_sickness_cia_format$month),
         min(staff_survey_cia_format$month),
-        min(hcai_cia_format$month),
         min(cdiff_cia_format$month),
         min(falls_and_fractures_cia_format$month),
         min(sus_deaths_cia_format$month),
@@ -298,7 +293,6 @@ indicator_availability_over_time <-
         max(staff_turnover_cia_format$month),
         max(staff_sickness_cia_format$month),
         max(staff_survey_cia_format$month),
-        max(hcai_cia_format$month),
         max(cdiff_cia_format$month),
         max(falls_and_fractures_cia_format$month),
         max(sus_deaths_cia_format$month),
@@ -319,11 +313,10 @@ indicator_availability_over_time <-
         levels = c(
           "Staff turnover",
           "Staff sickness",
-          "Patient experience-\nfriends and family test",
+          "Patient experience",
           "Staff survey",
-          "Healthcare acquired infections- combined",
-          "Healthcare acquired infections- C.Difficile",
-          "Falls and fractures",
+          "Healthcare acquired C.Difficile",
+          "Falls and injuries",
           "Hospital deaths",
           "Cleaning costs",
           "Emergency readmissions",
@@ -489,7 +482,6 @@ indicator_availability_by_site <-
            staff_turnover_cia_format,
            staff_sickness_cia_format,
            staff_survey_cia_format,
-           hcai_cia_format,
            cdiff_cia_format,
            falls_and_fractures_cia_format,
            sus_deaths_cia_format,
@@ -500,13 +492,12 @@ indicator_availability_by_site <-
            cleaning_costs_cia_format) {
     measure <-
       c(
-        "Patient experience-\nfriends and family test",
+        "Patient experience",
         "Staff turnover",
         "Staff sickness",
         "Staff survey",
-        "Healthcare acquired infections- combined",
-        "Healthcare acquired infections- C.Difficile",
-        "Falls and fractures",
+        "Healthcare acquired C.Difficile",
+        "Falls and injuries",
         "Hospital deaths",
         "RTT waiting times",
         "Bed occupancy",
@@ -516,7 +507,6 @@ indicator_availability_by_site <-
       )
     level <-
       c("Site",
-        "Provider",
         "Provider",
         "Provider",
         "Provider",
@@ -537,7 +527,6 @@ indicator_availability_by_site <-
         "Health & Safety",
         "Health & Safety",
         "Health & Safety",
-        "Health & Safety",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
         "Productivity & Efficiency",
@@ -550,7 +539,6 @@ indicator_availability_by_site <-
         min(staff_turnover_cia_format$month),
         min(staff_sickness_cia_format$month),
         min(staff_survey_cia_format$month),
-        min(hcai_cia_format$month),
         min(cdiff_cia_format$month),
         min(falls_and_fractures_cia_format$month),
         min(sus_deaths_cia_format$month),
@@ -566,7 +554,6 @@ indicator_availability_by_site <-
         max(staff_turnover_cia_format$month),
         max(staff_sickness_cia_format$month),
         max(staff_survey_cia_format$month),
-        max(hcai_cia_format$month),
         max(cdiff_cia_format$month),
         max(falls_and_fractures_cia_format$month),
         max(sus_deaths_cia_format$month),
@@ -587,11 +574,10 @@ indicator_availability_by_site <-
         levels = c(
           "Staff turnover",
           "Staff sickness",
-          "Patient experience-\nfriends and family test",
+          "Patient experience",
           "Staff survey",
-          "Healthcare acquired infections- combined",
-          "Healthcare acquired infections- C.Difficile",
-          "Falls and fractures",
+          "Healthcare acquired C.Difficile",
+          "Falls and injuries",
           "Hospital deaths",
           "Emergency readmissions",
           "Bed occupancy",
@@ -634,9 +620,8 @@ indicator_availability_by_site <-
                                              measure=="RTT waiting times" & (name=="Chase Farm"|name=="Southmead") ~ "-",
                                              measure=="Length of stay" & (name=="Papworth") ~ "-",
                                              measure=="Bed occupancy" & (name=="Papworth") ~ "-",
-                                             measure=="Healthcare acquired infections- combined" & (name=="Clatterbridge") ~ "-",
-                                             measure=="Healthcare acquired infections- C.Difficile" & (name=="Clatterbridge"|name=="Papworth") ~ "-",
-                                             measure=="Falls and fractures" & (name=="Clatterbridge"|name=="Papworth"|name=="Chase Farm") ~ "-",
+                                             measure=="Healthcare acquired C.Difficile" & (name=="Clatterbridge"|name=="Papworth") ~ "-",
+                                             measure=="Falls and injuries" & (name=="Clatterbridge"|name=="Papworth"|name=="Chase Farm") ~ "-",
                                              measure=="Hospital deaths" & (name=="Papworth"|name=="Chase Farm") ~ "-",
                                              measure=="Cleaning costs" & (name=="Chase Farm") ~ "-",
                                             TRUE ~ "\U2714")) |>
@@ -645,14 +630,13 @@ indicator_availability_by_site <-
       mutate(measure = factor(
         measure,
         levels = c(
-          "Patient experience-\nfriends and family test",
+          "Patient experience",
           "Staff sickness",
           "Staff turnover",
           "Staff survey",
           "Hospital deaths",
-          "Falls and fractures",
-          "Healthcare acquired infections- combined",
-          "Healthcare acquired infections- C.Difficile",
+          "Falls and injuries",
+          "Healthcare acquired C.Difficile",
           "Length of stay" ,
           "RTT waiting times",
           "Bed occupancy",
@@ -705,7 +689,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(6:9) |>
+      slice(6:8) |>
       select(-group) |>
       as.matrix()
     
@@ -726,7 +710,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(10:13) |>
+      slice(9:12) |>
       select(-group) |>
       as.matrix()
     
@@ -765,7 +749,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(6:9) |>
+      slice(6:8) |>
       select(-group) |>
       as.matrix()
     
@@ -784,7 +768,7 @@ indicator_availability_by_site <-
         )
       ) |>
       as.data.frame() |>
-      slice(10:13) |>
+      slice(9:12) |>
       select(-group) |>
       as.matrix()
     
@@ -798,11 +782,11 @@ indicator_availability_by_site <-
       align(j = 1:2,  align = "left") |>
       bg(bg = "#f9bf07", part = "header") |>
       color(i = 2:6, color = colormatrix4) |>
-      color(i = 8:11, color= colormatrix5) |>
-      color(i = 13:16, color = colormatrix6) |>
+      color(i = 8:10, color= colormatrix5) |>
+      color(i = 12:15, color = colormatrix6) |>
       bg(i = 2:6, bg = colormatrix1) |>
-      bg(i = 8:11, bg = colormatrix2) |>
-      bg(i = 13:16, bg = colormatrix3) |>
+      bg(i = 8:10, bg = colormatrix2) |>
+      bg(i = 12:15, bg = colormatrix3) |>
       align(
         j = 1,
         i = ~ !is.na(group),

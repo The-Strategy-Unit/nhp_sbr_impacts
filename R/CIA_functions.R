@@ -542,34 +542,9 @@ meta_analysis<-function(data){
     filter(!is.na(site)) |>
     filter(site != "Papworth" &
              site != "Clatterbridge" &
-             site != "Chase Farm") |>
-    mutate(sig = case_when(
-      (RelEffect.upper > 0 & RelEffect < 0) |
-        (RelEffect.lower < 0 & RelEffect > 0)
-      ~ "Non-sig",
-      (RelEffect.upper < 0 &
-         RelEffect < 0) ~ "Positive Effect",
-      (RelEffect.lower > 0 &
-         RelEffect > 0) ~ "Negative Effect"
-    )) |>
-    mutate(group = "individual")
+             site != "Chase Farm")
   
-  dataset <- deparse(substitute(data))
-  
-  if (dataset %in% c("bed_occupancy_output",
-                     "friends_and_family_output",
-                     "staff_survey_output")) {
-    results_data <- results_data |>
-      mutate(sig = case_when(
-        (RelEffect.upper > 0 & RelEffect < 0) |
-          (RelEffect.lower < 0 & RelEffect > 0)
-        ~ "Non-sig",
-        (RelEffect.upper < 0 &
-           RelEffect < 0) ~ "Negative Effect",
-        (RelEffect.lower > 0 &
-           RelEffect > 0) ~ "Positive Effect"
-      ))
-  }
+  count<-count(results_data)
   
     output <-
       rma.uni(RelEffect,
@@ -580,7 +555,8 @@ meta_analysis<-function(data){
     df <- as.data.frame(output$b) |>
       rename(mean = V1) |>
       cbind(`95% lower` = output$ci.lb) |>
-      cbind(`95% upper` = output$ci.ub)
+      cbind(`95% upper` = output$ci.ub) |>
+      cbind(n=count)
     
   
   return(df)
@@ -1072,7 +1048,7 @@ summary_forest_plot <- function(LoS_output,
   
   
   waiting_time_median_output2 <- meta_analysis(waiting_time_median_output) |>
-    mutate(measure = "Waiting time (median)")
+    mutate(measure = "Waiting time")
   
   LoS_output2  <- meta_analysis(LoS_output) |>
     mutate(measure = "Length of stay")
@@ -1087,7 +1063,7 @@ summary_forest_plot <- function(LoS_output,
     mutate(measure = "Bed occupancy")
   
   cdiff_output2  <- meta_analysis(cdiff_output) |>
-    mutate(measure = "Healthcare acquired C.Difficile")
+    mutate(measure = "Healthcare acquired \nC.Difficile")
   
   falls_and_fractures_output2  <- meta_analysis(falls_and_fractures_output) |>
     mutate(measure = "Falls and injuries")
@@ -1101,10 +1077,11 @@ summary_forest_plot <- function(LoS_output,
   staff_survey_output2  <- meta_analysis(staff_survey_output) |>
     mutate(measure = "Staff survey")
   
-  combined_outputs <- rbind(
+  dataset <- deparse(substitute(data))
+
+  results_data <- rbind(
       LoS_output2,
       waiting_time_median_output2,
-      waiting_time_number_output2,
       bed_occupancy_output2,
       emergency_readmissions_output2,
       cleaning_costs_output2,
@@ -1114,86 +1091,82 @@ summary_forest_plot <- function(LoS_output,
       staff_sickness_output2,
       staff_survey_output2
     )
-
   
-  results_data <- combined_outputs |>
-    filter(!is.na(site))
-  
-  
-  results_data <- results_data |>
-    mutate(site = fct_reorder(site, RelEffect)) |>
-    mutate(site = fct_rev(site)) |>
-    mutate(p = p * 2) |> # convert from 1 to 2-tailed p value
-    mutate(p = as.character(p)) |>
-    mutate(id = RelEffect) |>
-    cbind(weights) |>
-    rename(weight = `weights(output)`) |>
-    bind_rows(
-      data.frame(
-        site = "MEAN EFFECT",
-        RelEffect = df$mean,
-        RelEffect.upper = df$`95% upper`,
-        RelEffect.lower = df$`95% lower`,
-        Effect = paste0(
-          round(df$mean, 2),
-          " (",
-          round(df$`95% lower`, 2),
-          " - ",
-          round(df$`95% upper`, 2),
-          ")"
-        ),
-        id = -100,
-        sig = "mean",
-        weight = mean_weight,
-        group = "mean"
+  results_data<-results_data|>
+    filter(n>1)|>
+    mutate(value=paste0(round(mean,2), " (", round(`95% lower`,2), " - ",round(`95% upper`,2), ")" ))|>
+    mutate(sig = case_when(
+      (`95% upper` > 0 & mean < 0) |
+        (`95% lower`< 0 & mean > 0)
+      ~ "Non-sig",
+      (`95% upper` < 0 &
+         mean < 0) ~ "Negative Effect",
+      (`95% lower` > 0 &
+         mean > 0) ~ "Positive Effect"
+    ))|>
+    mutate(n=as.character(n))|>
+    mutate(sig=ifelse(dataset %in% c("Patient experience", "Bed occupancy", "Staff survey") & 
+                    sig=="Positive Effect", "Negative Effect", sig ))|>
+    mutate(sig=ifelse(dataset %in% c("Patient experience", "Bed occupancy", "Staff survey") & 
+                        sig=="Negative Effect", "Positive Effect", sig ))|>
+    bind_rows(data.frame(value = "Mean Effect (95% CI)",
+                         n = "n",
+                         measure=""))|>
+    mutate(measure = factor(
+      measure,
+      levels = c(
+        "Staff sickness",
+        "Staff survey",
+        "Healthcare acquired \nC.Difficile",
+        "Falls and injuries",
+        "Hospital deaths",
+        "Cleaning costs",
+        "Emergency readmissions",
+        "Bed occupancy",
+        "Waiting time",
+        "Length of stay",
+        ""
       )
-    ) |>
-    bind_rows(data.frame(Effect = "Relative Effect (95% CI)",
-                         p = "p-value",
-                         id = 100))
+    ))
   
-  max1 <- max(results_data$RelEffect.upper,
-              -(results_data$RelEffect.lower),
+  max1 <- max(results_data$`95% upper`,
+              -(results_data$`95% lower`),
               na.rm = TRUE)
   
-  low <- min((results_data$RelEffect.lower),
+  low <- min((results_data$`95% lower`),
              -(max1 / 2), na.rm = TRUE)
   
-  up <- max(results_data$RelEffect.upper,
+  up <- max(results_data$`95% upper`,
             (max1 / 2), na.rm = TRUE)
+
   
   p_mid <- results_data |>
-    ggplot(aes(x = RelEffect, y = (fct_reorder(site, id)))) +
+    ggplot(aes(x = mean, y = measure)) +
     theme_classic() +
     geom_point(aes(
-      x = RelEffect,
+      x = mean,
       colour = sig,
-      size = weight,
-      shape = group
-    )) +
+    ), size=1.5) +
     geom_linerange(aes(
-      xmin = RelEffect.lower,
-      xmax = RelEffect.upper,
+      xmin = `95% lower`,
+      xmax = `95% upper`,
       colour = sig
     ),
-    size = 0.7) +
+    size = 0.8) +
     geom_vline(xintercept = 0, linetype = "dashed") +
     scale_shape_manual(values = c("individual" = 15, "mean" = 16)) +
     scale_color_manual(
       values = c(
-        "mean" = "black",
-        "Non-Sig" = "#686f73",
+        "Non-sig" = "#686f73",
         "Positive Effect" = "#129957" ,
         "Negative Effect" = "#ec6555"
       )
     ) +
-    labs(x = "Relative Effect Size", y = "",
-         caption = "Square size indicates the weight of each point in calculating the mean (i.e. larger square indicates a greater contribution to the mean)") +
-    coord_cartesian(ylim = c(1, nrow(results_data)),
-                    xlim = c(low, up)) +
+    labs(x = "Mean Relative Effect Size", y = "")+
+    coord_cartesian(ylim = c(1, nrow(results_data))) +
     annotate(
       "text",
-      x = low / 1.5,
+      x=low/1.6,
       y = nrow(results_data),
       size = 3,
       label = "Decrease with SBR",
@@ -1201,7 +1174,7 @@ summary_forest_plot <- function(LoS_output,
     ) +
     annotate(
       "text",
-      x = up / 2,
+      x=up/1.7,
       y = nrow(results_data),
       size = 3,
       label = "Increase with SBR",
@@ -1215,42 +1188,44 @@ summary_forest_plot <- function(LoS_output,
       axis.title.y = element_blank(),
       plot.caption.position = "panel",
       plot.caption = element_text(hjust = .85)
-    )
+    )+
+    coord_cartesian(xlim = c(-0.6, 0.3))
   
   p_left <- results_data |>
-    ggplot(aes(y = fct_reorder(site, id))) +
+    ggplot(aes(y = measure)) +
     geom_text(
-      aes(x = 0, label = site),
+      aes(x = 0, label = measure),
       hjust = 0,
-      size = 3,
+      size = 2.9,
       fontface = "bold"
     ) +
     geom_text(
-      aes(x = 2, label = Effect),
+      aes(x = 2.5, label = value),
       hjust = 0,
-      size = 3,
+      size = 2.9,
       fontface = ifelse(
-        results_data$Effect == "Relative Effect (95% CI)",
+        results_data$value == "Mean Effect (95% CI)",
         "bold",
         "plain"
       )
     ) +
     theme_void() +
-    coord_cartesian(xlim = c(0, 4))
+    coord_cartesian(xlim = c(0, 4.5))
   
   p_right <- results_data |>
     ggplot() +
     geom_text(
       aes(
         x = 0,
-        y = fct_reorder(site, id),
-        label = p
+        y = measure,
+        label = n
       ),
       hjust = 0,
       size = 3,
-      fontface = ifelse(results_data$p == "p-value", "bold", "plain")
+      fontface = ifelse(results_data$n == "n", "bold", "plain")
     ) +
     theme_void()
+  
   
   layout <- c(area(
     t = 0,
@@ -1272,7 +1247,8 @@ summary_forest_plot <- function(LoS_output,
   ))
   # final plot arrangement
   p_left + p_mid + p_right + plot_layout(design = layout) +
-    plot_annotation(subtitle = subtitle,
+    plot_annotation(subtitle = "Summary of mean relative effects for general acute hospitals",
+                    caption ="Grey indicates no significant effect, while red indicates a significant negative effect",
                     theme = theme(
                       plot.subtitle = element_text(
                         hjust = 0,
@@ -1280,5 +1256,10 @@ summary_forest_plot <- function(LoS_output,
                         face = "bold",
                         colour = "#686f73"
                       )
-                    ))
+                    )) 
+
 }
+  
+
+ 
+

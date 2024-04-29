@@ -296,9 +296,9 @@ tar_read(indicator_availability_table)
 
 For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period.
 
-For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth has had to be excluded as it appears to have been impacted to a much greater degree by COVID-19 than it's control sites. 
+For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth has had to be excluded as it appears to have been impacted to a much greater degree by COVID-19 than it's control sites.
 
-In some cases there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short. For the Health and Safety indicators the rates were generally low at the specialist sites (Papworth, Clatterbridge and Chase Farm), often dropping in zero in some months, which meant it was not always possible to fit a suitable causal impact model. 
+In some cases there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short. For the Health and Safety indicators the rates were generally low at the specialist sites (Papworth, Clatterbridge and Chase Farm), often dropping in zero in some months, which meant it was not always possible to fit a suitable causal impact model.
 
 For some indicator variables data is only available at a provider level, this means that where the switch to single bedrooms occurred at a provider with multiple sites the effects of the switch will be diluted by the lack of the change in single bedroom percentage at the other sites.
 
@@ -352,7 +352,7 @@ The values given in the results tables (actual, predicted and absolute values) a
 
 ## Aggregate (meta) analysis
 
-Where possible, for each indicator variable a meta-analysis was conducted using the data for district general and acute hospitals. The specialist hospital sites were excluded from this analysis as it is felt the effects at these sites may not be generalisable when considering future building of general acute hospitals. 
+Where possible, for each indicator variable a meta-analysis was conducted using the data for district general and acute hospitals. The specialist hospital sites were excluded from this analysis as it is felt the effects at these sites may not be generalisable when considering future building of general acute hospitals.
 
 A random-effects meta-analysis was conducted using the `metafor` R package [@metafor] and weighting the relative effects for each site using the inverse variance, as used for meta-analysis of causal impact models by [@Schmitt2017ExtendingBS].
 
@@ -408,7 +408,6 @@ The effect on median waiting time varied from a 12% reduction to a 15% increase.
 At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and median waiting time would be unlikely to drop over time as a result of the switch to single bedrooms. For Royal Liverpool we only have 1-year of outcome data and it is not clear whether the change in median waiting time has stabilised or whether the switch to single rooms will result in a continued reduction in median waiting time over time.
 
 Median waiting time significantly increased at Tunbridge Wells, but this effect appeared to only be temporary during the first year post-switch, during the second year of the outcome period the waiting times fall back in line with the expected values. The switch to single bedrooms at Tunbridge Wells started in Jan 2011, which is the date we have used in our analysis, but occurred in stages between Jan and Sept 2011, so the differences seen in the first year could be due to disruption of services while the hospital was in a transition period.
-
 
 ### `r title_bed_occup`
 
@@ -515,7 +514,6 @@ mean_forest_plot_DGH_Acute(falls_and_fractures_output, "Mean effect on rate of f
 ```
 
 The in-hospital falls and injuries rate was generally unchanged, but decreased by 21% at Peterborough. The 21% decrease at Peterborough reflects a decrease from a predicted 3.2% of hospital spells having a fall or injury to 2.5%. The mean effect at general acute hospitals was a non-significant 3% reduction in the rate of in-hospital falls, injuries and fractures.
-
 
 ### `r title_cdiff`
 
@@ -637,9 +635,22 @@ summary_table_indicators_and_sites(LoS_output,
 
 
 
+```
+```{r, fig.width=8, fig.height=4}
+  summary_forest_plot(LoS_output,
+                    waiting_time_median_output,
+                    bed_occupancy_output,
+                    emergency_readmissions_output,
+                    cleaning_costs_output,
+                    sus_deaths_output,
+                    falls_and_fractures_output,
+                    cdiff_output,
+                    staff_sickness_output,
+                    staff_survey_output) 
+
+
 
 ```
-
 The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been more negative overall. There are some factors that may be influencing some of the apparent negative impacts at the site, so the results should be interpreted cautiously.
 
 Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts, apart from at Clatterbridge. The median waiting time does increase at Tunbridge Wells but only during the first year, by on average less than 1 week. It should also be noted that although the date of the switch was set at Jan 2011, when the switch started, the switch was not completed until Sept 2011, so much of the increase in waiting time could be attributed to disruption during the transition period. Although the data is limited it does appear that cleaning costs may increase, which would not be unexpected given an increase in time is likely required to clean separate bedrooms and additional bathrooms.
@@ -907,7 +918,6 @@ cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01
 :::
 :::
 :::
-
 
 ### `r title_bed_occup`
 
@@ -1637,7 +1647,7 @@ Black dotted line indicates the time of the last data point prior to the switch 
 
 -   Only available at provider level
 -   This is a quarterly measure so there is more limited data and depending on the time point at which the switch to single bedrooms occurred the may be no data until 3 months after the switch or the last point of baseline may be 3 months prior to the switch.
--   For Papworth bed occupancy was highly affected by COVID-19 in the outcome period, an effect which was not seen to the same extent at the control sites, so it wasn't possible to determine whether there would have an effect on bed occupancy had COVID-19 not occurred.  
+-   For Papworth bed occupancy was highly affected by COVID-19 in the outcome period, an effect which was not seen to the same extent at the control sites, so it wasn't possible to determine whether there would have an effect on bed occupancy had COVID-19 not occurred.
 
 **`r title_cleaning`**
 
@@ -1647,8 +1657,6 @@ Black dotted line indicates the time of the last data point prior to the switch 
 **Healthcare acquired infections**
 
 -   Only available at provider level
--   Data on C.Difficile is available from April 2012. MSSA, Klebsiella and P.Aeruginosa data is available from April 2017 and MRSA is available from March 2018.
--   Combined infections data is only available for Royal Liverpool. Clatterbridge was excluded as the rate was generally low, often zero, but there were also significant spikes, which meant it was not possible to fit a suitable model.
 -   C.Difficile infection rates could not be analysed for Clatterbridge or Papworth as the rates were low, often zero, and so combined with the high level of variability in the data it meant it was not possible to fit a suitable model for these sites.
 
 **`r title_falls_fractures`**

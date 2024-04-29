@@ -255,7 +255,7 @@ Where existing data sources were lacking, and for those impacts based on hospita
 
 Our final set of impact measures are thus:
 
-[ ](images/indicators.png)
+[](images/indicators.png)
 
 ## Table with further detail when decided format
 

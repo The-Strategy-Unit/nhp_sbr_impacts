@@ -139,7 +139,6 @@ title_staff_turnover <- get_title("staff_turnover")
 title_staff_survey <- get_title("staff_survey")
 ```
 
-
 ```{r, include=FALSE, fig.height=6, fig.width=10}
 
 #LoS_output_test<-tar_read(LoS_output)|>
@@ -271,7 +270,7 @@ Where existing data sources were lacking, and for those impacts based on hospita
 
 Our final set of impact measures are thus:
 
-[](images/indicators.png)
+[ ](images/indicators.png)
 
 ## Table with further detail when decided format
 
@@ -297,7 +296,7 @@ tar_read(indicator_availability_table)
 
 For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period.
 
-For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also present in the matched control sites, the magnitude of effects varies greatly between hospitals. In some cases there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short. 
+For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also present in the matched control sites, the magnitude of effects varies greatly between hospitals. In some cases there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short.
 
 For some indicator variables data is only available at a provider level, this means that where the switch to single bedrooms occurred at a provider with multiple sites the effects of the switch will be diluted by the lack of the change in single bedroom percentage at the other sites.
 
@@ -345,7 +344,7 @@ The plots show:
 
 3\) The cumulative difference between the expected and actual values over the outcome period.
 
-The values given on the forest plots are the relative effect in the outcome period. 
+The values given on the forest plots are the relative effect in the outcome period.
 
 The values given in the results tables (actual, predicted and absolute values) are the average values over the outcome period (i.e. the cumulative effect at the end of the outcome period divided by the number of points in the outcome period). Since the length of outcome period varies between sites due to availability of data and data issues the cumulative effect is not always comparable across sites.
 
@@ -361,8 +360,7 @@ A random-effects meta-analysis was conducted using the `metafor` R package [@met
 
 ### `r title_los`
 
-
-Mean length of stay (in days) significantly decreased at 3/6 sites (Southmead, Peterborough and Chase Farm), was unchanged at 2/6 sites (Royal Liverpool and Tunbridge Wells), but significantly increased at Clatterbridge. 
+Mean length of stay (in days) significantly decreased at 3/6 sites (Southmead, Peterborough and Chase Farm), was unchanged at 2/6 sites (Royal Liverpool and Tunbridge Wells), but significantly increased at Clatterbridge.
 
 ```{r, fig.width=8, fig.height=4}
 
@@ -371,7 +369,6 @@ forest_plot(LoS_output,  "Points to the left indicate a decrease in mean length 
 
 model_effects_table(LoS_output, "Average effects of switching to single bedrooms on mean length of stay")
 
-LoS_REN$CausalImpactObject$summary
 
 ```
 
@@ -381,13 +378,11 @@ mean_forest_plot_DGH_Acute(LoS_output, "Mean effect on length of stay at general
 
 ```
 
-The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase. At the general acute hospitals the change in  average length of stay varied from a 0.1 day increase at Tunbridge Wells to a 0.9 day decrease in average length of stay at Peterborough. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay. 
+The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase. At the general acute hospitals the change in average length of stay varied from a 0.1 day increase at Tunbridge Wells to a 0.9 day decrease in average length of stay at Peterborough. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay.
 
-
-Clatterbridge is a specialist cancer centre, so it is possible the switch to single bed rooms had a different impact on length of stay due to the nature of the activity at the site. Indeed, the average length of stay predicted for Clatterbridge based on historical trends  (7.5 days) is higher than for the other sites, likely reflecting the different type of activity at this site. Average length of stay at Chase Farm was predicted to be 6 days, but following the switch was acutally just over 2.5 days, such a large change may reflect a change in the type of activity conducted at the site following the switch, especially as this site conducts only elective care.
+Clatterbridge is a specialist cancer centre, so it is possible the switch to single bed rooms had a different impact on length of stay due to the nature of the activity at the site. Indeed, the average length of stay predicted for Clatterbridge based on historical trends (7.5 days) is higher than for the other sites, likely reflecting the different type of activity at this site. Average length of stay at Chase Farm was predicted to be 6 days, but following the switch was acutally just over 2.5 days, such a large change may reflect a change in the type of activity conducted at the site following the switch, especially as this site conducts only elective care.
 
 ### `r title_wait_time_median`
-
 
 The median waiting time (in weeks) significantly decreased at 2/5 sites (Royal Liverpool and Peterborough) and was unchanged at 2/5 sites (Papworth and Clatterbridge).
 
@@ -406,8 +401,7 @@ mean_forest_plot_DGH_Acute(waiting_time_median_output, "Mean effect on median wa
 
 ```
 
-The effect on median waiting time varied from a 12% reduction to a 15% increase. Both Royal Liverpool and Peterborough had a 12% reduction in median waiting time, which equated to a decrease from 19 wks to 16.7 wks at Royal Liverpool and from 5 wks to 4.3 wks at Peterborough. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time. 
-
+The effect on median waiting time varied from a 12% reduction to a 15% increase. Both Royal Liverpool and Peterborough had a 12% reduction in median waiting time, which equated to a decrease from 19 wks to 16.7 wks at Royal Liverpool and from 5 wks to 4.3 wks at Peterborough. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time.
 
 At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and median waiting time would be unlikely to drop over time as a result of the switch to single bedrooms. For Royal Liverpool we only have 1-year of outcome data and it is not clear whether the change in median waiting time has stabilised or whether the switch to single rooms will result in a continued reduction in median waiting time over time.
 
@@ -440,9 +434,7 @@ Clatterbridge switched to single bedrooms mid-2020 so the outcome period is affe
 
 Waiting list size and waiting time will not only reflect the productivity and efficiency of the hospital, but also demand for services which may be impacted by changing needs in a region and by the availability of alternative services in the area.
 
-
 ### `r title_bed_occup`
-
 
 Bed occupancy is measured quarterly and is only available at a Provider level. The percentage of available beds occupied significantly increased at 2/4 sites (Clatterbridge and Southmead) and was unchanged at 2/4 (Royal Liverpool and and Chase Farm). An increase in bed occupancy is generally considered a positive result, provided it does not result in an increase in Emergency department waiting times. We have not looked at Emergency department waiting times. However, Chase Farm only does elective care and Clatterbridge is a cancer centre, and so neither of these sites have Emergency departments.
 
@@ -487,7 +479,6 @@ mean_forest_plot_DGH_Acute(emergency_readmissions_output, "Mean effect on emerge
 
 Emergency readmission rate was either unchanged or decreased by up to 28%. The mean effect at general acute hospitals was a non-significant 10% reduction in emergency readmissions. At Peterborough the % of emergency readmissions was predicted to be 34% but dropped to 25% following a switch to single bedrooms, while at Tunbridge Wells it was predicted to 30% and dropped to 26%.
 
-
 ### `r title_cleaning`
 
 The total cleaning cost (in million £) significantly increased at 2/3 sites (Clatterbridge and Royal Liverpool) but remained unchanged at Papworth.
@@ -501,9 +492,9 @@ model_effects_table(cleaning_costs_output, "Average effects of switching to sing
 
 ```
 
-Cleaning costs either remained unchanged or increased by up to 56%. At Royal Liverpool cleaning costs increased by 18%, reflecting an increase in annual cleaning costs from a predicted 6.1 million to 7.2 million pounds. 
+Cleaning costs either remained unchanged or increased by up to 56%. At Royal Liverpool cleaning costs increased by 18%, reflecting an increase in annual cleaning costs from a predicted 6.1 million to 7.2 million pounds.
 
-Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period. 
+Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period.
 
 ## Health and Safety
 
@@ -564,7 +555,6 @@ model_effects_table(hcai_output, "Average effects of switching to single bedroom
 
 ### `r title_cdiff`
 
-
 The rate of healthcare acquired C.Difficile infections (cases per 10,000 bed days) decreased at 2/3 sites (Chase Farm and Southmead) but was unchanged at Royal Liverpool.
 
 ```{r, fig.width=8, fig.height=4}
@@ -589,7 +579,6 @@ The rate of healthcare acquired C.Difficile was either unchanged or decreased by
 ### `r title_friends_family`
 
 Patient experience was determined using the results of the Friends and Family test. The percentage of positive responses significantly decreased at 1/4 sites (Clatterbridge), and was unchanged at the other 3/4 sites (Royal Liverpool, Papworth and Chase Farm).
-
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -625,7 +614,6 @@ mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on the rate of st
 
 Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead. The mean effect at general acute was a non-significant increase of 4% in the staff sickness rate.
 
-
 While there was an increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates.
 
 ### `r title_staff_turnover`
@@ -643,9 +631,9 @@ model_effects_table(staff_turnover_output, "Average effects of switching to sing
 
 ### `r title_staff_survey`
 
-To assess staff experience the NHS staff survey was used and we analysed the percentage of staff that Agreed or Strongly Agreed with the statement 'I would recommend my trust as a place to work'. 
+To assess staff experience the NHS staff survey was used and we analysed the percentage of staff that Agreed or Strongly Agreed with the statement 'I would recommend my trust as a place to work'.
 
-The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth), and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work. 
+The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth), and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -704,7 +692,7 @@ Our analyses rely on historical data collections, some of which do not go back a
 
 Some variables are only available at provider level (@tbl-avail) so where providers have more than one site any change that may occur following a switch to single bedrooms at one site will be diluted by a lack of change at the other sites at the provider. 
 
-Also the variables that we have measured are not always specific to the impact we are trying to measure, e.g. using staff sickness as a proxy for staff experience. 
+Also the variables that we have measured are not always be entirely specific to the impact we are trying to measure, for example we are using both staff sickness and staff turnover as a proxy for staff experience, with the assumption that increased staff turnover and sickness absences will indicate that staff are less happy in their workplace following a switch to single bedrooms. It is possible that sickness absences may be influenced in other ways by a switch to single bedrooms for example if single bedrooms reduce outbreaks of the contagious illness and better protect staff from contracting them themselves then sickness absences could be reduced.
 
 Some measures are recorded quarterly or annually so we have less data points with which to fit our models and assess outcomes and less temporal specificity to detect changes.
 
@@ -720,11 +708,11 @@ The three specialist provider sites were excluded from the meta-analysis as the 
 
 **General**
 
-For our analysis we have had to specify the month in which the switch to single bedrooms occurred. However, at some sites the switch was done over a longer period of time with certain services moving at different stages, so our analysis does not account for this. For example, Tunbridge Wells moved Women and Children's wards to SBR in January 2011 and the remainder of inpatient services in September 2011.
+For our analysis we have had to specify the month in which the switch to single bedrooms occurred. However, at some sites the switch was done over a longer period of time with certain services moving at different stages. For example, Tunbridge Wells moved Women and Children's wards to SBR in January 2011 and the remainder of inpatient services in September 2011. We have used the month when the switch started, so that control site selection and predictions are not affected by changes in the transition period, but this means that we may see initial changes related to the transition period or that some changes may not be seen until later in the outcome period when the full switch had occurred.
 
-When the sites switched to single bedrooms there are likely to have been other changes to how services operate and at multi-site providers there may also have been changes to what services are provided at which sites, so there are likely to be confounding factors that influence our results. For example, Peterborough in November 2010 introduced SBR alongside three- to four-bedded ward areas [@peterborough_web].
+When the sites switched to single bedrooms there are likely to have been other changes to how services operate and at multi-site providers there may also have been changes to what services are provided at which sites, so there are likely to be confounding factors that influence our results. 
 
-The sites that switched to single bedrooms will have had different designs and the difference in results between sites may be due to different single bedroom designs working better, or worse, than others. It is also possible that the best design may vary by hospital type and a design that suits a general acute hospital may work less well at a specialist site. Where there are potential negative impacts of a switch to single bedrooms some sites may have had mitigating factors in place from the start while at other schemes any mitigating factors may have occurred later.
+Not all sites switch entirely to single bed rooms, for example, Peterborough in November 2010 introduced SBR alongside three- to four-bedded ward areas [@peterborough_web]. The sites that switched to single bedrooms will have had different designs and the difference in results between sites may be due to different single bedroom designs working better, or worse, than others. It is also possible that the best design may vary by hospital type and a design that suits a general acute hospital may work less well at a specialist site. Where there are potential negative impacts of a switch to single bedrooms some sites may have had mitigating factors in place from the start while at other schemes any mitigating factors may have occurred later.
 
 We see some evidence that the rate of hospital acquired C.Difficile infections may be reduced, but unfortunately it was not possible to assess other healthcare acquired infections (MSSA, MRSA, Klebsiella and P.Aeruginosa) due to a lack of data availability before 2017. In addition, it is possible that the spread of other contagious conditions, such as influenza and COVID-19, may be reduced by single bed rooms, but data on this is not available for analysis.
 
@@ -1887,13 +1875,11 @@ tar_read(controls_table_RWF)
 A different set of controls was identified by `MarketMatching` for each indicator and each intervention hospital for the CIA (@sec-methods-cia). A full list of the sites or providers used in each CIA is available below for each indicator and intervention hospital.
 
 ::: panel-tabset
-
 ### `r title_los`
 
 ```{r LoS_controls}
 get_market_matched_controls_table_site(hospitals, controls, "LoS")
 ```
-
 
 ### `r title_wait_time_median`
 
@@ -1913,13 +1899,11 @@ get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_nu
 get_market_matched_controls_table_provider(hospitals, controls, "bed_occupancy")
 ```
 
-
 ### `r title_readmissions`
 
 ```{r emergency_readmissions_controls}
 get_market_matched_controls_table_site(hospitals, controls, "emergency_readmissions")
 ```
-
 
 ### `r title_cleaning`
 
@@ -1933,7 +1917,6 @@ get_market_matched_controls_table_site(hospitals, controls, "cleaning_costs")
 get_market_matched_controls_table_site(hospitals, controls, "sus_deaths")
 ```
 
-
 ### `r title_falls_fractures`
 
 ```{r falls_and_fractures_controls}
@@ -1945,7 +1928,6 @@ get_market_matched_controls_table_site(hospitals, controls, "falls_and_fractures
 ```{r hcai_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "hcai")
 ```
-
 
 ### `r title_cdiff`
 
@@ -1964,7 +1946,6 @@ get_market_matched_controls_table_site(hospitals, controls, "friends_and_family"
 ```{r staff_sickness_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "staff_sickness")
 ```
-
 
 ### `r title_staff_turnover`
 

@@ -31,7 +31,8 @@ select_matches <- function(organisation,
     # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
   }
   
-  if (organisation == "RWF" & variable == "positive_responses") {
+  if ((organisation == "RWF" & variable == "positive_responses")|
+      (organisation=="RAL" & variable == "cleaning_service_cost")){
     number <- 0
   }
   else{
@@ -771,7 +772,7 @@ model_effects_table <- function(data, title) {
   name <- deparse(substitute(data))
   
   if (name == "cleaning_costs_output") {
-    note <- "Actual, Predicted and Absolute values expressed as million £"
+    note <- "Actual, Predicted and Absolute difference values expressed as million £"
   }
   else{
     note <- NA

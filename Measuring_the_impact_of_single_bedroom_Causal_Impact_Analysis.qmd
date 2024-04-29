@@ -32,7 +32,7 @@ css: styles.css
 bibliography: references.bib
 ---
 
-```{r Packages, include=FALSE}
+```{r packages, include=FALSE}
 library(bayesmeta)
 library(DiagrammeR)
 library(egg)
@@ -53,13 +53,13 @@ library(tsibble)
 library(zoo)
 ```
 
-```{r Functions}
+```{r functions}
 source("R/CIA_Functions.R")
 source("R/plot_functions.R")
 source("R/formatting_outputs_functions.R")
 ```
 
-```{r Reading in data}
+```{r reading_in_data}
 ## RTT waiting time
 rtt_waiting_time <- tar_read(rtt_waiting_time_cia_format)
 
@@ -121,6 +121,24 @@ hospitals_summary <- read_excel("hospitals_summary.xlsx")
 controls <- tar_read(control_pool)
 hospitals <- tar_read(hospitals)
 ```
+
+```{r titles}
+title_los <- get_title("los")
+title_wait_time_median <- get_title("wait_time_median")
+title_wait_time_number <- get_title("wait_time_number")
+title_bed_occup <- get_title("bed_occup")
+title_readmissions <- get_title("readmissions")
+title_cleaning <- get_title("cleaning")
+title_deaths <- get_title("deaths")
+title_falls_fractures <- get_title("falls_fractures")
+title_hcai <- get_title("hcai")
+title_cdiff <- get_title("cdiff")
+title_friends_family <- get_title("friends_family")
+title_staff_sickness <- get_title("staff_sickness")
+title_staff_turnover <- get_title("staff_turnover")
+title_staff_survey <- get_title("staff_survey")
+```
+
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
 
@@ -253,7 +271,7 @@ Where existing data sources were lacking, and for those impacts based on hospita
 
 Our final set of impact measures are thus:
 
-[ ](images/indicators.png)
+[](images/indicators.png)
 
 ## Table with further detail when decided format
 
@@ -341,7 +359,8 @@ A random-effects meta-analysis was conducted using the `metafor` R package [@met
 
 ## Productivity and Efficiency
 
-### Mean length of stay 
+### `r title_los`
+
 
 Mean length of stay (in days) significantly decreased at 3/6 sites (Southmead, Peterborough and Chase Farm), was unchanged at 2/6 sites (Royal Liverpool and Tunbridge Wells), but significantly increased at Clatterbridge. 
 
@@ -364,9 +383,11 @@ mean_forest_plot_DGH_Acute(LoS_output, "Mean effect on length of stay at general
 
 The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase. At the general acute hospitals the change in  average length of stay varied from a 0.1 day increase at Tunbridge Wells to a 0.9 day decrease in average length of stay at Peterborough. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay. 
 
+
 Clatterbridge is a specialist cancer centre, so it is possible the switch to single bed rooms had a different impact on length of stay due to the nature of the activity at the site. Indeed, the average length of stay predicted for Clatterbridge based on historical trends  (7.5 days) is higher than for the other sites, likely reflecting the different type of activity at this site. Average length of stay at Chase Farm was predicted to be 6 days, but following the switch was acutally just over 2.5 days, such a large change may reflect a change in the type of activity conducted at the site following the switch, especially as this site conducts only elective care.
 
-### Median waiting time 
+### `r title_wait_time_median`
+
 
 The median waiting time (in weeks) significantly decreased at 2/5 sites (Royal Liverpool and Peterborough) and was unchanged at 2/5 sites (Papworth and Clatterbridge).
 
@@ -387,11 +408,12 @@ mean_forest_plot_DGH_Acute(waiting_time_median_output, "Mean effect on median wa
 
 The effect on median waiting time varied from a 12% reduction to a 15% increase. Both Royal Liverpool and Peterborough had a 12% reduction in median waiting time, which equated to a decrease from 19 wks to 16.7 wks at Royal Liverpool and from 5 wks to 4.3 wks at Peterborough. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time. 
 
+
 At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and median waiting time would be unlikely to drop over time as a result of the switch to single bedrooms. For Royal Liverpool we only have 1-year of outcome data and it is not clear whether the change in median waiting time has stabilised or whether the switch to single rooms will result in a continued reduction in median waiting time over time.
 
 Median waiting time significantly increased at Tunbridge Wells, but this effect appeared to only be temporary during the first year post-switch, during the second year of the outcome period the waiting times fall back in line with the expected values. The switch to single bedrooms at Tunbridge Wells started in Jan 2011, which is the date we have used in our analysis, but occurred in stages between Jan and Sept 2011, so the differences seen in the first year could be due to disruption of services while the hospital was in a transition period.
 
-### Waiting list size
+### `r title_wait_time_number`
 
 The total number of patients on waiting lists significantly decreased at 1/5 sites (Royal Liverpool) and was unchanged at 3/5 sites (Papworth, Peterborough and Tunbridge Wells).
 
@@ -418,7 +440,9 @@ Clatterbridge switched to single bedrooms mid-2020 so the outcome period is affe
 
 Waiting list size and waiting time will not only reflect the productivity and efficiency of the hospital, but also demand for services which may be impacted by changing needs in a region and by the availability of alternative services in the area.
 
-### Bed Occupancy 
+
+### `r title_bed_occup`
+
 
 Bed occupancy is measured quarterly and is only available at a Provider level. The percentage of available beds occupied significantly increased at 2/4 sites (Clatterbridge and Southmead) and was unchanged at 2/4 (Royal Liverpool and and Chase Farm). An increase in bed occupancy is generally considered a positive result, provided it does not result in an increase in Emergency department waiting times. We have not looked at Emergency department waiting times. However, Chase Farm only does elective care and Clatterbridge is a cancer centre, and so neither of these sites have Emergency departments.
 
@@ -442,7 +466,7 @@ Bed occupancy was either unchanged or increased by up to 13%. The mean effect at
 
 For Southmead bed occupancy increased 8%, it was predicted to be on average 86% in the outcome period but an increase to 93% bed occupancy was seen. It is perhaps unsurprising there was no significant increase in bed occupancy at the Royal Liverpool as based on historic trends bed occupancy was already predicted to be over 95%, leaving little scope to increase this.
 
-### Emergency Readmissions
+### `r title_readmissions`
 
 The percentage of admission that are emergency readmissions significantly decreased at 3/7 sites (Tunbridge Wells, Peterborough and Clatterbridge) and was unchanged at the remaining 4/7 sites.
 
@@ -463,7 +487,8 @@ mean_forest_plot_DGH_Acute(emergency_readmissions_output, "Mean effect on emerge
 
 Emergency readmission rate was either unchanged or decreased by up to 28%. The mean effect at general acute hospitals was a non-significant 10% reduction in emergency readmissions. At Peterborough the % of emergency readmissions was predicted to be 34% but dropped to 25% following a switch to single bedrooms, while at Tunbridge Wells it was predicted to 30% and dropped to 26%.
 
-### Cleaning costs 
+
+### `r title_cleaning`
 
 The total cleaning cost (in million £) significantly increased at 2/3 sites (Clatterbridge and Royal Liverpool) but remained unchanged at Papworth.
 
@@ -482,7 +507,7 @@ Cleaning costs data are an annual measure, so there is limited data with only 1 
 
 ## Health and Safety
 
-### Deaths in hospital 
+### `r title_deaths`
 
 The rate of in-hospital deaths (number per 1,000 discharges) significantly decreased at 1/5 sites (Peterborough), and was unchanged at 4/5 sites (Royal Liverpool, Tunbridge Wells, Clatterbridge and Southmead).
 
@@ -503,7 +528,7 @@ mean_forest_plot_DGH_Acute(sus_deaths_output, "Mean effect on in-hospital death 
 
 In-hospital deaths were generally unchanged but decreased by 37% at Peterborough. The 37% decrease at Peterborough reflects a decrease from a predicted 38 deaths per 1,000 discharges to 24 deaths. The mean effect at general acute hospitals was a non-significant decrease of 11% in in-hospital death.
 
-### Falls and injuries in hospital 
+### `r title_falls_fractures`
 
 The rate of in-hospital falls and injuries (% of spells) significantly decreased at 1/4 sites (Peterborough), and was unchanged at 3/4 sites (Royal Liverpool, Tunbridge Wells and Southmead).
 
@@ -524,7 +549,7 @@ mean_forest_plot_DGH_Acute(falls_and_fractures_output, "Mean effect on rate of f
 
 The in-hospital falls and injuries rate was generally unchanged, but decreased by 21% at Peterborough. The 21% decrease at Peterborough reflects a decrease from a predicted 3.2% of hospital spells having a fall or injury to 2.5%. The mean effect at general acute hospitals was a non-significant 3% reduction in the rate of in-hospital falls, injuries and fractures.
 
-### Healthcare acquired infections- Combined rate
+### `r title_hcai`
 
 The combined rate of healthcare acquired infections could only be analysed for Royal Liverpool, and no significant change was seen. The combined rate of healthcare acquired infections is the sum of the rates (cases per 10,000 bed days) of C.difficile, MSSA, MRSA, Klebsiella and P.Aeruginosa.
 
@@ -537,7 +562,8 @@ model_effects_table(hcai_output, "Average effects of switching to single bedroom
 
 ```
 
-### Healthcare acquired infections- C.Difficile 
+### `r title_cdiff`
+
 
 The rate of healthcare acquired C.Difficile infections (cases per 10,000 bed days) decreased at 2/3 sites (Chase Farm and Southmead) but was unchanged at Royal Liverpool.
 
@@ -560,7 +586,7 @@ The rate of healthcare acquired C.Difficile was either unchanged or decreased by
 
 ## Patient and Staff Experience
 
-### Patient experience - Friends and Family Test
+### `r title_friends_family`
 
 Patient experience was determined using the results of the Friends and Family test. The percentage of positive responses significantly decreased at 1/4 sites (Clatterbridge), and was unchanged at the other 3/4 sites (Royal Liverpool, Papworth and Chase Farm).
 
@@ -578,7 +604,7 @@ The percentage of positive responses to the Friend and Family Test generally rem
 
 It should be noted that due to the COVID-19 pandemic there is missing friends and family test scores data from March 2020 until late 2020/early 2021 for all sites. Therefore, both Papworth and Clatterbridge have missing data in their outcome periods.
 
-### Staff sickness
+### `r title_staff_sickness`
 
 The percentage of available days taken off sick by staff significantly increased at 1/5 sites (Southmead) and was unchanged at 4/5 sites (Royal Liverpool, Papworth, Clatterbridge and Chase Farm).
 
@@ -599,9 +625,10 @@ mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on the rate of st
 
 Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead. The mean effect at general acute was a non-significant increase of 4% in the staff sickness rate.
 
+
 While there was an increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates.
 
-### Staff turnover
+### `r title_staff_turnover`
 
 Staff turnover measured as percentage of staff leaving could only be measured for Royal Liverpool, where no significant changes was found.
 
@@ -614,7 +641,7 @@ model_effects_table(staff_turnover_output, "Average effects of switching to sing
 
 ```
 
-### Staff survey
+### `r title_staff_survey`
 
 To assess staff experience the NHS staff survey was used and we analysed the percentage of staff that Agreed or Strongly Agreed with the statement 'I would recommend my trust as a place to work'. 
 
@@ -707,7 +734,7 @@ We see some evidence that the rate of hospital acquired C.Difficile infections m
 
 ## A. CIA charts by indicator and hospital site/provider {#sec-appendix-A}
 
-### Length of stay
+### `r title_los`
 
 ::: panel-tabset
 #### Decrease
@@ -826,7 +853,7 @@ cia_summary_plots(LoS_REN,"Average LoS (days)", "2020-06-01")
 :::
 :::
 
-### Waiting time- Median (in weeks)
+### `r title_wait_time_median`
 
 ::: panel-tabset
 #### Decrease
@@ -929,7 +956,7 @@ cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01
 :::
 :::
 
-### Waiting time - Total number of patients waiting
+### `r title_wait_time_number`
 
 ::: panel-tabset
 #### Decrease
@@ -1005,7 +1032,7 @@ cia_summary_plots(waiting_time_number_REN, "Number waiting", "2020-06-01")
 :::
 :::
 
-### Bed Occupancy
+### `r title_bed_occup`
 
 ::: panel-tabset
 #### No change
@@ -1071,7 +1098,7 @@ cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 
-### Emergency Readmissions
+### `r title_readmissions`
 
 ::: panel-tabset
 #### Decrease
@@ -1170,7 +1197,7 @@ cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 :::
 :::
 
-### Cleaning costs
+### `r title_cleaning`
 
 ::: panel-tabset
 #### No change
@@ -1225,7 +1252,7 @@ cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 
-### Deaths in hospital
+### `r title_deaths`
 
 ::: panel-tabset
 #### Decrease
@@ -1307,7 +1334,7 @@ cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 :::
 :::
 
-### Falls, fractures and injuries in hospital
+### `r title_falls_fractures`
 
 ::: panel-tabset
 #### Decrease
@@ -1367,7 +1394,7 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 :::
 :::
 
-### Healthcare acquired infections - combined rate
+### `r title_hcai`
 
 #### No change
 
@@ -1382,7 +1409,7 @@ hcai_REM<-tar_read(hcai_REM)
 cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
 ```
 
-### Healthcare acquired infections - C.Difficile
+### `r title_cdiff`
 
 #### Decrease
 
@@ -1430,7 +1457,7 @@ hcai_REN<-tar_read(hcai_REN)
 cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2022-10-01")
 ```
 
-### Patient experience - Friends and Family scores
+### `r title_friends_family`
 
 ::: panel-tabset
 #### Decrease
@@ -1495,7 +1522,7 @@ cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01"
 :::
 :::
 
-### Staff sickness
+### `r title_staff_sickness`
 
 ::: panel-tabset
 #### Increase
@@ -1566,7 +1593,7 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 :::
 :::
 
-### Staff turnover
+### `r title_staff_turnover`
 
 #### No change
 
@@ -1581,7 +1608,7 @@ staff_turnover_REM<-tar_read(staff_turnover_REM)
 cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 ```
 
-### Staff survey
+### `r title_staff_survey`
 
 ```{r, include=FALSE}
 
@@ -1731,16 +1758,16 @@ Black dotted line indicates the time of the last data point prior to the switch 
 -   Chase Farm was excluded as there was only 4 months of data available in the outcome period.
 -   Southmead was excluded due to a period of missing data in the 2 years prior to the switch to single rooms.
 
-**Length of stay**
+**`r title_los`**
 
 -   Papworth was excluded as there were 2 large COVID-19 related spikes in length of stay in the outcome period that were significantly larger than the COVID-19 effects in the control sites, so it was not possible to determine if there would have been a change in length of stay without COVID-19 and thus this data has been excluded from the analysis.
 
-**Bed occupancy**
+**`r title_bed_occup`**
 
 -   Only available at provider level
 -   This is a quarterly measure so there is more limited data and depending on the time point at which the switch to single bedrooms occurred the may be no data until 3 months after the switch or the last point of baseline may be 3 months prior to the switch.
 
-**Cleaning costs**
+**`r title_cleaning`**
 
 -   This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
 -   The limited data meant that for Chase Farm only 1 control site could be matched and there was insufficient data to fit a suitable model.
@@ -1752,11 +1779,11 @@ Black dotted line indicates the time of the last data point prior to the switch 
 -   Combined infections data is only available for Royal Liverpool. Clatterbridge was excluded as the rate was generally low, often zero, but there were also significant spikes, which meant it was not possible to fit a suitable model.
 -   C.Difficile infection rates could not be analysed for Clatterbridge or Papworth as the rates were low, often zero, and so combined with the high level of variability in the data it meant it was not possible to fit a suitable model for these sites.
 
-**Falls, fractures and injuries in hospital**
+**`r title_falls_fractures`**
 
 -   Clatterbridge, Papworth and Chase Farm were all excluded as the rates were very low, often zero, so it wasn't possible to fit suitable models to the data.
 
-**Deaths in hospital**
+**`r title_deaths`**
 
 -   Papworth was excluded due to a large COVID-19 spike in the outcome period that was greater than that seen in the control sites, so it was not possible to determine if there would have been a change had COVID-19 not occurred.
 -   Chase Farm was excluded as the rate was very low, often zero, so it wasn't possible to fit a suitable model, this low rate is unsurprising given it is only conducting elective care.
@@ -1765,16 +1792,16 @@ Black dotted line indicates the time of the last data point prior to the switch 
 
 -   There is around a year of missing Friends and Family Test data for all sites during the COVID-19 pandemic (March 2020 until late 2020/early 2021), this means that there is some missing data in the baseline period for Royal Liverpool and some missing data in the outcome periods for Clatterbridge, Papworth and Chase Farm.
 
-**Staff sickness**
+**`r title_staff_sickness`**
 
 -   Only available at provider level
 
-**Staff turnover**
+**`r title_staff_turnover`**
 
 -   Only available at provider level
 -   Data is only available for Royal Liverpool
 
-**Staff survey**
+**`r title_staff_survey`**
 
 -   Only available at provider level
 -   This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
@@ -1860,85 +1887,92 @@ tar_read(controls_table_RWF)
 A different set of controls was identified by `MarketMatching` for each indicator and each intervention hospital for the CIA (@sec-methods-cia). A full list of the sites or providers used in each CIA is available below for each indicator and intervention hospital.
 
 ::: panel-tabset
-### Length of stay
+
+### `r title_los`
 
 ```{r LoS_controls}
 get_market_matched_controls_table_site(hospitals, controls, "LoS")
 ```
 
-### Waiting time - Median (in weeks)
+
+### `r title_wait_time_median`
 
 ```{r waiting_time_median}
 get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_median")
 ```
 
-### Waiting time - Total number of patients waiting
+### `r title_wait_time_number`
 
 ```{r waiting_time_number_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_number")
 ```
 
-### Bed occupancy
+### `r title_bed_occup`
 
 ```{r bed_occupancy_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "bed_occupancy")
 ```
 
-### Emergency readmissions
+
+### `r title_readmissions`
 
 ```{r emergency_readmissions_controls}
 get_market_matched_controls_table_site(hospitals, controls, "emergency_readmissions")
 ```
 
-### Cleaning costs
+
+### `r title_cleaning`
 
 ```{r cleaning_costs_controls}
 get_market_matched_controls_table_site(hospitals, controls, "cleaning_costs")
 ```
 
-### Deaths in hospital
+### `r title_deaths`
 
 ```{r sus_deaths_controls}
 get_market_matched_controls_table_site(hospitals, controls, "sus_deaths")
 ```
 
-### Falls, fractures and injuries in hospital
+
+### `r title_falls_fractures`
 
 ```{r falls_and_fractures_controls}
 get_market_matched_controls_table_site(hospitals, controls, "falls_and_fractures")
 ```
 
-### Healthcare acquired infections - combined rate
+### `r title_hcai`
 
 ```{r hcai_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "hcai")
 ```
 
-### Healthcare acquired infections - C.Difficile
+
+### `r title_cdiff`
 
 ```{r cdiff_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "cdiff")
 ```
 
-### Patient experience - Friends and Family scores
+### `r title_friends_family`
 
 ```{r friends_and_family_controls}
 get_market_matched_controls_table_site(hospitals, controls, "friends_and_family")
 ```
 
-### Staff sickness
+### `r title_staff_sickness`
 
 ```{r staff_sickness_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "staff_sickness")
 ```
 
-### Staff turnover
+
+### `r title_staff_turnover`
 
 ```{r staff_turnover_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "staff_turnover")
 ```
 
-### Staff survey
+### `r title_staff_survey`
 
 ```{r staff_survey_controls}
 get_market_matched_controls_table_provider(hospitals, controls, "staff_survey")

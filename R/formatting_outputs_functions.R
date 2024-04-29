@@ -28,11 +28,11 @@ format_controls_table <- function(data, org_code) {
   
 }
 
-# Used to get the table for the market matched controls for each indicator 
+# Used to get the table for the market matched controls for each indicator
 # at provider level and hospital.
 get_market_matched_controls_table_provider <- function(hospitals,
-                                              controls,
-                                              indicator) {
+                                                       controls,
+                                                       indicator) {
   # start with blank dataframe:
   market_matched_controls <- data.frame()
   
@@ -63,7 +63,7 @@ get_market_matched_controls_table_provider <- function(hospitals,
   
 }
 
-# Used to get the table for the market matched controls for each indicator 
+# Used to get the table for the market matched controls for each indicator
 # at site level and hospital.
 get_market_matched_controls_table_site <- function(hospitals,
                                                    controls,
@@ -126,4 +126,49 @@ format_market_matched_controls_table <- function(data) {
   
   return(data)
   
+}
+
+# Used so titles are consistent across whole document
+get_title <- function(indicator) {
+  titles <- data.frame(
+    stringsAsFactors = FALSE,
+    short_name = c(
+      "los",
+      "wait_time_median",
+      "wait_time_number",
+      "bed_occup",
+      "readmissions",
+      "cleaning",
+      "deaths",
+      "falls_fractures",
+      "hcai",
+      "cdiff",
+      "friends_family",
+      "staff_sickness",
+      "staff_turnover",
+      "staff_survey"
+    ),
+    title = c(
+      "Length of stay",
+      "Waiting time - median (in weeks)",
+      "Waiting time - Total number of patients waiting",
+      "Bed occupancy",
+      "Emergency readmissions",
+      "Cleaning costs",
+      "Deaths in hospital",
+      "Falls, fractures and injuries in hospital",
+      "Healthcare acquaired infections - combined rate",
+      "Healthcare acquaired infections - C.Difficile",
+      "Patient experience - Positive responses to Friends and Family Test",
+      "Staff sickness",
+      "Staff turnover",
+      "Staff survey"
+    )
+  )
+  
+  title <- titles |>
+    filter(short_name == indicator) |>
+    pull(title)
+  
+  return(title)
 }

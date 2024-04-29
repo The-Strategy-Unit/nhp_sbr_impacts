@@ -276,8 +276,8 @@ extract_model_details <- function(model) {
     mutate(Pred.lower = ifelse(Pred < 100, round(Pred.lower, 2), round(Pred.lower, 0))) |>
     mutate(AbsEffect = ifelse(
       Pred < 100,
-      round(AbsEffect.upper, 2),
-      round(AbsEffect.upper, 0)
+      round(AbsEffect, 2),
+      round(AbsEffect, 0)
     )) |>
     mutate(AbsEffect.lower = ifelse(
       Pred < 100,

@@ -412,7 +412,8 @@ indicator_availability_over_time <-
         vjust = 0.6,
         text = element_text(size = 11)
       ) +
-      scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+      scale_x_date(date_breaks = "1 year", date_labels = "%Y",
+                   limits = as.Date(c('2008-04-01', '2023-12-31'))) +
       coord_cartesian(clip = 'off')
     
     b <-
@@ -441,7 +442,8 @@ indicator_availability_over_time <-
         color = "#2c2825",
         linewidth = 0.8
       ) +
-      scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+      scale_x_date(date_breaks = "1 year", date_labels = "%Y" ,
+                   limits = as.Date(c('2008-04-01', '2023-12-31'))) +
       coord_cartesian(clip = 'off')
     
     c <-

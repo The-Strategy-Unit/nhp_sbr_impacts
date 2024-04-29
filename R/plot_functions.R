@@ -628,7 +628,7 @@ indicator_availability_by_site <-
       cross_join(sites) |>
       filter(type == "start_date") |>
       mutate(difference = as.numeric(date - range)) |> #difference in days
-      mutate(sufficient_baseline = case_when(difference < 730|(difference<1095 & measure=="Staff survey") ~ "x",
+      mutate(sufficient_baseline = case_when(difference < 730 ~ "x",
                                              measure=="RTT waiting times" & (name=="Chase Farm"|name=="Southmead") ~ "-",
                                              measure=="Length of stay" & (name=="Papworth") ~ "-",
                                              measure=="Bed occupancy" & (name=="Papworth") ~ "-",

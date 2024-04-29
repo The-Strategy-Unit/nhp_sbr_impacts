@@ -1,198 +1,192 @@
 # Function to find the best matches FOR ORGANISATIONS
 
-select_matches <-
-  function(organisation,
-           site ,
-           data,
-           switch_month,
-           variable,
-           single_bedroom_matches) {
-    matches <- (single_bedroom_matches) |>
-      filter(organisation_code == organisation) |>
-      filter(rank_of_ranks <= 20)
-    
-    if (is.na(site)) {
-      dataset <- data |>
-        filter(
-          organisation_code == organisation |
-            organisation_code %in% matches$matching_organisation_code
-        ) |>
-        left_join(matches[, c("matching_organisation_code", "trust_name")],
-                  by = c("organisation_code" = "matching_organisation_code")) |> # Add name of matched sites
-        distinct()
-      # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
-    }
-    
-    if (!is.na(site)) {
-      dataset <- data |>
-        filter(site_code == site |
-                 site_code %in% matches$site_code) |>
-        left_join(matches[, c("site_code", "trust_name")], by = c("site_code")) |> # Add name of matched sites
-        distinct() |>
-        rename(organisation_code = site_code)
-      # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
-    }
-    
-    # Find best matches
-    cia_matches <- MarketMatching::best_matches(
-      data = dataset,
-      id_variable = "organisation_code",
-      date_variable = "month",
-      matching_variable = {
-        {
-          variable
-        }
-      },
-      parallel = FALSE,
-      warping_limit = 1,
-      dtw_emphasis = 1,
-      matches = 5,
-      start_match_period = (as.Date(switch_month) %m-% months(120)),
-      end_match_period = (as.Date(switch_month))
-    )
-    
-    # start_match_period=(as.Date(min(data$month))),
-    
-    return(cia_matches)
-    
+select_matches <- function(organisation,
+                           site,
+                           data,
+                           switch_month,
+                           variable,
+                           control_pool) {
+  matches <- control_pool |> 
+    filter(organisation_code == organisation)
+  
+  if (is.na(site)) {
+    dataset <- data |>
+      filter(
+        organisation_code == organisation |
+          organisation_code %in% matches$matching_organisation_code
+      ) |>
+      left_join(matches[, c("matching_organisation_code", "trust_name")],
+                by = c("organisation_code" = "matching_organisation_code")) |> # Add name of matched sites
+      distinct()
+    # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
   }
-
-
+  
+  if (!is.na(site)) {
+    dataset <- data |>
+      filter(site_code == site |
+               site_code %in% matches$site_code) |>
+      left_join(matches[, c("site_code", "trust_name")], by = c("site_code")) |> # Add name of matched sites
+      distinct() |>
+      rename(organisation_code = site_code)
+    # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+  }
+  
+  if (organisation == "RWF" & variable == "positive_responses") {
+    number <- 0
+  }
+  else{
+    number = 1
+  }
+  
+  # Find best matches
+  cia_matches <- MarketMatching::best_matches(
+    data = dataset,
+    id_variable = "organisation_code",
+    date_variable = "month",
+    matching_variable = {
+      {
+        variable
+      }
+    },
+    parallel = FALSE,
+    warping_limit = 1,
+    dtw_emphasis = number,
+    matches = 5,
+    start_match_period = (as.Date(switch_month) %m-% months(120)),
+    end_match_period = (as.Date(switch_month))
+  )
+  
+  # start_match_period=(as.Date(min(data$month))),
+  
+  return(cia_matches)
+  
+}
 
 # Function to run the CIA model
-cia_analysis <-
-  function(organisation,
-           data,
-           variable,
-           prior_sd,
-           single_bedroom_matches,
-           hospitals) {
-    if ("site_code" %in% colnames(data)) {
-      site <- hospitals |>
-        dplyr::filter(organisation_code == organisation) |>
-        dplyr::pull(site_code)
-    } else {
-      site <- NA
-    }
-    
-    switch_month <- hospitals |>
+cia_analysis <- function(organisation,
+                         data,
+                         variable,
+                         prior_sd,
+                         control_pool,
+                         hospitals) {
+  if ("site_code" %in% colnames(data)) {
+    site <- hospitals |>
       dplyr::filter(organisation_code == organisation) |>
-      dplyr::pull(switch_month)
-    
-    cia_matches <-
-      select_matches(organisation,
-                     site,
-                     data,
-                     switch_month,
-                     variable,
-                     single_bedroom_matches)
-    
-    #View the best matches
-    if (is.na(site)) {
-      value <- cia_matches$BestMatches |>
-        filter(organisation_code == organisation)
-      
-      test_site <- organisation
-    }
-    
-    if (!is.na(site)) {
-      value <- cia_matches$BestMatches |>
-        filter(organisation_code == site)
-      # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
-      
-      test_site <- site
-    }
-    
-    
-    # Run the causal impact analysis
-    model_results <-
-      MarketMatching::inference(
-        matched_markets = cia_matches,
-        analyze_betas = TRUE,
-        test_market = test_site,
-        end_post_period = (as.Date(switch_month) %m+% months(24)),
-        alpha = 0.05,
-        prior_level_sd = prior_sd
-      )
-    
-    # See which hospital receives the highest weight in determining the outcome
-    coeff <- model_results$Coefficients
-    
-    #Store predicted values in dataframe
-    pred <- model_results$Predictions
-    
-    return(model_results)
-    
+      dplyr::pull(site_code)
+  } else {
+    site <- NA
   }
+  
+  switch_month <- hospitals |>
+    dplyr::filter(organisation_code == organisation) |>
+    dplyr::pull(switch_month)
+  
+  cia_matches <-
+    select_matches(organisation,
+                   site,
+                   data,
+                   switch_month,
+                   variable,
+                   control_pool)
+  
+  #View the best matches
+  if (is.na(site)) {
+    value <- cia_matches$BestMatches |>
+      filter(organisation_code == organisation)
+    
+    test_site <- organisation
+  }
+  
+  if (!is.na(site)) {
+    value <- cia_matches$BestMatches |>
+      filter(organisation_code == site)
+    # filter(month!=switch_month |organisation_code!=organisation) #remove month of switch
+    
+    test_site <- site
+  }
+  
+  # Run the causal impact analysis
+  model_results <-
+    MarketMatching::inference(
+      matched_markets = cia_matches,
+      analyze_betas = TRUE,
+      test_market = test_site,
+      end_post_period = (as.Date(switch_month) %m+% months(24)),
+      alpha = 0.05,
+      prior_level_sd = prior_sd
+    )
+  
+  # See which hospital receives the highest weight in determining the outcome
+  coeff <- model_results$Coefficients
+  
+  #Store predicted values in dataframe
+  pred <- model_results$Predictions
+  
+  return(model_results)
+  
+}
 
 
 #Evaluating the model
-evaluating_model <-
-  function(organisation,
-           site,
-           data,
-           switch_month,
-           variable,
-           prior_sd,
-           model_results,
-           single_bedroom_matches) {
-    cia_matches <-
-      select_matches(organisation,
-                     site,
-                     data,
-                     switch_month,
-                     variable,
-                     single_bedroom_matches)
-    
-    if (is.na(site)) {
-      test_site <- organisation
-    }
-    
-    if (!is.na(site)) {
-      test_site <- site
-    }
-    
-    #Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention.
-    power <-
-      MarketMatching::test_fake_lift(
-        matched_markets = cia_matches,
-        test_market = test_site,
-        end_fake_post_period = (as.Date(switch_month) %m+% months(24)),
-        prior_level_sd = prior_sd,
-        steps = 10,
-        max_fake_lift = 0.1
-      )
-    
-    #Plot the actuals
-    a <- model_results$PlotActuals +
-      su_theme()
-    
-    # Check out the DW and MAPE of the model
-    b <- model_results$PlotPriorLevelSdAnalysis +
-      su_theme()
-    
-    #And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period.
-    c <- power$ResultsGraph +
-      su_theme()
-    
-    figure <- ggarrange(a, b, c,
-                        ncol = 1)
-    
+evaluating_model <- function(organisation,
+                             site,
+                             data,
+                             switch_month,
+                             variable,
+                             prior_sd,
+                             model_results,
+                             control_pool) {
+  cia_matches <- select_matches(organisation,
+                                site,
+                                data,
+                                switch_month,
+                                variable,
+                                control_pool)
+  
+  if (is.na(site)) {
+    test_site <- organisation
   }
-
-
+  
+  if (!is.na(site)) {
+    test_site <- site
+  }
+  
+  #Prospective Pseudo Power Curves -will help you evaluate if your choice of test and control markets creates a sufficient model to measure a realistic lift from a future intervention.
+  power <-
+    MarketMatching::test_fake_lift(
+      matched_markets = cia_matches,
+      test_market = test_site,
+      end_fake_post_period = (as.Date(switch_month) %m+% months(24)),
+      prior_level_sd = prior_sd,
+      steps = 10,
+      max_fake_lift = 0.1
+    )
+  
+  #Plot the actuals
+  a <- model_results$PlotActuals +
+    su_theme()
+  
+  # Check out the DW and MAPE of the model
+  b <- model_results$PlotPriorLevelSdAnalysis +
+    su_theme()
+  
+  #And plot the graph- Ideally, a curve that starts at high probability on the left side, reaches its minimum at zero lift, and then rises again symmetrically. If the curve does not reach its minimum at zero there may be systemic model bias in the post period.
+  c <- power$ResultsGraph +
+    su_theme()
+  
+  figure <- ggarrange(a, b, c,
+                      ncol = 1)
+  
+}
 
 # Function to plot out the CIA results
 
 cia_summary_plots <- function(model_results, ylab, switch_date) {
   # Plot out actual vs expected
   
-  max <-
-    c(
-      model_results$PlotActualVersusExpected$data$upper_bound,
-      model_results$PlotActualVersusExpected$data$Response
+  max <-  c(model_results$PlotActualVersusExpected$data$upper_bound,
+            model_results$PlotActualVersusExpected$data$Response
     )
-
   
   a <- model_results$PlotActualVersusExpected +
     su_theme() +
@@ -223,7 +217,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
     scale_color_manual(values = c("#f9bf07", "#2c2825")) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
     guides(colour = guide_legend(reverse = T)) +
-    scale_y_continuous(limits = c(0, max(max)*1.1),labels = scales::comma)
+    scale_y_continuous(limits = c(0, max(max) * 1.1), labels = scales::comma)
   
   # Plot pointwise effect
   b <- model_results$PlotPointEffect +
@@ -269,27 +263,38 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
 # Function to extract model details
 
 extract_model_details <- function(model) {
-  
   name <- deparse(substitute(model))
   
   df <- (model$CausalImpactObject$summary) |>
     mutate(site = name) |>
     mutate(sig = ifelse(p < 0.05, "Sig", "Non-sig")) |>
     mutate(p = round(p, 3)) |>
-    mutate(Actual = ifelse(Actual<100, round(Actual, 2), round(Actual,0)) )|>
-    mutate(Pred = ifelse(Pred<100, round(Pred, 2), round(Pred,0))) |>
-    mutate(Pred.lower = ifelse(Pred<100, round(Pred.lower, 2), round(Pred.lower,0))) |>
-    mutate(Pred.upper = ifelse(Pred<100, round(Pred.upper, 2), round(Pred.upper,0))) |>
-    mutate(Pred.lower = ifelse(Pred<100, round(Pred.lower, 2), round(Pred.lower,0))) |>
-    mutate(AbsEffect = ifelse(Pred<100, round(AbsEffect.upper, 2), round(AbsEffect.upper,0))) |>
-    mutate(AbsEffect.lower = ifelse(Pred<100, round(AbsEffect.lower, 2), round(AbsEffect.lower,0))) |>
-    mutate(AbsEffect.upper = ifelse(Pred<100, round(AbsEffect.upper, 2), round(AbsEffect.upper,0))) |>
+    mutate(Actual = ifelse(Actual < 100, round(Actual, 2), round(Actual, 0))) |>
+    mutate(Pred = ifelse(Pred < 100, round(Pred, 2), round(Pred, 0))) |>
+    mutate(Pred.lower = ifelse(Pred < 100, round(Pred.lower, 2), round(Pred.lower, 0))) |>
+    mutate(Pred.upper = ifelse(Pred < 100, round(Pred.upper, 2), round(Pred.upper, 0))) |>
+    mutate(Pred.lower = ifelse(Pred < 100, round(Pred.lower, 2), round(Pred.lower, 0))) |>
+    mutate(AbsEffect = ifelse(
+      Pred < 100,
+      round(AbsEffect.upper, 2),
+      round(AbsEffect.upper, 0)
+    )) |>
+    mutate(AbsEffect.lower = ifelse(
+      Pred < 100,
+      round(AbsEffect.lower, 2),
+      round(AbsEffect.lower, 0)
+    )) |>
+    mutate(AbsEffect.upper = ifelse(
+      Pred < 100,
+      round(AbsEffect.upper, 2),
+      round(AbsEffect.upper, 0)
+    )) |>
     mutate(Predicted = paste0(
-      format(Pred, big.mark=",",scientific=FALSE),
+      format(Pred, big.mark = ",", scientific = FALSE),
       " (",
       Pred.lower,
       " - ",
-     Pred.upper,
+      Pred.upper,
       ")"
     )) |>
     mutate(Effect = paste0(
@@ -301,7 +306,7 @@ extract_model_details <- function(model) {
       ")"
     )) |>
     mutate(Absolute = paste0(
-      format(AbsEffect, big.mark=",",scientific=FALSE),
+      format(AbsEffect, big.mark = ",", scientific = FALSE),
       " (",
       AbsEffect.lower,
       " - ",
@@ -326,12 +331,9 @@ extract_model_details <- function(model) {
   return(df)
 }
 
-
-
 #Summary table of model parameters
 
 model_output <- function(rem, ren, rgm, rgn, ral, rvj, rwf) {
-  
   ifelse((!is.na(rem)), r_rem <- extract_model_details(rem), r_rem <-
            NA)
   ifelse((!is.na(ren)), r_ren <-
@@ -352,20 +354,15 @@ model_output <- function(rem, ren, rgm, rgn, ral, rvj, rwf) {
   
 }
 
-
-
-
-
-
 # Function to generate forest plot
 
 forest_plot <- function(data, caption, subtitle) {
   results_data <- data |>
     filter(!is.na(site)) |>
     mutate(sig = case_when(
-      (RelEffect.upper >0 & RelEffect < 0)|
-        (RelEffect.lower < 0 & RelEffect > 0) 
-        ~ "Non-sig",
+      (RelEffect.upper > 0 & RelEffect < 0) |
+        (RelEffect.lower < 0 & RelEffect > 0)
+      ~ "Non-sig",
       (RelEffect.upper < 0 &
          RelEffect < 0) ~ "Positive Effect",
       (RelEffect.lower > 0 &
@@ -380,8 +377,8 @@ forest_plot <- function(data, caption, subtitle) {
                      "staff_survey_output")) {
     results_data <- results_data |>
       mutate(sig = case_when(
-        (RelEffect.upper >0 & RelEffect < 0)|
-          (RelEffect.lower < 0 & RelEffect > 0) 
+        (RelEffect.upper > 0 & RelEffect < 0) |
+          (RelEffect.lower < 0 & RelEffect > 0)
         ~ "Non-sig",
         (RelEffect.upper < 0 &
            RelEffect < 0) ~ "Negative Effect",
@@ -394,22 +391,23 @@ forest_plot <- function(data, caption, subtitle) {
   results_data <- results_data |>
     mutate(site = fct_reorder(site, RelEffect)) |>
     mutate(site = fct_rev(site)) |>
-    mutate(p=p*2)|> # convert from 1 to 2-tailed p value
-    mutate(p=as.character(p))|>
+    mutate(p = p * 2) |> # convert from 1 to 2-tailed p value
+    mutate(p = as.character(p)) |>
     mutate(id = RelEffect) |>
     bind_rows(data.frame(Effect = "Relative Effect (95% CI)",
                          p = "p-value",
                          id = 100))
-
   
-  max1<-max(results_data$RelEffect.upper,
-            -(results_data$RelEffect.lower), na.rm=TRUE  )
   
-  low<-min((results_data$RelEffect.lower),
-           -(max1/2), na.rm=TRUE)
+  max1 <- max(results_data$RelEffect.upper,
+              -(results_data$RelEffect.lower),
+              na.rm = TRUE)
   
-  up<-max(results_data$RelEffect.upper,
-          (max1/2), na.rm=TRUE)
+  low <- min((results_data$RelEffect.lower),
+             -(max1 / 2), na.rm = TRUE)
+  
+  up <- max(results_data$RelEffect.upper,
+            (max1 / 2), na.rm = TRUE)
   
   p_mid <- results_data |>
     ggplot(aes(x = RelEffect, y = (fct_reorder(site, id)))) +
@@ -430,12 +428,15 @@ forest_plot <- function(data, caption, subtitle) {
         "Negative Effect" = "#ec6555"
       )
     ) +
-    labs(x = "Relative Effect Size", y = "",
-         subtitle= NULL,
-         title=NULL) +
+    labs(
+      x = "Relative Effect Size",
+      y = "",
+      subtitle = NULL,
+      title = NULL
+    ) +
     coord_cartesian(ylim = c(1, nrow(results_data)),
-                    xlim = c(low*1.03,
-                             up*1.03)) +
+                    xlim = c(low * 1.03,
+                             up * 1.03)) +
     annotate(
       "text",
       x = low / 1.5,
@@ -460,10 +461,7 @@ forest_plot <- function(data, caption, subtitle) {
       axis.title.y = element_blank(),
     )
   
-  
-  
-  p_left <-
-    results_data |>
+  p_left <-  results_data |>
     ggplot(aes(y = fct_reorder(site, id))) +
     geom_text(
       aes(x = 0, label = site),
@@ -484,9 +482,7 @@ forest_plot <- function(data, caption, subtitle) {
     theme_void() +
     coord_cartesian(xlim = c(0, 4))
   
-  
-  p_right <-
-    results_data |>
+  p_right <- results_data |>
     ggplot() +
     geom_text(
       aes(
@@ -519,12 +515,21 @@ forest_plot <- function(data, caption, subtitle) {
     r = 15
   ))
   # final plot arrangement
-  (p_left + p_mid + p_right + plot_layout(design = layout))+ 
-    plot_annotation(caption= str_wrap(caption,135),
-                    subtitle= str_wrap(subtitle,90),
-                    theme=theme(plot.caption=element_text(hjust=0, size=10),
-                                plot.subtitle=element_text(hjust=0, size=13, face="bold", colour="#686f73") ))
-
+  (p_left + p_mid + p_right + plot_layout(design = layout)) +
+    plot_annotation(
+      caption = str_wrap(caption, 135),
+      subtitle = str_wrap(subtitle, 90),
+      theme = theme(
+        plot.caption = element_text(hjust = 0, size = 10),
+        plot.subtitle = element_text(
+          hjust = 0,
+          size = 13,
+          face = "bold",
+          colour = "#686f73"
+        )
+      )
+    )
+  
 }
 
 # Function to generate mean forest plot for DGHs
@@ -536,8 +541,8 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
              site != "Clatterbridge" &
              site != "Chase Farm") |>
     mutate(sig = case_when(
-      (RelEffect.upper >0 & RelEffect < 0)|
-        (RelEffect.lower < 0 & RelEffect > 0) 
+      (RelEffect.upper > 0 & RelEffect < 0) |
+        (RelEffect.lower < 0 & RelEffect > 0)
       ~ "Non-sig",
       (RelEffect.upper < 0 &
          RelEffect < 0) ~ "Positive Effect",
@@ -548,26 +553,27 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
   
   dataset <- deparse(substitute(data))
   
-  
   if (dataset %in% c("bed_occupancy_output",
                      "friends_and_family_output",
                      "staff_survey_output")) {
     results_data <- results_data |>
       mutate(sig = case_when(
-        (RelEffect.upper >0 & RelEffect < 0)|
-          (RelEffect.lower < 0 & RelEffect > 0) 
+        (RelEffect.upper > 0 & RelEffect < 0) |
+          (RelEffect.lower < 0 & RelEffect > 0)
         ~ "Non-sig",
         (RelEffect.upper < 0 &
-         RelEffect < 0) ~ "Negative Effect",
+           RelEffect < 0) ~ "Negative Effect",
         (RelEffect.lower > 0 &
-         RelEffect > 0) ~ "Positive Effect"
+           RelEffect > 0) ~ "Positive Effect"
       ))
   }
   
-  
   if (count(results_data) > 1) {
     output <-
-      rma.uni(RelEffect, (RelEffect.sd) ^ 2, method="DL", data = results_data) 
+      rma.uni(RelEffect,
+              (RelEffect.sd) ^ 2,
+              method = "DL",
+              data = results_data)
     
     df <- as.data.frame(output$b) |>
       rename(mean = V1) |>
@@ -595,14 +601,13 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
     
   }
   
-  
   mean <- mean(data$RelEffect, na.rm = TRUE)
   
   results_data <- results_data |>
     mutate(site = fct_reorder(site, RelEffect)) |>
     mutate(site = fct_rev(site)) |>
-    mutate(p=p*2)|> # convert from 1 to 2-tailed p value
-    mutate(p=as.character(p))|>
+    mutate(p = p * 2) |> # convert from 1 to 2-tailed p value
+    mutate(p = as.character(p)) |>
     mutate(id = RelEffect) |>
     cbind(weights) |>
     rename(weight = `weights(output)`) |>
@@ -630,14 +635,15 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
                          p = "p-value",
                          id = 100))
   
-  max1<-max(results_data$RelEffect.upper,
-            -(results_data$RelEffect.lower), na.rm=TRUE  )
+  max1 <- max(results_data$RelEffect.upper,
+              -(results_data$RelEffect.lower),
+              na.rm = TRUE)
   
-  low<-min((results_data$RelEffect.lower),
-           -(max1/2), na.rm=TRUE)
+  low <- min((results_data$RelEffect.lower),
+             -(max1 / 2), na.rm = TRUE)
   
-  up<-max(results_data$RelEffect.upper,
-          (max1/2), na.rm=TRUE)
+  up <- max(results_data$RelEffect.upper,
+            (max1 / 2), na.rm = TRUE)
   
   p_mid <- results_data |>
     ggplot(aes(x = RelEffect, y = (fct_reorder(site, id)))) +
@@ -667,7 +673,7 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
     labs(x = "Relative Effect Size", y = "",
          caption = "Square size indicates the weight of each point in calculating the mean (i.e. larger square indicates a greater contribution to the mean)") +
     coord_cartesian(ylim = c(1, nrow(results_data)),
-                    xlim = c(low,up)) +
+                    xlim = c(low, up)) +
     annotate(
       "text",
       x = low / 1.5,
@@ -694,10 +700,7 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
       plot.caption = element_text(hjust = .85)
     )
   
-  
-  
-  p_left <-
-    results_data |>
+  p_left <- results_data |>
     ggplot(aes(y = fct_reorder(site, id))) +
     geom_text(
       aes(x = 0, label = site),
@@ -718,9 +721,7 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
     theme_void() +
     coord_cartesian(xlim = c(0, 4))
   
-  
-  p_right <-
-    results_data |>
+  p_right <- results_data |>
     ggplot() +
     geom_text(
       aes(
@@ -753,24 +754,28 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
     r = 15
   ))
   # final plot arrangement
-  p_left + p_mid + p_right + plot_layout(design = layout)+
-  plot_annotation(subtitle= subtitle,
-                  theme=theme(plot.subtitle=element_text(hjust=0, size=13,face="bold", colour="#686f73") ))
+  p_left + p_mid + p_right + plot_layout(design = layout) +
+    plot_annotation(subtitle = subtitle,
+                    theme = theme(
+                      plot.subtitle = element_text(
+                        hjust = 0,
+                        size = 13,
+                        face = "bold",
+                        colour = "#686f73"
+                      )
+                    ))
 }
-
-
-
-
 
 # Function for model output table
 model_effects_table <- function(data, title) {
-  
   name <- deparse(substitute(data))
   
-  if(name=="cleaning_costs_output"){
-    note<-"Actual, Predicted and Absolute values expressed as million £"
+  if (name == "cleaning_costs_output") {
+    note <- "Actual, Predicted and Absolute values expressed as million £"
   }
-  else{note<-NA}
+  else{
+    note <- NA
+  }
   
   data |>
     filter(!is.na(site)) |>
@@ -779,13 +784,13 @@ model_effects_table <- function(data, title) {
       sig = case_when(
         RelEffect > 0 & RelEffect.lower > 0 ~ "Sig Increase",
         RelEffect < 0 & RelEffect.upper < 0 ~ "Sig Decrease",
-        (RelEffect.upper >0 & RelEffect < 0)|
-          (RelEffect.lower < 0 & RelEffect > 0) 
+        (RelEffect.upper > 0 & RelEffect < 0) |
+          (RelEffect.lower < 0 & RelEffect > 0)
         ~ "Non-sig",
       )
     ) |>
-    mutate(p=p*2)|> # convert from 1 to 2-tailed p value
-    mutate(p=as.character(p))|>
+    mutate(p = p * 2) |> # convert from 1 to 2-tailed p value
+    mutate(p = as.character(p)) |>
     select(site, Actual, Predicted, Absolute, Effect, p, sig) |>
     flextable() |>
     set_header_labels(
@@ -797,28 +802,32 @@ model_effects_table <- function(data, title) {
       p = "p-value",
       sig = "Significance"
     ) |>
-    add_header_lines(values = title)|>
-    align(i=2, part = "header", align = "center") |>
-    align(i=1, part = "header", align = "left") |>
+    add_header_lines(values = title) |>
+    align(i = 2, part = "header", align = "center") |>
+    align(i = 1, part = "header", align = "left") |>
     align(part = "body", align = "center") |>
     align(j = 2:7, align = "right") |>
     align(j = 2:7,
           align = "right",
           part = "header") |>
     align(j = 1,  align = "left") |>
-    bg(i=2, bg = "#f9bf07",  part = "header") |>
+    bg(i = 2,
+       bg = "#f9bf07",
+       part = "header") |>
     bold(bold = TRUE, part = "header") |>
     fontsize(size = 10.5, part = "all") |>
-    fontsize(i=1, part="header", size=13)|>
+    fontsize(i = 1, part = "header", size = 13) |>
     padding(padding = 2,
             part = "all",
             padding.top = NULL) |>
-    padding(i=1,
+    padding(i = 1,
             padding = 6,
             part = "header") |>
-    hline_top(border = fp_border_default(width = 0), part = "header")|>
-    color(i=1, color="#686f73", part="header")|>
-    add_footer_lines(value=note)|>
+    hline_top(border = fp_border_default(width = 0), part = "header") |>
+    color(i = 1,
+          color = "#686f73",
+          part = "header") |>
+    add_footer_lines(value = note) |>
     autofit() |>
     htmltools_value(ft.align = "left")
   
@@ -841,7 +850,6 @@ summary_table_indicators_and_sites <-
            staff_sickness_output,
            staff_turnover_output,
            staff_survey_output)   {
-    
     waiting_time_median_output2 <- waiting_time_median_output |>
       mutate(measure = "Waiting time (median)")
     waiting_time_number_output2 <- waiting_time_number_output |>
@@ -873,8 +881,8 @@ summary_table_indicators_and_sites <-
     staff_turnover_output2  <- staff_turnover_output |>
       mutate(measure = "Staff turnover")
     
-    combined_outputs <-
-      rbind(LoS_output2,
+    combined_outputs <- rbind(
+        LoS_output2,
         waiting_time_median_output2,
         waiting_time_number_output2,
         bed_occupancy_output2,
@@ -890,15 +898,24 @@ summary_table_indicators_and_sites <-
         staff_survey_output2
       ) |>
       filter(!is.na(site)) |>
-      mutate(p=p*2)|> # convert from 1 to 2-tailed p value
+      mutate(p = p * 2) |> # convert from 1 to 2-tailed p value
       mutate(sig = case_when(
         RelEffect > 0 & p < 0.05 ~ "\U2191",
         RelEffect < 0 & p < 0.05 ~ "\U2193",
         p >= 0.05 ~ "-"
       )) |>
       select(site, measure, sig) |>
-      pivot_wider(names_from = site, values_from = sig)|>
-      select(measure, `Royal Liverpool`, Clatterbridge, Papworth, `Chase Farm`, Southmead, `Tunbridge Wells`, Peterborough)
+      pivot_wider(names_from = site, values_from = sig) |>
+      select(
+        measure,
+        `Royal Liverpool`,
+        Clatterbridge,
+        Papworth,
+        `Chase Farm`,
+        Southmead,
+        `Tunbridge Wells`,
+        Peterborough
+      )
     colormatrix <- ifelse(
       is.na(combined_outputs),
       "grey80" ,
@@ -914,8 +931,11 @@ summary_table_indicators_and_sites <-
             )
         ) |
           ((
-            combined_outputs$measure %in% c("Patient experience- friends and family test" ,
-             "Bed occupancy", "Staff survey")
+            combined_outputs$measure %in% c(
+              "Patient experience- friends and family test" ,
+              "Bed occupancy",
+              "Staff survey"
+            )
           ) &
             combined_outputs == "\U2193"
           ),
@@ -938,13 +958,16 @@ summary_table_indicators_and_sites <-
           combined_outputs == "\U2191" &
             (
               combined_outputs$measure != "Patient experience- friends and family test" &
-                combined_outputs$measure != "Bed occupancy"&
+                combined_outputs$measure != "Bed occupancy" &
                 combined_outputs$measure != "Staff survey"
             )
         ) |
           ((
-            combined_outputs$measure %in% c("Patient experience- friends and family test" ,
-                                            "Bed occupancy", "Staff survey")
+            combined_outputs$measure %in% c(
+              "Patient experience- friends and family test" ,
+              "Bed occupancy",
+              "Staff survey"
+            )
           )
           &
             combined_outputs == "\U2193"
@@ -957,7 +980,6 @@ summary_table_indicators_and_sites <-
       as.data.frame() |>
       mutate(measure = "black") |>
       as.matrix()
-    
     
     combined_outputs |>
       flextable() |>
@@ -982,8 +1004,244 @@ summary_table_indicators_and_sites <-
           " indicates a significant decrease. Where a result is considered positive, e.g. decreased length of stay or increased patient experience score, it is coloured green, while a negative result is shown in red.
                '-' indicates a non-significant change, which is shown in yellow. Grey shading indicates where there was insufficient data to analyse."
         )
-      )) 
-    
-    
+      ))
     
   }
+
+# summary forest plot of main effects- TO BE FINISHED- NOT WORKING YET
+
+summary_forest_plot <- function(LoS_output,
+                                waiting_time_median_output,
+                                waiting_time_number_output,
+                                bed_occupancy_output,
+                                emergency_readmissions_output,
+                                cleaning_costs_output,
+                                sus_deaths_output,
+                                falls_and_fractures_output,
+                                cdiff_output,
+                                staff_sickness_output,
+                                staff_survey_output) {
+  waiting_time_median_output2 <- waiting_time_median_output |>
+    mutate(measure = "Waiting time (median)")
+  waiting_time_number_output2 <- waiting_time_number_output |>
+    mutate(measure = "Waiting time (number)")
+  LoS_output2  <- LoS_output |>
+    mutate(measure = "Length of stay")
+  emergency_readmissions_output2  <-
+    emergency_readmissions_output |>
+    mutate(measure = "Emergency readmissions")
+  cleaning_costs_output2  <-
+    cleaning_costs_output |>
+    mutate(measure = "Cleaning costs")
+  bed_occupancy_output2  <- bed_occupancy_output |>
+    mutate(measure = "Bed occupancy")
+  cdiff_output2  <- cdiff_output |>
+    mutate(measure = "Healthcare acquired C.Difficile")
+  falls_and_fractures_output2  <- falls_and_fractures_output |>
+    mutate(measure = "Falls and fractures")
+  sus_deaths_output2  <- sus_deaths_output |>
+    mutate(measure = "Hospital deaths")
+  staff_sickness_output2  <- staff_sickness_output |>
+    mutate(measure = "Staff sickness")
+  staff_survey_output2  <- staff_survey_output |>
+    mutate(measure = "Staff survey")
+  
+  combined_outputs <- rbind(
+      LoS_output2,
+      waiting_time_median_output2,
+      waiting_time_number_output2,
+      bed_occupancy_output2,
+      emergency_readmissions_output2,
+      cleaning_costs_output2,
+      sus_deaths_output2,
+      falls_and_fractures_output2,
+      cdiff_output2,
+      staff_sickness_output2,
+      staff_survey_output2
+    )
+  
+  results_data <- combined_outputs |>
+    filter(!is.na(site))
+  
+  output <- rma.uni(RelEffect,
+            (RelEffect.sd) ^ 2,
+            method = "DL",
+            data = results_data)
+  
+  df <- as.data.frame(output$b) |>
+    rename(mean = V1) |>
+    cbind(`95% lower` = output$ci.lb) |>
+    cbind(`95% upper` = output$ci.ub)
+  
+  weights <- as.data.frame(weights(output))
+  
+  weights <- weights |>
+    mutate(`weights(output)` = (`weights(output)` / sum(`weights(output)`)) *
+             10)
+  
+  mean_weight <- (mean(weights$`weights(output)`))
+  
+  mean <- mean(data$RelEffect, na.rm = TRUE)
+  
+  results_data <- results_data |>
+    mutate(site = fct_reorder(site, RelEffect)) |>
+    mutate(site = fct_rev(site)) |>
+    mutate(p = p * 2) |> # convert from 1 to 2-tailed p value
+    mutate(p = as.character(p)) |>
+    mutate(id = RelEffect) |>
+    cbind(weights) |>
+    rename(weight = `weights(output)`) |>
+    bind_rows(
+      data.frame(
+        site = "MEAN EFFECT",
+        RelEffect = df$mean,
+        RelEffect.upper = df$`95% upper`,
+        RelEffect.lower = df$`95% lower`,
+        Effect = paste0(
+          round(df$mean, 2),
+          " (",
+          round(df$`95% lower`, 2),
+          " - ",
+          round(df$`95% upper`, 2),
+          ")"
+        ),
+        id = -100,
+        sig = "mean",
+        weight = mean_weight,
+        group = "mean"
+      )
+    ) |>
+    bind_rows(data.frame(Effect = "Relative Effect (95% CI)",
+                         p = "p-value",
+                         id = 100))
+  
+  max1 <- max(results_data$RelEffect.upper,
+              -(results_data$RelEffect.lower),
+              na.rm = TRUE)
+  
+  low <- min((results_data$RelEffect.lower),
+             -(max1 / 2), na.rm = TRUE)
+  
+  up <- max(results_data$RelEffect.upper,
+            (max1 / 2), na.rm = TRUE)
+  
+  p_mid <- results_data |>
+    ggplot(aes(x = RelEffect, y = (fct_reorder(site, id)))) +
+    theme_classic() +
+    geom_point(aes(
+      x = RelEffect,
+      colour = sig,
+      size = weight,
+      shape = group
+    )) +
+    geom_linerange(aes(
+      xmin = RelEffect.lower,
+      xmax = RelEffect.upper,
+      colour = sig
+    ),
+    size = 0.7) +
+    geom_vline(xintercept = 0, linetype = "dashed") +
+    scale_shape_manual(values = c("individual" = 15, "mean" = 16)) +
+    scale_color_manual(
+      values = c(
+        "mean" = "black",
+        "Non-Sig" = "#686f73",
+        "Positive Effect" = "#129957" ,
+        "Negative Effect" = "#ec6555"
+      )
+    ) +
+    labs(x = "Relative Effect Size", y = "",
+         caption = "Square size indicates the weight of each point in calculating the mean (i.e. larger square indicates a greater contribution to the mean)") +
+    coord_cartesian(ylim = c(1, nrow(results_data)),
+                    xlim = c(low, up)) +
+    annotate(
+      "text",
+      x = low / 1.5,
+      y = nrow(results_data),
+      size = 3,
+      label = "Decrease with SBR",
+      colour = "#686f73"
+    ) +
+    annotate(
+      "text",
+      x = up / 2,
+      y = nrow(results_data),
+      size = 3,
+      label = "Increase with SBR",
+      colour = "#686f73"
+    ) +
+    theme(
+      legend.position = "none",
+      axis.line.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.y = element_blank(),
+      plot.caption.position = "panel",
+      plot.caption = element_text(hjust = .85)
+    )
+  
+  p_left <- results_data |>
+    ggplot(aes(y = fct_reorder(site, id))) +
+    geom_text(
+      aes(x = 0, label = site),
+      hjust = 0,
+      size = 3,
+      fontface = "bold"
+    ) +
+    geom_text(
+      aes(x = 2, label = Effect),
+      hjust = 0,
+      size = 3,
+      fontface = ifelse(
+        results_data$Effect == "Relative Effect (95% CI)",
+        "bold",
+        "plain"
+      )
+    ) +
+    theme_void() +
+    coord_cartesian(xlim = c(0, 4))
+  
+  p_right <- results_data |>
+    ggplot() +
+    geom_text(
+      aes(
+        x = 0,
+        y = fct_reorder(site, id),
+        label = p
+      ),
+      hjust = 0,
+      size = 3,
+      fontface = ifelse(results_data$p == "p-value", "bold", "plain")
+    ) +
+    theme_void()
+  
+  layout <- c(area(
+    t = 0,
+    l = 0,
+    b = 17,
+    r = 6
+  ),
+  area(
+    t = 1,
+    l = 7,
+    b = 17,
+    r = 13
+  ),
+  area(
+    t = 0,
+    l = 13,
+    b = 17,
+    r = 15
+  ))
+  # final plot arrangement
+  p_left + p_mid + p_right + plot_layout(design = layout) +
+    plot_annotation(subtitle = subtitle,
+                    theme = theme(
+                      plot.subtitle = element_text(
+                        hjust = 0,
+                        size = 13,
+                        face = "bold",
+                        colour = "#686f73"
+                      )
+                    ))
+}

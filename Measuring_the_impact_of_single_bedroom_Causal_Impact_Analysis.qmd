@@ -32,25 +32,34 @@ css: styles.css
 bibliography: references.bib
 ---
 
-```{r, include=FALSE}
-
-library(tidyverse)
-library(MarketMatching)
-library(tsibble)
-library(targets)
-library(janitor)
-library(readxl)
-library(zoo)
-library(lubridate)
-library(ggrepel)
-library(flextable)
-library(egg)
-library(StrategyUnitTheme)
-library(patchwork)
-library(metafor)
+```{r Packages, include=FALSE}
 library(bayesmeta)
 library(DiagrammeR)
+library(egg)
+library(flextable)
+library(ggrepel)
+library(glue)
+library(janitor)
+library(lubridate)
+library(MarketMatching)
+library(metafor)
+library(patchwork)
+library(readxl)
+library(StrategyUnitTheme)
+library(stringr)
+library(targets)
+library(tidyverse)
+library(tsibble)
+library(zoo)
+```
 
+```{r Functions}
+source("R/CIA_Functions.R")
+source("R/plot_functions.R")
+source("R/formatting_outputs_functions.R")
+```
+
+```{r Reading in data}
 ## RTT waiting time
 rtt_waiting_time <- tar_read(rtt_waiting_time_cia_format)
 
@@ -61,8 +70,7 @@ bed_occupancy <- tar_read(bed_occupancy_cia_format)
 length_of_stay <- tar_read(length_of_stay_cia_format)
 
 ## Emergency readmissions
-emergency_readmissions <-
-  tar_read(emergency_readmissions_cia_format)
+emergency_readmissions <- tar_read(emergency_readmissions_cia_format)
 
 ## Friends & Family
 friends_and_family <- tar_read(friends_and_family_cia_format)
@@ -76,7 +84,7 @@ staff_sickness <- tar_read(staff_sickness_cia_format)
 ## Healthcare acquired infections - Infection rate per 10,000 bed days
 hcai <- tar_read(hcai_cia_format)
 
-cdiff<-tar_read(cdiff_cia_format)
+cdiff <- tar_read(cdiff_cia_format)
 
 ## In-hospital Falls and Fractures - Fall rate per 1000 bed days
 falls_and_fractures <- tar_read(falls_and_fractures_cia_format)
@@ -94,23 +102,24 @@ cleaning_costs <- tar_read(cleaning_costs_cia_format)
 single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
 
 #Model outputs
-waiting_time_median_output<-tar_read(waiting_time_median_output)
-waiting_time_number_output<-tar_read(waiting_time_number_output)
-LoS_output<-tar_read(LoS_output)
-emergency_readmissions_output<-tar_read(emergency_readmissions_output)
-bed_occupancy_output<-tar_read(bed_occupancy_output)
-hcai_output<-tar_read(hcai_output)
-cdiff_output<-tar_read(cdiff_output)
-falls_and_fractures_output<-tar_read(falls_and_fractures_output)
-sus_deaths_output<-tar_read(sus_deaths_output)
-friends_and_family_output<-tar_read(friends_and_family_output)
-staff_sickness_output<-tar_read(staff_sickness_output)
-staff_turnover_output<-tar_read(staff_turnover_output)
-staff_survey_output<-tar_read(staff_survey_output)
-cleaning_costs_output<-tar_read(cleaning_costs_output)
+waiting_time_median_output <- tar_read(waiting_time_median_output)
+waiting_time_number_output <- tar_read(waiting_time_number_output)
+LoS_output <- tar_read(LoS_output)
+emergency_readmissions_output <- tar_read(emergency_readmissions_output)
+bed_occupancy_output <- tar_read(bed_occupancy_output)
+hcai_output <- tar_read(hcai_output)
+cdiff_output <- tar_read(cdiff_output)
+falls_and_fractures_output <- tar_read(falls_and_fractures_output)
+sus_deaths_output <- tar_read(sus_deaths_output)
+friends_and_family_output <- tar_read(friends_and_family_output)
+staff_sickness_output <- tar_read(staff_sickness_output)
+staff_turnover_output <- tar_read(staff_turnover_output)
+staff_survey_output <- tar_read(staff_survey_output)
+cleaning_costs_output <- tar_read(cleaning_costs_output)
 
-source("R/CIA_Functions.R")
-source("R/plot_functions.R")
+hospitals_summary <- read_excel("hospitals_summary.xlsx")
+controls <- tar_read(control_pool)
+hospitals <- tar_read(hospitals)
 ```
 
 ```{r, include=FALSE, fig.height=6, fig.width=10}
@@ -175,77 +184,66 @@ The review summary suggests that **"Overall, 87% of studies analysed by Taylor e
 An overview of the seven hospitals switch to SBR is shown in @tbl-sbr-switch.
 
 ```{r table_sbr_switch}
-#| label: tbl-sbr_switch
+#| label: tbl-sbr-switch
 #| tbl-cap: "Details of the switch to single bed accommodation at the seven intervention sites."
 
-sbr_percent_cia_format <- tar_read(sbr_percent_cia_format)
+sbr_details <- hospitals_summary |>
+  mutate(
+    pre_sbr_perc = round(pre_sbr * 100 / post_all, 2),
+    post_sbr_perc = round(post_sbr * 100 / post_all, 2),
+    date = format(date, "%b %Y")
+  )
 
-tar_read(hospitals) |>
-  mutate(last_march = as.Date(
-    case_when(
-      month(switch_month) < 3 ~ format(switch_month, 
-                                       str_replace("%Y-03-01", 
-                                                   "Y", 
-                                                   as.character(year(switch_month) - 1))),
-      month(switch_month) > 3 ~ format(switch_month, "%Y-03-01"),
-      TRUE ~ as.character(switch_month)
-    )
-  ),
-  next_march = last_march + years(1)) |>
-  left_join(sbr_percent_cia_format,
-            by = c("last_march" = "month", "organisation_code")) |>
-  left_join(sbr_percent_cia_format,
-            by = c("next_march" = "month", "organisation_code")) |>
-  mutate(across(contains("percentage"), ~round(., 2)),
-         switch_month = format(switch_month, "%b %Y")) |>
-  select("Hospital" = name,
-         "SBR switch month" = switch_month,
-         "SBR % before switch" = percentage_single_bedrooms.x,
-         "SBR % after switch" = percentage_single_bedrooms.y) |>
-    as_flextable(
-      hide_grouplabel = TRUE,
-      max_row = 20,
-      show_coltype = FALSE
-    ) |>
-    align(part = "header", align = "center") |>
-    bg(bg = "#f9bf07", part = "header") |>
-    bold(bold = TRUE, part = "header") |>
-    fontsize(size = 12, part = "all") |>
-    padding(
-      padding = 2,
-      part = "all",
-      padding.top = NULL
-    ) |>
-    autofit()
+sbr_details |>
+  select(
+    "Hospital" = name,
+    "Switch month" = date,
+    "SBR% before switch" = pre_sbr_perc,
+    "SBR% after switch" = post_sbr_perc
+  ) |>
+  na.omit() |>
+  as_flextable(
+    hide_grouplabel = TRUE,
+    max_row = 20,
+    show_coltype = FALSE
+  ) |>
+  align(part = "header", align = "center") |>
+  bg(bg = "#f9bf07", part = "header") |>
+  bold(bold = TRUE, part = "header") |>
+  fontsize(size = 12, part = "all") |>
+  padding(padding = 2,
+          part = "all",
+          padding.top = NULL) |>
+  autofit()
 ```
 
 ## Royal Liverpool University Hospital
 
-Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. Provider also manages Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating 16.6% single bed room accommodation [@eric].
+Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. Provider also manages Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating `r sbr_details |> filter(name == "Royal Liverpool") |> pull(pre_sbr_perc)`% single bed room accommodation [@eric].
 
 ## Clatterbridge Cancer Centre
 
-The Clatterbridge Trust operates 3 cancer centres in the Cheshire and Merseyside area. The Liverpool centre moved to fully single-bed rooms in June 2020 having previously been at 41% SBR [@eric]. The centre offers the full range of cancer treatment, both routine and surgical as well as diagnostics, outpatient appointments and associated support services [@ccc_liverpool].
+The Clatterbridge Trust operates 3 cancer centres in the Cheshire and Merseyside area. The Liverpool centre moved to fully single-bed rooms in June 2020 having previously been at `r sbr_details |> filter(name == "Clatterbridge Cancer Centre") |> pull(pre_sbr_perc)`% SBR [@eric]. The centre offers the full range of cancer treatment, both routine and surgical as well as diagnostics, outpatient appointments and associated support services [@ccc_liverpool].
 
 ## Royal Papworth
 
-Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to single bed accommodation occurred in May 2019. Prior to the change, the site had been operating 32.8% single bed room accommodation [@eric].
+Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to single bed accommodation occurred in May 2019. Prior to the change, the site had been operating `r sbr_details |> filter(name == "Royal Papworth") |> pull(pre_sbr_perc)`% single bed room accommodation [@eric].
 
 ## Chase Farm
 
-Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018, has 90% single bed rooms having previously had 29.4% [@eric].
+Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018, has `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(post_sbr_perc)`% single bed rooms having previously had `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(pre_sbr_perc)`% [@eric].
 
 ## Southmead
 
-Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with 75% single bed ensuite rooms. Previously the SBR provision for the trusts main sites was around 10% [@eric].
+Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with `r sbr_details |> filter(name == "Southmead Hospital") |> pull(post_sbr_perc)`% single bed ensuite rooms. Previously the SBR provision for the trusts main sites was around `r sbr_details |> filter(name == "Southmead Hospital") |> pull(pre_sbr_perc)`% [@eric].
 
 ## Tunbridge Wells
 
-The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in 2 phases in January 2011 (maternity and children) and September 2011 (other inpatient services). According to ERIC [@eric] the site has 80% single bed inpatient rooms, with levels prior to 2011 being 28.3%.
+The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in 2 phases in January 2011 (maternity and children) and September 2011 (other inpatient services). According to ERIC [@eric] the site has `r sbr_details |> filter(name == "Tunbridge Wells") |> pull(post_sbr_perc)`% single bed inpatient rooms, with levels prior to 2011 being `r sbr_details |> filter(name == "Tunbridge Wells") |> pull(pre_sbr_perc)`%.
 
 ## Peterborough
 
-Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened in November 2010 offering a range of acute and specialist services [@peterborough_web]. The site went from 10% single bed inpatient rooms to 98% SBR [@eric].
+Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened in November 2010 offering a range of acute and specialist services [@peterborough_web]. The site went from `r sbr_details |> filter(name == "Peterborough (city) Hospital") |> pull(pre_sbr_perc)`% single bed inpatient rooms to `r sbr_details |> filter(name == "Peterborough (city) Hospital") |> pull(post_sbr_perc)`% SBR [@eric].
 
 # Impact measures and data sources
 
@@ -261,22 +259,22 @@ Our final set of impact measures are thus:
 
 ## Availability of indicators over time and for each site
 
-The chart below demonstrates the availability of indicator datasets over time and the 'intervention' dates of the 7 sites to allow for general assessment of suitability for testing.
+@fig-avail demonstrates the availability of indicator datasets over time and the 'intervention' dates of the 7 sites to allow for general assessment of suitability for testing.
 
-```{r, fig.height=6, fig.width=10}
+```{r indicator_availability_plot, fig.height = 6, fig.width = 10}
+#| label: fig-avail
+#| fig-cap: "Availability of indicators over time. Dashed lines represent the month of the switch to SBR in each intervention site."
 tar_read(indicator_availability_plot)
-
-
 ```
 
-Additional data issues have been uncovered during preparation of the data for analysis and some further omissions of some indicator/site combinations have been made. Full notes on data availability and suitability in relation to the analysis can be found in Appendix B.
+Additional data issues have been uncovered during preparation of the data for analysis and some further omissions of some indicator/site combinations have been made. Full notes on data availability and suitability in relation to the analysis can be found in Appendix B (@sec-appendix-B).
 
-The table below summarises which indicators have been been investigated for each site, and where analyses were not possible due to lack of data or other data issues.
+@tbl-avail summarises which indicators have been been investigated for each site, and where analyses were not possible due to lack of data or other data issues.
 
-```{r}
-
+```{r indicator_availability_table}
+#| label: tbl-avail
+#| tbl-cap: "Summary of indicators that were investigated for each site."
 tar_read(indicator_availability_table)
-
 ```
 
 For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period.
@@ -285,7 +283,7 @@ For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the
 
 There are also some situations where there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short.
 
-For some indicator variables data is only available at a provider level, this means that where the switch to single bedrooms occurred at a provider with multiple sites the effects of the switch will be diluted by the lack the change in single bedroom percentage at the other sites.
+For some indicator variables data is only available at a provider level, this means that where the switch to single bedrooms occurred at a provider with multiple sites the effects of the switch will be diluted by the lack of the change in single bedroom percentage at the other sites.
 
 
 # Description of methods {#sec-methods}
@@ -294,7 +292,7 @@ Causal Impact Analysis is a technique that uses a control group to estimate the 
 
 ## Finding control hospitals {#sec-methods-controls}
 
-There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to other cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
+There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
 
 ```{r selecting_controls_flow_chart}
 #| label: fig-flow-controls
@@ -306,20 +304,19 @@ tar_read(flow_chart_selecting_controls)
 number_control_sites <- tar_read(single_bedroom_matches_final) |>
   filter(rank_of_ranks <= 20) |>
   summarise(n(), .by = organisation_code)
-
 ```
 
 Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the intervention's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
 
 Differences in floor space, the median age of inpatients and the elective:non-elective ratio of admissions were calculated between the controls and intervention sites and ranked. A similarity rank was calculated by ranking the sum of these three ranks and sites with a similarity rank less than or equal to 20 formed the control pool for further analysis. Due to Clatterbridge and Royal Papworth being specialist trusts, there were only `r number_control_sites |> filter(organisation_code == "REN") |> pull()` and `r number_control_sites |> filter(organisation_code == "RGM") |> pull()` sites respectively in the control pools.
 
-A full list and map of the sites in the control pools for each intervention site can be found in @sec-appendix-C.
+A full list and map of the sites in the control pools for each intervention site can be found in Appendix C (@sec-appendix-C).
 
-## Causal Impact Analysis
+## Causal Impact Analysis {#sec-methods-cia}
 
-The causal impact analysis is implemented using the MarketMatching package in R [@MarketMatching], which uses the dtw and CausalImpact R packages [@dtw] [@CausalImpact], to provide a simple way to find the most appropriate control matches using dynamic time warping and then use these controls for causal impact analysis using Bayesian structural time-series models.
+The causal impact analysis is implemented using the `MarketMatching` [@MarketMatching] package in R , which uses the `dtw` [@dtw] and `CausalImpact` [@CausalImpact] R packages, to provide a simple way to find the most appropriate control matches using dynamic time warping and then uses these controls for causal impact analysis using Bayesian structural time-series models.
 
-Once suitable matches for each study site were determined and ranked, and the top ranking 20 sites for each study site were selected and fed into the MarketMatching package, for the final selection of control sites. This step selects the best matched control sites based on them having similar trends in the variable of interest over time to the study site. Up to 5 control sites were selected for each study site, but for some site, particularly the specialist centres, the number of appropriate matches was smaller and so fewer than 5 control sites were selected. Controls sites are selected for each site and indicator variable and as this matching of controls is based on similar trends over time a study site may have different control sites selected for different indicators.
+Following the multi-phase control selection process outlined in @sec-methods-controls, the control pools for each site were fed into the `MarketMatching` package. This step selects the best matched control sites based on them having similar trends in the variable of interest over time to the study site. Up to 5 control sites were selected for each study site, but for some sites, particularly the specialist centres, the number of appropriate matches was smaller and so fewer than 5 control sites were selected. Controls sites are selected for each site and indicator variable and as this matching of controls is based on similar trends over time a study site may have different control sites selected for different indicators. A list of the control providers/sites for each indicator can be found in Appendix D (@sec-appendix-D).
 
 The causal impact models were generated if there was at least 2 years of data prior to the switch to single bedrooms and at least 1 year of outcome period after the switch. Where possible a 2-year outcome period was used. The Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic of the models were checked, and the prior local level standard error adjusted if required to ensure a good historical model fit while minimising the forecasting intervals.
 
@@ -333,13 +330,13 @@ The plots show:
 
 3\) The cumulative difference between the expected and actual values over the outcome period.
 
-The values given in the tables and on forest plots are the average effects over the outcome period. Since the length of outcome period varies between sites due to availability of data/data issues the cumulative effect is not always comparable across sites.
+The values given in the tables and on forest plots are the average effects over the outcome period. Since the length of outcome period varies between sites due to availability of data and data issues the cumulative effect is not always comparable across sites.
 
 ## Aggregate (meta) analysis
 
-Where possible, for each indicator variable a meta-analysis was conducted using only the data for district general and acute hospitals; the specialist hospital sites were excluded from this analysis.
+Where possible, for each indicator variable a meta-analysis was conducted using only the data for district general and acute hospitals; the specialist hospital sites were excluded from this analysis [AF: is this because there were too few sites?].
 
-A random-effects meta-analysis was conducted using the metafor R package [@metafor] and weighting the relative effects for each site using the inverse variance, as used for meta-analysis of causal impact models by [@Schmitt2017ExtendingBS].
+A random-effects meta-analysis was conducted using the `metafor` R package [@metafor] and weighting the relative effects for each site using the inverse variance, as used for meta-analysis of causal impact models by [@Schmitt2017ExtendingBS].
 
 # Main results (including related notes from lookback exercise)
 
@@ -347,7 +344,7 @@ A random-effects meta-analysis was conducted using the metafor R package [@metaf
 
 ### Length of stay
 
-Mean length of stay significantly decreased at 3/6 sites (Southmead, Peterborough and Chase Farm), was unchanged at 2/6 sites (Royal Liverpool and Tunbridge Wells), but significantly increased at Clatterbridge. Clatterbridge is a specialist cancer centre, so it is possible the switch to single bed rooms had a different impact on length of stay due to the nature of the activity at the site.
+Mean length of stay significantly decreased at 3/6 sites (Southmead, Peterborough and Chase Farm), was unchanged at 2/6 sites (Royal Liverpool and Tunbridge Wells), but significantly increased at Clatterbridge. Clatterbridge is a specialist cancer centre, so it is possible the switch to single bed rooms had a different impact on length of stay due to the nature of the activity at the site. Indeed, the average length of stay predicted for Clatterbridge based on historical trends is higher than for the other sites, likely reflecting the different type of activity at this site.
 
 ```{r, fig.width=8, fig.height=4}
 
@@ -359,9 +356,11 @@ model_effects_table(LoS_output, "Average effects of switching to single bedrooms
 
 ```{r, fig.width=8, fig.height=2.5}
 
-mean_forest_plot_DGH_Acute(LoS_output, "Mean effect on length of stay at general/acute hospitals")
+mean_forest_plot_DGH_Acute(LoS_output, "Mean effect on length of stay at general acute hospitals")
 
 ```
+
+The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay. 
 
 ### Waiting time- Median (in weeks)
 
@@ -382,9 +381,11 @@ mean_forest_plot_DGH_Acute(waiting_time_median_output, "Mean effect on median wa
 
 ```
 
+The effect on median waiting time varied from a 12% reduction to a 15% increase. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time.
+
 ### Waiting time - Total number of patients waiting
 
-The total number of patients on waiting lists significantly decreased at 1/5 sites (Royal Liverpool) and was unchanged at 3/5 sites (Papworth, Peterborough and Tunbridge Wells). Total waiting list size increased at Clatterbridge, although it should be noted that Clatterbridge switched to single bedrooms mid-2020 so the outcome period is affected by COVID-19, with a large spike in patients waiting to be seen in early 2021. It is possible the impact of COVID-19 was greater at Clatterbridge than at the other cancer centres used as controls.
+The total number of patients on waiting lists significantly decreased at 1/5 sites (Royal Liverpool) and was unchanged at 3/5 sites (Papworth, Peterborough and Tunbridge Wells).
 
 ```{r, fig.width=8, fig.height=4}
 
@@ -400,6 +401,15 @@ model_effects_table(waiting_time_number_output, "Average effects of switching to
 mean_forest_plot_DGH_Acute(waiting_time_number_output, "Mean effect on number of patients on waiting lists at general acute hospitals")
 
 ```
+
+The effect on the total number of patients on waiting lists varied from a 12% reduction to a 88% increase at Clatterbridge (a specialist cancer centre). The mean effect at general acute hospitals was a non-significant 6% reduction in median waiting time.
+
+While the number of patients on the waiting list significantly increased for Clatterbridge, their median waiting time did not significantly increase. Clatterbridge is a smaller size site, so while there is a high percentage increase, it reflects an increase of around 446 people on their waiting lists. 
+
+Clatterbridge switched to single bedrooms mid-2020 so the outcome period is affected by COVID-19, with a spike in patients waiting to be seen in early 2021. It is possible the impact of COVID-19 was greater at Clatterbridge than at the other cancer centres used as controls.
+
+Waiting list size and waiting time will not only reflect the productivity and efficiency of the hospital, but also demand for services which may be impacted by changing needs in a region and by the availability of alternative services in the area. 
+
 
 ### Bed Occupancy
 
@@ -421,6 +431,10 @@ mean_forest_plot_DGH_Acute(bed_occupancy_output, "Mean effect on bed occupancy a
 
 ```
 
+Bed occupancy was either unchanged or increased by up to 13%. The mean effect at the 2 general acute hospitals was a non-significant 4% increase in bed occupancy.
+
+It is perhaps unsurprising there was no significant increase in bed occupancy at the Royal Liverpool as based on historic trends bed occupancy was already predicted to be over 95%, leaving little scope to increase this.
+
 ### Emergency Readmissions
 
 The percentage of emergency readmissions significantly decreased at 3/7 sites (Tunbridge Wells, Peterborough and Clatterbridge) and was unchanged at the remaining 4/7 sites.
@@ -440,6 +454,8 @@ mean_forest_plot_DGH_Acute(emergency_readmissions_output, "Mean effect on emerge
 
 ```
 
+Emergency readmission rate was either unchanged or decreased by up to 28%. The mean effect at general acute hospitals was a non-significant 10% reduction in emergency readmissions.
+
 ### Cleaning costs
 
 Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period. The total cleaning cost (in million £) significantly increased at 2/3 sites (Clatterbridge and Royal Liverpool) but remained unchanged at Papworth.
@@ -452,6 +468,8 @@ forest_plot(cleaning_costs_output, "Points to the left indicate a decrease in cl
 model_effects_table(cleaning_costs_output, "Average effects of switching to single bedrooms on cleaning costs (in million £)")
 
 ```
+
+Cleaning costs either remained unchanged or increased by up to 56%.
 
 ## Health and Safety
 
@@ -474,6 +492,8 @@ mean_forest_plot_DGH_Acute(sus_deaths_output, "Mean effect on in-hospital death 
 
 ```
 
+In-hospital deaths were generally unchanged but decreased by 37% at Peterborough. The mean effect at general acute hospitals was a non-significant decrease of 11% in in-hospital death. 
+
 ### Falls, Fractures and injuries in hospital
 
 The rate of in-hospital falls, fractures and injuries (% of spells) significantly decreased at 1/4 sites (Peterborough), and was unchanged at 3/4 sites (Royal Liverpool, Tunbridge Wells and Southmead).
@@ -492,6 +512,8 @@ model_effects_table(falls_and_fractures_output, "Average effects of switching to
 mean_forest_plot_DGH_Acute(falls_and_fractures_output, "Mean effect on rate of falls, fractures and injuries while in hospital at general acute hospitals")
 
 ```
+
+The in-hospital falls, injuries and fractures rate was generally unchanged by decreased by 21% at Peterborough. The mean effect at general acute hospitals was a non-significant 3% reduction in the rate of in-hospital falls, injuries and fractures.  
 
 ### Healthcare acquired infections- Combined rate
 
@@ -525,6 +547,8 @@ mean_forest_plot_DGH_Acute(cdiff_output, "Mean effect on the rate heathlcare acq
 
 ```
 
+The rate of healthcare acquired C.Difficile was either unchanged or decreased by up to 36%. The mean effect at general acute hospitals was a non-significant 24% reduction in the rate of C.Difficile infections.
+
 ## Patient and Staff Experience
 
 ### Patient experience - Positive responses to the the Friends and Family Test
@@ -541,6 +565,9 @@ forest_plot(friends_and_family_output, "Points to the right indicate an increase
 model_effects_table(friends_and_family_output, "Average effects of switching to single bedrooms on % of positive responses on the Friends and Family test")
 
 ```
+
+The percentage of positive responses to the Friend and Family Test generally remain unchanged but do decrease by 4% at Clatterbridge. It should be noted that based on historic trends Clatterbridge was predicted to have over 97% of positive responses, so although there was a small decrease the percentage of positive responses remained at almost 94%, which is similar to that seen in the other study sites. 
+
 
 ### Staff sickness
 
@@ -563,6 +590,8 @@ mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on the rate of st
 
 ```
 
+Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead. The mean effect at general acute was a non-significant increase of 4% in the staff sickness rate.
+
 ### Staff turnover
 
 Staff turnover measured as percentage of staff leaving could only be measured for Royal Liverpool, where no significant changes was found.
@@ -582,7 +611,7 @@ To assess staff experience the NHS staff survey was used and we analysed the per
 
 The staff survey data is collected over a period of time in the autumn each year, but for analysis purposes we have set the date as the last day of the year in which the data was collected. Both Chase Farm and Royal Liverpool switched to single rooms during the autumn, so the data for the first data point in the outcome period would actually have been collected during the transition period which may have had an impact on the results.
 
-The percentage of staff that would recommend their trust as a place to work significantly increased at 1/5 sites (Papworth), and was unchanged at 2/5 (Chase Farm and Royal Liverpool). At 2/5 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work. At Southmead the decrease appears to be temporary, occurring in the first year post-switch to single bed rooms with positive responses increase back to the expected level in the second year of the outcome period.
+The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth), and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work. At Southmead the decrease appears to be temporary, occurring in the first year post-switch to single bed rooms with positive responses increase back to the expected level in the second year of the outcome period.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -597,6 +626,8 @@ model_effects_table(staff_survey_output, "Average effects of switching to single
 mean_forest_plot_DGH_Acute(staff_survey_output, "Mean effect on percentage of staff that would recommend their trust as a place to work at general acute hospitals")
 
 ```
+
+The effect on the percentage of staff that would recommend their workplace varied from a 20% decrease to a 12% increase. The mean effect at general acute hospitals was a significant reduction of 15% in the percentage of staff who would recommend their workplace.
 
 ## Summary of results
 
@@ -619,7 +650,16 @@ summary_table_indicators_and_sites(LoS_output,
 
 ```
 
-# Limitations and discussion
+
+The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been more negative overall. There are some factors that may be influencing some of the apparent negative impacts at the site, so the results should be interpreted cautiously.
+
+Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts, apart from at Clatterbridge. The median waiting time does increase at Tunbridge Wells but only during the first year, by on average less than 1 week. It should also be noted that although the date of the switch was set at Jan 2011, when the switch started, the switch was not completed until Sept 2011, so much of the increase in waiting time could be attributed to disruption during the transition period. Although the data is limited it does appear that cleaning costs may increase, which would not be unexpected given an increase in time is likely required to clean separate bedrooms and additional bathrooms. 
+ 
+Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety does not appear to be impacted, which was a concern that has been raised about single bedroom accommodation as patients are potentially less visible to the staff. It is thought single bed accommodation may reduce hospital acquired infections; our data on this is very limited, but there is some evidence to suggest C.Difficile infection rates may decrease. 
+
+In terms of patient and staff experiences the switch to single bedrooms had more mixed results. However, calculating the mean effect at the three general acute hospitals where staff survey responses were available showed there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work. Negative effects are seen at Southmead, but it appears that these were temporary and only significant effects were seen in the first year post-switch. 
+
+# Limitations and discussion 
 
 **Data quality and availability**
 
@@ -654,7 +694,7 @@ The sites that switched to single bedrooms will have had different designs and t
 
 # Appendices
 
-## A. CIA charts by indicator and hospital site/provider
+## A. CIA charts by indicator and hospital site/provider {#sec-appendix-A}
 
 ### Length of stay
 
@@ -1244,7 +1284,7 @@ cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 :::
 :::
 
-### Falls, Fractures and injuries in hospital
+### Falls, fractures and injuries in hospital
 
 ::: panel-tabset
 #### Decrease
@@ -1304,7 +1344,7 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 :::
 :::
 
-### Healthcare acquired infections- combined rate
+### Healthcare acquired infections - combined rate
 
 #### No change
 
@@ -1319,7 +1359,7 @@ hcai_REM<-tar_read(hcai_REM)
 cia_summary_plots(hcai_REM, "Rate/10,000 beddays", "2022-10-01")
 ```
 
-### Healthcare acquired infections- C.Difficile
+### Healthcare acquired infections - C.Difficile
 
 #### Decrease
 
@@ -1557,52 +1597,6 @@ Peterborough_analysis|>
   spread(key=month, value=positive_responses)|>
   mutate(change=(((`2012-12-31`-`2009-12-31`)/`2009-12-31`)*100))
 
-
-
-
-
-Tunbridge_matches<-single_bedroom_matches_final|>
-  filter(organisation_code=="RWF")|>
-  filter(rank_of_ranks<=20)
-
-Tunbridge_analysis<-staff_survey|>
-  filter(organisation_code=="RWF" | (organisation_code %in% (Tunbridge_matches$matching_organisation_code)))
-
-mm <- MarketMatching::best_matches(
-      data = Tunbridge_analysis,
-      id_variable = "organisation_code",
-      date_variable = "month",
-      matching_variable = "positive_responses",
-      parallel = FALSE,
-      warping_limit = 1,
-      dtw_emphasis = 0,
-      matches = 5,
-      start_match_period = (as.Date('2011-01-01') %m-% months(120)),
-      end_match_period = (as.Date('2011-01-01'))
-    )
-
-mm<-mm$BestMatches|>
-  filter(organisation_code=="RWF")
-
-Tunbridge_analysis|>
-  filter(organisation_code=="RWF" | (organisation_code %in% mm$BestControl))|>
-  ggplot()+
-  geom_line(aes(x=month, y=positive_responses, group=organisation_code, colour=organisation_code))+
-   geom_vline(
-      aes(xintercept = as.Date('2011-01-01')),
-      linetype = "dotted",
-      linewidth = 0.6,
-      color = "#ec6555"
-    )
-
-
-Tunbridge_analysis|>
-   filter(organisation_code=="RWF" | (organisation_code %in% mm$BestControl))|>
-  filter(month=='2009-12-31'| month=='2012-12-31' )|>
-  spread(key=month, value=positive_responses)|>
-  mutate(change=(((`2012-12-31`-`2009-12-31`)/`2009-12-31`)*100))
-
-
 ```
 
 ::: panel-tabset
@@ -1653,6 +1647,19 @@ staff_survey_REM<-tar_read(staff_survey_REM)
 cia_summary_plots( staff_survey_REM, "Positive Responses (%)", "2022-10-01")
 
 ```
+
+Tunbridge Wells (RWF)
+
+```{r, fig.width=5, fig.height=6}
+
+staff_survey_RWF<-tar_read(staff_survey_RWF)
+  
+#evaluating_model("RWF", NA,staff_survey,"2011-01-01", "positive_responses", 0.001, staff_survey_RWF, single_bedroom_matches_final)
+
+cia_summary_plots( staff_survey_RWF, "Positive Responses (%)", "2011-01-01")
+
+```
+For Tunbridge Wells due to the limited data the controls have been matched using purely correlation rather than dynamic time warping. 
 :::
 
 ::: {.column width="50%"}
@@ -1692,7 +1699,7 @@ cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 
-## B. Notes on data quality and suitability (for CIA)
+## B. Notes on data quality and suitability (for CIA) {#sec-appendix-B}
 
 **RTT waiting time data**
 
@@ -1748,11 +1755,12 @@ Black dotted line indicates the time of the last data point prior to the switch 
 -   Only available at provider level 
 -   This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
 
-## C. List of control sites/providers by indicator {#sec-appendix-C}
+## C. Control pools for each intervention site {#sec-appendix-C}
 
 As outlined in @sec-methods-controls, there was a multi-phase control selection process to create a pool of control sites for each intervention site for further analysis. The most similar control sites for each intervention site are shown below. Note that, whilst controls will always be selected from within these sets, the exact controls will not be the same for every indicator as the CIA approach further refines matches based on similar pre-intervention time series.
 
 ::: panel-tabset
+
 ### Royal Liverpool
 
 ```{r royal_liverpool_map}
@@ -1767,7 +1775,6 @@ tar_read(controls_table_REM)
 
 ```{r clatterbridge_map}
 tar_read(map_REN)
-
 ```
 
 ```{r clatterbridge_controls_table}
@@ -1778,7 +1785,6 @@ tar_read(controls_table_REN)
 
 ```{r royal_papworth_map}
 tar_read(map_RGM)
-
 ```
 
 ```{r royal_papworth_controls_table}
@@ -1826,6 +1832,84 @@ tar_read(controls_table_RWF)
 ```
 :::
 
-## D. Provider and site codes?
+## D. List of control sites/providers by indicator {#sec-appendix-D}
+
+A different set of controls was identified by `MarketMatching` for each indicator and each intervention hospital for the CIA (@sec-methods-cia). A full list of the sites or providers used in each CIA is available below for each indicator and intervention hospital.
+
+::: panel-tabset
+
+### Length of stay
+```{r LoS_controls}
+get_market_matched_controls_table_site(hospitals, controls, "LoS")
+```
+
+### Waiting time - Median (in weeks)
+```{r waiting_time_median}
+get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_median")
+```
+
+### Waiting time - Total number of patients waiting
+```{r waiting_time_number_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_number")
+```
+
+### Bed occupancy
+```{r bed_occupancy_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "bed_occupancy")
+```
+
+### Emergency readmissions
+```{r emergency_readmissions_controls}
+get_market_matched_controls_table_site(hospitals, controls, "emergency_readmissions")
+```
+
+### Cleaning costs
+```{r cleaning_costs_controls}
+get_market_matched_controls_table_site(hospitals, controls, "cleaning_costs")
+```
+
+### Deaths in hospital
+```{r sus_deaths_controls}
+get_market_matched_controls_table_site(hospitals, controls, "sus_deaths")
+```
+
+### Falls, fractures and injuries in hospital
+```{r falls_and_fractures_controls}
+get_market_matched_controls_table_site(hospitals, controls, "falls_and_fractures")
+```
+
+### Healthcare acquired infections - combined rate
+```{r hcai_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "hcai")
+```
+
+### Healthcare acquired infections - C.Difficile
+```{r cdiff_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "cdiff")
+```
+
+### Patient experience - Friends and Family scores
+```{r friends_and_family_controls}
+get_market_matched_controls_table_site(hospitals, controls, "friends_and_family")
+```
+
+### Staff sickness
+```{r staff_sickness_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "staff_sickness")
+```
+
+### Staff turnover
+```{r staff_turnover_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "staff_turnover")
+```
+
+### Staff survey
+```{r staff_survey_controls}
+get_market_matched_controls_table_provider(hospitals, controls, "staff_survey")
+```
+
+:::
+
+## E. Provider and site codes? {#sec-appendix-E}
 
 ------------------------------------------------------------------------

@@ -190,7 +190,7 @@ The Health Economics Unit undertook a literature review [@HEU_2022] primarily ar
 
 The conclusions of the review were that **"moving adult and child inpatients from older hospitals with largely shared rooms to fully single-room accommodation is unlikely to lead to a meaningful difference in clinical outcomes, may reduce overall costs per patient, and will lead to greater satisfaction in a majority of patients. However, switching to 100% single rooms will leave a substantial minority of people feeling lonely and socially isolated, with many patients preferring to be in a shared room. A compromise approach -- where accommodation is largely in single rooms but includes some bays with two to four beds -- may provide maximum satisfaction and minimise overall costs without adversely affecting clinical outcomes."**
 
-More latterly, the Innovations team at NHP have created a living evidence review [@innovations_2024] on the topic to identify new and emerging evidence of effects and their potential scale. The review highlighted the ongoing variable nature of impacts i.e. both positive, negative and neutral impacts across length of stay, mortality, patient experience and staff attitudes.
+More latterly, the Innovations team at NHP have created a living evidence review [@innovations_2024] on the topic to identify new and emerging evidence of effects of implementing single bedrooms and their potential scale. The review highlighted the ongoing variable nature of impacts with both positive, negative and neutral impacts found across length of stay, mortality, patient experience and staff attitudes.
 
 Broadly speaking, the evidence points towards an increase in falls/fall risk, improved infection control and increased patient satisfaction with admitted care. More positive outcome impacts were generally demonstrated for specific clinical subgroups of patients notably intensive care; maternal and neonates; oncology.
 
@@ -198,7 +198,7 @@ The review summary suggests that **"Overall, 87% of studies analysed by Taylor e
 
 # Hospital Background
 
-An overview of the seven hospitals switch to SBR is shown in @tbl-sbr-switch.
+Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England 3 hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work. An overview of the remaining seven hospitals that switched to SBR is shown in @tbl-sbr-switch.
 
 ```{r table_sbr_switch}
 #| label: tbl-sbr-switch
@@ -236,7 +236,7 @@ sbr_details |>
 
 ## Royal Liverpool University Hospital
 
-Large acute hospital. Mainly focuses on complex planned care and specialist services. These include nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. Provider also manages Aintree University hospital and Broadgreen hospital. Moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating `r sbr_details |> filter(name == "Royal Liverpool") |> pull(pre_sbr_perc)`% single bed room accommodation [@eric].
+Royal Liverpool University Hospital is a large acute hospital. It mainly focuses on complex planned care and specialist services including nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. The provider Liverpool University Hospitals NHS Foundation also manages Aintree University hospital and Broadgreen hospital. Royal Liverpool University Hospital moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating `r sbr_details |> filter(name == "Royal Liverpool") |> pull(pre_sbr_perc)`% single bed room accommodation [@eric].
 
 ## Clatterbridge Cancer Centre
 
@@ -248,11 +248,11 @@ Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lun
 
 ## Chase Farm
 
-Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018, has `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(post_sbr_perc)`% single bed rooms having previously had `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(pre_sbr_perc)`% [@eric].
+Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018 and has `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(post_sbr_perc)`% single bed rooms having previously had `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(pre_sbr_perc)`% [@eric].
 
 ## Southmead
 
-Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with `r sbr_details |> filter(name == "Southmead Hospital") |> pull(post_sbr_perc)`% single bed ensuite rooms. Previously the SBR provision for the trusts main sites was around `r sbr_details |> filter(name == "Southmead Hospital") |> pull(pre_sbr_perc)`% [@eric].
+Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with `r sbr_details |> filter(name == "Southmead Hospital") |> pull(post_sbr_perc)`% single bed ensuite rooms. Previously the SBR provision for the trusts' main sites was around `r sbr_details |> filter(name == "Southmead Hospital") |> pull(pre_sbr_perc)`% [@eric].
 
 ## Tunbridge Wells
 
@@ -296,9 +296,9 @@ tar_read(indicator_availability_table)
 
 For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period.
 
-For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth has had to be excluded as it appears to have been impacted to a much greater degree by COVID-19 than it's control sites.
+For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also be present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth has had to be excluded as it appears to have been impacted to a much greater degree by COVID-19 than it's control sites.
 
-In some cases there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short. For the Health and Safety indicators the rates were generally low at the specialist sites (Papworth, Clatterbridge and Chase Farm), often dropping in zero in some months, which meant it was not always possible to fit a suitable causal impact model.
+In some cases there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short. For the Health and Safety indicators the rates were generally low at the specialist sites (Papworth, Clatterbridge and Chase Farm), often dropping to zero in some months, which meant it was not always possible to fit a suitable causal impact model.
 
 For some indicator variables data is only available at a provider level, this means that where the switch to single bedrooms occurred at a provider with multiple sites the effects of the switch will be diluted by the lack of the change in single bedroom percentage at the other sites.
 
@@ -330,15 +330,15 @@ A full list and map of the sites in the control pools for each intervention site
 
 ## Causal Impact Analysis {#sec-methods-cia}
 
-The causal impact analysis is implemented using the `MarketMatching` [@MarketMatching] package in R , which uses the `dtw` [@dtw] and `CausalImpact` [@CausalImpact] R packages, to provide a simple way to find the most appropriate control matches using dynamic time warping and then uses these controls for causal impact analysis using Bayesian structural time-series models. Using control sites means that any seasonal changes are accounted for within the analysis. The dynamic time warping approach prevents potential controls being excluded if their relationship with the study site is temporarily shifted; it accounts for any shifts in any historic trends, such as a winter peak starting slightly earlier or later at a potential control site.
+The causal impact analysis is implemented using the `MarketMatching` [@MarketMatching] package in R , which uses the `dtw` [@dtw] and `CausalImpact` [@CausalImpact] R packages to provide a simple way to find the most appropriate control matches using dynamic time warping and then using these controls for causal impact analysis using Bayesian structural time-series models. Using control sites means that seasonal changes are accounted for within the analysis. The dynamic time warping approach prevents potential controls being excluded if their relationship with the study site is temporarily shifted; it accounts for any shifts in any historic trends, such as a winter peak starting slightly earlier or later at a potential control site.
 
-Following the multi-phase control selection process outlined in @sec-methods-controls, the control pools for each site were fed into the `MarketMatching` package. This step selects the best matched control sites based on them having similar trends in the variable of interest over time to the study site. Up to 5 control sites were selected for each study site, but for some sites, particularly the specialist centres, the number of appropriate matches was smaller and so fewer than 5 control sites were selected. Controls sites are selected for each site and indicator variable and as this matching of controls is based on similar trends over time a study site may have different control sites selected for different indicators. A list of the control providers/sites for each indicator can be found in Appendix D (@sec-appendix-D).
+Following the multi-phase control selection process outlined in @sec-methods-controls, the control pools for each site were fed into the `MarketMatching` package. This step selects the best matched control sites based on them having similar trends in the variable of interest over time to the study site. Up to 5 control sites were selected for each study site, but for some sites, particularly the specialist centres, the number of appropriate matches was smaller and so fewer than 5 control sites were selected. Control sites are selected for each site and indicator variable and as this matching of controls is based on similar trends over time a study site may have different control sites selected for different indicators. A list of the control providers/sites identified by `MarketMatching` for each indicator can be found in Appendix D (@sec-appendix-D).
 
 The causal impact models were generated if there was at least 2 years of data prior to the switch to single bedrooms and at least 1 year of outcome period after the switch. Where possible a 2-year outcome period was used. The Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic of the models were checked, and the prior local level standard error adjusted if required to ensure a good historical model fit while minimising the forecasting intervals.
 
 ## Outputs of the causal impact analysis
 
-The plots for each causal impact model are shown in the appendix (ref):
+Plots for each causal impact model are shown in appendix A (@sec-appendix-A). These plots are made up of three graphs:
 
 1\) The expected value of the indicator in the outcome period, compared to the actual values of the study site.
 
@@ -346,9 +346,7 @@ The plots for each causal impact model are shown in the appendix (ref):
 
 3\) The cumulative difference between the expected and actual values over the outcome period.
 
-The values given on the forest plots are the relative effect in the outcome period.
-
-The values given in the results tables (actual, predicted and absolute values) are the average values over the outcome period (i.e. the cumulative effect at the end of the outcome period divided by the number of points in the outcome period). Since the length of outcome period varies between sites due to availability of data and data issues the cumulative effect is not always comparable across sites.
+In @sec-results, the values given in the forest plots are the relative effect in the outcome period. The values in the results tables of actual, predicted and absolute values are the averaged values over the outcome period (i.e. the cumulative effect at the end of the outcome period divided by the number of points in the outcome period). Since the length of outcome period varies between sites, due to availability of data and data issues, the cumulative effect is not always comparable across sites.
 
 ## Aggregate (meta) analysis
 
@@ -356,7 +354,7 @@ Where possible, for each indicator variable a meta-analysis was conducted using 
 
 A random-effects meta-analysis was conducted using the `metafor` R package [@metafor] and weighting the relative effects for each site using the inverse variance, as used for meta-analysis of causal impact models by [@Schmitt2017ExtendingBS].
 
-# Main results (including related notes from lookback exercise)
+# Main results (including related notes from lookback exercise) {#sec-results}
 
 ## Productivity and Efficiency
 
@@ -405,9 +403,9 @@ mean_forest_plot_DGH_Acute(waiting_time_median_output, "Mean effect on median wa
 
 The effect on median waiting time varied from a 12% reduction to a 15% increase. Both Royal Liverpool and Peterborough had a 12% reduction in median waiting time, which equated to a decrease from 19 wks to 16.7 wks at Royal Liverpool and from 5 wks to 4.3 wks at Peterborough. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time.
 
-At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and median waiting time would be unlikely to drop over time as a result of the switch to single bedrooms. For Royal Liverpool we only have 1-year of outcome data and it is not clear whether the change in median waiting time has stabilised or whether the switch to single rooms will result in a continued reduction in median waiting time over time.
+At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and median waiting time would be unlikely to drop over time as a result of the switch to single bedrooms (@fig-wait-peterborough). For Royal Liverpool we only have 1-year of outcome data and it is not clear whether the change in median waiting time has stabilised or whether the switch to single rooms will result in a continued reduction in median waiting time over time.
 
-Median waiting time significantly increased at Tunbridge Wells, but this effect appeared to only be temporary during the first year post-switch, during the second year of the outcome period the waiting times fall back in line with the expected values. The switch to single bedrooms at Tunbridge Wells started in Jan 2011, which is the date we have used in our analysis, but occurred in stages between Jan and Sept 2011, so the differences seen in the first year could be due to disruption of services while the hospital was in a transition period.
+Median waiting time significantly increased at Tunbridge Wells, but this effect appeared to only be temporary during the first year post-switch, during the second year of the outcome period the waiting times fall back in line with the expected values (@fig-wait-tunbridge). The switch to single bedrooms at Tunbridge Wells started in Jan 2011, which is the date we have used in our analysis, but occurred in stages between Jan and Sept 2011, so the differences seen in the first year could be due to disruption of services while the hospital was in a transition period.
 
 ### `r title_bed_occup`
 
@@ -435,7 +433,7 @@ For Southmead bed occupancy increased 8%, it was predicted to be on average 86% 
 
 ### `r title_readmissions`
 
-The percentage of admission that are emergency readmissions significantly decreased at 3/7 sites (Tunbridge Wells, Peterborough and Clatterbridge) and was unchanged at the remaining 4/7 sites.
+The percentage of admissions that are emergency readmissions significantly decreased at 3/7 sites (Tunbridge Wells, Peterborough and Clatterbridge) and was unchanged at the remaining 4/7 sites.
 
 ```{r, fig.width=8, fig.height=4}
 
@@ -452,7 +450,7 @@ mean_forest_plot_DGH_Acute(emergency_readmissions_output, "Mean effect on emerge
 
 ```
 
-Emergency readmission rate was either unchanged or decreased by up to 28%. The mean effect at general acute hospitals was a non-significant 10% reduction in emergency readmissions. At Peterborough the % of emergency readmissions was predicted to be 34% but dropped to 25% following a switch to single bedrooms, while at Tunbridge Wells it was predicted to 30% and dropped to 26%.
+Emergency readmission rate was either unchanged or decreased by up to 28%. The mean effect at general acute hospitals was a non-significant 10% reduction in emergency readmissions. At Peterborough the % of emergency readmissions was predicted to be 34% but dropped to 25% following a switch to single bedrooms, while at Tunbridge Wells it was predicted to be 30% and dropped to 26%.
 
 ### `r title_cleaning`
 
@@ -667,7 +665,7 @@ Our analyses rely on historical data collections, some of which do not go back a
 
 Some variables are only available at provider level (@tbl-avail) so where providers have more than one site any change that may occur following a switch to single bedrooms at one site will be diluted by a lack of change at the other sites at the provider.
 
-Also the variables that we have measured are not always be entirely specific to the impact we are trying to measure, for example we are using both staff sickness and staff turnover as a proxy for staff experience, with the assumption that increased staff turnover and sickness absences will indicate that staff are less happy in their workplace following a switch to single bedrooms. It is possible that sickness absences may be influenced in other ways by a switch to single bedrooms for example if single bedrooms reduce outbreaks of the contagious illness and better protect staff from contracting them themselves then sickness absences could be reduced.
+Also the variables that we have measured are not always entirely specific to the impact we are trying to measure, for example we are using both staff sickness and staff turnover as a proxy for staff experience, with the assumption that increased staff turnover and sickness absences will indicate that staff are less happy in their workplace following a switch to single bedrooms. It is possible that sickness absences may be influenced in other ways by a switch to single bedrooms for example if single bedrooms reduce outbreaks of the contagious illness and better protect staff from contracting them themselves then sickness absences could be reduced.
 
 Some measures are recorded quarterly or annually so we have less data points with which to fit our models and assess outcomes and less temporal specificity to detect changes.
 
@@ -687,7 +685,7 @@ For our analysis we have had to specify the month in which the switch to single 
 
 When the sites switched to single bedrooms there are likely to have been other changes to how services operate and at multi-site providers there may also have been changes to what services are provided at which sites, so there are likely to be confounding factors that influence our results.
 
-Not all sites switch entirely to single bed rooms, for example, Peterborough in November 2010 introduced SBR alongside three- to four-bedded ward areas [@peterborough_web]. The sites that switched to single bedrooms will have had different designs and the difference in results between sites may be due to different single bedroom designs working better, or worse, than others. It is also possible that the best design may vary by hospital type and a design that suits a general acute hospital may work less well at a specialist site. Where there are potential negative impacts of a switch to single bedrooms some sites may have had mitigating factors in place from the start while at other schemes any mitigating factors may have occurred later.
+Not all sites switch entirely to single bed rooms, for example, Peterborough in November 2010 introduced SBR alongside three- to four-bedded ward areas [@peterborough_web]. The sites that switched to single bedrooms will have had different designs and the differences in results between sites may be due to different single bedroom designs working better, or worse, than others. It is also possible that the best design may vary by hospital type and a design that suits a general acute hospital may work less well at a specialist site. Where there are potential negative impacts of a switch to single bedrooms some sites may have had mitigating factors in place from the start while at other schemes any mitigating factors may have occurred later.
 
 We see some evidence that the rate of hospital acquired C.Difficile infections may be reduced, but unfortunately it was not possible to assess other healthcare acquired infections (MSSA, MRSA, Klebsiella and P.Aeruginosa) due to a lack of data availability before 2017. In addition, it is possible that the spread of other contagious conditions, such as influenza and COVID-19, may be reduced by single bed rooms, but data on this is not available for analysis.
 
@@ -839,7 +837,7 @@ cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10
 Peterborough
 
 ```{r,  fig.width=5, fig.height=6}
-
+#| label: fig-wait-peterborough
 waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
 
 #evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.01, waiting_time_median_RGN, single_bedroom_matches_final)
@@ -908,7 +906,7 @@ cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05
 Tunbridge Wells
 
 ```{r, fig.width=5, fig.height=6}
-
+#| label: fig-wait-tunbridge
 waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
 
 #evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF, single_bedroom_matches_final)

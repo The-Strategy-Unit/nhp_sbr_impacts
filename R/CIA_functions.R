@@ -1043,6 +1043,7 @@ summary_forest_plot <- function(LoS_output,
                                 sus_deaths_output,
                                 falls_and_fractures_output,
                                 cdiff_output,
+                                friends_and_family_output,
                                 staff_sickness_output,
                                 staff_survey_output) {
   
@@ -1071,6 +1072,9 @@ summary_forest_plot <- function(LoS_output,
   sus_deaths_output2  <- meta_analysis(sus_deaths_output) |>
     mutate(measure = "Hospital deaths")
   
+  friends_and_family_output2  <- meta_analysis(friends_and_family_output) |>
+    mutate(measure = "Patient experience")
+  
   staff_sickness_output2  <- meta_analysis(staff_sickness_output) |>
     mutate(measure = "Staff sickness")
   
@@ -1088,35 +1092,38 @@ summary_forest_plot <- function(LoS_output,
       sus_deaths_output2,
       falls_and_fractures_output2,
       cdiff_output2,
+      friends_and_family_output2,
       staff_sickness_output2,
       staff_survey_output2
     )
   
   results_data<-results_data|>
     filter(n>1)|>
-    mutate(value=paste0(round(mean,2), " (", round(`95% lower`,2), " - ",round(`95% upper`,2), ")" ))|>
+    mutate(mean=mean*100,
+           `95% lower`=`95% lower`*100,
+           `95% upper`=`95% upper`*100 )|>
+    mutate(value=paste0(round(mean,1), " (", round(`95% lower`,1), " - ",round(`95% upper`,1), ")"))|>
+    mutate(n=paste0("n=", n))|>
     mutate(sig = case_when(
       (`95% upper` > 0 & mean < 0) |
         (`95% lower`< 0 & mean > 0)
       ~ "Non-sig",
       (`95% upper` < 0 &
-         mean < 0) ~ "Negative Effect",
+         mean < 0) ~ "Positive Effect",
       (`95% lower` > 0 &
-         mean > 0) ~ "Positive Effect"
+         mean > 0) ~ "Negative Effect"
     ))|>
     mutate(n=as.character(n))|>
-    mutate(sig=ifelse(dataset %in% c("Patient experience", "Bed occupancy", "Staff survey") & 
-                    sig=="Positive Effect", "Negative Effect", sig ))|>
-    mutate(sig=ifelse(dataset %in% c("Patient experience", "Bed occupancy", "Staff survey") & 
-                        sig=="Negative Effect", "Positive Effect", sig ))|>
-    bind_rows(data.frame(value = "Mean Effect (95% CI)",
-                         n = "n",
+    mutate(sig=ifelse((measure %in% c("Patient experience", "Bed occupancy", "Staff survey")) & 
+                   sig=="Positive Effect", "Negative Effect", sig ))|>
+    bind_rows(data.frame(value = "Mean % change (95% CI)",
                          measure=""))|>
     mutate(measure = factor(
       measure,
       levels = c(
         "Staff sickness",
         "Staff survey",
+        "Patient experience",
         "Healthcare acquired \nC.Difficile",
         "Falls and injuries",
         "Hospital deaths",
@@ -1146,13 +1153,13 @@ summary_forest_plot <- function(LoS_output,
     geom_point(aes(
       x = mean,
       colour = sig,
-    ), size=1.5) +
+    ), size=2) +
     geom_linerange(aes(
       xmin = `95% lower`,
       xmax = `95% upper`,
       colour = sig
     ),
-    size = 0.8) +
+    size = 0.7) +
     geom_vline(xintercept = 0, linetype = "dashed") +
     scale_shape_manual(values = c("individual" = 15, "mean" = 16)) +
     scale_color_manual(
@@ -1162,7 +1169,7 @@ summary_forest_plot <- function(LoS_output,
         "Negative Effect" = "#ec6555"
       )
     ) +
-    labs(x = "Mean Relative Effect Size", y = "")+
+    labs(x = "Mean % change", y = "")+
     coord_cartesian(ylim = c(1, nrow(results_data))) +
     annotate(
       "text",
@@ -1189,7 +1196,7 @@ summary_forest_plot <- function(LoS_output,
       plot.caption.position = "panel",
       plot.caption = element_text(hjust = .85)
     )+
-    coord_cartesian(xlim = c(-0.6, 0.3))
+    coord_cartesian(xlim = c(-60, 30))
   
   p_left <- results_data |>
     ggplot(aes(y = measure)) +
@@ -1204,50 +1211,35 @@ summary_forest_plot <- function(LoS_output,
       hjust = 0,
       size = 2.9,
       fontface = ifelse(
-        results_data$value == "Mean Effect (95% CI)",
+        results_data$value == "Mean % change (95% CI)",
         "bold",
         "plain"
-      )
-    ) +
+     ))+
+        geom_text(
+          aes(x = 4.2, label = n),
+          hjust = 0,
+          size = 2.9
+           ) +
     theme_void() +
     coord_cartesian(xlim = c(0, 4.5))
   
-  p_right <- results_data |>
-    ggplot() +
-    geom_text(
-      aes(
-        x = 0,
-        y = measure,
-        label = n
-      ),
-      hjust = 0,
-      size = 3,
-      fontface = ifelse(results_data$n == "n", "bold", "plain")
-    ) +
-    theme_void()
-  
+
   
   layout <- c(area(
     t = 0,
     l = 0,
     b = 17,
-    r = 6
+    r = 7
   ),
   area(
     t = 1,
-    l = 7,
-    b = 17,
-    r = 13
-  ),
-  area(
-    t = 0,
-    l = 13,
+    l = 8,
     b = 17,
     r = 15
   ))
   # final plot arrangement
-  p_left + p_mid + p_right + plot_layout(design = layout) +
-    plot_annotation(subtitle = "Summary of mean relative effects for general acute hospitals",
+  p_left + p_mid+ plot_layout(design = layout) +
+    plot_annotation(subtitle = "Summary of mean % changes for general acute hospitals",
                     caption ="Grey indicates no significant effect, while red indicates a significant negative effect",
                     theme = theme(
                       plot.subtitle = element_text(

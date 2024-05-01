@@ -592,20 +592,20 @@ indicator_availability_by_site <-
         "Royal Liverpool",
         "Clatterbridge",
         "Papworth",
-        "Peterborough",
         "Chase Farm",
         "Southmead",
-        "Tunbridge Wells"
+        "Tunbridge Wells",
+        "Peterborough"
       )
     date <-
       c(
         '2022-10-01',
         '2020-06-01',
         '2019-05-01',
-        '2010-11-01',
         '2018-09-01',
         '2014-05-01',
-        '2011-01-01'
+        '2011-01-01',
+        '2010-11-01'
       )
     
     sites <- data.frame(name, date) |>
@@ -616,7 +616,9 @@ indicator_availability_by_site <-
       cross_join(sites) |>
       filter(type == "start_date") |>
       mutate(difference = as.numeric(date - range)) |> #difference in days
-      mutate(sufficient_baseline = case_when(difference < 730 ~ "x",
+      mutate(sufficient_baseline = case_when(measure=="Patient experience" & (name=="Southmead") ~ "\U2714",
+                                             measure=="Staff turnover" & (name=="Clatterbridge"|name=="Papworth") ~ "\U2714",
+                                             measure=="Staff sickness" & (name=="Peterborough"|name=="Tunbridge Wells") ~ "\U2714",
                                              measure=="RTT waiting times" & (name=="Chase Farm"|name=="Southmead") ~ "-",
                                              measure=="Length of stay" & (name=="Papworth") ~ "-",
                                              measure=="Bed occupancy" & (name=="Papworth") ~ "-",
@@ -624,6 +626,7 @@ indicator_availability_by_site <-
                                              measure=="Falls and injuries" & (name=="Clatterbridge"|name=="Papworth"|name=="Chase Farm") ~ "-",
                                              measure=="Hospital deaths" & (name=="Papworth"|name=="Chase Farm") ~ "-",
                                              measure=="Cleaning costs" & (name=="Chase Farm") ~ "-",
+                                             difference < 730 ~ "x",
                                             TRUE ~ "\U2714")) |>
       select(-difference, -date, -range, -type) |>
       pivot_wider(names_from = name, values_from = sufficient_baseline) |>

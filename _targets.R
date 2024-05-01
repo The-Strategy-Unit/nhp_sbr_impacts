@@ -1196,8 +1196,9 @@ list(
     "RGM",
     0.1,
     "RAL",
+    0.01,
+    "RVJ",
     0.01
-    
   ),
   
   list(
@@ -1229,11 +1230,14 @@ list(
     0.05,
     "RGM",
     0.05,
+    "RGN",
+    0.1,
     "RAL",
     0.05,
     "RVJ",
-    0.05
-    
+    0.05,
+    "RWF",
+    0.1
   ),
   
   list(
@@ -1269,6 +1273,29 @@ list(
     )
   ),
   
+ tar_target(
+   staff_turnover_REN,
+   cia_analysis(
+     "REN",
+     staff_turnover_cia_format,
+     "leaving_rate",
+     0.1,
+     control_pool,
+     hospitals
+   )
+ ),
+ 
+ tar_target(
+   staff_turnover_RGM,
+   cia_analysis(
+     "RGM",
+     staff_turnover_cia_format,
+     "leaving_rate",
+     0.01,
+     control_pool,
+     hospitals
+   )
+ ),
   
   #Staff survey
   
@@ -1313,14 +1340,14 @@ list(
   prior_sd_cleaning_costs <- tibble::tribble(
     ~ org_code_of_interest,
     ~ prior_sd,
-    "REM",
-    0.01,
-    "REN",
-    0.01,
-    "RGM",
-    0.01,
-    "RAL",
-    0.001
+  #  "REM",
+  #  0.01,
+   # "REN",
+  #  0.01,
+  #  "RGM",
+ #   0.01
+  #  "RAL",
+  #  0.001
   ),
   
   list(
@@ -1461,7 +1488,7 @@ list(
       friends_and_family_RGM,
       NA,
       friends_and_family_RAL,
-      NA,
+      friends_and_family_RVJ,
       NA
     )
   ),
@@ -1472,18 +1499,18 @@ list(
       staff_sickness_REM,
       staff_sickness_REN,
       staff_sickness_RGM,
-      NA,
+      staff_sickness_RGN,
       staff_sickness_RAL,
       staff_sickness_RVJ,
-      NA
+      staff_sickness_RWF
     )
   ),
   
   tar_target(
     staff_turnover_output,
-    model_output(staff_sickness_REM,
-                 NA,
-                 NA,
+    model_output(staff_turnover_REM,
+                 staff_turnover_REN,
+                 staff_turnover_RGM,
                  NA,
                  NA,
                  NA,
@@ -1501,18 +1528,18 @@ list(
       staff_survey_RVJ,
       staff_survey_RWF
     )
-  ),
+  )#,
   
-  tar_target(
-    cleaning_costs_output,
-    model_output(
-      cleaning_costs_REM,
-      cleaning_costs_REN,
-      cleaning_costs_RGM,
-      NA,
-      NA,
-      NA,
-      NA
-    )
-  )
+#  tar_target(
+ #   cleaning_costs_output,
+#    model_output(
+ #     cleaning_costs_REM,
+#      cleaning_costs_REN,
+#      cleaning_costs_RGM,
+#      NA,
+#      NA,
+#      NA,
+#      NA
+#    )
+#  )
 )

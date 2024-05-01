@@ -385,20 +385,32 @@ cleaning_staff_cia_formatting <- function(data) {
 }
 
 cleaning_costs_cia_formatting <- function(data) {
-  cleaning_costs_cia_format <- data |>
-    filter(month >= "2015-03-01") |>
+  
+  floor_space <- get_floor_space_by_site(data)|>
     merge_sites() |>
     summarise(
-      cleaning_service_cost = sum(as.numeric(cleaning_service_cost),
+      occupied_floor_area_m2= sum(occupied_floor_area_m2,
+                                  na.rm=TRUE),
+      .by = c(site_code, effective_snapshot_date)
+    )|>
+    mutate(month=ymd(format(effective_snapshot_date, "%Y-%m-01")))
+  
+  cleaning_costs_cia_format <- data |>
+    #filter(month >= "2015-03-01") |>
+    merge_sites() |>
+    summarise(
+      cost = sum(as.numeric(cleaning_service_cost),
                                   na.rm = TRUE),
       .by = c(site_code, month)
     )|>
+    left_join(floor_space, by=c("month", "site_code"))|>
+    mutate(cleaning_service_cost=(cost/occupied_floor_area_m2))|> #cost in £ per m2
     filter(site_code!="RNLAY" &
-            site_code!="RNLBX")|>
-    mutate(cleaning_service_cost=cleaning_service_cost/1000000) #Covert to million£
+            site_code!="RNLBX")
   
   return(cleaning_costs_cia_format)
 }
+
 
 # Emergency readmissions
 emergency_readmissions_cia_formatting <- function(data) {

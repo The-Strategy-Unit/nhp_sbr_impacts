@@ -98,6 +98,14 @@ staff_survey <- tar_read(staff_survey_cia_format)
 # Cleaning costs
 cleaning_costs <- tar_read(cleaning_costs_cia_format)
 
+library(imputeTS)
+#na_ma(data)
+
+test<-cleaning_costs|>
+  filter(site_code=="REN22")
+
+test2<-na_ma(test, k = 2, weighting = "simple")
+
 #Loading control data
 single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
 
@@ -296,7 +304,7 @@ tar_read(indicator_availability_table)
 
 For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period.
 
-For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also be present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth has had to be excluded as it appears to have been impacted to a much greater degree by COVID-19 than it's control sites.
+For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also be present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth was excluded as it appears to have been impacted to a much greater degree by COVID-19 than it's control sites.
 
 In some cases there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short. For the Health and Safety indicators the rates were generally low at the specialist sites (Papworth, Clatterbridge and Chase Farm), often dropping to zero in some months, which meant it was not always possible to fit a suitable causal impact model.
 
@@ -334,7 +342,7 @@ The causal impact analysis is implemented using the `MarketMatching` [@MarketMat
 
 Following the multi-phase control selection process outlined in @sec-methods-controls, the control pools for each site were fed into the `MarketMatching` package. This step selects the best matched control sites based on them having similar trends in the variable of interest over time to the study site. Up to 5 control sites were selected for each study site, but for some sites, particularly the specialist centres, the number of appropriate matches was smaller and so fewer than 5 control sites were selected. Control sites are selected for each site and indicator variable and as this matching of controls is based on similar trends over time a study site may have different control sites selected for different indicators. A list of the control providers/sites identified by `MarketMatching` for each indicator can be found in Appendix D (@sec-appendix-D).
 
-The causal impact models were generated if there was at least 2 years of data prior to the switch to single bedrooms and at least 1 year of outcome period after the switch. Where possible a 2-year outcome period was used. The Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic of the models were checked, and the prior local level standard error adjusted if required to ensure a good historical model fit while minimising the forecasting intervals.
+The causal impact models were generated for each site and for each indicator where sufficient data was available to fit a model and there was at least 1 year of outcome period. Where possible a 2-year outcome period was used. Ideally at least a 2-year baseline period would have been used, but to maximise the number of sites we could analyse data for a shorter baseline period was used if an appropriate model could be fitted to the data. The Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic of the models were checked, and the prior local level standard error adjusted if required to ensure a good historical model fit while minimising the forecasting intervals.
 
 ## Outputs of the causal impact analysis
 
@@ -378,7 +386,7 @@ mean_forest_plot_DGH_Acute(LoS_output, "Mean effect on length of stay at general
 
 ```
 
-The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase. At the general acute hospitals the change in average length of stay varied from a 0.1 day increase at Tunbridge Wells to a 0.9 day decrease in average length of stay at Peterborough. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay.
+The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase. At the general acute hospitals the change in average length of stay varied from a 3% increase (equivalent to 0.1 days) at Tunbridge Wells to a significant 19% decrease (equivalent to 0.9 days) at Peterborough. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay.
 
 Clatterbridge is a specialist cancer centre, so it is possible the switch to single bed rooms had a different impact on length of stay due to the nature of the activity at the site. Indeed, the average length of stay predicted for Clatterbridge based on historical trends (7.5 days) is higher than for the other sites, likely reflecting the different type of activity at this site. Average length of stay at Chase Farm was predicted to be 6 days, but following the switch was actually just over 2.5 days, such a large change may reflect a change in the type of activity conducted at the site following the switch, especially as this site conducts only elective care.
 
@@ -454,14 +462,14 @@ Emergency readmission rate was either unchanged or decreased by up to 28%. The m
 
 ### `r title_cleaning`
 
-The total cleaning cost (in million £) significantly increased at 2/3 sites (Clatterbridge and Royal Liverpool) but remained unchanged at Papworth.
+The cleaning costs (in £) per square metre of occupied floor space significantly increased at 2/3 sites (Clatterbridge and Royal Liverpool) but remained unchanged at Papworth.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
 forest_plot(cleaning_costs_output, "Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
             "Relative effect of switching to single bedrooms on cleaning costs" )
 
-model_effects_table(cleaning_costs_output, "Average effects of switching to single bedrooms on cleaning costs (in million £)")
+model_effects_table(cleaning_costs_output, "Average effects of switching to single bedrooms on cleaning costs (£)")
 
 ```
 
@@ -538,7 +546,7 @@ The rate of healthcare acquired C.Difficile was either unchanged or decreased by
 
 ### `r title_friends_family`
 
-Patient experience was determined using the results of the Friends and Family test. The percentage of positive responses significantly decreased at 1/4 sites (Clatterbridge), and was unchanged at the other 3/4 sites (Royal Liverpool, Papworth and Chase Farm).
+Patient experience was determined using the results of the Friends and Family test. The percentage of positive responses significantly decreased at 1/5 sites (Clatterbridge), and was unchanged at the other 4/5 sites (Royal Liverpool, Papworth, Southmead and Chase Farm).
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -549,13 +557,19 @@ model_effects_table(friends_and_family_output, "Average effects of switching to 
 
 ```
 
-The percentage of positive responses to the Friend and Family Test generally remain unchanged but did decrease by 4% at Clatterbridge. It should be noted that based on historic trends Clatterbridge was predicted to have over 97% of positive responses, so although there was a small decrease the percentage of positive responses remained at almost 94%, which is similar to that seen in the other study sites.
+```{r, fig.width=8, fig.height=2.5}
+
+mean_forest_plot_DGH_Acute(friends_and_family_output, "Mean effect on the % of positive responses to the Friends and Family test at general acute hospitals")
+
+```
+
+The percentage of positive responses to the Friend and Family Test generally remain unchanged but did decrease by 4% at Clatterbridge. It should be noted that based on historic trends Clatterbridge was predicted to have over 97% of positive responses, so although there was a small decrease the percentage of positive responses remained at almost 94%, which is broadly similar to that expected at the other study sites.
 
 It should be noted that due to the COVID-19 pandemic there is missing friends and family test scores data from March 2020 until late 2020/early 2021 for all sites. Therefore, both Papworth and Clatterbridge have missing data in their outcome periods.
 
 ### `r title_staff_sickness`
 
-The percentage of available days taken off sick by staff significantly increased at 1/5 sites (Southmead) and was unchanged at 4/5 sites (Royal Liverpool, Papworth, Clatterbridge and Chase Farm).
+The percentage of available days taken off sick by staff significantly increased at 2/7 sites (Southmead and Tunbridge Wells) and was unchanged at the remaining 5 sites.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
@@ -572,13 +586,13 @@ mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on the rate of st
 
 ```
 
-Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead. The mean effect at general acute was a non-significant increase of 4% in the staff sickness rate.
+Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead. The mean effect at general acute was a significant increase of 6% in the staff sickness rate.
 
-While there was an increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates.
+While there was a significant increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates. A similar, albeit non-significant, effect is seen at Peterborough with a larger winter spike in the first year of the outcome period before sickness levels return to expected levels. 
 
 ### `r title_staff_turnover`
 
-Staff turnover measured as percentage of staff leaving could only be measured for Royal Liverpool, where no significant changes was found.
+Staff turnover measured as percentage of staff leaving was not significantly changed at any of the 3 sites where data was available.
 
 ```{r, fig.width=8, fig.height=2}
 
@@ -634,6 +648,7 @@ summary_table_indicators_and_sites(LoS_output,
 
 
 ```
+
 ```{r, fig.width=8, fig.height=4}
   summary_forest_plot(LoS_output,
                     waiting_time_median_output,
@@ -643,11 +658,11 @@ summary_table_indicators_and_sites(LoS_output,
                     sus_deaths_output,
                     falls_and_fractures_output,
                     cdiff_output,
+                    friends_and_family_output,
                     staff_sickness_output,
                     staff_survey_output) 
 
-
-
+  dataset <- deparse(substitute(staff_survey_output))
 ```
 The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been more negative overall. There are some factors that may be influencing some of the apparent negative impacts at the site, so the results should be interpreted cautiously.
 
@@ -655,7 +670,7 @@ Generally, following a switch to single bedrooms the productivity and efficiency
 
 Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety does not appear to be impacted, which was a concern that has been raised about single bedroom accommodation as patients are potentially less visible to the staff. It is thought single bed accommodation may reduce hospital acquired infections; our data on this is very limited, but there is some evidence to suggest C.Difficile infection rates may decrease.
 
-In terms of patient and staff experiences the switch to single bedrooms had more mixed results. However, calculating the mean effect at the three general acute hospitals where staff survey responses were available showed there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work. Negative effects are seen at Southmead, but it appears that these were temporary and only significant effects were seen in the first year post-switch.
+In terms of patient and staff experiences the switch to single bedrooms generally has negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant increase in staff sickness. Although it should be noted that some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year. 
 
 # Limitations and discussion
 
@@ -1397,6 +1412,19 @@ friends_and_family_RAL<-tar_read(friends_and_family_RAL)
 
 cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01")
 ```
+
+Southmead (RVJ)
+
+```{r, fig.width=5, fig.height=6}
+
+friends_and_family_RVJ<-tar_read(friends_and_family_RVJ)
+
+#evaluating_model("RVJ","RVJ01",  friends_and_family,"2014-05-01", "friends_and_family_percent", 0.01, friends_and_family_RVJ, single_bedroom_matches_final)
+
+cia_summary_plots(friends_and_family_RVJ, "Positive responses (%)", "2014-05-01")
+```
+
+
 :::
 :::
 :::
@@ -1406,6 +1434,8 @@ cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01"
 ::: panel-tabset
 #### Increase
 
+::: columns
+::: {.column width="50%"}
 Southmead (RVJ)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1416,6 +1446,21 @@ staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
 
 cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 ```
+:::
+
+::: {.column width="50%"}
+Tunbridge Wells (RWF)
+```{r, fig.width=5, fig.height=6}
+
+staff_sickness_RWF<-tar_read(staff_sickness_RWF)
+
+#evaluating_model("RWF", NA,staff_sickness,"2011-01-01", "staff_sickness_percent", 0.1,staff_sickness_RWF, single_bedroom_matches_final )
+
+cia_summary_plots(staff_sickness_RWF, "Sickness Rate (%)", "2011-01-01")
+
+```
+:::
+:::
 
 #### No change
 
@@ -1444,7 +1489,20 @@ staff_sickness_REN<-tar_read(staff_sickness_REN)
 cia_summary_plots(staff_sickness_REN, "Sickness Rate (%)", "2020-06-01")
 
 ```
+
+Peterborough (RGN)
+```{r, fig.width=5, fig.height=6}
+
+staff_sickness_RGN<-tar_read(staff_sickness_RGN)
+
+#evaluating_model("RGN", NA,staff_sickness,"2010-11-01", "staff_sickness_percent", 0.1,staff_sickness_RGN, single_bedroom_matches_final )
+
+cia_summary_plots(staff_sickness_RGN, "Sickness Rate (%)", "2010-11-01")
+
+```
 :::
+
+
 
 ::: {.column width="50%"}
 Papworth (RGM)
@@ -1475,7 +1533,8 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 ### `r title_staff_turnover`
 
 #### No change
-
+::: columns
+::: {.column width="50%"}
 Royal Liverpool (REM)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1486,6 +1545,38 @@ staff_turnover_REM<-tar_read(staff_turnover_REM)
 
 cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 ```
+
+
+Papworth (RGM)
+
+```{r, fig.width=5, fig.height=6}
+
+staff_turnover_RGM<-tar_read(staff_turnover_RGM)
+
+#evaluating_model("RGM", NA,staff_turnover,"2019-05-01", "leaving_rate", 0.01, staff_turnover_RGM, single_bedroom_matches_final)
+
+cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2019-05-01")
+```
+:::
+
+
+::: {.column width="50%"}
+
+Clatterbridge (REN)
+
+```{r, fig.width=5, fig.height=6}
+
+staff_turnover_REN<-tar_read(staff_turnover_REN)
+
+#evaluating_model("REN", NA,staff_turnover,"2020-06-01", "leaving_rate", 0.1, staff_turnover_REN, single_bedroom_matches_final)
+
+cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2020-06-01")
+```
+:::
+:::
+
+
+
 
 ### `r title_staff_survey`
 

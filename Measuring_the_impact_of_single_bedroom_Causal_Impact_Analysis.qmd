@@ -338,23 +338,65 @@ Following the multi-phase control selection process outlined in @sec-methods-con
 
 The causal impact models were generated for each site and for each indicator where sufficient data was available to fit a model and there was at least 1 year of outcome period. Where possible a 2-year outcome period was used. Ideally at least a 2-year baseline period would have been used, but to maximise the number of sites we could analyse data for a shorter baseline period was used if an appropriate model could be fitted to the data. The Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic of the models were checked, and the prior local level standard error adjusted if required to ensure a good historical model fit while minimising the forecasting intervals.
 
-## Outputs of the causal impact analysis
-
-Plots for each causal impact model are shown in appendix A (@sec-appendix-A). These plots are made up of three graphs:
-
-1\) The expected value of the indicator in the outcome period, compared to the actual values of the study site.
-
-2\) The point estimate shows the difference between the expected values and actual values over time, so at time points where the posterior intervals do not include zero there is a significant difference.
-
-3\) The cumulative difference between the expected and actual values over the outcome period.
-
-In @sec-results, the values given in the forest plots are the relative effect in the outcome period. The values in the results tables of actual, predicted and absolute values are the averaged values over the outcome period (i.e. the cumulative effect at the end of the outcome period divided by the number of points in the outcome period). Since the length of outcome period varies between sites, due to availability of data and data issues, the cumulative effect is not always comparable across sites.
-
 ## Aggregate (meta) analysis
 
 Where possible, for each indicator variable a meta-analysis was conducted using the data for district general and acute hospitals. The specialist hospital sites were excluded from this analysis as it is felt the effects at these sites may not be generalisable when considering future building of general acute hospitals.
 
 A random-effects meta-analysis was conducted using the `metafor` R package [@metafor] and weighting the relative effects for each site using the inverse variance, as used for meta-analysis of causal impact models by [@Schmitt2017ExtendingBS].
+
+## Interpreting the causal impact analysis
+
+Plots for each causal impact model are shown in appendix A (@sec-appendix-A). These plots are made up of three graphs, with the time point of the switch shown in red.
+
+For example:
+
+::: columns
+::: {.column width="50%"}
+```{r, fig.width=5, fig.height=6}
+LoS_RGN<-tar_read(LoS_RGN)
+
+cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
+
+
+```
+:::
+
+::: {.column width="50%"}
+<br> 
+<br>
+<br>
+
+1)  The expected value of the indicator in the outcome period, compared to the actual values of the study site.
+
+<br> 
+<br> 
+<br>
+
+2)  The point estimate shows the difference between the expected values and actual values at each time point, so at time points where the posterior intervals do not include zero there is a significant difference.
+
+<br>
+<br>
+
+3)  The cumulative difference between the expected and actual values over the outcome period.
+:::
+:::
+
+@sec-results give the summary effects for each indicator.
+
+**Forest plots** give the relative effect in the outcome period, which is the proportional change that occurs following a switch to single bedrooms compared to what would be expected had the number of single bedroom not changed. For example, for median length of stay the effect size for Peterborough hospital is -0.19 (with a 95% credible interval of -0.22 to -0.16), i.e. 19% decrease in the median length of stay. Points to the left of the zero line on the forest plot with a credible interval that does not cross zero indicate there was a significant decrease. As a decrease in length of stay is considered a positive result so the point is coloured green. Any significant negative effect effect, such as an increase in length of stay or a decrease in positive responses to Friends and Family test, are shown in red.
+
+Where there are results for 2 or more general acute hospitals a second forest plot shows the effects for just these general acute hospitals, alongside the mean value calculated in the meta-analysis. In this case the size of points indicates the weight that each site has been given in the analysis; those with the smallest credible intervals are given the greatest weight in calculating the mean.
+
+**Results tables** give the average values over the outcome period, i.e. the cumulative effect at the end of the outcome period divided by the number of points in the outcome period. Due to data availability and issues the length of outcome period varies between sites, therefore the cumulative effect is not always comparable across sites. The tables give the actual value for the study site in the outcome period, the predicted value had no change in single bedrooms occurred, and the the absolute effect, which is the difference between the actual and predicted value. The relative effect size is a proportional change relative to the predicted value.
+
+For example, Peterborough was predicted to have an mean length of stay in the outcome period of 4.8 days, however, following a switch to single bedrooms the actual average length of stay in the outcome period was 3.9 days. This is an absolute difference between predicted and actual values of 0.9 days, which is a 19% reduction in average length of stay compared to predicted values.
+
+**Utilising the relative effect** - The relative effect gives us the proportional change that appears to occur as a result of switching to single bedrooms, so when future hospitals are being designed this % change could be directly applied to the predicted values at any particular point in time to show the impact that single bedrooms may have compared to multi-bed bays. For example, if length of stay at some future time point in a hospital with multi-bed bays is predicted to be 5 days, then a mean 8% decrease in length of stay would suggest that if the hospital was to have single bedroom the average length of stay would be only 4.6 days. 
+
+Some of our indicators are rates, so the percentage change is a change in a rate. For example, a 10% decrease in emergency readmissions following a switch to single bedrooms means that if a future multi-bed hospital that was predicted to have a 20% emergency readmission rate, the emergency readmission rate for a single bedroom hospital would be expected to be 18%.
+
+It is assumed the effects have stabilised within the 2 year outcome period so that the average relative effect in the outcome period is reflective of the true ongoing effect at any point in time, and any changes are not cumulative. Interpretation of median waiting time is more complex; it is possible there may be cumulative impacts as a result of sustained changes in productivity affecting waiting list size.
+
 
 # Main results (including related notes from lookback exercise) {#sec-results}
 
@@ -368,6 +410,8 @@ Mean length of stay (in days) significantly decreased at 3/6 sites (Southmead, P
 
 forest_plot(LoS_output,  "Points to the left indicate a decrease in mean length of stay following a switch to single bed   rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
             "Relative effect of switching to single bedrooms on mean length of stay")
+
+
 
 model_effects_table(LoS_output, "Average effects of switching to single bedrooms on mean length of stay")
 
@@ -643,7 +687,7 @@ summary_table_indicators_and_sites(LoS_output,
 
 ```
 
-```{r, fig.width=8, fig.height=4}
+```{r, fig.width=7, fig.height=3.4}
   summary_forest_plot(LoS_output,
                     waiting_time_median_output,
                     bed_occupancy_output,
@@ -1111,8 +1155,6 @@ cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 
 ```
 
-
-
 ```{r, fig.width=5, fig.height=6}
 #Chase Farm (RAL)
 
@@ -1125,7 +1167,6 @@ cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 
 ```
 :::
-
 
 ::: {.column width="50%"}
 Clatterbridge (REN)
@@ -1140,7 +1181,6 @@ cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
 
 ```
 :::
-
 :::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
@@ -1162,7 +1202,6 @@ cia_summary_plots( cleaning_costs_REM, "Cost", "2022-10-01")
 
 ```
 :::
-
 :::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms

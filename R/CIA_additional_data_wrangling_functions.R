@@ -386,27 +386,39 @@ cleaning_staff_cia_formatting <- function(data) {
 
 cleaning_costs_cia_formatting <- function(data) {
   
-  floor_space <- get_floor_space_by_site(data)|>
+  floor_area<- get_floor_space_by_site(data)|>
+    mutate(month=ymd(format(effective_snapshot_date, "%Y-%m-01")))|>
+    select(-effective_snapshot_date, -organisation_code)|>
     merge_sites() |>
-    summarise(
-      occupied_floor_area_m2= sum(occupied_floor_area_m2,
-                                  na.rm=TRUE),
-      .by = c(site_code, effective_snapshot_date)
-    )|>
-    mutate(month=ymd(format(effective_snapshot_date, "%Y-%m-01")))
+    summarise( occupied_floor_area_m2= sum(occupied_floor_area_m2,
+                                           na.rm=TRUE),
+               .by = c(site_code, month))|>
+    rbind( c(NA, '2015-03-01', NA))|>
+    rbind( c(NA, '2020-03-01', NA))|>
+    rbind( c(NA, '2021-03-01', NA ))|>
+    mutate(occupied_floor_area_m2=as.numeric(occupied_floor_area_m2))|>
+    spread(key=site_code, value=occupied_floor_area_m2)|>
+    within(REN22[month == '2020-03-01'] <- REN22[month == '2019-03-01'])|>
+    within(REN22[month == '2021-03-01'] <- REN22[month == '2022-03-01'])|>
+    within(RGM22[month == '2020-03-01'] <- RGM22[month == '2022-03-01'])|>
+    within(RGM22[month == '2021-03-01'] <- RGM22[month == '2022-03-01'])|>
+    na_interpolation()|>
+    pivot_longer(!month,names_to="site_code", values_to="occupied_floor_area_m2")
   
-  cleaning_costs_cia_format <- data |>
-    #filter(month >= "2015-03-01") |>
+  
+  cleaning_costs_cia_format <- data|>
+    select(site_code, month, cleaning_service_cost)|>
     merge_sites() |>
     summarise(
       cost = sum(as.numeric(cleaning_service_cost),
-                                  na.rm = TRUE),
+                 na.rm = TRUE),
       .by = c(site_code, month)
     )|>
-    left_join(floor_space, by=c("month", "site_code"))|>
+    left_join(floor_area, by=c("month", "site_code"))|>
+    filter(month >= "2015-03-01") |>
     mutate(cleaning_service_cost=(cost/occupied_floor_area_m2))|> #cost in £ per m2
     filter(site_code!="RNLAY" &
-            site_code!="RNLBX")
+             site_code!="RNLBX")
   
   return(cleaning_costs_cia_format)
 }

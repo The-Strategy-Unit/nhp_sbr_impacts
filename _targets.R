@@ -28,7 +28,8 @@ tar_option_set(
     "stringr",
     "tidyr",
     "tsibble",
-    "zoo"
+    "zoo",
+    "imputeTS"
   ) # Packages that your targets need for their tasks.
 )
 
@@ -1340,14 +1341,14 @@ list(
   prior_sd_cleaning_costs <- tibble::tribble(
     ~ org_code_of_interest,
     ~ prior_sd,
-  #  "REM",
-  #  0.01,
-   # "REN",
-  #  0.01,
-  #  "RGM",
- #   0.01
-  #  "RAL",
-  #  0.001
+    "REM",
+    0.01,
+    "REN",
+    0.01,
+    "RGM",
+    0.01,
+    "RAL",
+    0.001
   ),
   
   list(
@@ -1528,18 +1529,18 @@ list(
       staff_survey_RVJ,
       staff_survey_RWF
     )
-  )#,
+  ),
   
-#  tar_target(
- #   cleaning_costs_output,
-#    model_output(
- #     cleaning_costs_REM,
-#      cleaning_costs_REN,
-#      cleaning_costs_RGM,
-#      NA,
-#      NA,
-#      NA,
-#      NA
-#    )
-#  )
+  tar_target(
+    cleaning_costs_output,
+    model_output(
+      cleaning_costs_REM,
+     cleaning_costs_REN,
+     cleaning_costs_RGM,
+     NA,
+     NA,
+      NA,
+      NA
+    )
+  )
 )

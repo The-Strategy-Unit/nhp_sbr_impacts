@@ -51,6 +51,8 @@ library(targets)
 library(tidyverse)
 library(tsibble)
 library(zoo)
+library(imputeTS)
+
 ```
 
 ```{r functions}
@@ -97,14 +99,6 @@ staff_survey <- tar_read(staff_survey_cia_format)
 
 # Cleaning costs
 cleaning_costs <- tar_read(cleaning_costs_cia_format)
-
-library(imputeTS)
-#na_ma(data)
-
-test<-cleaning_costs|>
-  filter(site_code=="REN22")
-
-test2<-na_ma(test, k = 2, weighting = "simple")
 
 #Loading control data
 single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
@@ -462,20 +456,20 @@ Emergency readmission rate was either unchanged or decreased by up to 28%. The m
 
 ### `r title_cleaning`
 
-The cleaning costs (in £) per square metre of occupied floor space significantly increased at 2/3 sites (Clatterbridge and Royal Liverpool) but remained unchanged at Papworth.
+The cleaning costs (in £) per square metre of occupied floor space significantly increased at 1/3 sites (Royal Liverpool) but decreased at 2/3 sites (Clatterbridge and Papworth).
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
 forest_plot(cleaning_costs_output, "Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
             "Relative effect of switching to single bedrooms on cleaning costs" )
 
-model_effects_table(cleaning_costs_output, "Average effects of switching to single bedrooms on cleaning costs (£)")
+model_effects_table(cleaning_costs_output, "Average effects of switching to single bedrooms on cleaning costs (£) per sqm")
 
 ```
 
-Cleaning costs either remained unchanged or increased by up to 56%. At Royal Liverpool cleaning costs increased by 18%, reflecting an increase in annual cleaning costs from a predicted 6.1 million to 7.2 million pounds.
+Cleaning costs increased by 37% at Royal Liverpool, but decreased by 35% and 42% at Clatterbridge and Papworth, respectively. At Royal Liverpool the 37% increase reflects an increase of £14 per square metre from a predicted £44 to £58 per square metre.
 
-Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period.
+Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period, and the first data point in the outcome period may not reflect the true changes in cost as some of the costs will have occurred prior to the switch. Also, results shoudl be interpreted cautiously as there is missing occupied floor space data for 2020 and 2021, so we have had to impute values based on the available data and the time point when the switch to single bedrooms occurred.
 
 ## Health and Safety
 
@@ -588,7 +582,7 @@ mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on the rate of st
 
 Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead. The mean effect at general acute was a significant increase of 6% in the staff sickness rate.
 
-While there was a significant increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates. A similar, albeit non-significant, effect is seen at Peterborough with a larger winter spike in the first year of the outcome period before sickness levels return to expected levels. 
+While there was a significant increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates. A similar, albeit non-significant, effect is seen at Peterborough with a larger winter spike in the first year of the outcome period before sickness levels return to expected levels.
 
 ### `r title_staff_turnover`
 
@@ -664,13 +658,14 @@ summary_table_indicators_and_sites(LoS_output,
 
   dataset <- deparse(substitute(staff_survey_output))
 ```
+
 The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been more negative overall. There are some factors that may be influencing some of the apparent negative impacts at the site, so the results should be interpreted cautiously.
 
 Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts, apart from at Clatterbridge. The median waiting time does increase at Tunbridge Wells but only during the first year, by on average less than 1 week. It should also be noted that although the date of the switch was set at Jan 2011, when the switch started, the switch was not completed until Sept 2011, so much of the increase in waiting time could be attributed to disruption during the transition period. Although the data is limited it does appear that cleaning costs may increase, which would not be unexpected given an increase in time is likely required to clean separate bedrooms and additional bathrooms.
 
 Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety does not appear to be impacted, which was a concern that has been raised about single bedroom accommodation as patients are potentially less visible to the staff. It is thought single bed accommodation may reduce hospital acquired infections; our data on this is very limited, but there is some evidence to suggest C.Difficile infection rates may decrease.
 
-In terms of patient and staff experiences the switch to single bedrooms generally has negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant increase in staff sickness. Although it should be noted that some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year. 
+In terms of patient and staff experiences the switch to single bedrooms generally has negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant increase in staff sickness. Although it should be noted that some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year.
 
 # Limitations and discussion
 
@@ -1100,7 +1095,7 @@ cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 ### `r title_cleaning`
 
 ::: panel-tabset
-#### No change
+#### Decrease
 
 ::: columns
 ::: {.column width="50%"}
@@ -1114,16 +1109,38 @@ cleaning_costs_RGM<-tar_read(cleaning_costs_RGM)
 
 cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 
-#Chase Farm
+```
+
+
+
+```{r, fig.width=5, fig.height=6}
+#Chase Farm (RAL)
+
 #cleaning_costs_RAL<-tar_read(cleaning_costs_RAL)
   
 #evaluating_model("RAL", "RALC7",cleaning_costs,"2018-09-01","cleaning_service_cost", 0.01, cleaning_costs_RAL, single_bedroom_matches_final)
 
 #cia_summary_plots( cleaning_costs_RAL, "Cost", "2018-09-01")
 
-  
+
 ```
 :::
+
+
+::: {.column width="50%"}
+Clatterbridge (REN)
+
+```{r,  fig.width=5, fig.height=6}
+
+cleaning_costs_REN<-tar_read(cleaning_costs_REN)
+  
+#evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_cost", 0.01, cleaning_costs_REN, single_bedroom_matches_final)
+
+cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
+
+```
+:::
+
 :::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
@@ -1141,21 +1158,11 @@ cleaning_costs_REM<-tar_read(cleaning_costs_REM)
 #evaluating_model("REM","REMRQ",cleaning_costs,"2022-10-01", "cleaning_service_cost", 0.01, cleaning_costs_REM, single_bedroom_matches_final)
 
 cia_summary_plots( cleaning_costs_REM, "Cost", "2022-10-01")
+
+
 ```
 :::
 
-::: {.column width="50%"}
-Clatterbridge (REN)
-
-```{r,  fig.width=5, fig.height=6}
-
-cleaning_costs_REN<-tar_read(cleaning_costs_REN)
-  
-#evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_cost", 0.01, cleaning_costs_REN, single_bedroom_matches_final)
-
-cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
-```
-:::
 :::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
@@ -1423,8 +1430,6 @@ friends_and_family_RVJ<-tar_read(friends_and_family_RVJ)
 
 cia_summary_plots(friends_and_family_RVJ, "Positive responses (%)", "2014-05-01")
 ```
-
-
 :::
 :::
 :::
@@ -1450,6 +1455,7 @@ cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 
 ::: {.column width="50%"}
 Tunbridge Wells (RWF)
+
 ```{r, fig.width=5, fig.height=6}
 
 staff_sickness_RWF<-tar_read(staff_sickness_RWF)
@@ -1491,6 +1497,7 @@ cia_summary_plots(staff_sickness_REN, "Sickness Rate (%)", "2020-06-01")
 ```
 
 Peterborough (RGN)
+
 ```{r, fig.width=5, fig.height=6}
 
 staff_sickness_RGN<-tar_read(staff_sickness_RGN)
@@ -1501,8 +1508,6 @@ cia_summary_plots(staff_sickness_RGN, "Sickness Rate (%)", "2010-11-01")
 
 ```
 :::
-
-
 
 ::: {.column width="50%"}
 Papworth (RGM)
@@ -1533,6 +1538,7 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 ### `r title_staff_turnover`
 
 #### No change
+
 ::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
@@ -1546,7 +1552,6 @@ staff_turnover_REM<-tar_read(staff_turnover_REM)
 cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 ```
 
-
 Papworth (RGM)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1559,9 +1564,7 @@ cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2019-05-01")
 ```
 :::
 
-
 ::: {.column width="50%"}
-
 Clatterbridge (REN)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1574,9 +1577,6 @@ cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2020-06-01")
 ```
 :::
 :::
-
-
-
 
 ### `r title_staff_survey`
 

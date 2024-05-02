@@ -52,6 +52,7 @@ library(tidyverse)
 library(tsibble)
 library(zoo)
 library(imputeTS)
+library(tsibble)
 ```
 
 ```{r functions}
@@ -98,15 +99,6 @@ staff_survey <- tar_read(staff_survey_cia_format)
 
 # Cleaning costs
 cleaning_costs <- tar_read(cleaning_costs_cia_format)
-
-library(imputeTS)
-#na_ma(data)
-
-test<-cleaning_costs|>
-  filter(site_code=="REN22"|site_code=="REMRQ")|>
-  spread(key=site_code, value=occupied_floor_area_m2)
-
-test2<-na_interpolation(test, k = 2, weighting = "simple")
 
 #Loading control data
 single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
@@ -464,20 +456,20 @@ Emergency readmission rate was either unchanged or decreased by up to 28%. The m
 
 ### `r title_cleaning`
 
-The cleaning costs (in £) per square metre of occupied floor space significantly increased at 2/3 sites (Clatterbridge and Royal Liverpool) but remained unchanged at Papworth.
+The cleaning costs (in £) per square metre of occupied floor space significantly increased at 1/3 sites (Royal Liverpool) but decreased at 2/3 sites (Clatterbridge and Papworth).
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
 
 forest_plot(cleaning_costs_output, "Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
             "Relative effect of switching to single bedrooms on cleaning costs" )
 
-model_effects_table(cleaning_costs_output, "Average effects of switching to single bedrooms on cleaning costs (£)")
+model_effects_table(cleaning_costs_output, "Average effects of switching to single bedrooms on cleaning costs (£) per sqm")
 
 ```
 
-Cleaning costs either remained unchanged or increased by up to 56%. At Royal Liverpool cleaning costs increased by 18%, reflecting an increase in annual cleaning costs from a predicted 6.1 million to 7.2 million pounds.
+Cleaning costs increased by 37% at Royal Liverpool, but decreased by 35% and 42% at Clatterbridge and Papworth, respectively. At Royal Liverpool the 37% increase reflects an increase of £14 per square metre from a predicted £44 to £58 per square metre.
 
-Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period.
+Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period, and the first data point in the outcome period may not reflect the true changes in cost as some of the costs will have occurred prior to the switch. Also, results shoudl be interpreted cautiously as there is missing occupied floor space data for 2020 and 2021, so we have had to impute values based on the available data and the time point when the switch to single bedrooms occurred.
 
 ## Health and Safety
 
@@ -1103,7 +1095,7 @@ cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 ### `r title_cleaning`
 
 ::: panel-tabset
-#### No change
+#### Decrease
 
 ::: columns
 ::: {.column width="50%"}
@@ -1117,16 +1109,38 @@ cleaning_costs_RGM<-tar_read(cleaning_costs_RGM)
 
 cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 
-#Chase Farm
+```
+
+
+
+```{r, fig.width=5, fig.height=6}
+#Chase Farm (RAL)
+
 #cleaning_costs_RAL<-tar_read(cleaning_costs_RAL)
   
 #evaluating_model("RAL", "RALC7",cleaning_costs,"2018-09-01","cleaning_service_cost", 0.01, cleaning_costs_RAL, single_bedroom_matches_final)
 
 #cia_summary_plots( cleaning_costs_RAL, "Cost", "2018-09-01")
 
-  
+
 ```
 :::
+
+
+::: {.column width="50%"}
+Clatterbridge (REN)
+
+```{r,  fig.width=5, fig.height=6}
+
+cleaning_costs_REN<-tar_read(cleaning_costs_REN)
+  
+#evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_cost", 0.01, cleaning_costs_REN, single_bedroom_matches_final)
+
+cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
+
+```
+:::
+
 :::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
@@ -1144,21 +1158,11 @@ cleaning_costs_REM<-tar_read(cleaning_costs_REM)
 #evaluating_model("REM","REMRQ",cleaning_costs,"2022-10-01", "cleaning_service_cost", 0.01, cleaning_costs_REM, single_bedroom_matches_final)
 
 cia_summary_plots( cleaning_costs_REM, "Cost", "2022-10-01")
+
+
 ```
 :::
 
-::: {.column width="50%"}
-Clatterbridge (REN)
-
-```{r,  fig.width=5, fig.height=6}
-
-cleaning_costs_REN<-tar_read(cleaning_costs_REN)
-  
-#evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_cost", 0.01, cleaning_costs_REN, single_bedroom_matches_final)
-
-cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
-```
-:::
 :::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms

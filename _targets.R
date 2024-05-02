@@ -1529,18 +1529,18 @@ list(
       staff_survey_RVJ,
       staff_survey_RWF
     )
-  )#,
+  ),
   
-#  tar_target(
- #   cleaning_costs_output,
-#    model_output(
- #     cleaning_costs_REM,
-#      cleaning_costs_REN,
-#      cleaning_costs_RGM,
-#      NA,
-#      NA,
-#      NA,
-#      NA
-#    )
-#  )
+  tar_target(
+    cleaning_costs_output,
+    model_output(
+      cleaning_costs_REM,
+     cleaning_costs_REN,
+     cleaning_costs_RGM,
+     NA,
+     NA,
+      NA,
+      NA
+    )
+  )
 )

@@ -386,14 +386,20 @@ cleaning_staff_cia_formatting <- function(data) {
 
 cleaning_costs_cia_formatting <- function(data) {
   
-  floor_space <- get_floor_space_by_site(data)|>
+  floor <- get_floor_space_by_site(data)|>
     merge_sites() |>
     summarise(
       occupied_floor_area_m2= sum(occupied_floor_area_m2,
                                   na.rm=TRUE),
       .by = c(site_code, effective_snapshot_date)
     )|>
-    mutate(month=ymd(format(effective_snapshot_date, "%Y-%m-01")))
+    mutate(month=ymd(format(effective_snapshot_date, "%Y-%m-01")))|>
+    select(month, site_code, occupied_floor_area_m2)|>
+    select(month, site_code, occupied_floor_area_m2)|>
+    spread(key=site_code, value=occupied_floor_area_m2)
+
+  floor<- na_interpolation(floor, k = 2, weighting = "simple")|>
+    gather(key="site_code", value="occupied_floor_area_m2", -month)
   
   cleaning_costs_cia_format <- data |>
     #filter(month >= "2015-03-01") |>
@@ -403,7 +409,7 @@ cleaning_costs_cia_formatting <- function(data) {
                                   na.rm = TRUE),
       .by = c(site_code, month)
     )|>
-    left_join(floor_space, by=c("month", "site_code"))|>
+    left_join(floor, by=c("month", "site_code"))|>
     mutate(cleaning_service_cost=(cost/occupied_floor_area_m2))|> #cost in £ per m2
     filter(site_code!="RNLAY" &
             site_code!="RNLBX")
@@ -411,6 +417,43 @@ cleaning_costs_cia_formatting <- function(data) {
   return(cleaning_costs_cia_format)
 }
 
+formatted_eric<-tar_read(formatted_eric)
+
+floor <- get_floor_space_by_site(formatted_eric)|>
+  merge_sites() |>
+  summarise(
+    occupied_floor_area_m2= sum(occupied_floor_area_m2,
+                                na.rm=TRUE),
+    .by = c(site_code, effective_snapshot_date)
+  )|>
+  mutate(month=ymd(format(effective_snapshot_date, "%Y-%m-01")))|>
+  select(month, site_code, occupied_floor_area_m2)|>
+  select(month, site_code, occupied_floor_area_m2)|>
+  spread(key=site_code, value=occupied_floor_area_m2)
+
+floor<- na_interpolation(floor, k = 2, weighting = "simple")
+
+floor<-floor|>
+  pivot_longer(names_to="site_code", values_to="occupied_floor_area_m2")
+
+cleaning_costs_cia_format <- data |>
+  filter(month >= "2015-03-01") |>
+  merge_sites() |>
+  summarise(
+    cost = sum(as.numeric(cleaning_service_cost),
+               na.rm = TRUE),
+    .by = c(site_code, month)
+  )|>
+  left_join(floor, by=c("month", "site_code"))|>
+  mutate(cleaning_service_cost=(cost/occupied_floor_area_m2))|> #cost in £ per m2
+  filter(site_code!="RNLAY" &
+           site_code!="RNLBX")
+
+test<-floor|>
+  filter(site_code=="REMRQ")
+
+test2<-cleaning_costs_cia_format|>
+  filter(site_code=="REMRQ")
 
 # Emergency readmissions
 emergency_readmissions_cia_formatting <- function(data) {

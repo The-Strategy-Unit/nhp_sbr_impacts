@@ -966,11 +966,6 @@ get_hospitals_info <- function(filepath) {
                                     "RAL",
                                     "RVJ",
                                     "RWF"))
-  # select(name,
-  #        organisation_code,
-  #        site_code,
-  #        switch_month) |>
-  # na.omit()
   
   return(data)
 }

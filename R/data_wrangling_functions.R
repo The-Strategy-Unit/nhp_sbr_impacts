@@ -959,11 +959,18 @@ staff_survey_formatting <-
 get_hospitals_info <- function(filepath) {
   data <- readxl::read_excel(filepath) |>
     mutate(switch_month = as.Date(date)) |>
-    select(name,
-           organisation_code,
-           site_code,
-           switch_month) |>
-    na.omit()
+    filter(organisation_code %in% c("REM",
+                                    "REN",
+                                    "RGM",
+                                    "RGN",
+                                    "RAL",
+                                    "RVJ",
+                                    "RWF"))
+  # select(name,
+  #        organisation_code,
+  #        site_code,
+  #        switch_month) |>
+  # na.omit()
   
   return(data)
 }

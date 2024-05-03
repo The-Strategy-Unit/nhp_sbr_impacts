@@ -39,6 +39,7 @@ library(egg)
 library(flextable)
 library(ggrepel)
 library(glue)
+library(imputeTS)
 library(janitor)
 library(lubridate)
 library(MarketMatching)
@@ -51,8 +52,6 @@ library(targets)
 library(tidyverse)
 library(tsibble)
 library(zoo)
-library(imputeTS)
-
 ```
 
 ```{r functions}
@@ -119,7 +118,7 @@ staff_turnover_output <- tar_read(staff_turnover_output)
 staff_survey_output <- tar_read(staff_survey_output)
 cleaning_costs_output <- tar_read(cleaning_costs_output)
 
-hospitals_summary <- read_excel("hospitals_summary.xlsx")
+# hospitals_summary <- read_excel("hospitals_summary.xlsx")
 controls <- tar_read(control_pool)
 hospitals <- tar_read(hospitals)
 ```
@@ -205,35 +204,39 @@ Initially 11 hospitals were identified to have made a switch to single bedrooms.
 ```{r table_sbr_switch}
 #| label: tbl-sbr-switch
 #| tbl-cap: "Details of the switch to single bed accommodation at the seven intervention sites."
+ 
+# sbr_details <- hospitals_summary |>
+#   mutate(
+#     pre_sbr_perc = round(pre_sbr * 100 / post_all, 2),
+#     post_sbr_perc = round(post_sbr * 100 / post_all, 2),
+#     date = format(date, "%b %Y")
+#   )
 
-sbr_details <- hospitals_summary |>
-  mutate(
-    pre_sbr_perc = round(pre_sbr * 100 / post_all, 2),
-    post_sbr_perc = round(post_sbr * 100 / post_all, 2),
-    date = format(date, "%b %Y")
-  )
+# sbr_details |>
+#   select(
+#     "Hospital" = name,
+#     "Switch month" = date,
+#     "SBR% before switch" = pre_sbr_perc,
+#     "SBR% after switch" = post_sbr_perc
+#   ) |>
+#   na.omit() |>
+#   as_flextable(
+#     hide_grouplabel = TRUE,
+#     max_row = 20,
+#     show_coltype = FALSE
+#   ) |>
+#   align(part = "header", align = "center") |>
+#   bg(bg = "#f9bf07", part = "header") |>
+#   bold(bold = TRUE, part = "header") |>
+#   fontsize(size = 12, part = "all") |>
+#   padding(padding = 2,
+#           part = "all",
+#           padding.top = NULL) |>
+#   autofit()
 
-sbr_details |>
-  select(
-    "Hospital" = name,
-    "Switch month" = date,
-    "SBR% before switch" = pre_sbr_perc,
-    "SBR% after switch" = post_sbr_perc
-  ) |>
-  na.omit() |>
-  as_flextable(
-    hide_grouplabel = TRUE,
-    max_row = 20,
-    show_coltype = FALSE
-  ) |>
-  align(part = "header", align = "center") |>
-  bg(bg = "#f9bf07", part = "header") |>
-  bold(bold = TRUE, part = "header") |>
-  fontsize(size = 12, part = "all") |>
-  padding(padding = 2,
-          part = "all",
-          padding.top = NULL) |>
-  autofit()
+sbr_details <- tar_read(sbr_details)
+
+tar_read(sbr_details_table)
 ```
 
 ## Royal Liverpool University Hospital
@@ -319,9 +322,10 @@ tar_read(flow_chart_selecting_controls)
 ```
 
 ```{r selecting_controls_number_sites}
-number_control_sites <- tar_read(single_bedroom_matches_final) |>
-  filter(rank_of_ranks <= 20) |>
-  summarise(n(), .by = organisation_code)
+# number_control_sites <- tar_read(single_bedroom_matches_final) |>
+#   filter(rank_of_ranks <= 20) |>
+#   summarise(n(), .by = organisation_code)
+number_control_sites <- tar_read(number_control_sites)
 ```
 
 Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the intervention's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
@@ -353,11 +357,9 @@ For example:
 ::: columns
 ::: {.column width="50%"}
 ```{r, fig.width=5, fig.height=6}
-LoS_RGN<-tar_read(LoS_RGN)
+LoS_RGN <- tar_read(LoS_RGN)
 
 cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
-
-
 ```
 :::
 
@@ -407,21 +409,19 @@ It is assumed the effects have stabilised within the 2 year outcome period so th
 Mean length of stay (in days) significantly decreased at 3/6 sites (Southmead, Peterborough and Chase Farm), was unchanged at 2/6 sites (Royal Liverpool and Tunbridge Wells), but significantly increased at Clatterbridge.
 
 ```{r, fig.width=8, fig.height=4}
+forest_plot(
+  LoS_output,
+  "Points to the left indicate a decrease in mean length of stay following a switch to single bed   rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on mean length of stay"
+)
 
-forest_plot(LoS_output,  "Points to the left indicate a decrease in mean length of stay following a switch to single bed   rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
-            "Relative effect of switching to single bedrooms on mean length of stay")
-
-
-
-model_effects_table(LoS_output, "Average effects of switching to single bedrooms on mean length of stay")
-
-
+model_effects_table(LoS_output,
+                    "Average effects of switching to single bedrooms on mean length of stay")
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(LoS_output, "Mean effect on length of stay at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(LoS_output,
+                           "Mean effect on length of stay at general acute hospitals")
 ```
 
 The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase. At the general acute hospitals the change in average length of stay varied from a 3% increase (equivalent to 0.1 days) at Tunbridge Wells to a significant 19% decrease (equivalent to 0.9 days) at Peterborough. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay.
@@ -433,18 +433,23 @@ Clatterbridge is a specialist cancer centre, so it is possible the switch to sin
 The median waiting time (in weeks) significantly decreased at 2/5 sites (Royal Liverpool and Peterborough) and was unchanged at 2/5 sites (Papworth and Clatterbridge).
 
 ```{r, fig.width=8, fig.height=4}
+forest_plot(
+  waiting_time_median_output,
+  "Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are indicated red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on median waiting time"
+)
 
-forest_plot(waiting_time_median_output, "Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are indicated red. Grey indicates no significant change.",
-         "Relative effect of switching to single bedrooms on median waiting time"   )
-
-model_effects_table(waiting_time_median_output, "Average effects of switching to single bedrooms on median waiting time (in wks)")
-
+model_effects_table(
+  waiting_time_median_output,
+  "Average effects of switching to single bedrooms on median waiting time (in wks)"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(waiting_time_median_output, "Mean effect on median waiting time at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(
+  waiting_time_median_output,
+  "Mean effect on median waiting time at general acute hospitals"
+)
 ```
 
 The effect on median waiting time varied from a 12% reduction to a 15% increase. Both Royal Liverpool and Peterborough had a 12% reduction in median waiting time, which equated to a decrease from 19 wks to 16.7 wks at Royal Liverpool and from 5 wks to 4.3 wks at Peterborough. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time.
@@ -458,19 +463,21 @@ Median waiting time significantly increased at Tunbridge Wells, but this effect 
 Bed occupancy is measured quarterly and is only available at a Provider level. The percentage of available beds occupied significantly increased at 2/4 sites (Clatterbridge and Southmead) and was unchanged at 2/4 (Royal Liverpool and and Chase Farm). An increase in bed occupancy is generally considered a positive result, provided it does not result in an increase in Emergency department waiting times. We have not looked at Emergency department waiting times. However, Chase Farm only does elective care and Clatterbridge is a cancer centre, and so neither of these sites have Emergency departments.
 
 ```{r, fig.width=8, fig.height=4}
+forest_plot(
+  bed_occupancy_output,
+  "Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are indicated red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on bed occupancy"
+)
 
-forest_plot(bed_occupancy_output, "Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are indicated red. Grey indicates no significant change.",
-            "Relative effect of switching to single bedrooms on bed occupancy")
-
-model_effects_table(bed_occupancy_output, "Average effects of switching to single bedrooms on % of bed occupancy")
-
-
+model_effects_table(
+  bed_occupancy_output,
+  "Average effects of switching to single bedrooms on % of bed occupancy"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(bed_occupancy_output, "Mean effect on bed occupancy at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(bed_occupancy_output,
+                           "Mean effect on bed occupancy at general acute hospitals")
 ```
 
 Bed occupancy was either unchanged or increased by up to 13%. The mean effect at the 2 general acute hospitals was a non-significant 4% increase in bed occupancy.
@@ -482,18 +489,23 @@ For Southmead bed occupancy increased 8%, it was predicted to be on average 86% 
 The percentage of admissions that are emergency readmissions significantly decreased at 3/7 sites (Tunbridge Wells, Peterborough and Clatterbridge) and was unchanged at the remaining 4/7 sites.
 
 ```{r, fig.width=8, fig.height=4}
+forest_plot(
+  emergency_readmissions_output,
+  "Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on emergency readmissions"
+)
 
-forest_plot(emergency_readmissions_output, "Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
-             "Relative effect of switching to single bedrooms on emergency readmissions")
-
-model_effects_table(emergency_readmissions_output, "Average effects of switching to single bedrooms on % of emergency readmissions")
-
+model_effects_table(
+  emergency_readmissions_output,
+  "Average effects of switching to single bedrooms on % of emergency readmissions"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(emergency_readmissions_output, "Mean effect on emergency readmission rate at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(
+  emergency_readmissions_output,
+  "Mean effect on emergency readmission rate at general acute hospitals"
+)
 ```
 
 Emergency readmission rate was either unchanged or decreased by up to 28%. The mean effect at general acute hospitals was a non-significant 10% reduction in emergency readmissions. At Peterborough the % of emergency readmissions was predicted to be 34% but dropped to 25% following a switch to single bedrooms, while at Tunbridge Wells it was predicted to be 30% and dropped to 26%.
@@ -503,12 +515,16 @@ Emergency readmission rate was either unchanged or decreased by up to 28%. The m
 The cleaning costs (in £) per square metre of occupied floor space significantly increased at 1/3 sites (Royal Liverpool) but decreased at 2/3 sites (Clatterbridge and Papworth).
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
+forest_plot(
+  cleaning_costs_output,
+  "Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on cleaning costs"
+)
 
-forest_plot(cleaning_costs_output, "Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
-            "Relative effect of switching to single bedrooms on cleaning costs" )
-
-model_effects_table(cleaning_costs_output, "Average effects of switching to single bedrooms on cleaning costs (£) per sqm")
-
+model_effects_table(
+  cleaning_costs_output,
+  "Average effects of switching to single bedrooms on cleaning costs (£) per sqm"
+)
 ```
 
 Cleaning costs increased by 37% at Royal Liverpool, but decreased by 35% and 42% at Clatterbridge and Papworth, respectively. At Royal Liverpool the 37% increase reflects an increase of £14 per square metre from a predicted £44 to £58 per square metre.
@@ -522,18 +538,21 @@ Cleaning costs data are an annual measure, so there is limited data with only 1 
 The rate of in-hospital deaths (number per 1,000 discharges) significantly decreased at 1/5 sites (Peterborough), and was unchanged at 4/5 sites (Royal Liverpool, Tunbridge Wells, Clatterbridge and Southmead).
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
+forest_plot(
+  sus_deaths_output,
+  "Points to the left indicate a decrease in hospital deaths following a switch to single bed rooms, which is considered a positive effect. Significant positive effects green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on in-hospital deaths"
+)
 
-forest_plot(sus_deaths_output, "Points to the left indicate a decrease in hospital deaths following a switch to single bed rooms, which is considered a positive effect. Significant positive effects green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
-            "Relative effect of switching to single bedrooms on in-hospital deaths" )
-
-model_effects_table(sus_deaths_output, "Average effects of switching to single bedrooms on in-hospital deaths/1,000 discharges")
-
+model_effects_table(
+  sus_deaths_output,
+  "Average effects of switching to single bedrooms on in-hospital deaths/1,000 discharges"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(sus_deaths_output, "Mean effect on in-hospital death rate at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(sus_deaths_output,
+                           "Mean effect on in-hospital death rate at general acute hospitals")
 ```
 
 In-hospital deaths were generally unchanged but decreased by 37% at Peterborough. The 37% decrease at Peterborough reflects a decrease from a predicted 38 deaths per 1,000 discharges to 24 deaths. The mean effect at general acute hospitals was a non-significant decrease of 11% in in-hospital death.
@@ -543,18 +562,23 @@ In-hospital deaths were generally unchanged but decreased by 37% at Peterborough
 The rate of in-hospital falls and injuries (% of spells) significantly decreased at 1/4 sites (Peterborough), and was unchanged at 3/4 sites (Royal Liverpool, Tunbridge Wells and Southmead).
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
+forest_plot(
+  falls_and_fractures_output,
+  "Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on in-hospital falls, fractures and injuries"
+)
 
-forest_plot(falls_and_fractures_output, "Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
-             "Relative effect of switching to single bedrooms on in-hospital falls, fractures and injuries")
-
-model_effects_table(falls_and_fractures_output, "Average effects of switching to single bedrooms on % of spells with in-hospital fall or injury")
-
+model_effects_table(
+  falls_and_fractures_output,
+  "Average effects of switching to single bedrooms on % of spells with in-hospital fall or injury"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(falls_and_fractures_output, "Mean effect on rate of falls, fractures and injuries while in hospital at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(
+  falls_and_fractures_output,
+  "Mean effect on rate of falls, fractures and injuries while in hospital at general acute hospitals"
+)
 ```
 
 The in-hospital falls and injuries rate was generally unchanged, but decreased by 21% at Peterborough. The 21% decrease at Peterborough reflects a decrease from a predicted 3.2% of hospital spells having a fall or injury to 2.5%. The mean effect at general acute hospitals was a non-significant 3% reduction in the rate of in-hospital falls, injuries and fractures.
@@ -564,18 +588,23 @@ The in-hospital falls and injuries rate was generally unchanged, but decreased b
 The rate of healthcare acquired C.Difficile infections (cases per 10,000 bed days) decreased at 2/3 sites (Chase Farm and Southmead) but was unchanged at Royal Liverpool.
 
 ```{r, fig.width=8, fig.height=4}
+forest_plot(
+  cdiff_output,
+  "Points to the left indicate a decrease in healthcare acquired C.Difficile infections  following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on rate of healthcare acquired C.Difficile infections"
+)
 
-forest_plot(cdiff_output, "Points to the left indicate a decrease in healthcare acquired C.Difficile infections  following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green. Grey indicates no significant change.",
-             "Relative effect of switching to single bedrooms on rate of healthcare acquired C.Difficile infections")
-
-model_effects_table(cdiff_output, "Average effects of switching to single bedrooms on cases of healthcare acquired C.Difficile infections /10,000 bed days")
-
+model_effects_table(
+  cdiff_output,
+  "Average effects of switching to single bedrooms on cases of healthcare acquired C.Difficile infections /10,000 bed days"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(cdiff_output, "Mean effect on the rate heathlcare acquired C.Difficile infections at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(
+  cdiff_output,
+  "Mean effect on the rate heathlcare acquired C.Difficile infections at general acute hospitals"
+)
 ```
 
 The rate of healthcare acquired C.Difficile was either unchanged or decreased by up to 36%. The 36% decrease in C.Diff infections at Southmead reflects a decrease from a predicted 2.1 cases per 10,000 beddays to 1.3 cases. The mean effect at general acute hospitals was a non-significant 24% reduction in the rate of C.Difficile infections.
@@ -587,18 +616,23 @@ The rate of healthcare acquired C.Difficile was either unchanged or decreased by
 Patient experience was determined using the results of the Friends and Family test. The percentage of positive responses significantly decreased at 1/5 sites (Clatterbridge), and was unchanged at the other 4/5 sites (Royal Liverpool, Papworth, Southmead and Chase Farm).
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
+forest_plot(
+  friends_and_family_output,
+  "Points to the right indicate an increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on positive scores on the Friends and Family test"
+)
 
-forest_plot(friends_and_family_output, "Points to the right indicate an increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.",
-            "Relative effect of switching to single bedrooms on positive scores on the Friends and Family test" )
-
-model_effects_table(friends_and_family_output, "Average effects of switching to single bedrooms on % of positive responses on the Friends and Family test")
-
+model_effects_table(
+  friends_and_family_output,
+  "Average effects of switching to single bedrooms on % of positive responses on the Friends and Family test"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(friends_and_family_output, "Mean effect on the % of positive responses to the Friends and Family test at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(
+  friends_and_family_output,
+  "Mean effect on the % of positive responses to the Friends and Family test at general acute hospitals"
+)
 ```
 
 The percentage of positive responses to the Friend and Family Test generally remain unchanged but did decrease by 4% at Clatterbridge. It should be noted that based on historic trends Clatterbridge was predicted to have over 97% of positive responses, so although there was a small decrease the percentage of positive responses remained at almost 94%, which is broadly similar to that expected at the other study sites.
@@ -610,18 +644,23 @@ It should be noted that due to the COVID-19 pandemic there is missing friends an
 The percentage of available days taken off sick by staff significantly increased at 2/7 sites (Southmead and Tunbridge Wells) and was unchanged at the remaining 5 sites.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
+forest_plot(
+  staff_sickness_output,
+  "Points to the left indicate a decrease in staff sickness following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on staff sickness rate"
+)
 
-forest_plot(staff_sickness_output, "Points to the left indicate a decrease in staff sickness following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
-             "Relative effect of switching to single bedrooms on staff sickness rate")
-
-model_effects_table(staff_sickness_output, "Average effects of switching to single bedrooms on staff sickness rate (% of available days)")
-
+model_effects_table(
+  staff_sickness_output,
+  "Average effects of switching to single bedrooms on staff sickness rate (% of available days)"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(staff_sickness_output, "Mean effect on the rate of staff sickness at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(
+  staff_sickness_output,
+  "Mean effect on the rate of staff sickness at general acute hospitals"
+)
 ```
 
 Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead. The mean effect at general acute was a significant increase of 6% in the staff sickness rate.
@@ -633,12 +672,16 @@ While there was a significant increase in staff sickness at Southmead (average o
 Staff turnover measured as percentage of staff leaving was not significantly changed at any of the 3 sites where data was available.
 
 ```{r, fig.width=8, fig.height=2}
+forest_plot(
+  staff_turnover_output,
+  "Grey indicates no significant change in staff turnover following a switch to single bed rooms.",
+  "Relative effect of switching to single bedrooms on staff turnover"
+)
 
-forest_plot(staff_turnover_output, "Grey indicates no significant change in staff turnover following a switch to single bed rooms.",
-             "Relative effect of switching to single bedrooms on staff turnover")
-
-model_effects_table(staff_turnover_output, "Average effects of switching to single bedrooms on rate of staff turnover (% leaving)")
-
+model_effects_table(
+  staff_turnover_output,
+  "Average effects of switching to single bedrooms on rate of staff turnover (% leaving)"
+)
 ```
 
 ### `r title_staff_survey`
@@ -648,17 +691,23 @@ To assess staff experience the NHS staff survey was used and we analysed the per
 The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth), and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work.
 
 ```{r, include=TRUE, fig.width=8, fig.height=4}
+forest_plot(
+  staff_survey_output,
+  "Points to the right indicate an increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.",
+  "Relative effect of switching to single bedrooms on % of NHS staff that recommend their workplace"
+)
 
-forest_plot(staff_survey_output,"Points to the right indicate an increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.", "Relative effect of switching to single bedrooms on % of NHS staff that recommend their workplace")
-
-model_effects_table(staff_survey_output, "Average effects of switching to single bedrooms on % of NHS staff who would recommend their workplace")
-
+model_effects_table(
+  staff_survey_output,
+  "Average effects of switching to single bedrooms on % of NHS staff who would recommend their workplace"
+)
 ```
 
 ```{r, fig.width=8, fig.height=2.5}
-
-mean_forest_plot_DGH_Acute(staff_survey_output, "Mean effect on percentage of staff that would recommend their trust as a place to work at general acute hospitals")
-
+mean_forest_plot_DGH_Acute(
+  staff_survey_output,
+  "Mean effect on percentage of staff that would recommend their trust as a place to work at general acute hospitals"
+)
 ```
 
 The effect on the percentage of staff that would recommend their workplace varied from a 20% decrease to a 12% increase. At Southmead the 20% reduction in the percentage of staff recommending their workplace equates to a reduction from a predicted percentage of 57% recommending their workplace to 45% following the switch to single bedrooms. The mean effect at general acute hospitals was a significant reduction of 15% in the percentage of staff who would recommend their workplace.
@@ -670,37 +719,38 @@ The staff survey is an annual measure so there is limited data, with only 1 or 2
 ## Summary of results
 
 ```{r}
-summary_table_indicators_and_sites(LoS_output,
-                                    waiting_time_median_output,
-                                    bed_occupancy_output,
-                                    emergency_readmissions_output,
-                                    cleaning_costs_output,
-                                    sus_deaths_output,
-                                    falls_and_fractures_output,
-                                    cdiff_output,
-                                    friends_and_family_output,
-                                    staff_sickness_output,
-                                    staff_turnover_output,
-                                    staff_survey_output) 
-
-
-
+summary_table_indicators_and_sites(
+  LoS_output,
+  waiting_time_median_output,
+  bed_occupancy_output,
+  emergency_readmissions_output,
+  cleaning_costs_output,
+  sus_deaths_output,
+  falls_and_fractures_output,
+  cdiff_output,
+  friends_and_family_output,
+  staff_sickness_output,
+  staff_turnover_output,
+  staff_survey_output
+) 
 ```
 
 ```{r, fig.width=7, fig.height=3.4}
-  summary_forest_plot(LoS_output,
-                    waiting_time_median_output,
-                    bed_occupancy_output,
-                    emergency_readmissions_output,
-                    cleaning_costs_output,
-                    sus_deaths_output,
-                    falls_and_fractures_output,
-                    cdiff_output,
-                    friends_and_family_output,
-                    staff_sickness_output,
-                    staff_survey_output) 
+summary_forest_plot(
+  LoS_output,
+  waiting_time_median_output,
+  bed_occupancy_output,
+  emergency_readmissions_output,
+  cleaning_costs_output,
+  sus_deaths_output,
+  falls_and_fractures_output,
+  cdiff_output,
+  friends_and_family_output,
+  staff_sickness_output,
+  staff_survey_output
+)
 
-  dataset <- deparse(substitute(staff_survey_output))
+dataset <- deparse(substitute(staff_survey_output))
 ```
 
 The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been more negative overall. There are some factors that may be influencing some of the apparent negative impacts at the site, so the results should be interpreted cautiously.
@@ -783,24 +833,21 @@ We see some evidence that the rate of hospital acquired C.Difficile infections m
 Peterborough
 
 ```{r, fig.width=5, fig.height=6}
-
-LoS_RGN<-tar_read(LoS_RGN)
+LoS_RGN <- tar_read(LoS_RGN)
 
 #evaluating_model("RGN",  "RGN80", length_of_stay, "2010-11-01","avg_los", 0.01, LoS_RGN, single_bedroom_matches_final)
 
 cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
-
 ```
 
 Chase Farm
 
 ```{r, fig.width=5, fig.height=6}
-
-LoS_RAL<-tar_read(LoS_RAL)
+LoS_RAL <- tar_read(LoS_RAL)
 
 #evaluating_model("RAL", "RALC7", length_of_stay, "2018-09-01", "avg_los", 0.05, LoS_RAL, single_bedroom_matches_final)
 
-cia_summary_plots(LoS_RAL,"Average LoS (days)", "2018-09-01")
+cia_summary_plots(LoS_RAL, "Average LoS (days)", "2018-09-01")
 ```
 :::
 
@@ -808,12 +855,11 @@ cia_summary_plots(LoS_RAL,"Average LoS (days)", "2018-09-01")
 Southmead
 
 ```{r, fig.width=5, fig.height=6}
-
-LoS_RVJ<-tar_read(LoS_RVJ)
+LoS_RVJ <- tar_read(LoS_RVJ)
 
 #evaluating_model("RVJ","RVJ01",  length_of_stay, "2014-05-01", "avg_los", 0.01, LoS_RVJ, single_bedroom_matches_final)
 
-cia_summary_plots(LoS_RVJ,"Average LoS (days)", "2014-05-01")
+cia_summary_plots(LoS_RVJ, "Average LoS (days)", "2014-05-01")
 ```
 :::
 :::
@@ -825,13 +871,11 @@ cia_summary_plots(LoS_RVJ,"Average LoS (days)", "2014-05-01")
 Tunbridge Wells
 
 ```{r, fig.width=5, fig.height=6}
-
-LoS_RWF<-tar_read(LoS_RWF)
+LoS_RWF <- tar_read(LoS_RWF)
 
 #evaluating_model("RWF",  "RWFTW", length_of_stay, "2011-01-01", "avg_los", 0.05, LoS_RWF, single_bedroom_matches_final)
 
-cia_summary_plots(LoS_RWF,"Average LoS (days)", "2011-01-01")
-
+cia_summary_plots(LoS_RWF, "Average LoS (days)", "2011-01-01")
 ```
 :::
 
@@ -839,8 +883,7 @@ cia_summary_plots(LoS_RWF,"Average LoS (days)", "2011-01-01")
 Royal Liverpool
 
 ```{r, fig.width=5, fig.height=6}
-
-LoS_REM<-tar_read(LoS_REM)
+LoS_REM <- tar_read(LoS_REM)
 
 #evaluating_model("REM", "REMRQ",  length_of_stay, "2022-10-01", "avg_los", 0.05, LoS_REM, single_bedroom_matches_final)
 
@@ -856,13 +899,11 @@ cia_summary_plots(LoS_REM, "Average LoS (days)", "2022-10-01")
 Clatterbridge
 
 ```{r, fig.width=5, fig.height=6}
-
-LoS_REN<-tar_read(LoS_REN)
+LoS_REN <- tar_read(LoS_REN)
 
 #evaluating_model("REN", "REN22", length_of_stay, "2020-06-01", "avg_los", 0.1, LoS_REN, single_bedroom_matches_final)
 
-cia_summary_plots(LoS_REN,"Average LoS (days)", "2020-06-01")
-
+cia_summary_plots(LoS_REN, "Average LoS (days)", "2020-06-01")
 ```
 :::
 :::
@@ -878,12 +919,13 @@ cia_summary_plots(LoS_REN,"Average LoS (days)", "2020-06-01")
 Royal Liverpool
 
 ```{r, fig.width=5, fig.height=6}
-
-waiting_time_median_REM<-tar_read(waiting_time_median_REM)
+waiting_time_median_REM <- tar_read(waiting_time_median_REM)
 
 #evaluating_model("REM", NA,  rtt_waiting_time, "2022-10-01", "median_by_prov", 0.05, waiting_time_median_REM, single_bedroom_matches_final)
 
-cia_summary_plots(waiting_time_median_REM, "Median waiting time (wks)", "2022-10-01")
+cia_summary_plots(waiting_time_median_REM,
+                  "Median waiting time (wks)",
+                  "2022-10-01")
 ```
 :::
 
@@ -892,12 +934,13 @@ Peterborough
 
 ```{r,  fig.width=5, fig.height=6}
 #| label: fig-wait-peterborough
-waiting_time_median_RGN<-tar_read(waiting_time_median_RGN)
+waiting_time_median_RGN <- tar_read(waiting_time_median_RGN)
 
 #evaluating_model("RGN", NA, rtt_waiting_time, "2010-11-01", "median_by_prov", 0.01, waiting_time_median_RGN, single_bedroom_matches_final)
 
-cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11-01")
-
+cia_summary_plots(waiting_time_median_RGN,
+                  "Median waiting time (wks)",
+                  "2010-11-01")
 ```
 :::
 :::
@@ -909,13 +952,13 @@ cia_summary_plots(waiting_time_median_RGN, "Median waiting time (wks)", "2010-11
 Clatterbridge
 
 ```{r, fig.width=5, fig.height=6}
-
-waiting_time_median_REN<-tar_read(waiting_time_median_REN)
+waiting_time_median_REN <- tar_read(waiting_time_median_REN)
 
 #evaluating_model("REN", NA, rtt_waiting_time, "2020-06-01", "median_by_prov", 0.05, waiting_time_median_REN, single_bedroom_matches_final)
 
-cia_summary_plots(waiting_time_median_REN, "Median waiting time (wks)", "2020-06-01")
-
+cia_summary_plots(waiting_time_median_REN,
+                  "Median waiting time (wks)",
+                  "2020-06-01")
 ```
 :::
 
@@ -923,33 +966,48 @@ cia_summary_plots(waiting_time_median_REN, "Median waiting time (wks)", "2020-06
 Papworth
 
 ```{r, fig.width=5, fig.height=6}
-
-waiting_time_median_RGM<-tar_read(waiting_time_median_RGM)
+waiting_time_median_RGM <- tar_read(waiting_time_median_RGM)
 
 #evaluating_model("RGM", NA, rtt_waiting_time, "2019-05-01", "median_by_prov", 0.05, waiting_time_median_RGM, single_bedroom_matches_final)
 
-cia_summary_plots(waiting_time_median_RGM, "Median waiting time (wks)", "2019-05-01")
-
+cia_summary_plots(waiting_time_median_RGM,
+                  "Median waiting time (wks)",
+                  "2019-05-01")
 ```
 :::
 
 ```{r, fig.width=5, fig.height=6}
 #### Chase Farm
-#waiting_time_median_RAL<-tar_read(waiting_time_median_RAL)
-
-#evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.01, waiting_time_median_RAL, single_bedroom_matches_final)
-
-#cia_summary_plots(waiting_time_median_RAL, "Study site: Chase Farm, RAL","Median waiting time (wks)", "2018-09-01")
-
+# waiting_time_median_RAL <- tar_read(waiting_time_median_RAL)
+# 
+# evaluating_model("RAL", NA, rtt_waiting_time, "2018-09-01", "median_by_prov", 0.01, waiting_time_median_RAL, single_bedroom_matches_final)
+#
+# cia_summary_plots(
+#   waiting_time_median_RAL,
+#   "Study site: Chase Farm, RAL",
+#   "Median waiting time (wks)",
+#   "2018-09-01"
+# )
 ```
 
 ```{r, fig.width=5, fig.height=6}
 #### Southmead
-#waiting_time_median_RVJ<-tar_read(waiting_time_median_RVJ)
-
-#evaluating_model("RVJ",NA,  rtt_waiting_time, "2014-05-01", "median_by_prov", 0.1, waiting_time_median_RVJ, single_bedroom_matches_final)
-
-#cia_summary_plots(waiting_time_median_RVJ, "Median waiting time (wks)", "2014-05-01")
+# waiting_time_median_RVJ <- tar_read(waiting_time_median_RVJ)
+# 
+# evaluating_model(
+#   "RVJ",
+#   NA,
+#   rtt_waiting_time,
+#   "2014-05-01",
+#   "median_by_prov",
+#   0.1,
+#   waiting_time_median_RVJ,
+#   single_bedroom_matches_final
+# )
+# 
+# cia_summary_plots(waiting_time_median_RVJ,
+#                   "Median waiting time (wks)",
+#                   "2014-05-01")
 ```
 :::
 
@@ -961,11 +1019,13 @@ Tunbridge Wells
 
 ```{r, fig.width=5, fig.height=6}
 #| label: fig-wait-tunbridge
-waiting_time_median_RWF<-tar_read(waiting_time_median_RWF)
+waiting_time_median_RWF <- tar_read(waiting_time_median_RWF)
 
 #evaluating_model("RWF", NA, rtt_waiting_time, "2011-01-01", "median_by_prov", 0.01, waiting_time_median_RWF, single_bedroom_matches_final)
 
-cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01-01")
+cia_summary_plots(waiting_time_median_RWF,
+                  "Median waiting time (wks)",
+                  "2011-01-01")
 ```
 :::
 :::
@@ -981,8 +1041,7 @@ cia_summary_plots(waiting_time_median_RWF, "Median waiting time (wks)", "2011-01
 Chase Farm
 
 ```{r, fig.width=5, fig.height=6}
-
-bed_occupancy_RAL<-tar_read(bed_occupancy_RAL)
+bed_occupancy_RAL <- tar_read(bed_occupancy_RAL)
 
 #evaluating_model("RAL",NA,  bed_occupancy, "2018-09-01", "bed_occupancy", 0.1, bed_occupancy_RAL, single_bedroom_matches_final)
 
@@ -994,8 +1053,7 @@ cia_summary_plots(bed_occupancy_RAL, "Percentage", "2018-09-01")
 Royal Liverpool
 
 ```{r,  fig.width=5, fig.height=6}
-
-bed_occupancy_REM<-tar_read(bed_occupancy_REM)
+bed_occupancy_REM <- tar_read(bed_occupancy_REM)
 
 #evaluating_model("REM", NA, bed_occupancy, "2022-10-01", "bed_occupancy", 0.05, bed_occupancy_REM, single_bedroom_matches_final)
 
@@ -1011,12 +1069,11 @@ cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
 Clatterbridge
 
 ```{r,  fig.width=5, fig.height=6}
-
-bed_occupancy_REN<-tar_read(bed_occupancy_REN)
+bed_occupancy_REN <- tar_read(bed_occupancy_REN)
 
 #evaluating_model("REN", NA, bed_occupancy, "2020-06-01", "bed_occupancy", 0.1, bed_occupancy_REN, single_bedroom_matches_final)
 
-cia_summary_plots(bed_occupancy_REN,"Percentage", "2020-06-01")
+cia_summary_plots(bed_occupancy_REN, "Percentage", "2020-06-01")
 ```
 :::
 
@@ -1024,8 +1081,7 @@ cia_summary_plots(bed_occupancy_REN,"Percentage", "2020-06-01")
 Southmead
 
 ```{r, fig.width=5, fig.height=6}
-
-bed_occupancy_RVJ<-tar_read(bed_occupancy_RVJ)
+bed_occupancy_RVJ <- tar_read(bed_occupancy_RVJ)
 
 #evaluating_model("RVJ", NA, bed_occupancy, "2014-05-01", "bed_occupancy", 0.1, bed_occupancy_RVJ, single_bedroom_matches_final)
 
@@ -1047,24 +1103,21 @@ Black dotted line indicates the time of the last data point prior to the switch 
 Clatterbridge
 
 ```{r, fig.width=5, fig.height=6}
-
-emergency_readmissions_REN<-tar_read(emergency_readmissions_REN)
+emergency_readmissions_REN <- tar_read(emergency_readmissions_REN)
 
 #evaluating_model("REN", "REN22", emergency_readmissions, "2020-06-01","perc", 0.1, emergency_readmissions_REN, single_bedroom_matches_final)
 
 cia_summary_plots(emergency_readmissions_REN, "% readmissions", "2020-06-01")
-
 ```
 
 Peterborough
 
 ```{r, fig.width=5, fig.height=6}
-
-emergency_readmissions_RGN<-tar_read(emergency_readmissions_RGN)
+emergency_readmissions_RGN <- tar_read(emergency_readmissions_RGN)
 
 #evaluating_model("RGN",  "RGN80", emergency_readmissions, "2010-11-01","perc", 0.1, emergency_readmissions_RGN, single_bedroom_matches_final)
 
-cia_summary_plots(emergency_readmissions_RGN,"% readmissions", "2010-11-01")
+cia_summary_plots(emergency_readmissions_RGN, "% readmissions", "2010-11-01")
 ```
 :::
 
@@ -1072,8 +1125,7 @@ cia_summary_plots(emergency_readmissions_RGN,"% readmissions", "2010-11-01")
 Tunbridge Wells
 
 ```{r, fig.width=5, fig.height=6}
-
-emergency_readmissions_RWF<-tar_read(emergency_readmissions_RWF)
+emergency_readmissions_RWF <- tar_read(emergency_readmissions_RWF)
 
 #evaluating_model("RWF",  "RWFTW", emergency_readmissions, "2011-01-01", "perc", 0.01, emergency_readmissions_RWF, single_bedroom_matches_final)
 
@@ -1089,8 +1141,7 @@ cia_summary_plots(emergency_readmissions_RWF, "% readmissions", "2011-01-01")
 Royal Liverpool
 
 ```{r, fig.width=5, fig.height=6}
-
-emergency_readmissions_REM<-tar_read(emergency_readmissions_REM)
+emergency_readmissions_REM <- tar_read(emergency_readmissions_REM)
 
 #evaluating_model("REM", "REMRQ",  emergency_readmissions, "2022-10-01", "perc", 0.1, emergency_readmissions_REM, single_bedroom_matches_final)
 
@@ -1100,8 +1151,7 @@ cia_summary_plots(emergency_readmissions_REM, "% readmissions", "2022-10-01")
 Papworth
 
 ```{r, fig.width=5, fig.height=6}
-
-emergency_readmissions_RGM<-tar_read(emergency_readmissions_RGM)
+emergency_readmissions_RGM <- tar_read(emergency_readmissions_RGM)
 
 #evaluating_model("RGM", "RGM22", emergency_readmissions, "2019-05-01", "perc", 0.1, emergency_readmissions_RGM, single_bedroom_matches_final)
 
@@ -1113,20 +1163,17 @@ cia_summary_plots(emergency_readmissions_RGM, "% readmissions", "2019-05-01")
 Chase Farm
 
 ```{r,  fig.width=5, fig.height=6}
-
-emergency_readmissions_RAL<-tar_read(emergency_readmissions_RAL)
+emergency_readmissions_RAL <- tar_read(emergency_readmissions_RAL)
 
 #evaluating_model("RAL", "RALC7", emergency_readmissions, "2018-09-01", "perc", 0.01, emergency_readmissions_RAL, single_bedroom_matches_final)
 
-cia_summary_plots(emergency_readmissions_RAL,"% readmissions", "2018-09-01")
-
+cia_summary_plots(emergency_readmissions_RAL, "% readmissions", "2018-09-01")
 ```
 
 Southmead
 
 ```{r, fig.width=5, fig.height=6}
-
-emergency_readmissions_RVJ<-tar_read(emergency_readmissions_RVJ)
+emergency_readmissions_RVJ <- tar_read(emergency_readmissions_RVJ)
 
 #evaluating_model("RVJ","RVJ01",  emergency_readmissions, "2014-05-01","perc", 0.05, emergency_readmissions_RVJ, single_bedroom_matches_final)
 
@@ -1146,13 +1193,11 @@ cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 Papworth (RGM)
 
 ```{r, fig.width=5, fig.height=6}
+cleaning_costs_RGM <- tar_read(cleaning_costs_RGM)
 
-cleaning_costs_RGM<-tar_read(cleaning_costs_RGM)
-  
 #evaluating_model("RGM", "RGM22",cleaning_costs,"2019-05-01","cleaning_service_cost", 0.01, cleaning_costs_RGM, single_bedroom_matches_final)
 
-cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
-
+cia_summary_plots(cleaning_costs_RGM, "Cost", "2019-05-01")
 ```
 
 ```{r, fig.width=5, fig.height=6}
@@ -1163,8 +1208,6 @@ cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 #evaluating_model("RAL", "RALC7",cleaning_costs,"2018-09-01","cleaning_service_cost", 0.01, cleaning_costs_RAL, single_bedroom_matches_final)
 
 #cia_summary_plots( cleaning_costs_RAL, "Cost", "2018-09-01")
-
-
 ```
 :::
 
@@ -1172,13 +1215,11 @@ cia_summary_plots( cleaning_costs_RGM, "Cost", "2019-05-01")
 Clatterbridge (REN)
 
 ```{r,  fig.width=5, fig.height=6}
+cleaning_costs_REN <- tar_read(cleaning_costs_REN)
 
-cleaning_costs_REN<-tar_read(cleaning_costs_REN)
-  
 #evaluating_model("REN", "REN22",cleaning_costs,"2020-06-01", "cleaning_service_cost", 0.01, cleaning_costs_REN, single_bedroom_matches_final)
 
-cia_summary_plots( cleaning_costs_REN, "Cost", "2020-06-01")
-
+cia_summary_plots(cleaning_costs_REN, "Cost", "2020-06-01")
 ```
 :::
 :::
@@ -1192,14 +1233,11 @@ Black dotted line indicates the time of the last data point prior to the switch 
 Royal Liverpool (REM)
 
 ```{r, fig.width=5, fig.height=6}
+cleaning_costs_REM <- tar_read(cleaning_costs_REM)
 
-cleaning_costs_REM<-tar_read(cleaning_costs_REM)
-  
 #evaluating_model("REM","REMRQ",cleaning_costs,"2022-10-01", "cleaning_service_cost", 0.01, cleaning_costs_REM, single_bedroom_matches_final)
 
-cia_summary_plots( cleaning_costs_REM, "Cost", "2022-10-01")
-
-
+cia_summary_plots(cleaning_costs_REM, "Cost", "2022-10-01")
 ```
 :::
 :::
@@ -1217,8 +1255,7 @@ Black dotted line indicates the time of the last data point prior to the switch 
 Peterborough
 
 ```{r, fig.width=5, fig.height=6}
-
-sus_deaths_RGN<-tar_read(sus_deaths_RGN)
+sus_deaths_RGN <- tar_read(sus_deaths_RGN)
 
 #evaluating_model("RGN",  "RGN80", sus_deaths, "2010-11-01","hosp_rate_1000", 0.1, sus_deaths_RGN, single_bedroom_matches_final)
 
@@ -1237,8 +1274,7 @@ cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 Royal Liverpool
 
 ```{r,  fig.width=5, fig.height=6}
-
-sus_deaths_REM<-tar_read(sus_deaths_REM)
+sus_deaths_REM <- tar_read(sus_deaths_REM)
 
 #evaluating_model("REM", "REMRQ",  sus_deaths, "2022-10-01", "hosp_rate_1000", 0.05, sus_deaths_REM, single_bedroom_matches_final)
 
@@ -1246,15 +1282,13 @@ cia_summary_plots(sus_deaths_REM, "No./per 1,000 discharges", "2022-10-01")
 ```
 
 ```{r, include=FALSE}
-
 sapply(file.path(tempdir(), list.files(tempdir())), unlink)
 ```
 
 Tunbridge Wells
 
 ```{r, fig.width=5, fig.height=6}
-
-sus_deaths_RWF<-tar_read(sus_deaths_RWF)
+sus_deaths_RWF <- tar_read(sus_deaths_RWF)
 
 #evaluating_model("RWF",  "RWFTW", sus_deaths, "2011-01-01", "hosp_rate_1000", 0.01, sus_deaths_RWF, single_bedroom_matches_final)
 
@@ -1266,24 +1300,21 @@ cia_summary_plots(sus_deaths_RWF, "No./per 1,000 discharges", "2011-01-01")
 Southmead
 
 ```{r,  fig.width=5, fig.height=6}
-
-sus_deaths_RVJ<-tar_read(sus_deaths_RVJ)
+sus_deaths_RVJ <- tar_read(sus_deaths_RVJ)
 
 #evaluating_model("RVJ","RVJ01",  sus_deaths, "2014-05-01","hosp_rate_1000", 0.01, sus_deaths_RVJ, single_bedroom_matches_final)
 
-cia_summary_plots(sus_deaths_RVJ,"No./per 1,000 discharges", "2014-05-01")
+cia_summary_plots(sus_deaths_RVJ, "No./per 1,000 discharges", "2014-05-01")
 ```
 
 Clatterbridge
 
 ```{r,  fig.width=5, fig.height=6}
-
-sus_deaths_REN<-tar_read(sus_deaths_REN)
+sus_deaths_REN <- tar_read(sus_deaths_REN)
 
 #evaluating_model("REN", "REN22", sus_deaths, "2020-06-01","hosp_rate_1000", 0.05, sus_deaths_REN, single_bedroom_matches_final )
 
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
-
 ```
 :::
 :::
@@ -1297,12 +1328,11 @@ cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 Peterborough
 
 ```{r, fig.width=5, fig.height=6}
-
-falls_and_fractures_RGN<-tar_read(falls_and_fractures_RGN)
+falls_and_fractures_RGN <- tar_read(falls_and_fractures_RGN)
 
 #evaluating_model("RGN",  "RGN80",falls_and_fractures, "2010-11-01","ff_rate", 0.01, falls_and_fractures_RGN, single_bedroom_matches_final)
 
-cia_summary_plots(falls_and_fractures_RGN,"% of spells", "2010-11-01")
+cia_summary_plots(falls_and_fractures_RGN, "% of spells", "2010-11-01")
 ```
 
 #### No change
@@ -1312,8 +1342,7 @@ cia_summary_plots(falls_and_fractures_RGN,"% of spells", "2010-11-01")
 Royal Liverpool
 
 ```{r, fig.width=5, fig.height=6}
-
-falls_and_fractures_REM<-tar_read(falls_and_fractures_REM)
+falls_and_fractures_REM <- tar_read(falls_and_fractures_REM)
 
 #evaluating_model("REM", "REMRQ",  falls_and_fractures, "2022-10-01", "ff_rate", 0.05, falls_and_fractures_REM, single_bedroom_matches_final)
 
@@ -1323,12 +1352,11 @@ cia_summary_plots(falls_and_fractures_REM, "% of spells", "2022-10-01")
 Southmead
 
 ```{r,  fig.width=5, fig.height=6}
-
-falls_and_fractures_RVJ<-tar_read(falls_and_fractures_RVJ)
+falls_and_fractures_RVJ <- tar_read(falls_and_fractures_RVJ)
 
 #evaluating_model("RVJ","RVJ01",  falls_and_fractures, "2014-05-01","ff_rate", 0.05, falls_and_fractures_RVJ, single_bedroom_matches_final)
 
-cia_summary_plots(falls_and_fractures_RVJ,"% of spells", "2014-05-01")
+cia_summary_plots(falls_and_fractures_RVJ, "% of spells", "2014-05-01")
 ```
 
 Outcome period is cut short as the rate of falls and fractures at Southmead jumps suddenly in the second year of the outcome period (Nov 2015); this change does not appear to be associated with the change to single rooms as it occurs suddenly almost 18 months after the change to single rooms.
@@ -1338,8 +1366,7 @@ Outcome period is cut short as the rate of falls and fractures at Southmead jump
 Tunbridge Wells
 
 ```{r, fig.width=5, fig.height=6}
-
-falls_and_fractures_RWF<-tar_read(falls_and_fractures_RWF)
+falls_and_fractures_RWF <- tar_read(falls_and_fractures_RWF)
 
 #evaluating_model("RWF",  "RWFTW", falls_and_fractures, "2011-01-01", "ff_rate", 0.05, falls_and_fractures_RWF, single_bedroom_matches_final)
 
@@ -1356,8 +1383,7 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 Chase Farm
 
 ```{r, fig.width=5, fig.height=6}
-
-cdiff_RAL<-tar_read(cdiff_RAL)
+cdiff_RAL <- tar_read(cdiff_RAL)
 
 #evaluating_model("RAL", NA, cdiff, "2018-09-01", "rate", 0.1, cdiff_RAL, single_bedroom_matches_final)
 
@@ -1367,10 +1393,16 @@ cia_summary_plots(cdiff_RAL, "Rate/10,000 beddays", "2018-09-01")
 Southmead
 
 ```{r, fig.width=5, fig.height=6}
+cdiff_RVJ <- tar_read(cdiff_RVJ)
 
-cdiff_RVJ<-tar_read(cdiff_RVJ)
-
-evaluating_model("RVJ", NA, cdiff, "2014-05-01", "rate", 0.1, cdiff_RVJ, single_bedroom_matches_final)
+evaluating_model("RVJ",
+                 NA,
+                 cdiff,
+                 "2014-05-01",
+                 "rate",
+                 0.1,
+                 cdiff_RVJ,
+                 single_bedroom_matches_final)
 
 cia_summary_plots(cdiff_RVJ, "Rate/10,000 beddays", "2014-05-01")
 ```
@@ -1380,8 +1412,7 @@ cia_summary_plots(cdiff_RVJ, "Rate/10,000 beddays", "2014-05-01")
 Royal Liverpool
 
 ```{r, fig.width=5, fig.height=6}
-
-cdiff_REM<-tar_read(cdiff_REM)
+cdiff_REM <- tar_read(cdiff_REM)
 
 #evaluating_model("REM", NA, cdiff, "2022-10-01", "rate", 0.1, cdiff_REM, single_bedroom_matches_final)
 
@@ -1389,8 +1420,7 @@ cia_summary_plots(cdiff_REM, "Rate/10,000 beddays", "2022-10-01")
 ```
 
 ```{r, include=FALSE, fig.width=5, fig.height=6}
-
-hcai_REN<-tar_read(hcai_REN)
+hcai_REN <- tar_read(hcai_REN)
 
 #evaluating_model("REN", NA, hcai, "2020-06-01", "combined_rate", 0.01, hcai_REN, single_bedroom_matches_final)
 
@@ -1405,15 +1435,13 @@ cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2022-10-01")
 Clatterbridge (REN)
 
 ```{r, fig.width=5, fig.height=6}
-
-friends_and_family_REN<-tar_read(friends_and_family_REN)
+friends_and_family_REN <- tar_read(friends_and_family_REN)
 
 #evaluating_model("REN","REN22", friends_and_family,"2020-06-01", "friends_and_family_percent", 0.1, friends_and_family_REN, single_bedroom_matches_final )
 
-cia_summary_plots(friends_and_family_REN,"Positive responses (%)", "2020-06-01")
+cia_summary_plots(friends_and_family_REN, "Positive responses (%)", "2020-06-01")
 
 #Last data point prior to switch was about 4 months prior then no data for 8 months after, as switch came during COVID
-
 ```
 
 #### No Change
@@ -1423,27 +1451,23 @@ cia_summary_plots(friends_and_family_REN,"Positive responses (%)", "2020-06-01")
 Royal Liverpool (REMRQ)
 
 ```{r, fig.width=5,fig.height=6 }
-
-friends_and_family_REM<-tar_read(friends_and_family_REM)
+friends_and_family_REM <- tar_read(friends_and_family_REM)
 
 #evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.1, friends_and_family_REM, single_bedroom_matches_final)
 
 cia_summary_plots(friends_and_family_REM, "Positive responses (%)", "2022-10-01")
 
 # Large amount of data missing in the two years prior due to gap over covid. One of the control sites doesn't go back far enough for it is causing the data to be cut off. Think I need to have less matches for this one. But would still have a disturbed pre switch period due to COVID
-
 ```
 
 Papworth (RGM)
 
 ```{r, fig.width=5, fig.height=6}
-
-friends_and_family_RGM<-tar_read(friends_and_family_RGM)
+friends_and_family_RGM <- tar_read(friends_and_family_RGM)
 
 #evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.1, friends_and_family_RGM, single_bedroom_matches_final)
 
 cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01")
-
 ```
 :::
 
@@ -1451,8 +1475,7 @@ cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01"
 Chase Farm Hospital (RAL)
 
 ```{r, fig.width=5, fig.height=6}
-
-friends_and_family_RAL<-tar_read(friends_and_family_RAL)
+friends_and_family_RAL <- tar_read(friends_and_family_RAL)
 
 #evaluating_model("RAL","RALC7",  friends_and_family,"2018-09-01", "friends_and_family_percent", 0.01, friends_and_family_RAL, single_bedroom_matches_final)
 
@@ -1462,8 +1485,7 @@ cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01"
 Southmead (RVJ)
 
 ```{r, fig.width=5, fig.height=6}
-
-friends_and_family_RVJ<-tar_read(friends_and_family_RVJ)
+friends_and_family_RVJ <- tar_read(friends_and_family_RVJ)
 
 #evaluating_model("RVJ","RVJ01",  friends_and_family,"2014-05-01", "friends_and_family_percent", 0.01, friends_and_family_RVJ, single_bedroom_matches_final)
 
@@ -1483,8 +1505,7 @@ cia_summary_plots(friends_and_family_RVJ, "Positive responses (%)", "2014-05-01"
 Southmead (RVJ)
 
 ```{r, fig.width=5, fig.height=6}
-
-staff_sickness_RVJ<-tar_read(staff_sickness_RVJ)
+staff_sickness_RVJ <- tar_read(staff_sickness_RVJ)
 
 #evaluating_model("RVJ", NA,staff_sickness,"2014-05-01", "staff_sickness_percent", 0.05, staff_sickness_RVJ, single_bedroom_matches_final)
 
@@ -1496,13 +1517,11 @@ cia_summary_plots(staff_sickness_RVJ, "Sickness Rate (%)", "2014-05-01")
 Tunbridge Wells (RWF)
 
 ```{r, fig.width=5, fig.height=6}
-
-staff_sickness_RWF<-tar_read(staff_sickness_RWF)
+staff_sickness_RWF <- tar_read(staff_sickness_RWF)
 
 #evaluating_model("RWF", NA,staff_sickness,"2011-01-01", "staff_sickness_percent", 0.1,staff_sickness_RWF, single_bedroom_matches_final )
 
 cia_summary_plots(staff_sickness_RWF, "Sickness Rate (%)", "2011-01-01")
-
 ```
 :::
 :::
@@ -1514,37 +1533,31 @@ cia_summary_plots(staff_sickness_RWF, "Sickness Rate (%)", "2011-01-01")
 Royal Liverpool (REM)
 
 ```{r, fig.height=6, fig.width=5}
-
-staff_sickness_REM<-tar_read(staff_sickness_REM)
+staff_sickness_REM <- tar_read(staff_sickness_REM)
 
 #evaluating_model("REM",NA, staff_sickness,"2022-10-01", "staff_sickness_percent", 0.05, staff_sickness_REM, single_bedroom_matches_final)
 
 cia_summary_plots(staff_sickness_REM, "Sickness Rate (%)", "2022-10-01")
-
 ```
 
 Clatterbridge (REN)
 
 ```{r, fig.width=5, fig.height=6}
-
-staff_sickness_REN<-tar_read(staff_sickness_REN)
+staff_sickness_REN <- tar_read(staff_sickness_REN)
 
 #evaluating_model("REN", NA,staff_sickness,"2020-06-01", "staff_sickness_percent", 0.05,staff_sickness_REN, single_bedroom_matches_final )
 
 cia_summary_plots(staff_sickness_REN, "Sickness Rate (%)", "2020-06-01")
-
 ```
 
 Peterborough (RGN)
 
 ```{r, fig.width=5, fig.height=6}
-
-staff_sickness_RGN<-tar_read(staff_sickness_RGN)
+staff_sickness_RGN <- tar_read(staff_sickness_RGN)
 
 #evaluating_model("RGN", NA,staff_sickness,"2010-11-01", "staff_sickness_percent", 0.1,staff_sickness_RGN, single_bedroom_matches_final )
 
 cia_summary_plots(staff_sickness_RGN, "Sickness Rate (%)", "2010-11-01")
-
 ```
 :::
 
@@ -1552,8 +1565,7 @@ cia_summary_plots(staff_sickness_RGN, "Sickness Rate (%)", "2010-11-01")
 Papworth (RGM)
 
 ```{r, fig.width=5, fig.height=6}
-
-staff_sickness_RGM<-tar_read(staff_sickness_RGM)
+staff_sickness_RGM <- tar_read(staff_sickness_RGM)
 
 #evaluating_model("RGM", NA,staff_sickness,"2019-05-01", "staff_sickness_percent", 0.05, staff_sickness_RGM, single_bedroom_matches_final)
 
@@ -1563,8 +1575,7 @@ cia_summary_plots(staff_sickness_RGM, "Sickness Rate (%)", "2019-05-01")
 Chase Farm Hospital (RAL)
 
 ```{r,  fig.width=5, fig.height=6}
-
-staff_sickness_RAL<-tar_read(staff_sickness_RAL)
+staff_sickness_RAL <- tar_read(staff_sickness_RAL)
 
 #evaluating_model("RAL", NA, staff_sickness,"2018-09-01", "staff_sickness_percent", 0.05, staff_sickness_RAL, single_bedroom_matches_final)
 
@@ -1583,8 +1594,7 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 Royal Liverpool (REM)
 
 ```{r, fig.width=5, fig.height=6}
-
-staff_turnover_REM<-tar_read(staff_turnover_REM)
+staff_turnover_REM <- tar_read(staff_turnover_REM)
 
 #evaluating_model("REM", NA,staff_turnover,"2022-10-01", "leaving_rate", 0.1, staff_turnover_REM, single_bedroom_matches_final)
 
@@ -1594,8 +1604,7 @@ cia_summary_plots(staff_turnover_REM, "Staff leaving rate (%)", "2022-10-01")
 Papworth (RGM)
 
 ```{r, fig.width=5, fig.height=6}
-
-staff_turnover_RGM<-tar_read(staff_turnover_RGM)
+staff_turnover_RGM <- tar_read(staff_turnover_RGM)
 
 #evaluating_model("RGM", NA,staff_turnover,"2019-05-01", "leaving_rate", 0.01, staff_turnover_RGM, single_bedroom_matches_final)
 
@@ -1607,8 +1616,7 @@ cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2019-05-01")
 Clatterbridge (REN)
 
 ```{r, fig.width=5, fig.height=6}
-
-staff_turnover_REN<-tar_read(staff_turnover_REN)
+staff_turnover_REN <- tar_read(staff_turnover_REN)
 
 #evaluating_model("REN", NA,staff_turnover,"2020-06-01", "leaving_rate", 0.1, staff_turnover_REN, single_bedroom_matches_final)
 
@@ -1620,42 +1628,55 @@ cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2020-06-01")
 ### `r title_staff_survey`
 
 ```{r, include=FALSE}
+Peterborough_matches <- single_bedroom_matches_final |>
+  filter(organisation_code == "RGN") |>
+  filter(rank_of_ranks <= 10)
 
-Peterborough_matches<-single_bedroom_matches_final|>
-  filter(organisation_code=="RGN")|>
-  filter(rank_of_ranks<=10)
+Peterborough_analysis <- staff_survey |>
+  filter(organisation_code == "RGN" |
+           (
+             organisation_code %in% (Peterborough_matches$matching_organisation_code)
+           ))
 
-Peterborough_analysis<-staff_survey|>
-  filter(organisation_code=="RGN" | (organisation_code %in% (Peterborough_matches$matching_organisation_code)))
-
-Peterborough_analysis|>
-    filter(organisation_code=="RGN"|
-         organisation_code=="RXH"|
-        organisation_code=="RJR"|  
-         organisation_code=="RXN"| 
-         organisation_code=="RXK"|  
-         organisation_code=="RPA"  )|>
-  ggplot()+
-  geom_line(aes(x=month, y=positive_responses, group=organisation_code, colour=organisation_code))+
-   geom_vline(
-      aes(xintercept = as.Date('2010-11-01')),
-      linetype = "dotted",
-      linewidth = 0.6,
-      color = "#ec6555"
+Peterborough_analysis |>
+  filter(
+    organisation_code == "RGN" |
+      organisation_code == "RXH" |
+      organisation_code == "RJR" |
+      organisation_code == "RXN" |
+      organisation_code == "RXK" |
+      organisation_code == "RPA"
+  ) |>
+  ggplot() +
+  geom_line(
+    aes(
+      x = month,
+      y = positive_responses,
+      group = organisation_code,
+      colour = organisation_code
     )
+  ) +
+  geom_vline(
+    aes(xintercept = as.Date('2010-11-01')),
+    linetype = "dotted",
+    linewidth = 0.6,
+    color = "#ec6555"
+  )
 
 
-Peterborough_analysis|>
-   filter(organisation_code=="RGN"|
-         organisation_code=="RXH"|
-        organisation_code=="RJR"|  
-         organisation_code=="RXN"| 
-         organisation_code=="RXK"|  
-         organisation_code=="RPA"  )|>
-  filter(month=='2009-12-31'| month=='2012-12-31' )|>
-  spread(key=month, value=positive_responses)|>
-  mutate(change=(((`2012-12-31`-`2009-12-31`)/`2009-12-31`)*100))
-
+Peterborough_analysis |>
+  filter(
+    organisation_code == "RGN" |
+      organisation_code == "RXH" |
+      organisation_code == "RJR" |
+      organisation_code == "RXN" |
+      organisation_code == "RXK" |
+      organisation_code == "RPA"
+  ) |>
+  filter(month == '2009-12-31' | month == '2012-12-31') |>
+  spread(key = month, value = positive_responses) |>
+  mutate(change = (((`2012-12-31` - `2009-12-31`) / `2009-12-31`
+  ) * 100))
 ```
 
 ::: panel-tabset
@@ -1666,12 +1687,11 @@ Peterborough_analysis|>
 Clatterbridge (REN)
 
 ```{r,  fig.width=5, fig.height=6}
+staff_survey_REN <- tar_read(staff_survey_REN)
 
-staff_survey_REN<-tar_read(staff_survey_REN)
-  
 #evaluating_model("REN", NA,staff_survey,"2020-06-01", "positive_responses", 0.01, staff_survey_REN, single_bedroom_matches_final)
 
-cia_summary_plots( staff_survey_REN, "Positive Responses (%)", "2020-06-01")
+cia_summary_plots(staff_survey_REN, "Positive Responses (%)", "2020-06-01")
 ```
 :::
 
@@ -1679,12 +1699,11 @@ cia_summary_plots( staff_survey_REN, "Positive Responses (%)", "2020-06-01")
 Southmead (RVJ)
 
 ```{r, fig.width=5, fig.height=6}
+staff_survey_RVJ <- tar_read(staff_survey_RVJ)
 
-staff_survey_RVJ<-tar_read(staff_survey_RVJ)
-  
 #evaluating_model("RVJ", NA,staff_survey,"2014-05-01", "positive_responses", 0.01, staff_survey_RVJ, single_bedroom_matches_final)
 
-cia_summary_plots( staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
+cia_summary_plots(staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
 ```
 :::
 
@@ -1698,25 +1717,21 @@ Black dotted line indicates the time of the last data point prior to the switch 
 Royal Liverpool (REM)
 
 ```{r, fig.width=5, fig.height=6}
+staff_survey_REM <- tar_read(staff_survey_REM)
 
-staff_survey_REM<-tar_read(staff_survey_REM)
-  
 #evaluating_model("REM", NA,staff_survey,"2022-10-01", "positive_responses", 0.01, staff_survey_REM, single_bedroom_matches_final)
 
-cia_summary_plots( staff_survey_REM, "Positive Responses (%)", "2022-10-01")
-
+cia_summary_plots(staff_survey_REM, "Positive Responses (%)", "2022-10-01")
 ```
 
 Tunbridge Wells (RWF)
 
 ```{r, fig.width=5, fig.height=6}
+staff_survey_RWF <- tar_read(staff_survey_RWF)
 
-staff_survey_RWF<-tar_read(staff_survey_RWF)
-  
 #evaluating_model("RWF", NA,staff_survey,"2011-01-01", "positive_responses", 0.001, staff_survey_RWF, single_bedroom_matches_final)
 
-cia_summary_plots( staff_survey_RWF, "Positive Responses (%)", "2011-01-01")
-
+cia_summary_plots(staff_survey_RWF, "Positive Responses (%)", "2011-01-01")
 ```
 
 For Tunbridge Wells due to the limited data the controls have been matched using purely correlation rather than dynamic time warping.
@@ -1726,12 +1741,11 @@ For Tunbridge Wells due to the limited data the controls have been matched using
 Chase Farm (RAL)
 
 ```{r,  fig.width=5, fig.height=6}
+staff_survey_RAL <- tar_read(staff_survey_RAL)
 
-staff_survey_RAL<-tar_read(staff_survey_RAL)
-  
 #evaluating_model("RAL", NA,staff_survey,"2018-09-01", "positive_responses", 0.01, staff_survey_RAL, single_bedroom_matches_final)
 
-cia_summary_plots( staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
+cia_summary_plots(staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
 ```
 :::
 :::
@@ -1745,13 +1759,11 @@ Black dotted line indicates the time of the last data point prior to the switch 
 Papworth (RGM)
 
 ```{r, fig.width=5, fig.height=6}
+staff_survey_RGM <- tar_read(staff_survey_RGM)
 
-staff_survey_RGM<-tar_read(staff_survey_RGM)
-  
 #evaluating_model("RGM", NA,staff_survey,"2019-05-01", "positive_responses", 0.01, staff_survey_RGM, single_bedroom_matches_final)
 
-cia_summary_plots( staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
-
+cia_summary_plots(staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 ```
 :::
 :::
@@ -1898,85 +1910,113 @@ A different set of controls was identified by `MarketMatching` for each indicato
 ### `r title_los`
 
 ```{r LoS_controls}
-get_market_matched_controls_table_site(hospitals, controls, "LoS")
+get_market_matched_controls_table_site(hospitals, 
+                                       controls, 
+                                       "LoS"                                       )
 ```
 
 ### `r title_wait_time_median`
 
 ```{r waiting_time_median}
-get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_median")
+get_market_matched_controls_table_provider(hospitals,
+                                           controls,
+                                           "waiting_time_median")
 ```
 
 ### `r title_wait_time_number`
 
 ```{r waiting_time_number_controls}
-get_market_matched_controls_table_provider(hospitals, controls, "waiting_time_number")
+get_market_matched_controls_table_provider(hospitals, 
+                                           controls, 
+                                           "waiting_time_number")
 ```
 
 ### `r title_bed_occup`
 
 ```{r bed_occupancy_controls}
-get_market_matched_controls_table_provider(hospitals, controls, "bed_occupancy")
+get_market_matched_controls_table_provider(hospitals, 
+                                           controls, 
+                                           "bed_occupancy")
 ```
 
 ### `r title_readmissions`
 
 ```{r emergency_readmissions_controls}
-get_market_matched_controls_table_site(hospitals, controls, "emergency_readmissions")
+get_market_matched_controls_table_site(hospitals, 
+                                       controls, 
+                                       "emergency_readmissions")
 ```
 
 ### `r title_cleaning`
 
 ```{r cleaning_costs_controls}
-get_market_matched_controls_table_site(hospitals, controls, "cleaning_costs")
+get_market_matched_controls_table_site(hospitals, 
+                                       controls, 
+                                       "cleaning_costs")
 ```
 
 ### `r title_deaths`
 
 ```{r sus_deaths_controls}
-get_market_matched_controls_table_site(hospitals, controls, "sus_deaths")
+get_market_matched_controls_table_site(hospitals, 
+                                       controls, 
+                                       "sus_deaths")
 ```
 
 ### `r title_falls_fractures`
 
 ```{r falls_and_fractures_controls}
-get_market_matched_controls_table_site(hospitals, controls, "falls_and_fractures")
+get_market_matched_controls_table_site(hospitals, 
+                                       controls, 
+                                       "falls_and_fractures")
 ```
 
 ### `r title_hcai`
 
 ```{r hcai_controls}
-get_market_matched_controls_table_provider(hospitals, controls, "hcai")
+get_market_matched_controls_table_provider(hospitals, 
+                                           controls, 
+                                           "hcai")
 ```
 
 ### `r title_cdiff`
 
 ```{r cdiff_controls}
-get_market_matched_controls_table_provider(hospitals, controls, "cdiff")
+get_market_matched_controls_table_provider(hospitals, 
+                                           controls, 
+                                           "cdiff")
 ```
 
 ### `r title_friends_family`
 
 ```{r friends_and_family_controls}
-get_market_matched_controls_table_site(hospitals, controls, "friends_and_family")
+get_market_matched_controls_table_site(hospitals, 
+                                       controls, 
+                                       "friends_and_family")
 ```
 
 ### `r title_staff_sickness`
 
 ```{r staff_sickness_controls}
-get_market_matched_controls_table_provider(hospitals, controls, "staff_sickness")
+get_market_matched_controls_table_provider(hospitals, 
+                                           controls, 
+                                           "staff_sickness")
 ```
 
 ### `r title_staff_turnover`
 
 ```{r staff_turnover_controls}
-get_market_matched_controls_table_provider(hospitals, controls, "staff_turnover")
+get_market_matched_controls_table_provider(hospitals, 
+                                           controls, 
+                                           "staff_turnover")
 ```
 
 ### `r title_staff_survey`
 
 ```{r staff_survey_controls}
-get_market_matched_controls_table_provider(hospitals, controls, "staff_survey")
+get_market_matched_controls_table_provider(hospitals, 
+                                           controls, 
+                                           "staff_survey")
 ```
 :::
 

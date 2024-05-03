@@ -375,18 +375,17 @@ It is assumed the effects have stabilised within the 2 year outcome period so th
 
 Mean length of stay (in days) significantly decreased at 3/6 sites (Southmead, Peterborough and Chase Farm), was unchanged at 2/6 sites (Royal Liverpool and Tunbridge Wells), but significantly increased at Clatterbridge.
 
-```{r, fig.width=8, fig.height=4}
+```{r los_output, fig.width=8, fig.height=4}
 forest_plot(
   LoS_output,
   "Points to the left indicate a decrease in mean length of stay following a switch to single bed   rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on mean length of stay"
 )
 
-model_effects_table(LoS_output,
-                    "Average effects of switching to single bedrooms on mean length of stay")
+tar_read(model_effects_table_LoS)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_los_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(LoS_output,
                            "Mean effect on length of stay at general acute hospitals")
 ```
@@ -399,20 +398,17 @@ Clatterbridge is a specialist cancer centre, so it is possible the switch to sin
 
 The median waiting time (in weeks) significantly decreased at 2/5 sites (Royal Liverpool and Peterborough) and was unchanged at 2/5 sites (Papworth and Clatterbridge).
 
-```{r, fig.width=8, fig.height=4}
+```{r wait_time_median_output, fig.width=8, fig.height=4}
 forest_plot(
   waiting_time_median_output,
   "Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are indicated red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on median waiting time"
 )
 
-model_effects_table(
-  waiting_time_median_output,
-  "Average effects of switching to single bedrooms on median waiting time (in wks)"
-)
+tar_read(model_effects_table_waiting_time_median)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_wait_time_median_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(
   waiting_time_median_output,
   "Mean effect on median waiting time at general acute hospitals"
@@ -429,20 +425,17 @@ Median waiting time significantly increased at Tunbridge Wells, but this effect 
 
 Bed occupancy is measured quarterly and is only available at a Provider level. The percentage of available beds occupied significantly increased at 2/4 sites (Clatterbridge and Southmead) and was unchanged at 2/4 (Royal Liverpool and and Chase Farm). An increase in bed occupancy is generally considered a positive result, provided it does not result in an increase in Emergency department waiting times. We have not looked at Emergency department waiting times. However, Chase Farm only does elective care and Clatterbridge is a cancer centre, and so neither of these sites have Emergency departments.
 
-```{r, fig.width=8, fig.height=4}
+```{r bed_occupancy_output, fig.width=8, fig.height=4}
 forest_plot(
   bed_occupancy_output,
   "Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are indicated red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on bed occupancy"
 )
 
-model_effects_table(
-  bed_occupancy_output,
-  "Average effects of switching to single bedrooms on % of bed occupancy"
-)
+tar_read(model_effects_table_bed_occupancy)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_bed_occupancy_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(bed_occupancy_output,
                            "Mean effect on bed occupancy at general acute hospitals")
 ```
@@ -455,20 +448,17 @@ For Southmead bed occupancy increased 8%, it was predicted to be on average 86% 
 
 The percentage of admissions that are emergency readmissions significantly decreased at 3/7 sites (Tunbridge Wells, Peterborough and Clatterbridge) and was unchanged at the remaining 4/7 sites.
 
-```{r, fig.width=8, fig.height=4}
+```{r emergency_readmissions_output, fig.width=8, fig.height=4}
 forest_plot(
   emergency_readmissions_output,
   "Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on emergency readmissions"
 )
 
-model_effects_table(
-  emergency_readmissions_output,
-  "Average effects of switching to single bedrooms on % of emergency readmissions"
-)
+tar_read(model_effects_table_emergency_readmissions)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_emergency_readmissions_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(
   emergency_readmissions_output,
   "Mean effect on emergency readmission rate at general acute hospitals"
@@ -481,17 +471,14 @@ Emergency readmission rate was either unchanged or decreased by up to 28%. The m
 
 The cleaning costs (in £) per square metre of occupied floor space significantly increased at 1/3 sites (Royal Liverpool) but decreased at 2/3 sites (Clatterbridge and Papworth).
 
-```{r, include=TRUE, fig.width=8, fig.height=4}
+```{r cleaning_costs_output, include=TRUE, fig.width=8, fig.height=4}
 forest_plot(
   cleaning_costs_output,
   "Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on cleaning costs"
 )
 
-model_effects_table(
-  cleaning_costs_output,
-  "Average effects of switching to single bedrooms on cleaning costs (£) per sqm"
-)
+tar_read(model_effects_table_cleaning_costs)
 ```
 
 Cleaning costs increased by 37% at Royal Liverpool, but decreased by 35% and 42% at Clatterbridge and Papworth, respectively. At Royal Liverpool the 37% increase reflects an increase of £14 per square metre from a predicted £44 to £58 per square metre.
@@ -504,20 +491,17 @@ Cleaning costs data are an annual measure, so there is limited data with only 1 
 
 The rate of in-hospital deaths (number per 1,000 discharges) significantly decreased at 1/5 sites (Peterborough), and was unchanged at 4/5 sites (Royal Liverpool, Tunbridge Wells, Clatterbridge and Southmead).
 
-```{r, include=TRUE, fig.width=8, fig.height=4}
+```{r sus_deaths_output, include=TRUE, fig.width=8, fig.height=4}
 forest_plot(
   sus_deaths_output,
   "Points to the left indicate a decrease in hospital deaths following a switch to single bed rooms, which is considered a positive effect. Significant positive effects green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on in-hospital deaths"
 )
 
-model_effects_table(
-  sus_deaths_output,
-  "Average effects of switching to single bedrooms on in-hospital deaths/1,000 discharges"
-)
+tar_read(model_effects_table_sus_deaths)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_sus_deaths_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(sus_deaths_output,
                            "Mean effect on in-hospital death rate at general acute hospitals")
 ```
@@ -528,20 +512,17 @@ In-hospital deaths were generally unchanged but decreased by 37% at Peterborough
 
 The rate of in-hospital falls and injuries (% of spells) significantly decreased at 1/4 sites (Peterborough), and was unchanged at 3/4 sites (Royal Liverpool, Tunbridge Wells and Southmead).
 
-```{r, include=TRUE, fig.width=8, fig.height=4}
+```{r falls_and_fractures_output, include=TRUE, fig.width=8, fig.height=4}
 forest_plot(
   falls_and_fractures_output,
   "Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on in-hospital falls, fractures and injuries"
 )
 
-model_effects_table(
-  falls_and_fractures_output,
-  "Average effects of switching to single bedrooms on % of spells with in-hospital fall or injury"
-)
+tar_read(model_effects_table_falls_and_fractures)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_falls_and_fractures_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(
   falls_and_fractures_output,
   "Mean effect on rate of falls, fractures and injuries while in hospital at general acute hospitals"
@@ -554,20 +535,17 @@ The in-hospital falls and injuries rate was generally unchanged, but decreased b
 
 The rate of healthcare acquired C.Difficile infections (cases per 10,000 bed days) decreased at 2/3 sites (Chase Farm and Southmead) but was unchanged at Royal Liverpool.
 
-```{r, fig.width=8, fig.height=4}
+```{r cdiff_output, fig.width=8, fig.height=4}
 forest_plot(
   cdiff_output,
   "Points to the left indicate a decrease in healthcare acquired C.Difficile infections  following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on rate of healthcare acquired C.Difficile infections"
 )
 
-model_effects_table(
-  cdiff_output,
-  "Average effects of switching to single bedrooms on cases of healthcare acquired C.Difficile infections /10,000 bed days"
-)
+tar_read(model_effects_table_cdiff)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_cdiff_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(
   cdiff_output,
   "Mean effect on the rate heathlcare acquired C.Difficile infections at general acute hospitals"
@@ -582,20 +560,17 @@ The rate of healthcare acquired C.Difficile was either unchanged or decreased by
 
 Patient experience was determined using the results of the Friends and Family test. The percentage of positive responses significantly decreased at 1/5 sites (Clatterbridge), and was unchanged at the other 4/5 sites (Royal Liverpool, Papworth, Southmead and Chase Farm).
 
-```{r, include=TRUE, fig.width=8, fig.height=4}
+```{r friends_and_family_output, include=TRUE, fig.width=8, fig.height=4}
 forest_plot(
   friends_and_family_output,
   "Points to the right indicate an increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on positive scores on the Friends and Family test"
 )
 
-model_effects_table(
-  friends_and_family_output,
-  "Average effects of switching to single bedrooms on % of positive responses on the Friends and Family test"
-)
+tar_read(model_effects_table_friends_and_family)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_friends_and_family_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(
   friends_and_family_output,
   "Mean effect on the % of positive responses to the Friends and Family test at general acute hospitals"
@@ -610,20 +585,17 @@ It should be noted that due to the COVID-19 pandemic there is missing friends an
 
 The percentage of available days taken off sick by staff significantly increased at 2/7 sites (Southmead and Tunbridge Wells) and was unchanged at the remaining 5 sites.
 
-```{r, include=TRUE, fig.width=8, fig.height=4}
+```{r staff_sickness_output, include=TRUE, fig.width=8, fig.height=4}
 forest_plot(
   staff_sickness_output,
   "Points to the left indicate a decrease in staff sickness following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on staff sickness rate"
 )
 
-model_effects_table(
-  staff_sickness_output,
-  "Average effects of switching to single bedrooms on staff sickness rate (% of available days)"
-)
+tar_read(model_effects_table_staff_sickness)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_staff_sickness_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(
   staff_sickness_output,
   "Mean effect on the rate of staff sickness at general acute hospitals"
@@ -638,17 +610,14 @@ While there was a significant increase in staff sickness at Southmead (average o
 
 Staff turnover measured as percentage of staff leaving was not significantly changed at any of the 3 sites where data was available.
 
-```{r, fig.width=8, fig.height=2}
+```{r staff_turnover_output, fig.width=8, fig.height=2}
 forest_plot(
   staff_turnover_output,
   "Grey indicates no significant change in staff turnover following a switch to single bed rooms.",
   "Relative effect of switching to single bedrooms on staff turnover"
 )
 
-model_effects_table(
-  staff_turnover_output,
-  "Average effects of switching to single bedrooms on rate of staff turnover (% leaving)"
-)
+tar_read(model_effects_table_staff_turnover)
 ```
 
 ### `r title_staff_survey`
@@ -657,20 +626,17 @@ To assess staff experience the NHS staff survey was used and we analysed the per
 
 The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth), and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work.
 
-```{r, include=TRUE, fig.width=8, fig.height=4}
+```{r staff_survey_output, include=TRUE, fig.width=8, fig.height=4}
 forest_plot(
   staff_survey_output,
   "Points to the right indicate an increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.",
   "Relative effect of switching to single bedrooms on % of NHS staff that recommend their workplace"
 )
 
-model_effects_table(
-  staff_survey_output,
-  "Average effects of switching to single bedrooms on % of NHS staff who would recommend their workplace"
-)
+tar_read(model_effects_table_staff_survey)
 ```
 
-```{r, fig.width=8, fig.height=2.5}
+```{r mean_staff_survey_output, fig.width=8, fig.height=2.5}
 mean_forest_plot_DGH_Acute(
   staff_survey_output,
   "Mean effect on percentage of staff that would recommend their trust as a place to work at general acute hospitals"
@@ -685,7 +651,7 @@ The staff survey is an annual measure so there is limited data, with only 1 or 2
 
 ## Summary of results
 
-```{r}
+```{r summary_table_indicators_and_sites}
 summary_table_indicators_and_sites(
   LoS_output,
   waiting_time_median_output,
@@ -702,7 +668,7 @@ summary_table_indicators_and_sites(
 ) 
 ```
 
-```{r, fig.width=7, fig.height=3.4}
+```{r summary_forest_plot, fig.width=7, fig.height=3.4}
 summary_forest_plot(
   LoS_output,
   waiting_time_median_output,

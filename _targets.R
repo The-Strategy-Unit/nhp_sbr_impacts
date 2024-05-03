@@ -1549,5 +1549,46 @@ list(
 
     }"
     ) 
-  )
+  ),
+  
+  
+  
+  
+  
+  tar_target(model_effects_table_LoS,
+             model_effects_table(LoS_output,
+                                 "Average effects of switching to single bedrooms on mean length of stay")),
+  tar_target(model_effects_table_waiting_time_median,
+             model_effects_table(waiting_time_median_output,
+                                 "Mean effect on median waiting time at general acute hospitals")),
+  tar_target(model_effects_table_bed_occupancy,
+             model_effects_table(bed_occupancy_output,
+                                 "Average effects of switching to single bedrooms on % of bed occupancy")),
+  tar_target(model_effects_table_emergency_readmissions,
+             model_effects_table(emergency_readmissions_output,
+                                 "Average effects of switching to single bedrooms on % of emergency readmissions")),
+  tar_target(model_effects_table_cleaning_costs,
+             model_effects_table(cleaning_costs_output,
+                                 "Average effects of switching to single bedrooms on cleaning costs (£) per sqm")),
+  tar_target(model_effects_table_sus_deaths,
+             model_effects_table(sus_deaths_output,
+                                 "Average effects of switching to single bedrooms on in-hospital deaths/1,000 discharges")),
+  tar_target(model_effects_table_falls_and_fractures,
+             model_effects_table(falls_and_fractures_output,
+                                 "Average effects of switching to single bedrooms on % of spells with in-hospital fall or injury")),
+  tar_target(model_effects_table_cdiff,
+             model_effects_table(cdiff_output,
+                                 "Average effects of switching to single bedrooms on cases of healthcare acquired C.Difficile infections /10,000 bed days")),
+  tar_target(model_effects_table_friends_and_family,
+             model_effects_table(friends_and_family_output,
+                                 "Average effects of switching to single bedrooms on % of positive responses on the Friends and Family test")),
+  tar_target(model_effects_table_staff_sickness,
+             model_effects_table(staff_sickness_output,
+                                 "Average effects of switching to single bedrooms on staff sickness rate (% of available days)")),
+  tar_target(model_effects_table_staff_turnover,
+             model_effects_table(staff_turnover_output,
+                                 "Average effects of switching to single bedrooms on rate of staff turnover (% leaving)")),
+  tar_target(model_effects_table_staff_survey,
+             model_effects_table(staff_survey_output,
+                                 "Average effects of switching to single bedrooms on % of NHS staff who would recommend their workplace"))
 )

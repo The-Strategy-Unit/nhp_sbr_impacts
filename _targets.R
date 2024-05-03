@@ -17,6 +17,7 @@ tar_option_set(
     "geomtextpath",
     "ggplot2",
     "htmltools",
+    "imputeTS",
     "janitor",
     "leaflet",
     "lubridate",
@@ -28,8 +29,7 @@ tar_option_set(
     "stringr",
     "tidyr",
     "tsibble",
-    "zoo",
-    "imputeTS"
+    "zoo"
   ) # Packages that your targets need for their tasks.
 )
 
@@ -43,16 +43,12 @@ list(
   #### Data Wrangling ####
   
   # SBR hospitals
-  tar_target(
-    hospitals_filepath,
-    "hospitals_summary.xlsx",
-    format = "file"
-  ),
+  tar_target(hospitals_filepath,
+             "hospitals_summary.xlsx",
+             format = "file"),
   
-  tar_target(
-    hospitals,
-    get_hospitals_info(hospitals_filepath)
-  ),
+  tar_target(hospitals,
+             get_hospitals_info(hospitals_filepath)),
   
   # Bed occupancy data
   tar_target(
@@ -317,56 +313,17 @@ list(
     ranking_control_var(single_bedroom_matches_4)
   ),
   
-  tar_target(
-    flow_chart_selecting_controls,
-    grViz(
-      "digraph flowchart {
-
-        # Starts and Ends
-       node[shape = box, style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
-        A[shape = box, label = \"All NHS England sites\"]
-        Y[shape = box, label = \"Control Pool\"]
-        Z[shape = box, label = \"Excluded\"]
-
-        # Questions
-      node[shape = ellipse]
-        B[label = \"Does the type of site match?\"]
-        C[label = \"Is it another intervention site?\"]
-        D[label = \"Does it have a similar SBR % before the switch?\"]
-        E[label = \"Is the SBR % stable after the switch?\"]
-        F[label = \"Is the similarity rank* <= 20?\"]
-
-        # Inclusions
-        A -> B [color = \"#333739\"]
-        B -> C [label = \"Yes\", color = \"#333739\"]
-        C -> D [label = \"No\", color = \"#333739\"]
-        D -> E [label = \"Yes\", color = \"#333739\"]
-        E -> F [label = \"Yes\", color = \"#333739\"]
-        F -> Y [label = \"Yes\", color = \"#333739\"]
-
-        # Exclusions
-        D -> Z [label = \"No\", color = \"#333739\"]
-        E -> Z [label = \"No\", color = \"#333739\"]
-        B -> Z [label = \"No\", color = \"#333739\"]
-        C -> Z [label = \"Yes\", color = \"#333739\"]
-        F -> Z [label = \"No\", color = \"#333739\"]
-
-    }"
-    )
-  ),
-  tar_target(
-    control_pool,
-    get_controls(single_bedroom_matches_final)
-  ),
+  tar_target(control_pool,
+             get_controls(single_bedroom_matches_final)),
   tarchetypes::tar_map(
     list(
-     organisation_of_interest = c("REM",
-                   "REN",
-                   "RGM",
-                   "RGN",
-                   "RAL",
-                   "RVJ",
-                   "RWF")
+      organisation_of_interest = c("REM",
+                                   "REN",
+                                   "RGM",
+                                   "RGN",
+                                   "RAL",
+                                   "RVJ",
+                                   "RWF")
     ),
     tar_target(
       controls_table,
@@ -812,7 +769,7 @@ list(
     )
   ),
   
-  #-----------------------------------------------------------------------------#
+  #----------------------------------------------------------------------------#
   #### Indicator availability plots ####
   
   #Indicator availability over time
@@ -851,9 +808,9 @@ list(
       emergency_readmissions_cia_format,
       cleaning_costs_cia_format
     )
- ),
+  ),
   
-  #-----------------------------------------------------------------------------#
+  #----------------------------------------------------------------------------#
   #### CIA models ####
   
   #Waiting time- median
@@ -1274,29 +1231,29 @@ list(
     )
   ),
   
- tar_target(
-   staff_turnover_REN,
-   cia_analysis(
-     "REN",
-     staff_turnover_cia_format,
-     "leaving_rate",
-     0.1,
-     control_pool,
-     hospitals
-   )
- ),
- 
- tar_target(
-   staff_turnover_RGM,
-   cia_analysis(
-     "RGM",
-     staff_turnover_cia_format,
-     "leaving_rate",
-     0.01,
-     control_pool,
-     hospitals
-   )
- ),
+  tar_target(
+    staff_turnover_REN,
+    cia_analysis(
+      "REN",
+      staff_turnover_cia_format,
+      "leaving_rate",
+      0.1,
+      control_pool,
+      hospitals
+    )
+  ),
+  
+  tar_target(
+    staff_turnover_RGM,
+    cia_analysis(
+      "RGM",
+      staff_turnover_cia_format,
+      "leaving_rate",
+      0.01,
+      control_pool,
+      hospitals
+    )
+  ),
   
   #Staff survey
   
@@ -1370,7 +1327,7 @@ list(
   ),
   
   
-  #------------------------------------------------------------------------------#
+  #----------------------------------------------------------------------------#
   #### Presenting CIA outputs ####
   
   tar_target(
@@ -1445,14 +1402,16 @@ list(
                           NA,
                           NA)),
   
-  tar_target(cdiff_output,
-             model_output(cdiff_REM,
-                          NA,
-                          NA,
-                          NA,
-                          cdiff_RAL,
-                          cdiff_RVJ,
-                          NA)),
+  tar_target(
+    cdiff_output,
+    model_output(cdiff_REM,
+                 NA,
+                 NA,
+                 NA,
+                 cdiff_RAL,
+                 cdiff_RVJ,
+                 NA)
+  ),
   
   tar_target(
     falls_and_fractures_output,
@@ -1509,13 +1468,15 @@ list(
   
   tar_target(
     staff_turnover_output,
-    model_output(staff_turnover_REM,
-                 staff_turnover_REN,
-                 staff_turnover_RGM,
-                 NA,
-                 NA,
-                 NA,
-                 NA)
+    model_output(
+      staff_turnover_REM,
+      staff_turnover_REN,
+      staff_turnover_RGM,
+      NA,
+      NA,
+      NA,
+      NA
+    )
   ),
   
   tar_target(
@@ -1535,12 +1496,58 @@ list(
     cleaning_costs_output,
     model_output(
       cleaning_costs_REM,
-     cleaning_costs_REN,
-     cleaning_costs_RGM,
-     NA,
-     NA,
+      cleaning_costs_REN,
+      cleaning_costs_RGM,
+      NA,
+      NA,
       NA,
       NA
     )
+  ),
+  
+  #----------------------------------------------------------------------------#
+  #### Formatting Quarto outputs ####
+  tar_target(sbr_details,
+             get_sbr_details(hospitals)),
+  tar_target(sbr_details_table,
+             get_sbr_details_table(sbr_details)),
+  tar_target(number_control_sites,
+             get_number_control_sites(single_bedroom_matches_final)),
+  tar_target(
+    flow_chart_selecting_controls,
+    grViz(
+      "digraph flowchart {
+
+        # Starts and Ends
+       node[shape = box, style = filled, fillcolor = \"#f9bf07\", color = \"#f9bf07\"]
+        A[shape = box, label = \"All NHS England sites\"]
+        Y[shape = box, label = \"Control Pool\"]
+        Z[shape = box, label = \"Excluded\"]
+
+        # Questions
+      node[shape = ellipse]
+        B[label = \"Does the type of site match?\"]
+        C[label = \"Is it another intervention site?\"]
+        D[label = \"Does it have a similar SBR % before the switch?\"]
+        E[label = \"Is the SBR % stable after the switch?\"]
+        F[label = \"Is the similarity rank* <= 20?\"]
+
+        # Inclusions
+        A -> B [color = \"#333739\"]
+        B -> C [label = \"Yes\", color = \"#333739\"]
+        C -> D [label = \"No\", color = \"#333739\"]
+        D -> E [label = \"Yes\", color = \"#333739\"]
+        E -> F [label = \"Yes\", color = \"#333739\"]
+        F -> Y [label = \"Yes\", color = \"#333739\"]
+
+        # Exclusions
+        D -> Z [label = \"No\", color = \"#333739\"]
+        E -> Z [label = \"No\", color = \"#333739\"]
+        B -> Z [label = \"No\", color = \"#333739\"]
+        C -> Z [label = \"Yes\", color = \"#333739\"]
+        F -> Z [label = \"No\", color = \"#333739\"]
+
+    }"
+    ) 
   )
 )

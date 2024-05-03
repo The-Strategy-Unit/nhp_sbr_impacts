@@ -1740,7 +1740,6 @@ list(
     )
   ),
   
-  
   # Mean forest plots
   tar_target(
     mean_forest_plot_LoS,

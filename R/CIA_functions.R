@@ -181,6 +181,23 @@ evaluating_model <- function(organisation,
 }
 
 # Function to plot out the CIA results
+add_vline_to_cia_summary_plot <- function(switch_date){
+  geom_vline(
+    aes(xintercept = as.Date(switch_date)),
+    linetype = "solid",
+    linewidth = 0.6,
+    color = "#ec6555"
+  )
+}
+
+add_hline_to_cia_summary_plot <- function(){
+  geom_hline(
+    aes(yintercept = 0),
+    linetype = "dotted",
+    color = "#686f73",
+    linewidth = 0.4
+  )
+}
 
 cia_summary_plots <- function(model_results, ylab, switch_date) {
   # Plot out actual vs expected
@@ -209,12 +226,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
       label = "SBR switch",
       color = "#ec6555"
     ) +
-    geom_vline(
-      aes(xintercept = as.Date(switch_date)),
-      linetype = "solid",
-      linewidth = 0.6,
-      color = "#ec6555"
-    ) +
+    add_vline_to_cia_summary_plot(switch_date) +
     scale_color_manual(values = c("#f9bf07", "#2c2825")) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
     guides(colour = guide_legend(reverse = T)) +
@@ -225,18 +237,8 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
     su_theme() +
     theme(axis.text = element_text(size = 9),
           axis.title = element_text(size = 11)) +
-    geom_hline(
-      aes(yintercept = 0),
-      linetype = "dotted",
-      color = "#686f73",
-      linewidth = 0.4
-    ) +
-    geom_vline(
-      aes(xintercept = as.Date(switch_date)),
-      linetype = "solid",
-      linewidth = 0.6,
-      color = "#ec6555"
-    ) +
+    add_hline_to_cia_summary_plot() +
+    add_vline_to_cia_summary_plot(switch_date) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y")
   
   # Plot out cumulative effect
@@ -244,18 +246,8 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
     su_theme() +
     theme(axis.text = element_text(size = 9),
           axis.title = element_text(size = 11)) +
-    geom_hline(
-      aes(yintercept = 0),
-      linetype = "dotted",
-      color = "#686f73",
-      linewidth = 0.4
-    ) +
-    geom_vline(
-      aes(xintercept = as.Date(switch_date)),
-      linetype = "solid",
-      linewidth = 0.6,
-      color = "#ec6555"
-    ) +
+    add_hline_to_cia_summary_plot() +
+    add_vline_to_cia_summary_plot(switch_date) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y")
   
   figure <- ggarrange(a, b, c, ncol = 1)

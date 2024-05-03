@@ -14,6 +14,7 @@ tar_option_set(
     "DiagrammeR",
     "egg",
     "flextable",
+    "forcats",
     "geomtextpath",
     "ggplot2",
     "htmltools",
@@ -22,11 +23,13 @@ tar_option_set(
     "leaflet",
     "lubridate",
     "MarketMatching",
+    "metafor",
     "oceanis",
     "patchwork",
     "readxl",
     "sf",
     "stringr",
+    "StrategyUnitTheme",
     "tidyr",
     "tsibble",
     "zoo"
@@ -1511,8 +1514,10 @@ list(
              get_sbr_details(hospitals)),
   tar_target(sbr_details_table,
              get_sbr_details_table(sbr_details)),
-  tar_target(number_control_sites,
-             get_number_control_sites(single_bedroom_matches_final)),
+  tar_target(
+    number_control_sites,
+    get_number_control_sites(single_bedroom_matches_final)
+  ),
   tar_target(
     flow_chart_selecting_controls,
     grViz(
@@ -1548,6 +1553,262 @@ list(
         F -> Z [label = \"No\", color = \"#333739\"]
 
     }"
-    ) 
+    )
+  ),
+  
+  # Forest plots
+  tar_target(
+    forest_plot_LoS,
+    forest_plot(
+      LoS_output,
+      "Points to the left indicate a decrease in mean length of stay following a switch to single bed   rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on mean length of stay"
+    )
+  ),
+  tar_target(
+    forest_plot_waiting_time_median,
+    forest_plot(
+      waiting_time_median_output,
+      "Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are indicated red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on median waiting time"
+    )
+  ),
+  tar_target(
+    forest_plot_bed_occupancy,
+    forest_plot(
+      bed_occupancy_output,
+      "Points to the right indicate an increase in bed occupancy following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are indicated red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on bed occupancy"
+    )
+  ),
+  tar_target(
+    forest_plot_emergency_readmissions,
+    forest_plot(
+      emergency_readmissions_output,
+      "Points to the left indicate a decrease in emergency readmissions following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on emergency readmissions"
+    )
+  ),
+  tar_target(
+    forest_plot_cleaning_costs,
+    forest_plot(
+      cleaning_costs_output,
+      "Points to the left indicate a decrease in cleaning costs following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on cleaning costs"
+    )
+  ),
+  tar_target(
+    forest_plot_sus_deaths,
+    forest_plot(
+      sus_deaths_output,
+      "Points to the left indicate a decrease in hospital deaths following a switch to single bed rooms, which is considered a positive effect. Significant positive effects green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on in-hospital deaths"
+    )
+  ),
+  tar_target(
+    forest_plot_falls_and_fractures,
+    forest_plot(
+      falls_and_fractures_output,
+      "Points to the left indicate a decrease in falls and fractures following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on in-hospital falls, fractures and injuries"
+    )
+  ),
+  tar_target(
+    forest_plot_cdiff,
+    forest_plot(
+      cdiff_output,
+      "Points to the left indicate a decrease in healthcare acquired C.Difficile infections  following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on rate of healthcare acquired C.Difficile infections"
+    )
+  ),
+  tar_target(
+    forest_plot_friends_and_family,
+    forest_plot(
+      friends_and_family_output,
+      "Points to the right indicate an increase in positive scores on the Friends and Family patient experience test following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on positive scores on the Friends and Family test"
+    )
+  ),
+  tar_target(
+    forest_plot_staff_sickness,
+    forest_plot(
+      staff_sickness_output,
+      "Points to the left indicate a decrease in staff sickness following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on staff sickness rate"
+    )
+  ),
+  tar_target(
+    forest_plot_staff_turnover,
+    forest_plot(
+      staff_turnover_output,
+      "Grey indicates no significant change in staff turnover following a switch to single bed rooms.",
+      "Relative effect of switching to single bedrooms on staff turnover"
+    )
+  ),
+  tar_target(
+    forest_plot_staff_survey,
+    forest_plot(
+      staff_survey_output,
+      "Points to the right indicate an increase in positive responses to the NHS staff survey following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the left) are red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on % of NHS staff that recommend their workplace"
+    )
+  ),
+  
+  # Model effects tables
+  tar_target(
+    model_effects_table_LoS,
+    model_effects_table(
+      LoS_output,
+      "Average effects of switching to single bedrooms on mean length of stay"
+    )
+  ),
+  tar_target(
+    model_effects_table_waiting_time_median,
+    model_effects_table(
+      waiting_time_median_output,
+      "Mean effect on median waiting time at general acute hospitals"
+    )
+  ),
+  tar_target(
+    model_effects_table_bed_occupancy,
+    model_effects_table(
+      bed_occupancy_output,
+      "Average effects of switching to single bedrooms on % of bed occupancy"
+    )
+  ),
+  tar_target(
+    model_effects_table_emergency_readmissions,
+    model_effects_table(
+      emergency_readmissions_output,
+      "Average effects of switching to single bedrooms on % of emergency readmissions"
+    )
+  ),
+  tar_target(
+    model_effects_table_cleaning_costs,
+    model_effects_table(
+      cleaning_costs_output,
+      "Average effects of switching to single bedrooms on cleaning costs (£) per sqm"
+    )
+  ),
+  tar_target(
+    model_effects_table_sus_deaths,
+    model_effects_table(
+      sus_deaths_output,
+      "Average effects of switching to single bedrooms on in-hospital deaths/1,000 discharges"
+    )
+  ),
+  tar_target(
+    model_effects_table_falls_and_fractures,
+    model_effects_table(
+      falls_and_fractures_output,
+      "Average effects of switching to single bedrooms on % of spells with in-hospital fall or injury"
+    )
+  ),
+  tar_target(
+    model_effects_table_cdiff,
+    model_effects_table(
+      cdiff_output,
+      "Average effects of switching to single bedrooms on cases of healthcare acquired C.Difficile infections /10,000 bed days"
+    )
+  ),
+  tar_target(
+    model_effects_table_friends_and_family,
+    model_effects_table(
+      friends_and_family_output,
+      "Average effects of switching to single bedrooms on % of positive responses on the Friends and Family test"
+    )
+  ),
+  tar_target(
+    model_effects_table_staff_sickness,
+    model_effects_table(
+      staff_sickness_output,
+      "Average effects of switching to single bedrooms on staff sickness rate (% of available days)"
+    )
+  ),
+  tar_target(
+    model_effects_table_staff_turnover,
+    model_effects_table(
+      staff_turnover_output,
+      "Average effects of switching to single bedrooms on rate of staff turnover (% leaving)"
+    )
+  ),
+  tar_target(
+    model_effects_table_staff_survey,
+    model_effects_table(
+      staff_survey_output,
+      "Average effects of switching to single bedrooms on % of NHS staff who would recommend their workplace"
+    )
+  ),
+  
+  # Mean forest plots
+  tar_target(
+    mean_forest_plot_LoS,
+    mean_forest_plot_DGH_Acute(
+      LoS_output,
+      "Mean effect on length of stay at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_waiting_time_median,
+    mean_forest_plot_DGH_Acute(
+      waiting_time_median_output,
+      "Mean effect on median waiting time at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_bed_occupancy,
+    mean_forest_plot_DGH_Acute(
+      bed_occupancy_output,
+      "Mean effect on bed occupancy at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_emergency_readmissions,
+    mean_forest_plot_DGH_Acute(
+      emergency_readmissions_output,
+      "Mean effect on emergency readmission rate at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_sus_deaths,
+    mean_forest_plot_DGH_Acute(
+      sus_deaths_output,
+      "Mean effect on in-hospital death rate at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_falls_and_fractures,
+    mean_forest_plot_DGH_Acute(
+      falls_and_fractures_output,
+      "Mean effect on rate of falls, fractures and injuries while in hospital at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_cdiff,
+    mean_forest_plot_DGH_Acute(
+      cdiff_output,
+      "Mean effect on the rate heathlcare acquired C.Difficile infections at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_friends_and_family,
+    mean_forest_plot_DGH_Acute(
+      friends_and_family_output,
+      "Mean effect on the % of positive responses to the Friends and Family test at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_staff_sickness,
+    mean_forest_plot_DGH_Acute(
+      staff_sickness_output,
+      "Mean effect on the rate of staff sickness at general acute hospitals"
+    )
+  ),
+  tar_target(
+    mean_forest_plot_staff_survey,
+    mean_forest_plot_DGH_Acute(
+      staff_survey_output,
+      "Mean effect on percentage of staff that would recommend their trust as a place to work at general acute hospitals"
+    )
   )
 )

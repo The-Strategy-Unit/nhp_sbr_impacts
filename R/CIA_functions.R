@@ -1195,13 +1195,13 @@ summary_forest_plot <- function(LoS_output,
     geom_text(
       aes(x = 0, label = measure),
       hjust = 0,
-      size = 2.9,
+      size =3,
       fontface = "bold"
     ) +
     geom_text(
       aes(x = 2.5, label = value),
       hjust = 0,
-      size = 2.9,
+      size = 3,
       fontface = ifelse(
         results_data$value == "Mean % change (95% CI)",
         "bold",
@@ -1210,7 +1210,7 @@ summary_forest_plot <- function(LoS_output,
         geom_text(
           aes(x = 4.2, label = n),
           hjust = 0,
-          size = 2.9
+          size = 3
            ) +
     theme_void() +
     coord_cartesian(xlim = c(0, 4.5))

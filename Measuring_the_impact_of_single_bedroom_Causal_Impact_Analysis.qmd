@@ -170,20 +170,19 @@ Taken from initial plan and NHP update slides.
 
 # Executive Summary
 
-Traditionally, hospital beds have been in shared multi-bed bays, however, there has been a move both in the UK and globally towards single-bed inpatient rooms. This work was undertaken to better understand the impact of switching to single-bed accommodation when building future hospitals. 
+Traditionally, hospital beds have been in shared multi-bed bays, however, there has been a move both in the UK and globally towards single-bed inpatient rooms. This work was undertaken to better understand the impact of switching to single-bed accommodation when building future hospitals.
 
 There are 7 hospitals in England where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We have used these hospital sites as natural experiments, and with the use of matched control sites are able to quantify changes in these study sites following their switch to single bedrooms.
 
-Our analysis investigates the impact on measures from three domains 1) Health and Safety, 2) Patient and Staff Experience and 3) Productivity and Efficiency to determine the extent of any benefits, or negative impacts that need to be mitigated with single-bed room sites. 
+Our analysis investigates the impact on measures from three domains 1) Health and Safety, 2) Patient and Staff Experience and 3) Productivity and Efficiency to determine the extent of any benefits, or negative impacts that need to be mitigated with single-bed room sites.
 
 Our results are not consistent across hospital sites, suggesting that there are a number of other factors in the hospital design and procedures that are important, hence switching to single bedroom hospitals without considering the other factors would not necessarily have a positive effect on outcomes.
 
-Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts. While overall at general acute hospitals there are no significant changes, the data trends towards a decrease in mean length of stay and rate of emergency readmissions and increase in bed occupancy. 
+Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts. While overall at general acute hospitals there are no significant changes, the data trends towards a decrease in mean length of stay and rate of emergency readmissions and increase in bed occupancy.
 
 Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety is not being negatively impacted. While data is limited there is a trend towards decreased C. difficile infection rates.
 
 In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Therefore it appears that staff views and experiences should be considered when designing of hospitals with single bedrooms and thought given to how potentially detrimental effects on staff may be mitigated. Patient experience does not appear to change overall, certainly not to a meaningful degree.
-
 
 # What we already know
 
@@ -349,15 +348,15 @@ cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
 
 ::: {.column width="60%"}
 ::: {style="font-size: 85%;"}
-<br> <br> 
+<br> <br>
 
 1)  Expected value of the indicator in the outcome period, compared to the actual values of the study site.
 
-<br> <br> <br> 
+<br> <br> <br>
 
 2)  The point estimate shows the difference between the expected values and actual values at each time point, so at time points where the posterior intervals do not include zero there is a significant difference.
 
-<br> <br> 
+<br> <br>
 
 3)  Cumulative difference between the expected and actual values over the outcome period. Our measures are typically rates and percentages, which are not additive over time like count data would be, so the cumulative effect can not always be meaningfully interpreted. Also, the cumulative difference cannot always be compared across sites, due to data issues resulting in differing lengths of outcome period.
 :::
@@ -416,7 +415,6 @@ At Peterborough median waiting time dropped and was then relatively stable for t
 
 Median waiting time significantly increased at Tunbridge Wells, but this effect appeared to only be temporary during the first year post-switch, during the second year of the outcome period the waiting times fall back in line with the expected values. The switch to single bedrooms at Tunbridge Wells started in Jan 2011, which is the date we have used in our analysis, but occurred in stages between Jan and Sept 2011, so the differences seen in the first year could be due to disruption of services while the hospital was in a transition period.
 
-
 ### `r title_bed_occup`
 
 Bed occupancy is measured quarterly and is only available at a Provider level. The percentage of available beds occupied significantly increased at 2/4 sites (Clatterbridge and Southmead) and was unchanged at 2/4 (Royal Liverpool and and Chase Farm). An increase in bed occupancy is generally considered a positive result, provided it does not result in an increase in Emergency department waiting times. We have not looked at Emergency department waiting times. However, Chase Farm only does elective care and Clatterbridge is a cancer centre, and so neither of these sites have Emergency departments.
@@ -460,7 +458,7 @@ tar_read(model_effects_table_cleaning_costs)
 
 Cleaning costs increased by 37% at Royal Liverpool, but decreased by 35% and 42% at Clatterbridge and Papworth, respectively (@sec-appendix-A-cleaning). At Royal Liverpool the 37% increase reflects an increase of £14 per square metre from a predicted £44 to £58 per square metre.
 
-Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period, and the first data point in the outcome period may not reflect the true changes in cost as some of the costs will have occurred prior to the switch, so these results shoudl be interpreted cautiously. 
+Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period, and the first data point in the outcome period may not reflect the true changes in cost as some of the costs will have occurred prior to the switch, so these results shoudl be interpreted cautiously.
 
 ## Health and Safety
 
@@ -513,7 +511,7 @@ The rate of healthcare acquired C. difficile was either unchanged or decreased b
 
 ### `r title_friends_family`
 
-Patient experience was determined using the results of the Friends and Family test. The percentage of positive responses significantly decreased at 1/5 sites (Clatterbridge), and was unchanged at the other 4/5 sites (Royal Liverpool, Papworth, Southmead and Chase Farm).
+Patient experience was determined using the results of the Friends and Family test. The percentage of positive responses significantly decreased at 1/5 sites (Clatterbridge), increased at 1/5 sites (Papworth) and was unchanged at the other 3/5 sites (Royal Liverpool, Southmead and Chase Farm).
 
 ```{r friends_and_family_output, include=TRUE, fig.width=8, fig.height=4}
 tar_read(forest_plot_friends_and_family)
@@ -524,7 +522,7 @@ tar_read(model_effects_table_friends_and_family)
 tar_read(mean_forest_plot_friends_and_family)
 ```
 
-The percentage of positive responses to the Friend and Family Test generally remain unchanged but did decrease by 4% at Clatterbridge (@sec-appendix-A-friends-family). It should be noted that based on historic trends Clatterbridge was predicted to have over 97% of positive responses, so although there was a small decrease the percentage of positive responses remained at almost 94%, which is broadly similar to that expected at the other study sites.
+The effect on the percentage of positive responses to the Friend and Family Test was mixed; the percentage of positive responses increased by 1% at Papworth, but decreased by 4% at Clatterbridge (@sec-appendix-A-friends-family). It should be noted that based on historic trends Clatterbridge was predicted to have over 97% of positive responses, so although there was a small decrease the percentage of positive responses remained at almost 94%, which is broadly similar to that expected at the other study sites.
 
 It should be noted that due to the COVID-19 pandemic there is missing friends and family test scores data from March 2020 until late 2020/early 2021 for all sites. Therefore, both Papworth and Clatterbridge have missing data in their outcome periods.
 
@@ -618,7 +616,7 @@ Generally, following a switch to single bedrooms the productivity and efficiency
 
 Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety does not appear to be impacted, which has been raised as a concern due to patients being potentially less visible to staff when in single bedrooms. While our data on hospital acquired infections is very limited, there is a trend towards decreased C. difficile infection rates.
 
-In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year. This initial negative impact may associated with uncertainty and initial concerns over or difficulties adapting to the new design, or it may be that after time changes in policies and procedures may have been introduced to mitigate the negative impacts on staff. Patient experience does not appear to change overall, certainly not to a meaningful degree.
+In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year. This initial negative impact may associated with uncertainty and initial concerns over or difficulties adapting to the new design, or it may be that after time changes in policies and procedures may have been introduced to mitigate the negative impacts on staff. There is a trend towards an increase in positive patient experiences, but the degree of any change may not be particularly meaningful as it would equate to a less than 1% change.
 
 # Limitations and discussion
 
@@ -773,7 +771,7 @@ cia_summary_plots(LoS_REN, "Average LoS (days)", "2020-06-01")
 :::
 :::
 
-### `r title_wait_time_median`  {#sec-appendix-A-waiting-time}
+### `r title_wait_time_median` {#sec-appendix-A-waiting-time}
 
 ::: panel-tabset
 #### Decrease
@@ -895,7 +893,7 @@ cia_summary_plots(waiting_time_median_RWF,
 :::
 :::
 
-### `r title_bed_occup`  {#sec-appendix-A-bed-occupancy}
+### `r title_bed_occup` {#sec-appendix-A-bed-occupancy}
 
 ::: panel-tabset
 #### No change
@@ -957,7 +955,7 @@ cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 
-### `r title_readmissions`  {#sec-appendix-A-readmissions}
+### `r title_readmissions` {#sec-appendix-A-readmissions}
 
 ::: panel-tabset
 #### Decrease
@@ -1109,7 +1107,7 @@ cia_summary_plots(cleaning_costs_REM, "Cost", "2022-10-01")
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 :::
 
-### `r title_deaths`  {#sec-appendix-A-deaths}
+### `r title_deaths` {#sec-appendix-A-deaths}
 
 ::: panel-tabset
 #### Decrease
@@ -1240,7 +1238,7 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 :::
 :::
 
-### `r title_cdiff`  {#sec-appendix-A-cdiff}
+### `r title_cdiff` {#sec-appendix-A-cdiff}
 
 #### Decrease
 
@@ -1301,6 +1299,18 @@ cia_summary_plots(friends_and_family_REN, "Positive responses (%)", "2020-06-01"
 #Last data point prior to switch was about 4 months prior then no data for 8 months after, as switch came during COVID
 ```
 
+#### Increase
+
+Papworth (RGM)
+
+```{r, fig.width=5, fig.height=6}
+friends_and_family_RGM <- tar_read(friends_and_family_RGM)
+
+#evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.05, friends_and_family_RGM, single_bedroom_matches_final)
+
+cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01")
+```
+
 #### No Change
 
 ::: columns
@@ -1310,25 +1320,13 @@ Royal Liverpool (REMRQ)
 ```{r, fig.width=5,fig.height=6 }
 friends_and_family_REM <- tar_read(friends_and_family_REM)
 
-#evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.1, friends_and_family_REM, single_bedroom_matches_final)
+#evaluating_model("REM","REMRQ", friends_and_family,"2022-10-01", "friends_and_family_percent", 0.05, friends_and_family_REM, single_bedroom_matches_final)
 
 cia_summary_plots(friends_and_family_REM, "Positive responses (%)", "2022-10-01")
 
 # Large amount of data missing in the two years prior due to gap over covid. One of the control sites doesn't go back far enough for it is causing the data to be cut off. Think I need to have less matches for this one. But would still have a disturbed pre switch period due to COVID
 ```
 
-Papworth (RGM)
-
-```{r, fig.width=5, fig.height=6}
-friends_and_family_RGM <- tar_read(friends_and_family_RGM)
-
-#evaluating_model("RGM", "RGM22", friends_and_family,"2019-05-01", "friends_and_family_percent", 0.1, friends_and_family_RGM, single_bedroom_matches_final)
-
-cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01")
-```
-:::
-
-::: {.column width="50%"}
 Chase Farm Hospital (RAL)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1338,7 +1336,9 @@ friends_and_family_RAL <- tar_read(friends_and_family_RAL)
 
 cia_summary_plots(friends_and_family_RAL, "Positive responses (%)", "2018-09-01")
 ```
+:::
 
+::: {.column width="50%"}
 Southmead (RVJ)
 
 ```{r, fig.width=5, fig.height=6}
@@ -1352,7 +1352,7 @@ cia_summary_plots(friends_and_family_RVJ, "Positive responses (%)", "2014-05-01"
 :::
 :::
 
-### `r title_staff_sickness`  {#sec-appendix-A-staff-sickness}
+### `r title_staff_sickness` {#sec-appendix-A-staff-sickness}
 
 ::: panel-tabset
 #### Increase
@@ -1442,7 +1442,7 @@ cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 :::
 :::
 
-### `r title_staff_turnover`  {#sec-appendix-A-staff-turnover}
+### `r title_staff_turnover` {#sec-appendix-A-staff-turnover}
 
 #### No change
 
@@ -1482,7 +1482,7 @@ cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2020-06-01")
 :::
 :::
 
-### `r title_staff_survey`  {#sec-appendix-A-staff-survey}
+### `r title_staff_survey` {#sec-appendix-A-staff-survey}
 
 ```{r, include=FALSE}
 Peterborough_matches <- single_bedroom_matches_final |>
@@ -1632,7 +1632,7 @@ Black dotted line indicates the time of the last data point prior to the switch 
 
 **Referral to treatment waiting time data**
 
--   Only available at provider level. 
+-   Only available at provider level.
 -   This measure is not specific to waiting time for inpatient treatment that will be most impacted by a switch to single bedrooms, as it will include those waiting for diagnostics and for non-admitted treatment.
 -   Chase Farm was excluded as there was only 4 months of data available in the outcome period.
 -   Southmead was excluded due to a period of missing data in the 2 years prior to the switch to single rooms.
@@ -1650,16 +1650,15 @@ Black dotted line indicates the time of the last data point prior to the switch 
 **`r title_cleaning`**
 
 -   This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
--  There was missing occupied floor space data for 2020 and 2021, so we have imputed values based on the available data and the time point when the switch to single bedrooms occurred.
--  This measure is calculated as cost per occupied square metre, but is not specific to inpatient bed areas, but includes all other clinical areas within the hospital, e.g. operating theatres, outpatient clinics etc.
+-   There was missing occupied floor space data for 2020 and 2021, so we have imputed values based on the available data and the time point when the switch to single bedrooms occurred.
+-   This measure is calculated as cost per occupied square metre, but is not specific to inpatient bed areas, but includes all other clinical areas within the hospital, e.g. operating theatres, outpatient clinics etc.
 -   For Chase Farm the cleaning costs were quite variable and it was difficult to find appropriate controls, so we were not able to fit a suitable model.
-
 
 **Healthcare acquired infections**
 
 -   Only available at provider level
 -   C. difficile infection rates could not be analysed for Clatterbridge or Papworth as the rates were low, often zero, and so combined with the high level of variability in the data it meant it was not possible to fit a suitable model for these sites.
--  For other hospital acquired infections the data collections did not go far enough back in time to be used in this analysis.
+-   For other hospital acquired infections the data collections did not go far enough back in time to be used in this analysis.
 
 **`r title_falls_fractures`**
 

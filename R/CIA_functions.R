@@ -230,7 +230,7 @@ cia_summary_plots <- function(model_results, ylab, switch_date) {
     scale_color_manual(values = c("#f9bf07", "#2c2825")) +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
     guides(colour = guide_legend(reverse = T)) +
-    scale_y_continuous(limits = c(0, max(max) * 1.1), labels = scales::comma)
+    scale_y_continuous(limits = c(0, max(max) * 1.03), labels = scales::comma)
   
   # Plot pointwise effect
   b <- model_results$PlotPointEffect +
@@ -1130,7 +1130,7 @@ summary_forest_plot <- function(LoS_output,
     mutate(mean=mean*100,
            `95% lower`=`95% lower`*100,
            `95% upper`=`95% upper`*100 )|>
-    mutate(value=paste0(round(mean,1), " (", round(`95% lower`,1), " - ",round(`95% upper`,1), ")"))|>
+    mutate(value=paste0(round(mean,1), " (", round(`95% lower`,1), " to ",round(`95% upper`,1), ")"))|>
     mutate(n=paste0("n=", n))|>
     mutate(sig = case_when(
       (`95% upper` > 0 & mean < 0) |

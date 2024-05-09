@@ -874,31 +874,43 @@ summary_table_indicators_and_sites <-
            staff_turnover_output,
            staff_survey_output)   {
     waiting_time_median_output2 <- waiting_time_median_output |>
-      mutate(measure = "Waiting time")
+      mutate(measure = "Waiting time",
+             group="Productivity & Efficiency")
     LoS_output2  <- LoS_output |>
-      mutate(measure = "Length of stay")
+      mutate(measure = "Length of stay",
+             group="Productivity & Efficiency")
     emergency_readmissions_output2  <-
       emergency_readmissions_output |>
-      mutate(measure = "Emergency readmissions")
+      mutate(measure = "Emergency readmissions",
+             group="Productivity & Efficiency")
     cleaning_costs_output2  <-
       cleaning_costs_output |>
-      mutate(measure = "Cleaning costs")
+      mutate(measure = "Cleaning costs",
+             group="Productivity & Efficiency")
     bed_occupancy_output2  <- bed_occupancy_output |>
-      mutate(measure = "Bed occupancy")
+      mutate(measure = "Bed occupancy",
+             group="Productivity & Efficiency")
     cdiff_output2  <- cdiff_output |>
-      mutate(measure = "Healthcare acquired C.Difficile")
+      mutate(measure = "Healthcare acquired C.diff",
+             group="Health & Safety")
     falls_and_fractures_output2  <- falls_and_fractures_output |>
-      mutate(measure = "Falls and injuries")
+      mutate(measure = "Falls and injuries",
+             group="Health & Safety")
     sus_deaths_output2  <- sus_deaths_output |>
-      mutate(measure = "Hospital deaths")
+      mutate(measure = "Hospital deaths",
+             group="Health & Safety")
     friends_and_family_output2  <- friends_and_family_output |>
-      mutate(measure = "Patient experience")
+      mutate(measure = "Patient experience",
+             group="Patient & Staff experience")
     staff_sickness_output2  <- staff_sickness_output |>
-      mutate(measure = "Staff sickness")
+      mutate(measure = "Staff sickness",
+             group="Patient & Staff experience")
     staff_survey_output2  <- staff_survey_output |>
-      mutate(measure = "Staff survey")
+      mutate(measure = "Staff survey",
+             group="Patient & Staff experience")
     staff_turnover_output2  <- staff_turnover_output |>
-      mutate(measure = "Staff turnover")
+      mutate(measure = "Staff turnover",
+             group="Patient & Staff experience")
     
     combined_outputs <- rbind(
         LoS_output2,
@@ -921,10 +933,11 @@ summary_table_indicators_and_sites <-
         RelEffect < 0 & p < 0.05 ~ "\U2193",
         p >= 0.05 ~ "-"
       )) |>
-      select(site, measure, sig) |>
+      select(site, measure, group, sig) |>
       pivot_wider(names_from = site, values_from = sig) |>
       select(
         measure,
+        group,
         `Royal Liverpool`,
         Clatterbridge,
         Papworth,
@@ -932,7 +945,11 @@ summary_table_indicators_and_sites <-
         Southmead,
         `Tunbridge Wells`,
         Peterborough
-      )
+      )|>
+      as.data.frame()
+    
+  
+    
     colormatrix <- ifelse(
       is.na(combined_outputs),
       "grey80" ,
@@ -963,6 +980,10 @@ summary_table_indicators_and_sites <-
     ) |>
       as.data.frame() |>
       mutate(measure = "#FFFFFF") |>
+      select(-group)|>
+      add_row(measure="#FFFFFF", .before=1)|>
+      add_row(measure="#FFFFFF", .before=7)|>
+      add_row(measure="#FFFFFF", .before=11)|>
       as.matrix()
     
     colormatrix2 <- ifelse(
@@ -996,10 +1017,16 @@ summary_table_indicators_and_sites <-
     ) |>
       as.data.frame() |>
       mutate(measure = "black") |>
+      select(-group)|>
+      add_row(measure="black",  .before=1)|>
+      add_row(measure="black", .before=7)|>
+      add_row(measure="black", .before=11)|>
       as.matrix()
     
-    combined_outputs |>
-      flextable() |>
+  
+    
+  as_grouped_data(combined_outputs, groups = "group") |>
+      as_flextable(hide_grouplabel = TRUE) |>
       set_header_labels(measure = "") |>
       align(part = "header", align = "center") |>
       align(part = "body", align = "center") |>
@@ -1007,11 +1034,20 @@ summary_table_indicators_and_sites <-
       color(color = colormatrix2, part = "body") |>
       bg(part = "body", bg = colormatrix) |>
       bold(bold = TRUE, part = "header") |>
-      fontsize(size = 12, part = "all") |>
+      fontsize(size = 11, part = "all") |>
       fontsize(j = 2:8, size = 14, part = "body") |>
       padding(padding = 2,
               part = "all",
               padding.top = NULL) |>
+    align(
+      j = 1,
+      i = ~ !is.na(group),
+      part = "body",
+      align = "left"
+    ) |>
+    bold(j = 1,
+         i = ~ !is.na(group),
+         part = "body") |>
       autofit() |>
       add_footer_lines(value = c(
         paste0(

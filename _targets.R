@@ -32,7 +32,8 @@ tar_option_set(
     "StrategyUnitTheme",
     "tidyr",
     "tsibble",
-    "zoo"
+    "zoo",
+    "gridExtra"
   ) # Packages that your targets need for their tasks.
 )
 

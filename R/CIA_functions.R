@@ -286,7 +286,7 @@ extract_model_details <- function(model) {
       format(Pred, big.mark = ",", scientific = FALSE),
       " (",
       Pred.lower,
-      " - ",
+      " to ",
       Pred.upper,
       ")"
     )) |>
@@ -294,7 +294,7 @@ extract_model_details <- function(model) {
       round(RelEffect, 2),
       " (",
       round(RelEffect.lower, 2),
-      " - ",
+      " to ",
       round(RelEffect.upper, 2),
       ")"
     )) |>
@@ -302,7 +302,7 @@ extract_model_details <- function(model) {
       format(AbsEffect, big.mark = ",", scientific = FALSE),
       " (",
       AbsEffect.lower,
-      " - ",
+      " to ",
       AbsEffect.upper,
       ")"
     )) |>
@@ -513,7 +513,7 @@ forest_plot <- function(data, caption, subtitle) {
       caption = str_wrap(caption, 135),
       subtitle = str_wrap(subtitle, 90),
       theme = theme(
-        plot.caption = element_text(hjust = 0, size = 10),
+        plot.caption = element_text(hjust = 0, size = 9),
         plot.subtitle = element_text(
           hjust = 0,
           size = 13,
@@ -646,7 +646,7 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
           round(df$mean, 2),
           " (",
           round(df$`95% lower`, 2),
-          " - ",
+          " to ",
           round(df$`95% upper`, 2),
           ")"
         ),
@@ -796,7 +796,7 @@ model_effects_table <- function(data, title) {
   name <- deparse(substitute(data))
   
   if (name == "cleaning_costs_output") {
-    note <- "Actual, Predicted and Absolute difference values expressed as million £"
+    note <- "Actual, Predicted and Absolute difference values expressed as £ per sqm"
   }
   else{
     note <- NA

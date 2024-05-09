@@ -235,10 +235,10 @@ indicator_availability_over_time <-
         "Staff turnover",
         "Staff sickness",
         "Staff survey",
-        "Healthcare acquired C.Difficile",
+        "Healthcare acquired C.diff",
         "Falls and injuries",
         "Hospital deaths",
-        "RTT waiting times",
+        "Waiting time",
         "Bed occupancy",
         "Length of stay",
         "Emergency readmissions",
@@ -315,13 +315,13 @@ indicator_availability_over_time <-
           "Staff sickness",
           "Patient experience",
           "Staff survey",
-          "Healthcare acquired C.Difficile",
+          "Healthcare acquired C.diff",
           "Falls and injuries",
           "Hospital deaths",
           "Cleaning costs",
           "Emergency readmissions",
           "Bed occupancy",
-          "RTT waiting times",
+          "Waiting time",
           "Length of stay"
         )
       ))
@@ -358,7 +358,7 @@ indicator_availability_over_time <-
       geom_path(lineend = "round",
                 color = "#f9bf07",
                 linewidth = 5) +
-      labs(title = "Productivity & Efficiency", y = NULL, x = NULL) +
+      labs(title = "   Productivity & Efficiency", y = NULL, x = NULL) +
       theme_minimal() +
       theme(
         axis.text.y = element_text(size = 12.5),
@@ -416,7 +416,7 @@ indicator_availability_over_time <-
       geom_path(lineend = "round",
                 color = "#f9bf07",
                 linewidth = 5) +
-      labs(title = "Health & Safety", y = NULL, x = NULL) +
+      labs(title = "   Health & Safety", y = NULL, x = NULL) +
       theme_minimal() +
       theme(
         axis.text.y = element_text(size = 12.5),
@@ -446,7 +446,7 @@ indicator_availability_over_time <-
       geom_path(lineend = "round",
                 color = "#f9bf07",
                 linewidth = 5) +
-      labs(title = "Patient & Staff Experience", y = NULL, x = NULL) +
+      labs(title = "  Patient & Staff Experience", y = NULL, x = NULL) +
       theme_minimal() +
       theme(
         axis.text.y = element_text(size = 12.5),
@@ -470,7 +470,7 @@ indicator_availability_over_time <-
       ) +
       coord_cartesian(clip = 'off')
     
-    figure <- ggarrange(a, b, c, ncol = 1)
+    a + b + c + plot_layout(ncol=1) 
     
   }
 
@@ -496,10 +496,10 @@ indicator_availability_by_site <-
         "Staff turnover",
         "Staff sickness",
         "Staff survey",
-        "Healthcare acquired C.Difficile",
+        "Healthcare acquired C.diff",
         "Falls and injuries",
         "Hospital deaths",
-        "RTT waiting times",
+        "Waiting time",
         "Bed occupancy",
         "Length of stay",
         "Emergency readmissions",
@@ -576,12 +576,12 @@ indicator_availability_by_site <-
           "Staff sickness",
           "Patient experience",
           "Staff survey",
-          "Healthcare acquired C.Difficile",
+          "Healthcare acquired C.diff",
           "Falls and injuries",
           "Hospital deaths",
           "Emergency readmissions",
           "Bed occupancy",
-          "RTT waiting times",
+          "Waiting time",
           "Length of stay",
           "Cleaning costs"
         )
@@ -619,10 +619,10 @@ indicator_availability_by_site <-
       mutate(sufficient_baseline = case_when(measure=="Patient experience" & (name=="Southmead") ~ "\U2714",
                                              measure=="Staff turnover" & (name=="Clatterbridge"|name=="Papworth") ~ "\U2714",
                                              measure=="Staff sickness" & (name=="Peterborough"|name=="Tunbridge Wells") ~ "\U2714",
-                                             measure=="RTT waiting times" & (name=="Chase Farm"|name=="Southmead") ~ "-",
+                                             measure=="Waiting time" & (name=="Chase Farm"|name=="Southmead") ~ "-",
                                              measure=="Length of stay" & (name=="Papworth") ~ "-",
                                              measure=="Bed occupancy" & (name=="Papworth") ~ "-",
-                                             measure=="Healthcare acquired C.Difficile" & (name=="Clatterbridge"|name=="Papworth") ~ "-",
+                                             measure=="Healthcare acquired C.diff" & (name=="Clatterbridge"|name=="Papworth") ~ "-",
                                              measure=="Falls and injuries" & (name=="Clatterbridge"|name=="Papworth"|name=="Chase Farm") ~ "-",
                                              measure=="Hospital deaths" & (name=="Papworth"|name=="Chase Farm") ~ "-",
                                              measure=="Cleaning costs" & (name=="Chase Farm") ~ "-",
@@ -639,9 +639,9 @@ indicator_availability_by_site <-
           "Staff survey",
           "Hospital deaths",
           "Falls and injuries",
-          "Healthcare acquired C.Difficile",
+          "Healthcare acquired C.diff",
           "Length of stay" ,
-          "RTT waiting times",
+          "Waiting time",
           "Bed occupancy",
           "Emergency readmissions",
           "Cleaning costs"
@@ -801,6 +801,8 @@ indicator_availability_by_site <-
            part = "body") |>
       bold(bold = TRUE, part = "header") |>
       fontsize(size = 12, part = "all") |>
+      fontsize(j=1:2, size = 11, part = "body") |>
+      fontsize( size = 11, part = "header") |>
       padding(padding = 2,
               part = "all",
               padding.top = NULL) |>

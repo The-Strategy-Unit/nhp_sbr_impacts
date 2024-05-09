@@ -564,8 +564,6 @@ The percentage of staff that would recommend their trust as a place to work sign
 tar_read(forest_plot_staff_survey)
 tar_read(model_effects_table_staff_survey)
 
-
-test<-tar_read(staff_survey_RWF)
 ```
 
 ```{r mean_staff_survey_output, fig.width=8, fig.height=2.5}

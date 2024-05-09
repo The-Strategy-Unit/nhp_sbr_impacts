@@ -855,6 +855,43 @@ list(
     )
   ),
   
+  
+  #Waiting time- median DTA
+  
+  prior_sd_waiting_time_median_dta <- tibble::tribble(
+    ~ org_code_of_interest,
+    ~ prior_sd,
+    "REM",
+    0.05,
+    "REN",
+    0.01,
+    "RGM",
+    0.05,
+    "RAL",
+    0.01
+  ),
+  
+  list(
+    tarchetypes::tar_map(
+      values = prior_sd_waiting_time_median_dta,
+      names = org_code_of_interest,
+      targets::tar_target(
+        waiting_time_median_dta,
+        cia_analysis(
+          org_code_of_interest,
+          rtt_waiting_time_cia_format,
+          "median_by_prov_dta",
+          prior_sd,
+          control_pool,
+          hospitals
+        )
+      )
+    )
+  ),
+  
+  
+  
+  
   #Waiting time -number
   prior_sd_waiting_time_number <- tibble::tribble(
     ~ org_code_of_interest,
@@ -1346,6 +1383,21 @@ list(
     )
   ),
   
+  
+  
+  tar_target(
+    waiting_time_median_dta_output,
+    model_output(
+      waiting_time_median_dta_REM,
+      waiting_time_median_dta_REN,
+      waiting_time_median_dta_RGM,
+      waiting_time_median_dta_RAL,
+      NA,
+      NA,
+      NA
+    )
+  ),
+  
   tar_target(
     waiting_time_number_output,
     model_output(
@@ -1574,6 +1626,14 @@ list(
     )
   ),
   tar_target(
+    forest_plot_waiting_time_median_dta,
+    forest_plot(
+      waiting_time_median_dta_output,
+      "Points to the left indicate a decrease in median waiting time following a switch to single bed rooms, which is considered a positive effect. Significant positive effects are green, while significant negative effects (on the right) are indicated red. Grey indicates no significant change.",
+      "Relative effect of switching to single bedrooms on median waiting time"
+    )
+  ),
+  tar_target(
     forest_plot_bed_occupancy,
     forest_plot(
       bed_occupancy_output,
@@ -1666,6 +1726,13 @@ list(
     model_effects_table_waiting_time_median,
     model_effects_table(
       waiting_time_median_output,
+      "Mean effect on median waiting time at general acute hospitals"
+    )
+  ),
+  tar_target(
+    model_effects_table_waiting_time_median_dta,
+    model_effects_table(
+      waiting_time_median_dta_output,
       "Mean effect on median waiting time at general acute hospitals"
     )
   ),

@@ -290,9 +290,12 @@ rtt_waiting_time_cia_formatting <- function(formatted_data) {
     summarise(
       median_by_prov = median(rep(weeks, number_of_incomplete_pathways)),
       number_incomplete = sum(number_of_incomplete_pathways),
+      median_by_prov_dta = median(rep(weeks, number_of_incomplete_pathways_with_dta)),
+      number_incomplete_dta = sum(number_of_incomplete_pathways_with_dta),
       .by = c(month, organisation_code)
     ) |> #Median by month and provider
     mutate(median_by_prov = ifelse(is.na(median_by_prov), 0, median_by_prov)) |>
+    mutate(median_by_prov_dta = ifelse(is.na(median_by_prov_dta), 0, median_by_prov_dta)) |>
     filter(
       organisation_code != "RF4" &
         organisation_code != "R1H" &

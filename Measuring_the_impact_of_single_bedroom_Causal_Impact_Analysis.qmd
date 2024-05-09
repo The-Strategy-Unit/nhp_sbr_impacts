@@ -170,6 +170,21 @@ Taken from initial plan and NHP update slides.
 
 # Executive Summary
 
+Traditionally, hospital beds have been in shared multi-bed bays, however, there has been a move both in the UK and globally towards single-bed inpatient rooms. This work was undertaken to better understand the impact of switching to single-bed accommodation when building future hospitals. 
+
+There are 7 hospitals in England where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We have used these hospital sites as natural experiments, and with the use of matched control sites are able to quantify changes in these study sites following their switch to single bedrooms.
+
+Our analysis investigates the impact on measures from three domains 1) Health and Safety, 2) Patient and Staff Experience and 3) Productivity and Efficiency to determine the extent of any benefits, or negative impacts that need to be mitigated with single-bed room sites. 
+
+Our results are not consistent across hospital sites, suggesting that there are a number of other factors in the hospital design and procedures that are important, hence switching to single bedroom hospitals without considering the other factors would not necessarily have a positive effect on outcomes.
+
+Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts. While overall at general acute hospitals there are no significant changes, the data trends towards a decrease in mean length of stay and rate of emergency readmissions and increase in bed occupancy. 
+
+Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety is not being negatively impacted. While data is limited there is a trend towards decreased C. difficile infection rates.
+
+In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Therefore it appears that staff views and experiences should be considered when designing of hospitals with single bedrooms and thought given to how potentially detrimental effects on staff may be mitigated. Patient experience does not appear to change overall, certainly not to a meaningful degree.
+
+
 # What we already know
 
 There have been 2 NHP commissioned pieces of work in the recent past aiming to better understand the nature and scale of any impacts related to switching from multi-occupancy hospital rooms to single-bed rooms.
@@ -526,7 +541,7 @@ tar_read(model_effects_table_staff_sickness)
 tar_read(mean_forest_plot_staff_sickness)
 ```
 
-Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead (@sec-appendix-A-staff-sickness). The mean effect at general acute was a significant increase of 6% in the staff sickness rate.
+Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead and 23% increase at Tunbridge Wells (@sec-appendix-A-staff-sickness). The mean effect at general acute was a significant increase of 6% in the staff sickness rate. Although staff sickness did remain unchanged are the 3 specialist sites.
 
 While there was a significant increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates. A similar, albeit non-significant, effect is seen at Peterborough with a larger winter spike in the first year of the outcome period before sickness levels return to expected levels.
 
@@ -548,6 +563,7 @@ The percentage of staff that would recommend their trust as a place to work sign
 ```{r staff_survey_output, include=TRUE, fig.width=8, fig.height=4}
 tar_read(forest_plot_staff_survey)
 tar_read(model_effects_table_staff_survey)
+
 ```
 
 ```{r mean_staff_survey_output, fig.width=8, fig.height=2.5}
@@ -594,7 +610,6 @@ summary_forest_plot(
   staff_survey_output
 )
 
-dataset <- deparse(substitute(staff_survey_output))
 ```
 
 The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been more negative. It should be noted in some cases where negative outcomes are seen these are transient changes or there are others factors that may be influencing the results.
@@ -1662,11 +1677,13 @@ Black dotted line indicates the time of the last data point prior to the switch 
 **`r title_staff_sickness`**
 
 -   Only available at provider level
+-   This is used as a proxy for staff experience with the assumption that sickness absences would rise if staff were stressed and unhappy in their roles.
 
 **`r title_staff_turnover`**
 
 -   Only available at provider level
 -   Data is only available for Royal Liverpool
+-   This is used as a proxy for staff experience with the assumption that the staff leaving rate may increase if staff are unhappy in their roles.
 
 **`r title_staff_survey`**
 

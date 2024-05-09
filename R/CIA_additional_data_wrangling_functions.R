@@ -482,8 +482,8 @@ staff_survey_cia_formatting<-function(data) {
                                  organisation_code
       )
     ) |> #merge historical Chase Farm codes  
-    summarise(positive_responses=mean(positive_responses, na.rm=TRUE), .by = c(month, organisation_code))
-
+    summarise(positive_responses=mean(positive_responses, na.rm=TRUE), .by = c(month, organisation_code))|>
+    filter(organisation_code != "RTK")
       
   
   return(staff_survey_cia_format)

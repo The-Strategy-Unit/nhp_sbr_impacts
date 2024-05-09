@@ -613,7 +613,8 @@ rtt_data_formatting <- function(data) {
     mutate(weeks = sub("\\-.*", "", weeks)) |>
     mutate(weeks = sub("\\+.*", "", weeks)) |>
     mutate(weeks = as.numeric(weeks)) |>
-    select(-effective_snapshot_date)
+    select(-effective_snapshot_date)|>
+    mutate(number_of_incomplete_pathways_with_dta=as.numeric(number_of_incomplete_pathways_with_dta))
   
   assign("rtt_data", rtt_data, envir = .GlobalEnv)
   
@@ -621,6 +622,8 @@ rtt_data_formatting <- function(data) {
   formatted_rtt_data <- rbind(rtt_data, pre2011_rtt_data) |>
     summarise(
       number_of_incomplete_pathways = sum(number_of_incomplete_pathways, na.rm =
+                                            TRUE),
+      number_of_incomplete_pathways_with_dta = sum(number_of_incomplete_pathways_with_dta, na.rm =
                                             TRUE),
       .by = c(
         organisation_code,
@@ -634,7 +637,7 @@ rtt_data_formatting <- function(data) {
   
 }
 
-
+formatted_rtt_data<-tar_read(formatted_rtt_data)
 ## Wrangling friends and family inpatient scores
 friends_and_family_scores_data_formatting <-
   function(data1, data2) {

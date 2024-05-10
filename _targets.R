@@ -429,6 +429,19 @@ list(
     sbr_percent_cia_format,
     sbr_percent_cia_formatting(single_bedrooms)
   ),
+  
+  # Indicator information
+  tar_target(
+    indicator_info,
+    get_indicator_info("indicator_summary.xlsx", "new")
+  ),
+  
+  # Indicator information table output
+  tar_target(
+    indicator_info_table,
+    format_indicator_table(indicator_info)
+  ),
+  
   #----------------------------------------------------------------------------#
   #### Standard charts ####
   tarchetypes::tar_map(

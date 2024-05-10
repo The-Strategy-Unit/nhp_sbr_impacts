@@ -971,3 +971,8 @@ get_hospitals_info <- function(filepath) {
   
   return(data)
 }
+
+# Reading in indicator summary table
+get_indicator_info <- function(filepath, sheet) {
+  data <- readxl::read_excel(filepath, sheet = sheet)
+}

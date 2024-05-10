@@ -162,7 +162,7 @@ Ask Cheryl / Eammon to write...otherwise omit.
 
 # Introduction and background
 
-Since it's inception, the New Hospital Programme (NHP) has advocated for single bed rooms (SBR). The grounds for this are based on a range of guidance, evidence and previous policy statements of intent. Whilst that position is unequivocal, there is still uncertainty around the quantification of impacts of such a change and thus the assumptions that feed into demand and capacity models and economic business cases.
+Since it's inception, the New Hospital Programme (NHP) has advocated for single bed rooms (SBR). The grounds for this are based on a range of guidance, evidence and previous policy statements of intent. Whilst that position is unequivocal, there is uncertainty around the quantification of impacts of such a change and thus the assumptions that feed into demand and capacity models and economic business cases for current and future new hospital developments.
 
 Specifically, a starting assumption was that a length of stay reduction of 12% was likely for all new SBR facilities compared to prior trends. This assumption was criticised by the national audit office (NAO) [@nao2023] in the face of a mixed evidence base.
 
@@ -226,7 +226,7 @@ tar_read(sbr_details_table)
 
 ```{r hospital_map}
 #| label: map-hospitals
-#| tbl-cap: "Location of 7 natural experiment sites in England"
+#| fig-cap: "Location of 7 natural experiment sites in England"
 
 tar_read(map_all_sites)
 ```
@@ -269,8 +269,13 @@ Our final set of impact measures are thus:
 
 [ ](images/indicators.jpeg)
 
-## Table with further detail when decided format
+```{r indicator_info}
+#| label: tbl-indicator-table
+#| tbl-cap: "Information on indicator source, provenance, derivation and rationale."
 
+tar_read(indicator_info_table)
+
+```
 ## Availability of indicators over time and for each site
 
 @fig-avail demonstrates the availability of indicator datasets over time and the 'intervention' dates of the 7 sites to allow for general assessment of suitability for testing.

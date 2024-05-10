@@ -387,3 +387,23 @@ get_number_control_sites <- function(data){
   
   return(data)
 }
+
+# Used to format the table for the indicator information.
+format_indicator_table <- function(data) {
+  table <- data |>
+    as_flextable(
+      hide_grouplabel = TRUE,
+      show_coltype = FALSE
+    ) |>
+    align(part = "header", align = "center") |>
+    bg(bg = "#f9bf07", part = "header") |>
+    bold(bold = TRUE, part = "header") |>
+    fontsize(size = 10, part = "all") |>
+    padding(padding = 2,
+            part = "all",
+            padding.top = NULL) |>
+    autofit()
+  
+  return(table)
+  
+}

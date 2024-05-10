@@ -104,7 +104,6 @@ single_bedroom_matches_final <- tar_read(single_bedroom_matches_final)
 
 # Model outputs
 waiting_time_median_output <- tar_read(waiting_time_median_output)
-waiting_time_number_output <- tar_read(waiting_time_number_output)
 LoS_output <- tar_read(LoS_output)
 emergency_readmissions_output <- tar_read(emergency_readmissions_output)
 bed_occupancy_output <- tar_read(bed_occupancy_output)
@@ -125,7 +124,6 @@ hospitals <- tar_read(hospitals)
 ```{r titles}
 title_los <- get_title("los")
 title_wait_time_median <- get_title("wait_time_median")
-title_wait_time_number <- get_title("wait_time_number")
 title_bed_occup <- get_title("bed_occup")
 title_readmissions <- get_title("readmissions")
 title_cleaning <- get_title("cleaning")
@@ -1775,7 +1773,7 @@ A different set of controls was identified by `MarketMatching` for each indicato
 ```{r LoS_controls}
 get_market_matched_controls_table_site(hospitals, 
                                        controls, 
-                                       "LoS"                                       )
+                                       "LoS")
 ```
 
 ### `r title_wait_time_median`
@@ -1784,14 +1782,6 @@ get_market_matched_controls_table_site(hospitals,
 get_market_matched_controls_table_provider(hospitals,
                                            controls,
                                            "waiting_time_median")
-```
-
-### `r title_wait_time_number`
-
-```{r waiting_time_number_controls}
-get_market_matched_controls_table_provider(hospitals, 
-                                           controls, 
-                                           "waiting_time_number")
 ```
 
 ### `r title_bed_occup`

@@ -894,42 +894,42 @@ list(
   
   
   #Waiting time -number
-  prior_sd_waiting_time_number <- tibble::tribble(
-    ~ org_code_of_interest,
-    ~ prior_sd,
-    "REM",
-    0.1,
-    "REN",
-    0.1,
-    "RGM",
-    0.05,
-    "RGN",
-    0.1,
-    "RVJ",
-    0.1,
-    "RAL",
-    0.01,
-    "RWF",
-    0.1
-  ),
-  
-  list(
-    tarchetypes::tar_map(
-      values = prior_sd_waiting_time_number,
-      names = org_code_of_interest,
-      targets::tar_target(
-        waiting_time_number,
-        cia_analysis(
-          org_code_of_interest,
-          rtt_waiting_time_cia_format,
-          "number_incomplete",
-          prior_sd,
-          control_pool,
-          hospitals
-        )
-      )
-    )
-  ),
+  # prior_sd_waiting_time_number <- tibble::tribble(
+  #   ~ org_code_of_interest,
+  #   ~ prior_sd,
+  #   "REM",
+  #   0.1,
+  #   "REN",
+  #   0.1,
+  #   "RGM",
+  #   0.05,
+  #   "RGN",
+  #   0.1,
+  #   "RVJ",
+  #   0.1,
+  #   "RAL",
+  #   0.01,
+  #   "RWF",
+  #   0.1
+  # ),
+  # 
+  # list(
+  #   tarchetypes::tar_map(
+  #     values = prior_sd_waiting_time_number,
+  #     names = org_code_of_interest,
+  #     targets::tar_target(
+  #       waiting_time_number,
+  #       cia_analysis(
+  #         org_code_of_interest,
+  #         rtt_waiting_time_cia_format,
+  #         "number_incomplete",
+  #         prior_sd,
+  #         control_pool,
+  #         hospitals
+  #       )
+  #     )
+  #   )
+  # ),
   
   
   #Length of Stay
@@ -1399,18 +1399,18 @@ list(
     )
   ),
   
-  tar_target(
-    waiting_time_number_output,
-    model_output(
-      waiting_time_number_REM,
-      waiting_time_number_REN,
-      waiting_time_number_RGM,
-      waiting_time_number_RGN,
-      NA,
-      NA,
-      waiting_time_number_RWF
-    )
-  ),
+  # tar_target(
+  #   waiting_time_number_output,
+  #   model_output(
+  #     waiting_time_number_REM,
+  #     waiting_time_number_REN,
+  #     waiting_time_number_RGM,
+  #     waiting_time_number_RGN,
+  #     NA,
+  #     NA,
+  #     waiting_time_number_RWF
+  #   )
+  # ),
   
   tar_target(
     LoS_output,

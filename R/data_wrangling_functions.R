@@ -637,7 +637,6 @@ rtt_data_formatting <- function(data) {
   
 }
 
-formatted_rtt_data<-tar_read(formatted_rtt_data)
 ## Wrangling friends and family inpatient scores
 friends_and_family_scores_data_formatting <-
   function(data1, data2) {

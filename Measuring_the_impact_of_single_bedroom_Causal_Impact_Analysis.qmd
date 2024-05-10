@@ -162,9 +162,12 @@ Ask Cheryl / Eammon to write...otherwise omit.
 
 # Introduction and background
 
-Taken from initial plan and NHP update slides.
+Since it's inception, the New Hospital Programme (NHP) has advocated for single bed rooms (SBR). The grounds for this are based on a range of guidance, evidence and previous policy statements of intent. Whilst that position is unequivocal, there is still uncertainty around the quantification of impacts of such a change and thus the assumptions that feed into demand and capacity models and economic business cases.
 
-\<<include overview map>\>
+Specifically, a starting assumption was that a length of stay reduction of 12% was likely for all new SBR facilities compared to prior trends. This assumption was criticised by the national audit office (NAO) [@nao2023] in the face of a mixed evidence base.
+
+It is the express aim of this analysis therefore to quantify the range of likely impacts for length of stay and a basket of other measures across patient & staff experience, productivity and health & safety. Where there are differential impacts i.e. for specialist units compared to general acute these will also be highlighted to aid future planning assumptions.
+
 
 # Executive Summary
 
@@ -219,6 +222,13 @@ Initially 11 hospitals were identified to have made a switch to single bedrooms.
 sbr_details <- tar_read(sbr_details)
 
 tar_read(sbr_details_table)
+```
+
+```{r hospital_map}
+#| label: map-hospitals
+#| tbl-cap: "Location of 7 natural experiment sites in England"
+
+tar_read(map_all_sites)
 ```
 
 ## Royal Liverpool University Hospital

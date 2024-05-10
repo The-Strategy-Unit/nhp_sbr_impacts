@@ -308,7 +308,6 @@ get_title <- function(indicator) {
     short_name = c(
       "los",
       "wait_time_median",
-      "wait_time_number",
       "bed_occup",
       "readmissions",
       "cleaning",
@@ -324,7 +323,6 @@ get_title <- function(indicator) {
     title = c(
       "Length of stay",
       "Median waiting time",
-      "Waiting list size",
       "Bed occupancy",
       "Emergency readmissions",
       "Cleaning costs",

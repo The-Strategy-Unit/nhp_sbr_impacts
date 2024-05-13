@@ -393,6 +393,7 @@ format_indicator_table <- function(data) {
   table <- data |>
     as_flextable(
       hide_grouplabel = TRUE,
+      max_row = 13,
       show_coltype = FALSE
     ) |>
     align(part = "header", align = "center") |>

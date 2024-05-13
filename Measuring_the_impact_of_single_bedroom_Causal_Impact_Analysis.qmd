@@ -119,6 +119,7 @@ cleaning_costs_output <- tar_read(cleaning_costs_output)
 
 controls <- tar_read(control_pool)
 hospitals <- tar_read(hospitals)
+number_control_sites<-tar_read(number_control_sites)
 ```
 
 ```{r titles}
@@ -193,7 +194,7 @@ The Health Economics Unit undertook a literature review [@HEU_2022] primarily ar
 
 -   Mortality
 -   Complications of disease
--   HCAI
+-   Healthcare Acquired Infections (HCAI)
 -   Falls and patient safety
 -   Readmissions
 -   Privacy
@@ -276,6 +277,8 @@ Our final set of impact measures are thus:
 tar_read(indicator_info_table)
 
 ```
+
+
 ## Availability of indicators over time and for each site
 
 @fig-avail demonstrates the availability of indicator datasets over time and the 'intervention' dates of the 7 sites to allow for general assessment of suitability for testing.
@@ -294,15 +297,16 @@ Additional data issues have been uncovered during preparation of the data for an
 #| label: tbl-avail
 #| tbl-cap: "Summary of indicators that were investigated for each site."
 tar_read(indicator_availability_table)
+
 ```
 
-For Royal Liverpool there is only 1 year post switch to single bedrooms, it is possible the effect size or overall direction of the effect may be different if there was a slightly longer outcome period.
+For Royal Liverpool there is only 1 year post switch to single bedrooms, so it is possible effect size may be may have been slightly different if there was a slightly longer outcome period.
 
-For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also be present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth was excluded as it appears to have been impacted to a much greater degree by COVID-19 than it's control sites.
+For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also be present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth was excluded as it appears to have been impacted to a much greater degree by COVID-19 than its control sites.
 
-In some cases there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, which has meant the outcome period has been cut short. For the Health and Safety indicators the rates were generally low at the specialist sites (Papworth, Clatterbridge and Chase Farm), often dropping to zero in some months, which meant it was not always possible to fit a suitable causal impact model.
+Where there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, the outcome period has been cut short. For the Health and Safety indicators the rates were generally low at the specialist sites (Papworth, Clatterbridge and Chase Farm), often dropping to zero in some months, which meant it was not always possible to fit a suitable causal impact model.
 
-For some indicator variables data is only available at a provider level, this means that where the switch to single bedrooms occurred at a provider with multiple sites the effects of the switch will be diluted by the lack of the change in single bedroom percentage at the other sites.
+Some indicator variable data is only available at a provider level, this means that where the switch to single bedrooms occurred at a provider with multiple sites the effects of the switch will be diluted by the lack of the change in single bedroom percentage at the providers other sites.
 
 # Description of methods {#sec-methods}
 
@@ -311,6 +315,11 @@ Causal Impact Analysis is a technique that uses a control group to estimate the 
 ## Finding control hospitals {#sec-methods-controls}
 
 There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
+
+Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the intervention's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
+
+Differences in floor space, the median age of inpatients and the elective:non-elective ratio of admissions were calculated between the controls and intervention sites and ranked. A similarity rank was calculated by ranking the sum of these three ranks and sites with a similarity rank less than or equal to 20 formed the control pool for further analysis. Due to Clatterbridge and Royal Papworth being specialist trusts, there were only `r number_control_sites |> filter(organisation_code == "REN") |> pull()` and `r number_control_sites |> filter(organisation_code == "RGM") |> pull()` sites respectively in the control pools.
+
 
 ```{r selecting_controls_flow_chart}
 #| label: fig-flow-controls
@@ -322,9 +331,6 @@ tar_read(flow_chart_selecting_controls)
 number_control_sites <- tar_read(number_control_sites)
 ```
 
-Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the intervention's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
-
-Differences in floor space, the median age of inpatients and the elective:non-elective ratio of admissions were calculated between the controls and intervention sites and ranked. A similarity rank was calculated by ranking the sum of these three ranks and sites with a similarity rank less than or equal to 20 formed the control pool for further analysis. Due to Clatterbridge and Royal Papworth being specialist trusts, there were only `r number_control_sites |> filter(organisation_code == "REN") |> pull()` and `r number_control_sites |> filter(organisation_code == "RGM") |> pull()` sites respectively in the control pools.
 
 A full list and map of the sites in the control pools for each intervention site can be found in Appendix C (@sec-appendix-C).
 
@@ -340,7 +346,7 @@ The causal impact models were generated for each site and for each indicator whe
 
 Where possible, for each indicator variable a meta-analysis was conducted using the data for district general and acute hospitals. The specialist hospital sites were excluded from this analysis as it is felt the effects at these sites may not be generalisable when considering future building of general acute hospitals.
 
-A random-effects meta-analysis was conducted using the `metafor` R package [@metafor] and weighting the relative effects for each site using the inverse variance, as used for meta-analysis of causal impact models by [@Schmitt2017ExtendingBS].
+A random-effects meta-analysis was conducted using the `metafor` R package [@metafor] and with the relative effects for each site weighted using the inverse variance, as used for meta-analysis of causal impact models by Schmitt et al. [@Schmitt2017ExtendingBS].
 
 # Main results (including related notes from lookback exercise) {#sec-results}
 
@@ -623,13 +629,13 @@ summary_forest_plot(
 
 ```
 
-The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been more negative. It should be noted in some cases where negative outcomes are seen these are transient changes or there are others factors that may be influencing the results.
+The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been a little more negative. It should be noted that in some cases where negative outcomes are seen these are transient changes or there are others factors that may be influencing the results.
 
 Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts. While overall at general acute hospitals there are no significant changes, the data trends towards a decrease in mean length of stay and rate of emergency readmissions and increase in bed occupancy. For median waiting time there is also no significant change overall, but results will be complicated by the dynamic nature of waiting lists, where list size not only depends on productivity but also the number of referrals. Data for cleaning costs is very limited and the results are mixed.
 
-Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety does not appear to be impacted, which has been raised as a concern due to patients being potentially less visible to staff when in single bedrooms. While our data on hospital acquired infections is very limited, there is a trend towards decreased C. difficile infection rates.
+Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety does not appear to be impacted, which has been raised as a concern due to patients being potentially less visible to staff when in single bedrooms. While our data on hospital acquired infections is very limited, there is a trend towards a decrease in C. difficile infections.
 
-In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year. This initial negative impact may associated with uncertainty and initial concerns over or difficulties adapting to the new design, or it may be that after time changes in policies and procedures may have been introduced to mitigate the negative impacts on staff. There is a trend towards an increase in positive patient experiences, but the degree of any change may not be particularly meaningful as it would equate to a less than 1% change.
+In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year. This initial negative impact may associated with uncertainty and initial concerns over or difficulties adapting to the new design, or it may be that after time changes in policies and procedures have been introduced to mitigate the negative impacts on staff. There is a trend towards an increase in positive patient experiences, but the degree of any change may not be particularly meaningful as it would equate to a less than 1% change.
 
 # Limitations and discussion
 
@@ -637,19 +643,19 @@ In terms of patient and staff experiences the switch to single bedrooms has had 
 
 Our analyses rely on historical data collections, some of which do not go back as far as 2008 as shown in @fig-avail. There are also gaps/anomalous data in the time series for some providers and potential control sites. How some metrics have been measured is likely to have changed over time, although the causal impact analysis uses control data from sites without interventions which will help to correct for any changes occurring at all sites. Some study sites have been involved in trust mergers/site changes in the time period prior to switching to single bedrooms; we have merged historic data where appropriate, but these mergers may have impacted the time series.
 
-Some variables are only available at provider level (@tbl-avail) so where providers have more than one site any change that may occur following a switch to single bedrooms at one site will be diluted by a lack of change at the other sites at the provider.
+Some variables are only available at provider level (@tbl-avail), so where providers have more than one site any change that may occur following a switch to single bedrooms at one site will be diluted by a lack of change at the providers other sites.
 
-The variables that we have measured are not always entirely specific to the impact we are trying to measure, for example we are using both staff sickness and staff turnover as a proxy for staff experience, with the assumption that increased staff turnover and sickness absences will indicate that staff are less happy in their workplace following a switch to single bedrooms. It is possible that sickness absences may be influenced in other ways by a switch to single bedrooms for example if single bedrooms reduce outbreaks of the contagious illnesses such as influenza and better protect staff from contracting them themselves, then sickness absences could be reduced. Also median waiting time is used as a proxy for how productive a hospital is, but it should be noted that waiting times will depend on not only the flow of patients through the hospital, but the numbers being referred. If a new hospital gets a large increase in referrals then even with an moderate increase in productivity (the number of patients being seen/admitted) it could still result in an increase in waiting times as the waiting list size grows.
+The variables that we have measured are not always entirely specific to the impact we are trying to measure, for example we are using both staff sickness and staff turnover as a proxy for staff experience, with the assumption that increased staff turnover and sickness absences will indicate that staff are less happy in their workplace following a switch to single bedrooms. It is possible that sickness absences may be influenced in other ways by a switch to single bedrooms for example if single bedrooms reduce outbreaks of the contagious illnesses such as influenza and better protect staff from contracting them themselves, then sickness absences could be reduced. Also, median waiting time is used as a proxy for how productive a hospital is, but it should be noted that waiting times will depend on not only the flow of patients through the hospital, but the numbers being referred. If a new hospital gets a large increase in referrals then even with an moderate increase in productivity (the number of patients being seen/admitted) it could still result in an increase in waiting times as the waiting list size grows.
 
 Some measures are recorded quarterly (bed occupancy) or annually (cleaning costs and staff survey) so we have less data points with which to fit our models and assess outcomes and less temporal specificity to detect changes.
 
-COVID-19 has impacted many of the variables for sites that switched just before or after the onset of the pandemic (Royal Liverpool, Clatterbridge and Papworth). While the causal impact analysis does use control sites to account for changes over time that would have happened without the intervention, the magnitude of the impact of the COVID-19 was sometimes different between study sites and their controls. Papworth, in particular, appeared to be more impacted by COVID-19 than it's control sites.
+COVID-19 has impacted many of the variables for sites that switched just before or after the onset of the pandemic (Royal Liverpool, Clatterbridge and Papworth). While the causal impact analysis does use control sites to account for changes over time that would have happened without the intervention, the magnitude of the impact of the COVID-19 was sometimes different between study sites and their controls. Papworth, in particular, appeared to be more impacted by COVID-19 than its control sites.
 
 **Model fit and methodology**
 
-Model fit was assessed using the Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic of the models, and adjustments were made to try to ensure a good historical model fit while minimising the forecasting intervals. However, for some data the models will be a less good fit and will have large credible intervals in the outcome period due to the variability in the indicator not being well explained by the control time series.
+Model fit was assessed using the Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic, and adjustments were made to try to ensure a good historical model fit while minimising the forecasting intervals. However, for some data the models will be a less good fit and will have large credible intervals in the outcome period due to the variability in the indicator not being well explained by the control time series.
 
-Three of the seven study sites were specialist sites (Papworth is a specialist cardiothoracic/transplant centre, Clatterbridge is a cancer centre and Chase Farm only conducts elective care), making it more difficult to select well matched control sites. The number of control sites was very limited for both Clatterbridge (`r number_control_sites |> filter(organisation_code == "REN") |> pull()`) and Papworth (`r number_control_sites |> filter(organisation_code == "RGM") |> pull()`), which may impact the quality of the model fit and reliability of the outcome.
+Three of the seven study sites were specialist sites (Papworth is a specialist cardiothoracic/transplant centre, Clatterbridge is a cancer centre and Chase Farm only conducts elective care), making it more difficult to select well matched control sites. The number of control sites was very limited for both Clatterbridge (`r number_control_sites |> filter(organisation_code == "REN") |> pull()`) and Papworth (`r number_control_sites |> filter(organisation_code == "RGM") |> pull()`), which may impact the quality of the model fit and reliability of the outcomes.
 
 The three specialist provider sites were excluded from the meta-analysis as the impacts on these sites may be less generalisable to new general acute hospitals that may be built in the future. The meta-analyses were weighted based on the inverse variance of the relative effects, but other factors that may influence how much weight should be given to a particular site were not included.
 
@@ -666,6 +672,10 @@ We see some limited evidence that the rate of hospital acquired C. difficile inf
 # Recommendations for modelling and future evaluation
 
 While the availability of data has improved since 2008, there is a still a need to ensure consistent and accurate data recording at ideally a site level, in order to more accurately evaluate the impact of any future hospital designs.
+
+Given the apparent negative impacts on staff of a switch to single bedrooms it is likely important going forward that more data is collected on the views of staff specifically around switching the single bedrooms, including likely qualitative data to understand what concerns and difficulties there may be.
+
+Also, there is more data is needed to fully understand the impacts of single bedrooms on infection control, including things such as hospital acquired influenza or COVID-19.
 
 Further analysis would be needed to fully understand the impact on waiting times and waiting list sizes, given the dynamic nature of waiting lists. This is a measure where there could be cumulative effects over time, and also a new or redesigned hospital could result in more or less people being referred, so waiting list size/time will not just be dependent on hospital productivity.
 

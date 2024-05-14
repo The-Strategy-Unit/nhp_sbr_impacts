@@ -1598,7 +1598,7 @@ list(
         # Questions
       node[shape = ellipse]
         B[label = \"Does the type of site match?\"]
-        C[label = \"Is it another intervention site?\"]
+        C[label = \"Is it another study site?\"]
         D[label = \"Does it have a similar SBR % before the switch?\"]
         E[label = \"Is the SBR % stable after the switch?\"]
         F[label = \"Is the similarity rank* <= 20?\"]

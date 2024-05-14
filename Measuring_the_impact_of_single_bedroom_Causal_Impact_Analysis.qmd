@@ -172,7 +172,7 @@ It is the express aim of this analysis therefore to quantify the range of likely
 
 # Executive Summary
 
-Traditionally, hospital beds have been in shared multi-bed bays, however, there has been a move both in the UK and globally towards single-bed inpatient rooms. This work was undertaken to better understand the impact of switching to single-bed accommodation when building future hospitals.
+Traditionally, hospital beds have been in shared multi-bed bays, however, there has been a move both in the UK and globally towards single-bed inpatient rooms. This analysis was undertaken to better understand the impact of switching to single-bed accommodation when building future hospitals.
 
 There are 7 hospitals in England where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We have used these hospital sites as natural experiments, and with the use of matched control sites are able to quantify changes in these study sites following their switch to single bedrooms.
 
@@ -180,7 +180,7 @@ Our analysis investigates the impact on measures from three domains 1) Health an
 
 Our results are not consistent across hospital sites, suggesting that there are a number of other factors in the hospital design and procedures that are important, hence switching to single bedroom hospitals without considering the other factors would not necessarily have a positive effect on outcomes.
 
-Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts. While overall at general acute hospitals there are no significant changes, the data trends towards a decrease in mean length of stay and rate of emergency readmissions and increase in bed occupancy.
+Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts. While overall at general acute hospitals there are no significant changes, the data trends towards a decrease in mean length of stay and rate of emergency readmissions and an increase in bed occupancy.
 
 Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety is not being negatively impacted. While data is limited there is a trend towards decreased C. difficile infection rates.
 
@@ -214,7 +214,7 @@ The review summary suggests that **"Overall, 87% of studies analysed by Taylor e
 
 # Hospital Background
 
-Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England 3 hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work. An overview of the remaining seven hospitals that switched to SBR is shown in @tbl-sbr-switch.
+Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work. An overview of the remaining seven hospitals that switched to SBR is shown in @tbl-sbr-switch.
 
 ```{r table_sbr_switch}
 #| label: tbl-sbr-switch
@@ -262,7 +262,7 @@ Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened 
 
 # Impact measures and data sources
 
-Categorisation of the evidence suggests that impacts can be considered under one or more of health & safety, staff & patient experience and productivity & efficiency. A long list of potential impacts were drawn from the existing evidence reviews and measures were sought from published data that were specific to the logic/causal relationship or were proxies for the suggested effect. Measures were screened into the study if there were sufficient time series, if the data were consistent, if the data were available at least at provider level.
+Categorisation of the evidence suggests that impacts can be considered under one or more of health & safety, staff & patient experience and productivity & efficiency. A long list of potential impacts were drawn from the existing evidence reviews and measures were sought from published data that were specific to the logic/causal relationship or were proxies for the suggested effect. Measures were screened into the study if there were sufficient time series, if the data were consistent and if the data were available at least at provider level.
 
 Where existing data sources were lacking, and for those impacts based on hospital data, we derived suitable measures from Secondary User Service (SUS) data held within NCDR [@ncdr].
 
@@ -281,7 +281,7 @@ tar_read(indicator_info_table)
 
 ## Availability of indicators over time and for each site
 
-@fig-avail demonstrates the availability of indicator datasets over time and the 'intervention' dates of the 7 sites to allow for general assessment of suitability for testing.
+@fig-avail demonstrates the availability of indicator datasets over time and the month of the switch to SBR for the 7 sites to allow for general assessment of suitability for testing.
 
 ```{r indicator_availability_plot, fig.height = 6, fig.width = 10}
 #| label: fig-avail
@@ -300,7 +300,7 @@ tar_read(indicator_availability_table)
 
 ```
 
-For Royal Liverpool there is only 1 year post switch to single bedrooms, so it is possible effect size may be may have been slightly different if there was a slightly longer outcome period.
+For Royal Liverpool there is only 1 year post switch to single bedrooms, so it is possible effect size may have been slightly different if there was a slightly longer outcome period.
 
 For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also be present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth was excluded as it appears to have been impacted to a much greater degree by COVID-19 than its control sites.
 
@@ -314,11 +314,11 @@ Causal Impact Analysis is a technique that uses a control group to estimate the 
 
 ## Finding control hospitals {#sec-methods-controls}
 
-There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the intervention site and controls on type of site. For Clatterbridge the pool was limited to cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other intervention sites the pool was limited to general acute sites.
+There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the study site and controls on type of site. For Clatterbridge the pool was limited to cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other study sites the pool was limited to general acute sites.
 
-Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the intervention's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
+Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the study's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
 
-Differences in floor space, the median age of inpatients and the elective:non-elective ratio of admissions were calculated between the controls and intervention sites and ranked. A similarity rank was calculated by ranking the sum of these three ranks and sites with a similarity rank less than or equal to 20 formed the control pool for further analysis. Due to Clatterbridge and Royal Papworth being specialist trusts, there were only `r number_control_sites |> filter(organisation_code == "REN") |> pull()` and `r number_control_sites |> filter(organisation_code == "RGM") |> pull()` sites respectively in the control pools.
+Differences in floor space, the median age of inpatients and the elective:non-elective ratio of admissions were calculated between the controls and study sites and ranked. A similarity rank was calculated by ranking the sum of these three ranks and sites with a similarity rank less than or equal to 20 formed the control pool for further analysis. Due to Clatterbridge and Royal Papworth being specialist trusts, there were only `r number_control_sites |> filter(organisation_code == "REN") |> pull()` and `r number_control_sites |> filter(organisation_code == "RGM") |> pull()` sites respectively in the control pools.
 
 
 ```{r selecting_controls_flow_chart}
@@ -332,7 +332,7 @@ number_control_sites <- tar_read(number_control_sites)
 ```
 
 
-A full list and map of the sites in the control pools for each intervention site can be found in Appendix C (@sec-appendix-C).
+A full list and map of the sites in the control pools for each study site can be found in Appendix C (@sec-appendix-C).
 
 ## Causal Impact Analysis {#sec-methods-cia}
 
@@ -411,7 +411,7 @@ tar_read(model_effects_table_LoS)
 tar_read(mean_forest_plot_LoS)
 ```
 
-The effect on length of stay was highly variable with the Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase (@sec-appendix-A-los). At the general acute hospitals the change in average length of stay varied from a 3% increase (equivalent to 0.1 days) at Tunbridge Wells to a significant 19% decrease (equivalent to 0.9 days) at Peterborough. For mean effect at general acute hospitals was a non-significant 8% reduction in length of stay .
+The effect on length of stay was highly variable with Chase Farm (an elective care site) having a 55% reduction in length and Clatterbridge (a cancer centre) having a 34% increase (@sec-appendix-A-los). At the general acute hospitals the change in average length of stay varied from a 3% increase (equivalent to 0.1 days) at Tunbridge Wells to a significant 19% decrease (equivalent to 0.9 days) at Peterborough. For mean effect at general acute hospitals there was a non-significant 8% reduction in length of stay .
 
 Clatterbridge is a specialist cancer centre, so it is possible the switch to single bed rooms had a different impact on length of stay due to the nature of the activity at the site. Indeed, the average length of stay predicted for Clatterbridge based on historical trends (7.5 days) is higher than for the other sites, likely reflecting the different type of activity at this site. Average length of stay at Chase Farm was predicted to be 6 days, but following the switch was actually just over 2.5 days, such a large change may reflect a change in the type of activity conducted at the site following the switch, especially as this site conducts only elective care.
 
@@ -430,7 +430,7 @@ tar_read(mean_forest_plot_waiting_time_median)
 
 The effect on median waiting time varied from a 12% reduction to a 15% increase. Both Royal Liverpool and Peterborough had a 12% reduction in median waiting time, which equated to a decrease from 19 wks to 16.7 wks at Royal Liverpool and from 5 wks to 4.3 wks at Peterborough. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time.
 
-At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and median waiting time would be unlikely to drop over time as a result of the switch to single bedrooms (@sec-appendix-A-waiting-time). For Royal Liverpool we only have 1-year of outcome data and it is not clear whether the change in median waiting time has stabilised or whether the switch to single rooms will result in a continued reduction in median waiting time over time.
+At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and that median waiting time would be unlikely to drop over time as a result of the switch to single bedrooms (@sec-appendix-A-waiting-time). For Royal Liverpool we only have 1-year of outcome data and it is not clear whether the change in median waiting time has stabilised or whether the switch to single rooms will result in a continued reduction in median waiting time over time.
 
 Median waiting time significantly increased at Tunbridge Wells, but this effect appeared to only be temporary during the first year post-switch, during the second year of the outcome period the waiting times fall back in line with the expected values. The switch to single bedrooms at Tunbridge Wells started in Jan 2011, which is the date we have used in our analysis, but occurred in stages between Jan and Sept 2011, so the differences seen in the first year could be due to disruption of services while the hospital was in a transition period.
 
@@ -464,7 +464,7 @@ tar_read(model_effects_table_emergency_readmissions)
 tar_read(mean_forest_plot_emergency_readmissions)
 ```
 
-Emergency readmission rate was either unchanged or decreased by up to 28%. The mean effect at general acute hospitals was a non-significant 10% reduction in emergency readmissions. At Peterborough the % of emergency readmissions was predicted to be 34% but dropped to 25% following a switch to single bedrooms, while at Tunbridge Wells it was predicted to be 30% and dropped to 26% (@sec-appendix-A-readmissions).
+The emergency readmission rate was either unchanged or decreased by up to 28%. The mean effect at general acute hospitals was a non-significant 10% reduction in emergency readmissions. At Peterborough the % of emergency readmissions was predicted to be 34% but dropped to 25% following a switch to single bedrooms, while at Tunbridge Wells it was predicted to be 30% and dropped to 26% (@sec-appendix-A-readmissions).
 
 ### `r title_cleaning`
 
@@ -477,7 +477,7 @@ tar_read(model_effects_table_cleaning_costs)
 
 Cleaning costs increased by 37% at Royal Liverpool, but decreased by 35% and 42% at Clatterbridge and Papworth, respectively (@sec-appendix-A-cleaning). At Royal Liverpool the 37% increase reflects an increase of £14 per square metre from a predicted £44 to £58 per square metre.
 
-Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period, and the first data point in the outcome period may not reflect the true changes in cost as some of the costs will have occurred prior to the switch, so these results shoudl be interpreted cautiously.
+Cleaning costs data are an annual measure, so there is limited data with only 1 or 2 data points in the outcome period, and the first data point in the outcome period may not reflect the true changes in cost as some of the costs will have occurred prior to the switch, so these results should be interpreted cautiously.
 
 ## Health and Safety
 
@@ -558,7 +558,7 @@ tar_read(model_effects_table_staff_sickness)
 tar_read(mean_forest_plot_staff_sickness)
 ```
 
-Staff sickness rate generally remained unchanged, but there was a 7% increase at Southmead and 23% increase at Tunbridge Wells (@sec-appendix-A-staff-sickness). The mean effect at general acute was a significant increase of 6% in the staff sickness rate. Although staff sickness did remain unchanged are the 3 specialist sites.
+Staff sickness rates generally remained unchanged, but there was a 7% increase at Southmead and 23% increase at Tunbridge Wells (@sec-appendix-A-staff-sickness). The mean effect at general acute was a significant increase of 6% in the staff sickness rate. Although staff sickness did remain unchanged at the 3 specialist sites.
 
 While there was a significant increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates. A similar, albeit non-significant, effect is seen at Peterborough with a larger winter spike in the first year of the outcome period before sickness levels return to expected levels.
 
@@ -589,7 +589,7 @@ tar_read(mean_forest_plot_staff_survey)
 
 The effect on the percentage of staff that would recommend their workplace varied from a 20% decrease to a 12% increase (@sec-appendix-A-staff-survey). At Southmead the 20% reduction in the percentage of staff recommending their workplace equates to a reduction from a predicted percentage of 57% recommending their workplace to 45% following the switch to single bedrooms. The mean effect at general acute hospitals was a significant reduction of 15% in the percentage of staff who would recommend their workplace.
 
-At Southmead the decrease appears to be temporary, occurring in the first year post-switch to single bed rooms with positive responses increase back to the expected level in the second year of the outcome period.
+At Southmead the decrease appears to be temporary, occurring in the first year post-switch to single bed rooms with positive responses increasing back to the expected level in the second year of the outcome period.
 
 The staff survey is an annual measure so there is limited data, with only 1 or 2 data points in the outcome period. The staff survey data is collected over a period of time in the autumn each year, but for analysis purposes we have set the date as the last day of the year in which the data was collected. Both Chase Farm and Royal Liverpool switched to single rooms during the autumn, so the data for the first data point in the outcome period would actually have been collected during the transition period which may have had an impact on the results.
 
@@ -629,13 +629,13 @@ summary_forest_plot(
 
 ```
 
-The impact of switching to single bedrooms appears to vary depending on the hospital site, the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been a little more negative. It should be noted that in some cases where negative outcomes are seen these are transient changes or there are others factors that may be influencing the results.
+The impact of switching to single bedrooms appears to vary depending on the hospital site: the switch at Peterborough has generally resulted in positive impacts, while the switch at Clatterbridge has been a little more negative. It should be noted that in some cases where negative outcomes are seen these are transient changes or there are others factors that may be influencing the results.
 
 Generally, following a switch to single bedrooms the productivity and efficiency measures are showing positive impacts. While overall at general acute hospitals there are no significant changes, the data trends towards a decrease in mean length of stay and rate of emergency readmissions and increase in bed occupancy. For median waiting time there is also no significant change overall, but results will be complicated by the dynamic nature of waiting lists, where list size not only depends on productivity but also the number of referrals. Data for cleaning costs is very limited and the results are mixed.
 
 Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety does not appear to be impacted, which has been raised as a concern due to patients being potentially less visible to staff when in single bedrooms. While our data on hospital acquired infections is very limited, there is a trend towards a decrease in C. difficile infections.
 
-In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year. This initial negative impact may associated with uncertainty and initial concerns over or difficulties adapting to the new design, or it may be that after time changes in policies and procedures have been introduced to mitigate the negative impacts on staff. There is a trend towards an increase in positive patient experiences, but the degree of any change may not be particularly meaningful as it would equate to a less than 1% change.
+In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Some of these negative effects are seen primarily in the first year post-switch before returning to expected levels during the second year. This initial negative impact may be associated with uncertainty and initial concerns over or difficulties adapting to the new design, or it may be that after time changes in policies and procedures have been introduced to mitigate the negative impacts on staff. There is a trend towards an increase in positive patient experiences, but the degree of any change may not be particularly meaningful as it would equate to a less than 1% change.
 
 # Limitations and discussion
 
@@ -655,7 +655,7 @@ COVID-19 has impacted many of the variables for sites that switched just before 
 
 Model fit was assessed using the Mean Absolute Percentage Error (MAPE) and Durbin-Watson statistic, and adjustments were made to try to ensure a good historical model fit while minimising the forecasting intervals. However, for some data the models will be a less good fit and will have large credible intervals in the outcome period due to the variability in the indicator not being well explained by the control time series.
 
-Three of the seven study sites were specialist sites (Papworth is a specialist cardiothoracic/transplant centre, Clatterbridge is a cancer centre and Chase Farm only conducts elective care), making it more difficult to select well matched control sites. The number of control sites was very limited for both Clatterbridge (`r number_control_sites |> filter(organisation_code == "REN") |> pull()`) and Papworth (`r number_control_sites |> filter(organisation_code == "RGM") |> pull()`), which may impact the quality of the model fit and reliability of the outcomes.
+Three of the seven study sites were specialist sites (Papworth is a specialist cardiothoracic/transplant centre, Clatterbridge is a cancer centre and Chase Farm only conducts elective care), making it more difficult to select well matched control sites. The number of sites in the control pool was very limited for both Clatterbridge (`r number_control_sites |> filter(organisation_code == "REN") |> pull()`) and Papworth (`r number_control_sites |> filter(organisation_code == "RGM") |> pull()`), which may impact the quality of the model fit and reliability of the outcomes.
 
 The three specialist provider sites were excluded from the meta-analysis as the impacts on these sites may be less generalisable to new general acute hospitals that may be built in the future. The meta-analyses were weighted based on the inverse variance of the relative effects, but other factors that may influence how much weight should be given to a particular site were not included.
 
@@ -665,7 +665,7 @@ For our analysis we have had to specify the month in which the switch to single 
 
 When the sites switched to single bedrooms there are likely to have been other changes to how services operate and at multi-site providers there may also have been changes to what services are provided at which sites, so there are likely to be confounding factors that influence our results.
 
-Not all sites switched entirely to single bed rooms and all sites had differing proportions of single bedrooms prior to the switch. Royal Liverpool, Clatterbridge, and Papworth did switch to 100% single bedrooms and Peterborough to 99% single bedrooms. At the remaining sites proportion of single bedrooms following the switch was between 78-90%. There does not appear to be a clear relationship between the percentage of single bedrooms post switch or the change in proportion of single bed and the varying outcomes that are seen at individual sites. The sites that switched to single bedrooms will have had different designs and the differences in results between sites may be due to different single bedroom designs working better, or worse, than others. It is also possible that the best design may vary by hospital type and a design that suits a general acute hospital may work less well at a specialist site. Where there are potential negative impacts of a switch to single bedrooms some sites may have had mitigating factors in place from the start while other schemes may have borough in mitigating factors at a later date.
+Not all sites switched entirely to single bed rooms and all sites had differing proportions of single bedrooms prior to the switch. Royal Liverpool, Clatterbridge, and Papworth did switch to 100% single bedrooms and Peterborough to 99% single bedrooms. At the remaining sites the proportion of single bedrooms following the switch was between 78-90%. There does not appear to be a clear relationship between the percentage of single bedrooms post switch or the change in proportion of single bed and the varying outcomes that are seen at individual sites. The sites that switched to single bedrooms will have had different designs and the differences in results between sites may be due to different single bedroom designs working better, or worse, than others. It is also possible that the best design may vary by hospital type and a design that suits a general acute hospital may work less well at a specialist site. Where there are potential negative impacts of a switch to single bedrooms some sites may have had mitigating factors in place from the start while other schemes may have brought in mitigating factors at a later date.
 
 We see some limited evidence that the rate of hospital acquired C. difficile infections may be reduced, but unfortunately it was not possible to assess other healthcare acquired infections (MSSA, MRSA, Klebsiella and P. aeruginosa) due to a lack of data availability before 2017. In addition, there is no data on other hospital acquired contagious illnesses, such as influenza and COVID-19, where the spread may be reduced by single bed rooms. It is possible that due to en suite bathrooms in single bedroom hospitals, that there is an increased risk of Legionella, due to increased increased pipework and bathrooms potentially not all being used regularly.
 
@@ -673,7 +673,7 @@ We see some limited evidence that the rate of hospital acquired C. difficile inf
 
 While the availability of data has improved since 2008, there is a still a need to ensure consistent and accurate data recording at ideally a site level, in order to more accurately evaluate the impact of any future hospital designs.
 
-Given the apparent negative impacts on staff of a switch to single bedrooms it is likely important going forward that more data is collected on the views of staff specifically around switching the single bedrooms, including likely qualitative data to understand what concerns and difficulties there may be.
+Given the apparent negative impacts on staff of a switch to single bedrooms it is likely important going forward that more data is collected on the views of staff specifically around switching to single bedrooms, including likely qualitative data to understand what concerns and difficulties there may be.
 
 Also, there is more data is needed to fully understand the impacts of single bedrooms on infection control, including things such as hospital acquired influenza or COVID-19.
 

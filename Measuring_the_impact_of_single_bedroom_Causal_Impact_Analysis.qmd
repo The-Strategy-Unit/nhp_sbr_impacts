@@ -45,6 +45,7 @@ library(lubridate)
 library(MarketMatching)
 library(metafor)
 library(patchwork)
+library(plotly)
 library(readxl)
 library(StrategyUnitTheme)
 library(stringr)
@@ -211,9 +212,11 @@ Broadly speaking, the evidence points towards an increase in falls/fall risk, im
 
 The review summary suggests that **"Overall, 87% of studies analysed by Taylor et al., 2018 reported advantages associated with single patient rooms. Of these, 27% reported a combination of advantages and disadvantages, while 22% of the studies reported a combination of advantages and neutral results."**
 
-# Hospital Background
+# Hospital Background {#sec-hosp_background}
 
-Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work. An overview of the remaining seven hospitals that switched to SBR is shown in @tbl-sbr-switch.
+Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work. 
+
+An overview of the remaining seven hospitals that switched to SBR is shown in @tbl-sbr-switch. Data on the percentage of single bedrooms before and after the switch at each site was not readily available or inconsistent, so an indication of whether the switch was partial or full is shown. Plots of the percentage of single bedrooms at provider level calculated from two different data submissions are available in Appendix E (@sec-appendix-E).
 
 ```{r table_sbr_switch}
 #| label: tbl-sbr-switch
@@ -233,31 +236,31 @@ tar_read(map_all_sites)
 
 ## Royal Liverpool University Hospital
 
-Royal Liverpool University Hospital is a large acute hospital. It mainly focuses on complex planned care and specialist services including nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. The provider Liverpool University Hospitals NHS Foundation also manages Aintree University hospital and Broadgreen hospital. Royal Liverpool University Hospital moved to new site single bed accommodation in October 2022. Prior to the change, the site had been operating `r sbr_details |> filter(name == "Royal Liverpool") |> pull(pre_sbr_perc)`% single bed room accommodation [@eric].
+Royal Liverpool University Hospital is a large acute hospital. It mainly focuses on complex planned care and specialist services including nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. The provider Liverpool University Hospitals NHS Foundation also manages Aintree University hospital and Broadgreen hospital. Royal Liverpool University Hospital moved to a new site with fully single bed accommodation in October 2022. 
 
 ## Clatterbridge Cancer Centre
 
-The Clatterbridge Trust operates 3 cancer centres in the Cheshire and Merseyside area. The Liverpool centre moved to fully single-bed rooms in June 2020 having previously been at `r sbr_details |> filter(name == "Clatterbridge Cancer Centre") |> pull(pre_sbr_perc)`% SBR [@eric]. The centre offers the full range of cancer treatment, both routine and surgical as well as diagnostics, outpatient appointments and associated support services [@ccc_liverpool].
+The Clatterbridge Trust operates 3 cancer centres in the Cheshire and Merseyside area. The Liverpool centre moved to fully single-bed rooms in June 2020. The centre offers the full range of cancer treatment, both routine and surgical as well as diagnostics, outpatient appointments and associated support services [@ccc_liverpool].
 
 ## Royal Papworth
 
-Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to single bed accommodation occurred in May 2019. Prior to the change, the site had been operating `r sbr_details |> filter(name == "Royal Papworth") |> pull(pre_sbr_perc)`% single bed room accommodation [@eric].
+Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to fully single bed accommodation occurred in May 2019. 
 
 ## Chase Farm
 
-Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018 and has `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(post_sbr_perc)`% single bed rooms having previously had `r sbr_details |> filter(name == "Chase Farm Hospital") |> pull(pre_sbr_perc)`% [@eric].
+Chase Farm hospital is a planned care centre operated by the Royal Free London NHS Trust. The Trust also runs the Royal Free and Barnet Hospital sites as well as other acute service across greater London [@chasefarm_web]. The new-build Chase Farm site, opened in September 2018 with a total of 50 beds, 42 were single bed rooms [@chasefarm_sbr].
 
 ## Southmead
 
-Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with `r sbr_details |> filter(name == "Southmead Hospital") |> pull(post_sbr_perc)`% single bed ensuite rooms. Previously the SBR provision for the trusts' main sites was around `r sbr_details |> filter(name == "Southmead Hospital") |> pull(pre_sbr_perc)`% [@eric].
+Southmead hospital is run by the North Bristol NHS Trust who also operate Frenchay and Cossham Hospitals as well as other acute and rehabilitation services. The Brunel building housing the hospital opened in May 2014 with three quarters of the beds in single rooms and the remainder in four-bed bays [@southmead_sbr].
 
 ## Tunbridge Wells
 
-The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in 2 phases in January 2011 (maternity and children) and September 2011 (other inpatient services). According to ERIC [@eric] the site has `r sbr_details |> filter(name == "Tunbridge Wells") |> pull(post_sbr_perc)`% single bed inpatient rooms, with levels prior to 2011 being `r sbr_details |> filter(name == "Tunbridge Wells") |> pull(pre_sbr_perc)`%.
+The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in 2 phases in January 2011 (maternity and children) and September 2011 (other inpatient services). Tunbridge Wells was the first hospital in England to switch to fully single bedroom accommodation. [@tunbridge_sbr]
 
 ## Peterborough
 
-Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened in November 2010 offering a range of acute and specialist services [@peterborough_web]. The site went from `r sbr_details |> filter(name == "Peterborough (city) Hospital") |> pull(pre_sbr_perc)`% single bed inpatient rooms to `r sbr_details |> filter(name == "Peterborough (city) Hospital") |> pull(post_sbr_perc)`% SBR [@eric].
+Peterborough City Hospital, operated by North West Anglia NHS Trust, was opened in November 2010 offering a range of acute and specialist services [@peterborough_web]. The site opened with a mix of single bedrooms and three- to four-bedded ward areas.
 
 # Impact measures and data sources
 
@@ -1896,6 +1899,59 @@ get_market_matched_controls_table_provider(hospitals,
 ```
 :::
 
-## E. Provider and site codes? {#sec-appendix-E}
+## E. Single Bedroom Percentage {#sec-appendix-E}
 
-------------------------------------------------------------------------
+As mentioned in @sec-hosp_background, data on the percentage of single bedrooms was not available at site level. However at provider level, the single bedroom percentage was calculated as the number of single bedrooms according to the annual March ERIC dataset [@eric] over the number of available beds in the March quarterly KH03 return. The switch to single bedrooms was at site level, but since the KH03 data is only available at provider level, the single bedroom percentage is at provider level. So at providers with multiple sites, the single bedroom percentage may appear lower than expected. Despite this, these charts are useful at demonstrating that the single bedroom percentage did change over time at the study sites compared to the control pool (in grey) and give the best indication of the scale of the change in single bedroom percentage that the data allows.
+
+:::panel-tabset
+
+### Royal Liverpool
+
+```{r royal_liverpool_sbr_percent}
+tar_read(plot_sbr_percent_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_sbr_percent}
+tar_read(plot_sbr_percent_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_sbr_percent}
+tar_read(plot_sbr_percent_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_sbr_percent}
+tar_read(plot_sbr_percent_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_sbr_percent}
+tar_read(plot_sbr_percent_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_sbr_percent}
+tar_read(plot_sbr_percent_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_sbr_percent}
+tar_read(plot_sbr_percent_RWF) |> 
+  ggplotly()
+```
+
+:::

@@ -1576,10 +1576,10 @@ list(
   
   #----------------------------------------------------------------------------#
   #### Formatting Quarto outputs ####
-  tar_target(sbr_details,
-             get_sbr_details(hospitals)),
+  # tar_target(sbr_details,
+  #            get_sbr_details(hospitals)),
   tar_target(sbr_details_table,
-             get_sbr_details_table(sbr_details)),
+             get_sbr_details_table(hospitals)),
   tar_target(
     number_control_sites,
     get_number_control_sites(single_bedroom_matches_final)

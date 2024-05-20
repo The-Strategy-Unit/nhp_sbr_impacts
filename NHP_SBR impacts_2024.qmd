@@ -20,7 +20,7 @@ library(lubridate)
 
 ## Introduction
 
-::: columns
+:::: columns
 ::: {.column width="50%"}
 Since it's inception, the New Hospital Programme (NHP) has advocated for single bed rooms (SBR). The grounds for this are based on a range of guidance, evidence and previous policy statements of intent. Whilst that position is unequivocal, there is uncertainty around the quantification of impacts of such a change and thus the assumptions that feed into demand and capacity models and economic business cases for current and future new hospital developments.
 :::
@@ -30,11 +30,11 @@ Specifically, a starting assumption was that a length of stay reduction of 12% w
 
 It is the express aim of this analysis therefore to quantify the range of likely impacts for length of stay and a basket of other measures across patient & staff experience, productivity and health & safety.
 :::
-:::
+::::
 
 ## Approach
 
-::: columns
+:::: columns
 ::: {.column width="50%"}
 -   Previous literature reviews and general searches were undertaken to identify potential impact factors.
 
@@ -55,7 +55,7 @@ It is the express aim of this analysis therefore to quantify the range of likely
 -   Aggregated findings for the non-specialist hospitals.
 :::
 
-:::
+::::
 
 ## Summary of key findings
 
@@ -71,7 +71,7 @@ Regardless of direction of impact, our results are not consistent across hospita
 
 ## 7 natural experiments
 
-::: {.columns}
+:::: {.columns}
 ::: {.column}
 -   Royal Liverpool (Oct 2022)
 -   Clatterbridge Cancer Centre (June 2020)
@@ -86,13 +86,13 @@ Regardless of direction of impact, our results are not consistent across hospita
 ![](images/hospitals_map.png)
 :::
 
-:::
+::::
 
 # Summary of methods
 
 ## Selecting control sites
 
-::: {.columns}
+:::: {.columns}
 ::: {.column}
 Before including control sites into the calculation of the post-intervention counterfactual, we must ensure they're similar to the site under study. We do this in several consecutive steps:
 
@@ -109,14 +109,38 @@ Before including control sites into the calculation of the post-intervention cou
 ![](images/control_flowchart.png)
 :::
 
-:::
+::::
 
 ## Causal Impact Analysis
 
+:::: {.columns}
 
+::: {.column}
+Causal Impact Analysis (CIA), developed by K. Broderson in 2014, explicitly uses prior trends and 'market-matched' control analysis to predict a time series. The observed values for the study site are compared to this to determine the direction, magnitude and significance of impacts as a result of the intervention.
+
+All analysis has been performed in R software (v4.3.2+) with the following packages - CausalImpact, MarketMatching, dtw, metafor.
+:::
+
+::: {.column}
+![Example of CIA analysis](images/cia_example.png)
+:::
+
+::::
 
 ## Aggregating impacts
 
+:::: {.columns}
 
+::: {.column}
+Where for each impact measure there were 2 or more general and acute hospitals, a meta-analysis was conducted. The specialist hospital sites were excluded from this analysis as it is felt the effects at these sites may not be generalisable when considering future building of general acute hospitals.
+
+A random-effects meta-analysis was conducted using the metafor R package (Viechtbauer 2024) and with the relative effects for each site weighted using the inverse variance, as used for meta-analysis of causal impact models by Schmitt et al. (Schmitt, Tull, and Atwater 2017).
+:::
+
+::: {.column}
+![Example of meta-analysis](images/meta_example.png)
+:::
+
+::::
 
 # Main results

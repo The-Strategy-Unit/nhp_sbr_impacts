@@ -214,7 +214,7 @@ The review summary suggests that **"Overall, 87% of studies analysed by Taylor e
 
 # Hospital Background {#sec-hosp_background}
 
-Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work. 
+Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work.
 
 An overview of the remaining seven hospitals that switched to SBR is shown in @tbl-sbr-switch. Data on the percentage of single bedrooms before and after the switch at each site was not readily available or inconsistent, so an indication of whether the switch was partial or full is shown. Plots of the percentage of single bedrooms at provider level calculated from two different data submissions are available in Appendix E (@sec-appendix-E).
 
@@ -236,7 +236,7 @@ tar_read(map_all_sites)
 
 ## Royal Liverpool University Hospital
 
-Royal Liverpool University Hospital is a large acute hospital. It mainly focuses on complex planned care and specialist services including nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. The provider Liverpool University Hospitals NHS Foundation also manages Aintree University hospital and Broadgreen hospital. Royal Liverpool University Hospital moved to a new site with fully single bed accommodation in October 2022. 
+Royal Liverpool University Hospital is a large acute hospital. It mainly focuses on complex planned care and specialist services including nephrology, renal transplantation, nuclear medicine, haematology, lithotripsy, dermatology and urology [@royalliverpool_web]. The provider Liverpool University Hospitals NHS Foundation also manages Aintree University hospital and Broadgreen hospital. Royal Liverpool University Hospital moved to a new site with fully single bed accommodation in October 2022.
 
 ## Clatterbridge Cancer Centre
 
@@ -244,7 +244,7 @@ The Clatterbridge Trust operates 3 cancer centres in the Cheshire and Merseyside
 
 ## Royal Papworth
 
-Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to fully single bed accommodation occurred in May 2019. 
+Royal Papworth hospital is a specialist centre for cardiothoracic (heart and lung) treatment, surgery and transplantation [@papworth_web]. The move to fully single bed accommodation occurred in May 2019.
 
 ## Chase Farm
 
@@ -1903,8 +1903,7 @@ get_market_matched_controls_table_provider(hospitals,
 
 As mentioned in @sec-hosp_background, data on the percentage of single bedrooms was not available at site level. However at provider level, the single bedroom percentage was calculated as the number of single bedrooms according to the annual March ERIC dataset [@eric] over the number of available beds in the March quarterly KH03 return. The switch to single bedrooms was at site level, but since the KH03 data is only available at provider level, the single bedroom percentage is at provider level. So at providers with multiple sites, the single bedroom percentage may appear lower than expected. Despite this, these charts are useful at demonstrating that the single bedroom percentage did change over time at the study sites compared to the control pool (in grey) and give the best indication of the scale of the change in single bedroom percentage that the data allows.
 
-:::panel-tabset
-
+::: panel-tabset
 ### Royal Liverpool
 
 ```{r royal_liverpool_sbr_percent}
@@ -1953,5 +1952,4 @@ tar_read(plot_sbr_percent_RVJ) |>
 tar_read(plot_sbr_percent_RWF) |> 
   ggplotly()
 ```
-
 :::

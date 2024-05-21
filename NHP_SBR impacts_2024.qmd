@@ -4,19 +4,21 @@ author: "Andy Hood | Analytics Manager | Strategy Unit | 14th May 2024"
 format:
   pptx:
       reference-doc: template.pptx
-      incremental: true
+      incremental: false
+      number-sections: true
+      df-print: "kable"
+prefer-html: true
 editor: visual
 ---
 
 ``` {r setup}
-library(dplyr)
-library(ggplot2)
+library(tidyverse)
 library(targets)
 library(lubridate)
 
 ```
 
-# Introduction, approach and summary
+# Introduction, approach, summary and recommendations
 
 ## Introduction
 
@@ -59,7 +61,18 @@ It is the express aim of this analysis therefore to quantify the range of likely
 
 ## Summary of key findings
 
-Regardless of direction of impact, our results are not consistent across hospital sites. This suggests that there are a number of other factors in the hospital design, systems, policies and procedures that are important. Switching to single bedroom hospitals without considering the other factors would not necessarily have a positive effect on outcomes nor mitigate any likely risks. This inconsistency is reflective of the findings from published literature.
+Our results are generally not consistent within indicators and across hospital sites. This suggests that there are a number of other factors in the hospital design, systems, policies and procedures that are important. Switching to single bedroom hospitals without considering the other factors would not necessarily have a positive effect on outcomes nor mitigate any likely risks. This inconsistency is reflective of the findings from published literature.
+
+## Limitations and Recommendations
+
+Placeholder....limitations
+
+-   Data quality and robustness
+-   Below site-level analysis
+
+Placeholder...recommendations
+
+-   System dynamics for productivity scenario
 
 # The impact framework
 
@@ -67,12 +80,18 @@ Regardless of direction of impact, our results are not consistent across hospita
 
 ![](images/indicators.jpeg)
 
+## Indicator availability and time of SBR changes by site
+
+``` {r ind_timeline}
+
+tar_read(indicator_availability_plot)
+
+```
+
 # The hospitals
 
-## 7 natural experiments
+## Seven natural experiments
 
-:::: {.columns}
-::: {.column}
 -   Royal Liverpool (Oct 2022)
 -   Clatterbridge Cancer Centre (June 2020)
 -   Royal Papworth Hospital (May 2019)
@@ -80,13 +99,16 @@ Regardless of direction of impact, our results are not consistent across hospita
 -   Southmead Hospital (May 2014)
 -   Tunbridge Wells (Jan/Sept 2011)
 -   Peterborough Hospital (Nov 2010)
-:::
 
-::: {.column}
+
 ![](images/hospitals_map.png)
-:::
 
-::::
+
+## Heterogeneity
+
+No hospital site is the same as another. This is no more true than for our 7 natural experiments. The sites are a mixture of general acute hospitals and specialist ones. They vary in size and function and there are many possible confounding factors in the input-output logic model for our impacts that we can not identify nor account for.
+
+In aggregating some of the findings in this analysis, we have grouped the general acute sites together for indicative purposes. However; the nature of those hospital systems and the social and cultural circumstance should be considerations when both interpreting our findings and also in considering single-bed provision within hospital developments 
 
 # Summary of methods
 
@@ -143,4 +165,153 @@ A random-effects meta-analysis was conducted using the metafor R package (Viecht
 
 ::::
 
-# Main results
+# Main results - Productivity and Efficiency
+
+## Length of stay
+
+This **monthly** data at **site level** is derived from the Secondary Uses Service (SUS) admitted patients care spells.
+
+Mean length of stay (in days) significantly decreased at 3/6 sites (Southmead, Peterborough and Chase Farm), was unchanged at 2/6 sites (Royal Liverpool and Tunbridge Wells), but significantly increased at Clatterbridge.
+
+``` {r cia_los}
+
+tar_read(forest_plot_LoS)
+## tar_read(model_effects_table_LoS) ## html table doesn't work in pptx render
+
+```
+
+## Waiting time (median)
+
+This **monthly** data at **provider level** is from published RTT waiting times dataset (via UDAL).
+
+The median referral to treatment waiting time (in weeks) significantly decreased at 2/5 sites (Royal Liverpool and Peterborough) and was unchanged at 2/5 sites (Papworth and Clatterbridge) and increased at Tunbridge Wells.
+
+``` {r cia_wait}
+
+tar_read(forest_plot_waiting_time_median)
+
+```
+
+## Bed Occupancy
+
+This **quarterly** data at **provider level** is from published KH03 bed returns (via UDAL).
+
+Bed occupancy is measured quarterly and is only available at a Provider level. The percentage of available beds occupied significantly increased at 2/4 sites (Clatterbridge and Southmead) and was unchanged at 2/4 (Royal Liverpool and and Chase Farm).
+
+``` {r cia_bedocc}
+
+tar_read(forest_plot_bed_occupancy)
+
+```
+
+## Emergency readmissions
+
+This **monthly** data at **site level** is derived from SUS admitted patient care records.
+
+The percentage of admissions that are emergency readmissions < 30 days of discharge significantly decreased at 3/7 sites (Tunbridge Wells, Peterborough and Clatterbridge) and was unchanged at the remaining 4/7 sites.
+
+``` {r cia_emergreadm}
+
+tar_read(forest_plot_emergency_readmissions)
+
+```
+
+## Cleaning costs
+
+This **annual** data at **site level** is taken from published Estates Return Information Collection (ERIC) datasets.
+
+The cleaning costs (in £) per square metre of occupied floor space significantly increased at 1/3 sites (Royal Liverpool) but decreased at 2/3 sites (Clatterbridge and Papworth).
+
+``` {r cia_cleaning}
+
+tar_read(forest_plot_cleaning_costs)
+
+```
+
+# Main results - Health and Safety
+
+## In-hospital deaths
+
+This **monthly** data at **site level** is derived from SUS admitted patient care records.
+
+The rate of in-hospital deaths (number per 1,000 discharges) significantly decreased at 1/5 sites (Peterborough), and was unchanged at 4/5 sites (Royal Liverpool, Tunbridge Wells, Clatterbridge and Southmead).
+
+``` {r cia_mort}
+
+tar_read(forest_plot_sus_deaths)
+
+```
+
+## In-hospital falls and injuries
+
+This **monthly** data at **site level** is derived from SUS admitted patient care records.
+
+The rate of in-hospital falls and injuries (% of spells) significantly decreased at 1/4 sites (Peterborough), and was unchanged at 3/4 sites (Royal Liverpool, Tunbridge Wells and Southmead).
+
+``` {r cia_falls}
+
+tar_read(forest_plot_falls_and_fractures)
+
+```
+
+## Healthcare Acquired Infections (HCAI) - clostridium dificile
+
+This **monthly** data at **provider level** is taken from published UKHSA surveillance data (via UDAL).
+
+The rate of healthcare acquired C. difficile infections (cases per 10,000 bed days) decreased at 2/3 sites (Chase Farm and Southmead) but was unchanged at Royal Liverpool.
+
+``` {r cia_hcai}
+
+tar_read(forest_plot_cdiff)
+
+```
+
+# Main results - Patient and Staff Experience
+
+## Family and Friends test
+
+This **monthly** data at **site level** is taken from published NHS England data (via UDAL).
+
+The percentage of positive responses significantly decreased at 1/5 sites (Clatterbridge), increased at 1/5 sites (Papworth) and was unchanged at the other 3/5 sites (Royal Liverpool, Southmead and Chase Farm).
+
+``` {r cia_famfriend}
+
+tar_read(forest_plot_friends_and_family)
+
+```
+
+## Staff sickness absence
+
+This **monthly** data at **provider level** is taken from published NHS England data (via UDAL).
+
+The percentage of available days taken off sick by staff significantly increased at 2/7 sites (Southmead and Tunbridge Wells) and was unchanged at the remaining 5 sites.
+
+``` {r cia_sick}
+
+tar_read(forest_plot_staff_sickness)
+
+```
+
+## Staff turnover
+
+This **monthly** data at **provider level** is taken from published NHS England data (via UDAL).
+
+Staff turnover measured as percentage of staff leaving was not significantly changed at any of the 3 sites where data was available.
+
+``` {r cia_turnover}
+
+tar_read(forest_plot_staff_turnover)
+
+```
+
+## Staff survey - recommending place to work
+
+This **monthly** data at **provider level** is taken from published NHS England data (via UDAL).
+
+The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth), and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work.
+
+``` {r cia_survey}
+
+tar_read(forest_plot_staff_survey)
+
+```

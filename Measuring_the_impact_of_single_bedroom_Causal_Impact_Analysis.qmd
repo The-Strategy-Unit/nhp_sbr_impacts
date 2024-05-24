@@ -168,7 +168,7 @@ Since it's inception, the New Hospital Programme (NHP) has advocated for single 
 
 Specifically, a starting assumption was that a length of stay reduction of 12% was likely for all new SBR facilities compared to prior trends. This assumption was criticised by the national audit office (NAO) [@nao2023] in the face of a mixed evidence base.
 
-It is the express aim of this analysis therefore to quantify the range of likely impacts for length of stay and a basket of other measures across patient & staff experience, productivity and health & safety. Where there are differential impacts i.e. for specialist units compared to general acute these will also be highlighted to aid future planning assumptions.
+It is the express aim of this analysis therefore to quantify the range of likely impacts for length of stay and a basket of other measures across patient & staff experience, productivity & efficiency and health & safety. Where there are differential impacts, i.e. for specialist units compared to general acute, these will also be highlighted to aid future planning assumptions.
 
 # Executive Summary
 
@@ -184,7 +184,7 @@ Generally, following a switch to single bedrooms the productivity and efficiency
 
 Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety is not being negatively impacted. While data is limited there is a trend towards decreased C. difficile infection rates.
 
-In terms of patient and staff experiences the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Therefore it appears that staff views and experiences should be considered when designing of hospitals with single bedrooms and thought given to how potentially detrimental effects on staff may be mitigated. Patient experience does not appear to change overall, certainly not to a meaningful degree.
+In terms of patient and staff experiences, the switch to single bedrooms has had a generally negative effect, for staff in particular. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. Therefore it appears that staff views and experiences should be considered when designing hospitals with single bedrooms and thought given to how potentially detrimental effects on staff may be mitigated. Patient experience does not appear to change overall, certainly not to a meaningful degree.
 
 # What we already know
 
@@ -214,7 +214,7 @@ The review summary suggests that **"Overall, 87% of studies analysed by Taylor e
 
 # Hospital Background {#sec-hosp_background}
 
-Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work.
+Initially 11 NHS hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work.
 
 An overview of the remaining seven hospitals that switched to SBR is shown in @tbl-sbr-switch. Data on the percentage of single bedrooms before and after the switch at each site was not readily available or inconsistent, so an indication of whether the switch was partial or full is shown. Plots of the percentage of single bedrooms at provider level calculated from two different data submissions are available in Appendix E (@sec-appendix-E).
 
@@ -256,7 +256,7 @@ Southmead hospital is run by the North Bristol NHS Trust who also operate French
 
 ## Tunbridge Wells
 
-The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in 2 phases in January 2011 (maternity and children) and September 2011 (other inpatient services). Tunbridge Wells was the first hospital in England to switch to fully single bedroom accommodation. [@tunbridge_sbr]
+The new hospital at Tunbridge Wells, replacing services at Pembury and Kent & Sussex, opened in two phases in January 2011 (maternity and children) and September 2011 (other inpatient services). Tunbridge Wells was the first hospital in England to switch to fully single bedroom accommodation. [@tunbridge_sbr]
 
 ## Peterborough
 
@@ -282,7 +282,7 @@ tar_read(indicator_info_table)
 
 ## Availability of indicators over time and for each site
 
-@fig-avail demonstrates the availability of indicator datasets over time and the month of the switch to SBR for the 7 sites to allow for general assessment of suitability for testing.
+@fig-avail demonstrates the availability of indicator datasets over time and the month of the switch to SBR for the seven study sites to allow for general assessment of suitability for testing.
 
 ```{r indicator_availability_plot, fig.height = 6, fig.width = 10}
 #| label: fig-avail
@@ -315,7 +315,7 @@ Causal Impact Analysis is a technique that uses a control group to estimate the 
 
 ## Finding control hospitals {#sec-methods-controls}
 
-There was a multi-phase selection process to create a pool of controls for each site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the study site and controls on type of site. For Clatterbridge the pool was limited to cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other study sites the pool was limited to general acute sites.
+There was a multi-phase selection process to create a pool of controls for each study site. A summary of these steps is presented in @fig-flow-controls. The first step was to match the study site and controls on type of site. For Clatterbridge the pool was limited to cancer-only sites and for Royal Papworth the pool was limited to cardiac sites. For all other study sites the pool was limited to general acute sites.
 
 Controls were then matched on the percentage of single bed rooms available at the provider. Providers were excluded if the difference between their SBR percentage and the study's provider was greater than 5% at the time of the SBR switch. Then providers were excluded if their SBR percentage increased by 5% or more after this point.
 
@@ -385,7 +385,7 @@ cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
 
 Where there are results for 2 or more general acute hospitals a second forest plot shows the effects for just these general acute hospitals, alongside the mean value calculated in the meta-analysis. In this case the size of points indicates the weight that each site has been given in the analysis; those with the smallest credible intervals are given the greatest weight in calculating the mean.
 
-**Results tables** give the average values over the outcome period. They give the actual value for the study site in the outcome period, the predicted value had no change in single bedrooms occurred, and the the absolute effect, which is the difference between the actual and predicted value. The relative effect size is a proportional change relative to the predicted value.
+**Results tables** give the average values over the outcome period. They give the actual value for the study site in the outcome period, the predicted value had no change in single bedrooms occurred, and the absolute effect, which is the difference between the actual and predicted value. The relative effect size is a proportional change relative to the predicted value.
 
 For example, Peterborough hospital was predicted to have an mean length of stay in the outcome period of 4.8 days, however, following a switch to single bedrooms the actual mean length of stay was 3.9 days. This is an absolute difference between predicted and actual values of 0.9 days, which equates to a 19% reduction in mean length of stay compared to predicted values.
 
@@ -416,7 +416,7 @@ Clatterbridge is a specialist cancer centre, so it is possible the switch to sin
 
 ### `r title_wait_time_median`
 
-The median referral to treatment waiting time (in weeks) significantly decreased at 2/5 sites (Royal Liverpool and Peterborough) and was unchanged at 2/5 sites (Papworth and Clatterbridge) and increased at Tunbridge Wells.
+The median referral to treatment waiting time (in weeks) significantly decreased at 2/5 sites (Royal Liverpool and Peterborough), was unchanged at 2/5 sites (Papworth and Clatterbridge) and increased at Tunbridge Wells.
 
 ```{r waiting_time_median_output, fig.width=8, fig.height=4}
 tar_read(forest_plot_waiting_time_median)
@@ -446,7 +446,7 @@ tar_read(model_effects_table_bed_occupancy)
 tar_read(mean_forest_plot_bed_occupancy)
 ```
 
-Bed occupancy was either unchanged or increased by up to 13%. The mean effect at the 2 general acute hospitals was a non-significant 4% increase in bed occupancy.
+Bed occupancy was either unchanged or increased by up to 13%. The mean effect at the two general acute hospitals was a non-significant 4% increase in bed occupancy.
 
 At Southmead, bed occupancy increased 8%; it was predicted to be on average 86% in the outcome period but an increase to 93% bed occupancy was seen (@sec-appendix-A-bed-occupancy). It is perhaps unsurprising there was no significant increase in bed occupancy at the Royal Liverpool as based on historic trends bed occupancy was already predicted to be over 95%, leaving little scope to increase this.
 
@@ -482,7 +482,7 @@ Cleaning costs are only recorded annually, so there is limited data with only 1 
 
 ### `r title_deaths`
 
-The rate of in-hospital deaths (number per 1,000 discharges) significantly decreased at 1/5 sites (Peterborough), and was unchanged at 4/5 sites (Royal Liverpool, Tunbridge Wells, Clatterbridge and Southmead).
+The rate of in-hospital deaths (number per 1,000 discharges) significantly decreased at 1/5 sites (Peterborough) and was unchanged at 4/5 sites (Royal Liverpool, Tunbridge Wells, Clatterbridge and Southmead).
 
 ```{r sus_deaths_output, include=TRUE, fig.width=8, fig.height=4}
 tar_read(forest_plot_sus_deaths)
@@ -559,13 +559,13 @@ tar_read(model_effects_table_staff_sickness)
 tar_read(mean_forest_plot_staff_sickness)
 ```
 
-Staff sickness rates generally remained unchanged, but there was a 7% increase at Southmead and 23% increase at Tunbridge Wells (@sec-appendix-A-staff-sickness). The mean effect at general acute hospitals was a significant increase of 6% in the staff sickness rate. Although staff sickness did remain unchanged at the 3 specialist sites.
+Staff sickness rates generally remained unchanged, but there was a 7% increase at Southmead and 23% increase at Tunbridge Wells (@sec-appendix-A-staff-sickness). The mean effect at general acute hospitals was a significant increase of 6% in the staff sickness rate. Although staff sickness did remain unchanged at the three specialist sites.
 
 While there was a significant increase in staff sickness at Southmead (average of 4.6% of available days taken as sick days compared to a predicted 4.3%) this seems to have been a temporary effect. The sickness rate is increased in the first year after the switch to single bedrooms and during this period there is a significantly larger winter peak. In the second year of the outcome period staff sickness rates fell back in line with the expected rates. A similar, albeit non-significant, effect is seen at Peterborough with a larger winter spike in the first year of the outcome period before sickness levels return to expected levels.
 
 ### `r title_staff_turnover`
 
-Staff turnover measured as percentage of staff leaving was not significantly changed at any of the 3 sites where data was available (@sec-appendix-A-staff-turnover).
+Staff turnover measured as percentage of staff leaving was not significantly changed at any of the three sites where data was available (@sec-appendix-A-staff-turnover).
 
 ```{r staff_turnover_output, fig.width=8, fig.height=2}
 tar_read(forest_plot_staff_turnover)
@@ -576,7 +576,7 @@ tar_read(model_effects_table_staff_turnover)
 
 To assess staff experience the NHS staff survey was used and we analysed the percentage of staff that Agreed or Strongly Agreed with the statement 'I would recommend my trust as a place to work'.
 
-The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth), and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work.
+The percentage of staff that would recommend their trust as a place to work significantly increased at 1/6 sites (Papworth) and was unchanged at 3/6 (Chase Farm, Royal Liverpool and Tunbridge Wells). At 2/6 sites (Southmead and Clatterbridge) there was a significant decrease in the percentage that would recommend their trust as a place to work.
 
 ```{r staff_survey_output, include=TRUE, fig.width=8, fig.height=4}
 tar_read(forest_plot_staff_survey)
@@ -1667,8 +1667,8 @@ Black dotted line indicates the time of the last data point prior to the switch 
 
 **`r title_bed_occup`**
 
--   Only available at provider level
--   This is a quarterly measure so there is more limited data and depending on the time point at which the switch to single bedrooms occurred the may be no data until 3 months after the switch or the last point of baseline may be 3 months prior to the switch.
+-   Only available at provider level.
+-   This is a quarterly measure so there is more limited data and depending on the time point at which the switch to single bedrooms occurred there may be no data until 3 months after the switch or the last point of baseline may be 3 months prior to the switch.
 -   For Papworth bed occupancy was highly affected by COVID-19 in the outcome period, an effect which was not seen to the same extent at the control sites, so it wasn't possible to determine whether there would have an effect on bed occupancy had COVID-19 not occurred.
 
 **`r title_cleaning`**
@@ -1680,7 +1680,7 @@ Black dotted line indicates the time of the last data point prior to the switch 
 
 **Healthcare acquired infections**
 
--   Only available at provider level
+-   Only available at provider level.
 -   C. difficile infection rates could not be analysed for Clatterbridge or Papworth as the rates were low, often zero, and so combined with the high level of variability in the data it meant it was not possible to fit a suitable model for these sites.
 -   For other hospital acquired infections the data collections did not go far enough back in time to be used in this analysis.
 
@@ -1699,18 +1699,18 @@ Black dotted line indicates the time of the last data point prior to the switch 
 
 **`r title_staff_sickness`**
 
--   Only available at provider level
+-   Only available at provider level.
 -   This is used as a proxy for staff experience with the assumption that sickness absences would rise if staff were stressed and unhappy in their roles.
 
 **`r title_staff_turnover`**
 
--   Only available at provider level
--   Data is only available for Royal Liverpool
+-   Only available at provider level.
+-   Data is only available for Royal Liverpool.
 -   This is used as a proxy for staff experience with the assumption that the staff leaving rate may increase if staff are unhappy in their roles.
 
 **`r title_staff_survey`**
 
--   Only available at provider level
+-   Only available at provider level.
 -   This is an annual measure, so there are limited data points in the pre-switch period and only 1 or 2 points in the outcome period.
 
 ## C. Control pools for each intervention site {#sec-appendix-C}

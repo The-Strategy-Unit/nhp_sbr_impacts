@@ -1,6 +1,6 @@
 ---
 title: "Quantifying the impacts of hospitals increasing single bed room provision"
-author: "Andy Hood | Analytics Manager | Strategy Unit | 14th May 2024"
+author: "Andy Hood | Analytics Manager | Strategy Unit | 10th June 2024"
 format:
   pptx:
       reference-doc: template.pptx
@@ -18,26 +18,56 @@ library(lubridate)
 
 ```
 
+## Expectations for this session
+
+-   Share progress and key findings to date
+-   Gain insights and perspectives from wider stakeholders
+-   Improve messaging and narratives
+
+# Headlines and Highlights
+
+## Headlines and Highlights (1)
+
+-    The NHP program advocates for SBR design for new hospitals
+-    Assumption that doing so will reduce inpatient length of stay (circa 12%)
+-    The challenge, therefore, is to quantify changes in LoS and a range of other potential impacts for 7 natural experiments between 2010 and 2022
+-    Identified 12 impact measures
+-    Used an approach called Causal Impact Analysis to detect pre-post changes in trend
+-    Results (much like the published literature) are mixed...
+
+## Headlines and Highlights (2)
+
+-    For **productivity and Efficiency** measures, length of stay generally improved (4/6), waiting times reduced (3/5), Bed Occupancy increased (3/4), Emergency readmissions fell (4/7), cleaning costs reduced (2/3)
+
+-    For **health and safety** measures, in-hospital deaths fell (3/5), falls and injuries increased (3/4), HCAI reduced (3/3)
+
+
+-    For **patient & staff experiences**, friends and family scores increased (3/5), staff sickness increased (4/7), staff turnover fell (3/3), staff satisfaction reduced (4/6).
+
+
 # Introduction, approach, summary and recommendations
 
 ## Introduction
 
-:::: columns
-::: {.column width="50%"}
+:::: {.columns}
+
+::: {.column}
 Since it's inception, the New Hospital Programme (NHP) has advocated for single bed rooms (SBR). The grounds for this are based on a range of guidance, evidence and previous policy statements of intent. Whilst that position is unequivocal, there is uncertainty around the quantification of impacts of such a change and thus the assumptions that feed into demand and capacity models and economic business cases for current and future new hospital developments.
 :::
 
-::: {.column width="50%"}
+::: {.column}
 Specifically, a starting assumption was that a length of stay reduction of 12% was likely for all new SBR facilities compared to prior trends. This assumption was criticised by the national audit office (NAO) (Office 2023) in the face of a mixed evidence base.
 
 It is the express aim of this analysis therefore to quantify the range of likely impacts for length of stay and a basket of other measures across patient & staff experience, productivity and health & safety.
 :::
+
 ::::
 
 ## Approach
 
-:::: columns
-::: {.column width="50%"}
+:::: {.columns}
+
+::: {.column}
 -   Previous literature reviews and general searches were undertaken to identify potential impact factors.
 
 -   Identified relevant measures or proxy measures from publicly available data and routine data sources.
@@ -47,7 +77,7 @@ It is the express aim of this analysis therefore to quantify the range of likely
 -   Cleansed and compiled all the data into time series format.
 :::
 
-::: {.column width="50%"}
+::: {.column}
 -   Identified 'control' sites and providers to compare to our natural experiment sites.
 
 -   Several stages of this matching according to hospital function, size, case-mix and admission ratio's.
@@ -59,20 +89,42 @@ It is the express aim of this analysis therefore to quantify the range of likely
 
 ::::
 
-## Summary of key findings
+## Summary of key findings (1)
 
-Our results are generally not consistent within indicators and across hospital sites. This suggests that there are a number of other factors in the hospital design, systems, policies and procedures that are important. Switching to single bedroom hospitals without considering the other factors would not necessarily have a positive effect on outcomes nor mitigate any likely risks. This inconsistency is reflective of the findings from published literature.
+Our results are generally not consistent within indicators and across hospital sites. This inconsistency is reflective of the findings from published literature. Two impact measures moved in the same direction across all (eligible) sites - **C-diff decreasing** and **staff turnover decreasing**.
 
-## Limitations and Recommendations
+This suggests that there are many factors in the hospital design, systems, policies and cultures that are important. *Responses to a qualitative look-back exercise are currently being explored to identify those critical factors that are likely to have exacerbated success or failure*.
 
-Placeholder....limitations
+Switching to single bedroom hospitals without considering these other factors would not necessarily have a positive effect on outcomes nor mitigate any likely risks. 
+
+
+## Summary of key findings (2)
+
+The table across demonstrates the range of impacts across all new hospital sites for each impact measure
+
+![](images/impact_range.jpeg)
+
+## Limitations
 
 -   Data quality and robustness
--   Below site-level analysis
+-   No below site-level analysis
+-   Sensitivity/Specificity of some of the measures
+-   Dose-response effects are not possible to ascertain (e.g. an x% change in SBR leads to a y% change in impact A)
+-   Covid 19 bias in some of the pre and post trends
+-   Small pool of control sites and lack of similarity (specialist sites)
+-   Model fit and large credible intervals
 
-Placeholder...recommendations
+## Recommendations
 
--   System dynamics for productivity scenario
+-   Exercise caution when accounting for these impacts in business planning – use a range and suitable comparator.
+-   Develop an evaluation framework from (some of) these measures, process indicators and wider evidence (logic model).
+-   Include qualitative survey measures for patients and staff (free text for thematic analysis).
+-   Capture information on design, systemic and cultural factors that may also have bearing on these impacts.
+-   Start collecting data well before the change in bed provision and at least monthly!
+-   System dynamics modelling would aid understanding of multi-factorial productivity impacts.
+-   Length of Stay sub-group analysis i.e. by clinical and patient groups.
+-   Mitigation strategy for staff wellbeing and retention.
+
 
 # The impact framework
 
@@ -108,13 +160,14 @@ tar_read(indicator_availability_plot)
 
 No hospital site is the same as another. This is no more true than for our 7 natural experiments. The sites are a mixture of general acute hospitals and specialist ones. They vary in size and function and there are many possible confounding factors in the input-output logic model for our impacts that we can not identify nor account for.
 
-In aggregating some of the findings in this analysis, we have grouped the general acute sites together for indicative purposes. However; the nature of those hospital systems and the social and cultural circumstance should be considerations when both interpreting our findings and also in considering single-bed provision within hospital developments 
+In aggregating some of the findings in this analysis, we have grouped the general acute sites together for indicative purposes. However; the nature of those hospital systems and the social and cultural circumstance should be considerations when both interpreting our findings and also in considering single-bed provision within hospital developments.
 
 # Summary of methods
 
 ## Selecting control sites
 
 :::: {.columns}
+
 ::: {.column}
 Before including control sites into the calculation of the post-intervention counterfactual, we must ensure they're similar to the site under study. We do this in several consecutive steps:
 
@@ -315,3 +368,26 @@ The percentage of staff that would recommend their trust as a place to work sign
 tar_read(forest_plot_staff_survey)
 
 ```
+
+# Next steps
+
+## Still on the to-do list...
+
+-   Triangulate with qualitative look-back exercise
+-   Finish technical report and polish this summary and recommendations
+-   Pass impact parameters to the NHP team(s) for inclusion in planning
+-   Engage with 7 providers over the results and sharing of them
+-   Pursue journal publication
+
+# Acknowledgements
+
+## Acknowledgements
+
+**NHP programme**:
+Cheryl Riotto, Anne White, Joanna Wood, Carolyn Akyil, Michael Weinbren
+
+**NHS England**:
+Joshua Igbineweka, Paul Smith
+
+**Strategy Unit**:
+Sarah Lucas, Anya Ferguson, Peter Spilsbury, Simon Bourne, Jennifer Wood

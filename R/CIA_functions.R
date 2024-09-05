@@ -536,7 +536,7 @@ meta_analysis<-function(data){
              site != "Clatterbridge" &
              site != "Chase Farm")
   
-  count<-count(results_data)
+  count<-print(nrow(results_data))
   
     output <-
       rma.uni(RelEffect,
@@ -1092,7 +1092,7 @@ summary_forest_plot <- function(LoS_output,
     mutate(measure = "Bed occupancy")
   
   cdiff_output2  <- meta_analysis(cdiff_output) |>
-    mutate(measure = "Healthcare acquired \nC.Difficile")
+    mutate(measure = "Healthcare acquired c.diff")
   
   falls_and_fractures_output2  <- meta_analysis(falls_and_fractures_output) |>
     mutate(measure = "Falls and injuries")
@@ -1152,7 +1152,7 @@ summary_forest_plot <- function(LoS_output,
         "Staff sickness",
         "Staff survey",
         "Patient experience",
-        "Healthcare acquired \nC.Difficile",
+        "Healthcare acquired c.diff",
         "Falls and injuries",
         "Hospital deaths",
         "Cleaning costs",
@@ -1181,7 +1181,7 @@ summary_forest_plot <- function(LoS_output,
     geom_point(aes(
       x = mean,
       colour = sig,
-    ), size=2) +
+    ), size=2.5) +
     geom_linerange(aes(
       xmin = `95% lower`,
       xmax = `95% upper`,

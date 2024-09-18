@@ -214,11 +214,7 @@ The review summary suggests that **"Overall, 87% of studies analysed by Taylor e
 
 # Hospital Background {#sec-hosp_background}
 
-<<<<<<< HEAD
 Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work.
-=======
-Initially 11 NHS hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work.
->>>>>>> a254ba9b746c7fff9374c89ff3db0e2bf36e7730
 
 An overview of the remaining seven hospitals that switched to SBR is shown in @tbl-sbr-switch. Data on the percentage of single bedrooms before and after the switch at each site was not readily available or inconsistent, so an indication of whether the switch was partial or full is shown. Plots of the percentage of single bedrooms at provider level calculated from two different data submissions are available in Appendix E (@sec-appendix-E).
 

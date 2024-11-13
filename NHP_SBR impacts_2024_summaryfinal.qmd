@@ -1,6 +1,6 @@
 ---
 title: "Quantifying the impacts of hospitals increasing single bed room provision"
-author: "Andy Hood | Analytics Manager | Strategy Unit | Sept 2024"
+author: "Andy Hood | Analytics Manager | Strategy Unit | Oct 2024"
 format:
   pptx:
       reference-doc: template.pptx
@@ -13,6 +13,7 @@ editor: visual
 
 ``` {r setup}
 library(tidyverse)
+library(ggplot2)
 library(targets)
 library(lubridate)
 

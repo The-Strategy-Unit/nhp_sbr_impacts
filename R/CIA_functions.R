@@ -1074,7 +1074,7 @@ summary_forest_plot <- function(LoS_output,
                                 friends_and_family_output,
                                 staff_sickness_output,
                                 staff_survey_output) {
-  
+
   
   waiting_time_median_output2 <- meta_analysis(waiting_time_median_output) |>
     mutate(measure = "Waiting time")
@@ -1187,7 +1187,7 @@ summary_forest_plot <- function(LoS_output,
       xmax = `95% upper`,
       colour = sig
     ),
-    size = 0.7) +
+    linewidth = 0.7) +
     geom_vline(xintercept = 0, linetype = "dashed") +
     scale_shape_manual(values = c("individual" = 15, "mean" = 16)) +
     scale_color_manual(

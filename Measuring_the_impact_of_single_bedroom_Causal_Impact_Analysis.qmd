@@ -158,9 +158,17 @@ title_staff_survey <- get_title("staff_survey")
 #forest(res)
 ```
 
-# Foreword??
+# Foreword and acknowledgements
 
-Ask Cheryl / Eammon to write...otherwise omit.
+TBC...
+
+This work, analysis and report have been a team effort. The following people have made a material contribution to all or part of the development of this work and the various outputs:
+
+**Strategy Unit** - Peter Spilsbury, Simon Bourne, Jacqueline Grout, Jennifer Wood.
+<br>
+**New Hospitals Programme** - Cheryl Riotto, Anne White, Joanna Wood, Carolyn Akyil, Dr. Michael Weinbren.
+<br>
+**NHS England** - Joshua Igbineweka, Paul Smith
 
 # Introduction and background
 
@@ -674,6 +682,13 @@ When the sites switched to single bedrooms there are likely to have been other c
 Not all sites switched entirely to single bed rooms and all sites had differing proportions of single bedrooms prior to the switch. There does not appear to be a clear relationship between the percentage of single bedrooms post switch or the change in proportion of single bed and the varying outcomes that are seen at individual sites. The sites that switched to single bedrooms will have had different designs and the differences in results between sites may be due to different single bedroom designs/implementation working better, or worse, than others. It is also possible that the best design/impementation may vary by hospital type so that a design that suits a general acute hospital may work less well at a specialist site. Where there are potential negative impacts of a switch to single bedrooms some sites may have had mitigating factors in place from the start while other schemes may have brought in mitigating factors at a later date once issues had already arisen.
 
 We see some limited evidence that the rate of hospital acquired C. difficile infections may be reduced, but unfortunately it was not possible to assess other healthcare acquired infections (MSSA, MRSA, Klebsiella and P. aeruginosa) due to a lack of data availability before 2017. In addition, there is no data on other hospital acquired contagious illnesses, such as influenza and COVID-19, where the spread may be reduced by single bed rooms. It is possible that due to en suite bathrooms in single bedroom hospitals, that there is an increased risk of Legionella, due to increased pipework and bathrooms potentially not all being used regularly.
+
+The following table are a subjective rating of our confidence in the indicators to assess the impacts of SBR given the above caveats and limitations:
+<br>
+
+![](images/indicator_conf_rating.png)
+
+Further notes on data quality and reasons for exclusion of sites from indicator analysis are in @sec-appendix-B.
 
 # Recommendations for modelling and future evaluation
 

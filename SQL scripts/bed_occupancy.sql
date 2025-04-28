@@ -18,4 +18,4 @@ LEFT JOIN [UKHF_Bed_Availability].[Provider_By_Sector_Occupied_Overnight_Beds1_1
 	AND Occupied.Organisation_Code = Available.Organisation_Code
 	AND Occupied.Sector = Available.Sector
 
-WHERE Available.Effective_Snapshot_Date BETWEEN '2008-10-01' AND '2023-10-31'
+WHERE Available.Effective_Snapshot_Date BETWEEN '2008-10-01' AND '2025-03-31'

@@ -3,8 +3,8 @@
 -- cleaning data at site level from 2015, but only at trust level before then
 -- file too big all together, so split into 2 based on dates
 
-DECLARE @startdate date = '2009-03-01';
-DECLARE @enddate date = '2016-03-01';
+DECLARE @startdate date = '2016-03-02';
+DECLARE @enddate date = '2025-03-31';
 
 SELECT 
 	effective_snapshot_date,
@@ -69,3 +69,4 @@ WHERE effective_snapshot_date BETWEEN @startdate AND @enddate
 	AND Measure IN ('Number of cleaning staff (WTE)', 'Cleaning services costs (£)')
 
 ORDER BY effective_snapshot_date desc
+

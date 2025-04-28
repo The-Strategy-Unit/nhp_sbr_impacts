@@ -6,4 +6,4 @@ SELECT [Organisation_Code]
       ,[Effective_Snapshot_Date]
   FROM [UKHF_RTT].[Incomplete_Pathways_Provider1_1]
   where Treatment_Function_Code= '999' AND
- Effective_Snapshot_Date  between '2008-10-01' and '2023-10-31'
+ Effective_Snapshot_Date  between '2008-10-01' and '2025-03-31'

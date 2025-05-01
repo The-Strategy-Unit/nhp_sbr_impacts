@@ -162,7 +162,7 @@ get_indicator_organisation_level_plot <-
       dplyr::filter(organisation_code == org_code_of_interest) |>
       dplyr::select(site_code, matching_organisation_code) |>
       unique() |>
-      dplyr::left_join(indicator,
+      dplyr::left_join(indicator|>mutate(organisation_code=as.character(organisation_code)),
                        c("matching_organisation_code" = "organisation_code"))
     
     plot <- plot_indicator(

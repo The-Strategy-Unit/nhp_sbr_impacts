@@ -13,13 +13,23 @@ get_available_beds_by_organisation <- function(data) {
 
 # To get the percentage of single bedrooms by organisation and date:
 get_percentage_single_bedrooms <- function(data, available_beds) {
+  
+  adjusted_available_beds<-available_beds|>
+    mutate(effective_snapshot_date=if_else(organisation_code=="RGM" & effective_snapshot_date=='2018-12-31',
+                                          as.Date('2019-03-31'), effective_snapshot_date))|>
+    mutate(effective_snapshot_date=if_else(effective_snapshot_date=='2010-06-30',
+                                          as.Date('2010-03-31'), effective_snapshot_date))|>
+    mutate(effective_snapshot_date=if_else(effective_snapshot_date=='2018-06-30',
+                                          as.Date('2018-03-31'), effective_snapshot_date))
+
+  
   data <- data |>
     dplyr::summarise(
       total_single_bedrooms = sum(total_single_bedrooms,
                                   na.rm = TRUE),
       .by = c(organisation_code, effective_snapshot_date)
     ) |>
-    dplyr::left_join(available_beds,
+    dplyr::left_join(adjusted_available_beds,
                      by = c("organisation_code",
                             "effective_snapshot_date")) |>
     dplyr::select(
@@ -133,7 +143,7 @@ combine_single_bedroom_matches <- function(single_bedrooms,
     find_single_bedroom_matches(single_bedrooms,
                                 "2019-03-31",
                                 "RGM") |>
-      site_type_filter(cardiac_sites, ref_org_sites),
+     site_type_filter(cardiac_sites, ref_org_sites),
     
     # peterborough_matches
     find_single_bedroom_matches(single_bedrooms,
@@ -156,7 +166,7 @@ combine_single_bedroom_matches <- function(single_bedrooms,
     # tunbridge_wells_matches
     find_single_bedroom_matches(single_bedrooms,
                                 "2011-03-31",
-                                "RWF") |>
+                               "RWF") |>
       site_type_filter(general_acute_sites, ref_org_sites)
   )
   

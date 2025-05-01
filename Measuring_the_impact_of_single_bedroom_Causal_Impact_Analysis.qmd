@@ -164,23 +164,17 @@ TBC...
 
 This work, analysis and report have been a team effort. The following people have made a material contribution to all or part of the development of this work and the various outputs:
 
-**Strategy Unit** - Peter Spilsbury, Simon Bourne, Jacqueline Grout, Jennifer Wood.
-<br>
-**New Hospitals Programme** - Cheryl Riotto, Anne White, Joanna Wood, Carolyn Akyil, Dr. Michael Weinbren.
-<br>
-**NHS England** - Joshua Igbineweka, Paul Smith
+**Strategy Unit** - Peter Spilsbury, Simon Bourne, Jacqueline Grout, Jennifer Wood. <br> **New Hospitals Programme** - Cheryl Riotto, Anne White, Joanna Wood, Carolyn Akyil, Dr. Michael Weinbren. <br> **NHS England** - Joshua Igbineweka, Paul Smith
 
 # Abstract
 
 Objectives: Traditionally, hospital beds have been in multi-bed bays, however, there has been a move towards single occupancy inpatient rooms. Numerical evidence on the impact of single rooms is limited. We sought to quantify the potential impacts of switching to single-bed accommodation to help inform the planning and design of future hospitals.
 
-Design & setting:
-We used causal impact analysis to quantify the change in productivity and efficiency measures (length of stay, waiting time, bed occupancy, emergency readmissions, cleaning costs), health and safety measures (in-hospital deaths, in-hospital falls and injuries, hospital acquired c.difficile), and patient and staff experience (Friends and Family Test for inpatient experience, staff survey, staff sickness and staff turnover) in 7 study hospitals in the English National Health Service that switched to entirely or majority single-bed rooms between 2010 to 2022, with the use of comparable control hospitals.
+Design & setting: We used causal impact analysis to quantify the change in productivity and efficiency measures (length of stay, waiting time, bed occupancy, emergency readmissions, cleaning costs), health and safety measures (in-hospital deaths, in-hospital falls and injuries, hospital acquired c.difficile), and patient and staff experience (Friends and Family Test for inpatient experience, staff survey, staff sickness and staff turnover) in 7 study hospitals in the English National Health Service that switched to entirely or majority single-bed rooms between 2010 to 2022, with the use of comparable control hospitals.
 
-Results: There was significant variability between hospitals following switching to single rooms. For bed occupancy, emergency readmissions and all health and safety measures there were either positive effects or no change. However, positive, negative and no effects were seen for length of stay, waiting time, cleaning costs, patient experience, and staff experience measures. Reduced length of stay could help offset additional costs associated with single room hospitals, however, at general acute hospitals there was no significant change in length of stay (8% reduction (-17% to 2% 95% CI)). At general acute hospitals the proportion of staff recommending their trust as a place to work significantly decreased by 15% (-23% to -6% 95% CI) and staff sickness absences increased by 6% (1% to 12% 95% CI). 
+Results: There was significant variability between hospitals following switching to single rooms. For bed occupancy, emergency readmissions and all health and safety measures there were either positive effects or no change. However, positive, negative and no effects were seen for length of stay, waiting time, cleaning costs, patient experience, and staff experience measures. Reduced length of stay could help offset additional costs associated with single room hospitals, however, at general acute hospitals there was no significant change in length of stay (8% reduction (-17% to 2% 95% CI)). At general acute hospitals the proportion of staff recommending their trust as a place to work significantly decreased by 15% (-23% to -6% 95% CI) and staff sickness absences increased by 6% (1% to 12% 95% CI).
 
-Conclusion: There was significant variability within measures and between hospitals. Most  indicator measures showed no consistent or significant change following a switch to single rooms, although staff do appear to be negatively affected in some ways. These findings are broadly in line with the published literature and also feedback from an independent listening exercise with representatives from these hospitals.
-
+Conclusion: There was significant variability within measures and between hospitals. Most indicator measures showed no consistent or significant change following a switch to single rooms, although staff do appear to be negatively affected in some ways. These findings are broadly in line with the published literature and also feedback from an independent listening exercise with representatives from these hospitals.
 
 # Introduction and background
 
@@ -375,7 +369,7 @@ Plots for each causal impact model are shown in appendix A (@sec-appendix-A). Th
 
 For example:
 
-::: columns
+:::::: columns
 ::: {.column width="40%"}
 ```{r, fig.width=5, fig.height=6}
 LoS_RGN <- tar_read(LoS_RGN)
@@ -384,7 +378,7 @@ cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
 ```
 :::
 
-::: {.column width="60%"}
+:::: {.column width="60%"}
 ::: {style="font-size: 85%;"}
 <br> <br>
 
@@ -398,8 +392,8 @@ cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
 
 3)  Cumulative difference between the expected and actual values over the outcome period. Our measures are typically rates and percentages, which are not additive over time like count data would be, so the cumulative effect can not always be meaningfully interpreted. Also, the cumulative difference cannot always be compared across sites, due to data issues resulting in differing lengths of outcome period.
 :::
-:::
-:::
+::::
+::::::
 
 **Forest plots** summarise the relative effect in the outcome period, which is the proportional change following a switch to single bedrooms compared to what would be expected had no change occurred. For example, for median length of stay at Peterborough hospital the effect size is -0.19 (with a 95% credible interval of -0.22 to -0.16), indicating a 19% decrease in the median length of stay. Points to the left of the zero line on the forest plot with a credible interval that does not cross zero indicate there was a significant decrease. Since a decrease in length of stay is a positive outcome the point is coloured green. Any significant negative effect effect, such as an increase in length of stay or a decrease in positive responses to Friends and Family test, are shown in red.
 
@@ -695,8 +689,7 @@ Not all sites switched entirely to single bed rooms and all sites had differing 
 
 We see some limited evidence that the rate of hospital acquired C. difficile infections may be reduced, but unfortunately it was not possible to assess other healthcare acquired infections (MSSA, MRSA, Klebsiella and P. aeruginosa) due to a lack of data availability before 2017. In addition, there is no data on other hospital acquired contagious illnesses, such as influenza and COVID-19, where the spread may be reduced by single bed rooms. It is possible that due to en suite bathrooms in single bedroom hospitals, that there is an increased risk of Legionella, due to increased pipework and bathrooms potentially not all being used regularly.
 
-The following table are a subjective rating of our confidence in the indicators to assess the impacts of SBR given the above caveats and limitations:
-<br>
+The following table are a subjective rating of our confidence in the indicators to assess the impacts of SBR given the above caveats and limitations: <br>
 
 ![](images/indicator_conf_rating.png)
 
@@ -720,7 +713,7 @@ Future work should focus on understanding how/whether outcomes in single room ho
 
 ### `r title_los` {#sec-appendix-A-los}
 
-::: panel-tabset
+::::::::::: panel-tabset
 #### Decrease
 
 ```{r, fig.width=5, fig.height=6}
@@ -748,7 +741,7 @@ Future work should focus on understanding how/whether outcomes in single room ho
 
 ```
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Peterborough
 
@@ -782,11 +775,11 @@ LoS_RVJ <- tar_read(LoS_RVJ)
 cia_summary_plots(LoS_RVJ, "Average LoS (days)", "2014-05-01")
 ```
 :::
-:::
+:::::
 
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Tunbridge Wells
 
@@ -810,11 +803,11 @@ LoS_REM <- tar_read(LoS_REM)
 cia_summary_plots(LoS_REM, "Average LoS (days)", "2022-10-01")
 ```
 :::
-:::
+:::::
 
 #### Increase
 
-::: columns
+:::: columns
 ::: {.column width="50%"}
 Clatterbridge
 
@@ -826,15 +819,15 @@ LoS_REN <- tar_read(LoS_REN)
 cia_summary_plots(LoS_REN, "Average LoS (days)", "2020-06-01")
 ```
 :::
-:::
-:::
+::::
+:::::::::::
 
 ### `r title_wait_time_median` {#sec-appendix-A-waiting-time}
 
-::: panel-tabset
+::::::::::: panel-tabset
 #### Decrease
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Royal Liverpool
 
@@ -863,11 +856,11 @@ cia_summary_plots(waiting_time_median_RGN,
                   "2010-11-01")
 ```
 :::
-:::
+:::::
 
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Clatterbridge
 
@@ -929,11 +922,11 @@ cia_summary_plots(waiting_time_median_RGM,
 #                   "Median waiting time (wks)",
 #                   "2014-05-01")
 ```
-:::
+:::::
 
 #### Increase
 
-::: columns
+:::: columns
 ::: {.column width="50%"}
 Tunbridge Wells
 
@@ -948,15 +941,15 @@ cia_summary_plots(waiting_time_median_RWF,
                   "2011-01-01")
 ```
 :::
-:::
-:::
+::::
+:::::::::::
 
 ### `r title_bed_occup` {#sec-appendix-A-bed-occupancy}
 
-::: panel-tabset
+::::::::: panel-tabset
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Chase Farm
 
@@ -980,11 +973,11 @@ bed_occupancy_REM <- tar_read(bed_occupancy_REM)
 cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
 ```
 :::
-:::
+:::::
 
 #### Increase
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Clatterbridge
 
@@ -1008,17 +1001,17 @@ bed_occupancy_RVJ <- tar_read(bed_occupancy_RVJ)
 cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 ```
 :::
-:::
+:::::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
+:::::::::
 
 ### `r title_readmissions` {#sec-appendix-A-readmissions}
 
-::: panel-tabset
+::::::::: panel-tabset
 #### Decrease
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Clatterbridge
 
@@ -1052,11 +1045,11 @@ emergency_readmissions_RWF <- tar_read(emergency_readmissions_RWF)
 cia_summary_plots(emergency_readmissions_RWF, "% readmissions", "2011-01-01")
 ```
 :::
-:::
+:::::
 
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Royal Liverpool
 
@@ -1100,15 +1093,15 @@ emergency_readmissions_RVJ <- tar_read(emergency_readmissions_RVJ)
 cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 ```
 :::
-:::
-:::
+:::::
+:::::::::
 
 ### `r title_cleaning` {#sec-appendix-A-cleaning}
 
-::: panel-tabset
+:::::::: panel-tabset
 #### Decrease
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Papworth (RGM)
 
@@ -1142,13 +1135,13 @@ cleaning_costs_REN <- tar_read(cleaning_costs_REN)
 cia_summary_plots(cleaning_costs_REN, "Cost", "2020-06-01")
 ```
 :::
-:::
+:::::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 
 #### Increase
 
-::: columns
+:::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
 
@@ -1160,17 +1153,17 @@ cleaning_costs_REM <- tar_read(cleaning_costs_REM)
 cia_summary_plots(cleaning_costs_REM, "Cost", "2022-10-01")
 ```
 :::
-:::
+::::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
+::::::::
 
 ### `r title_deaths` {#sec-appendix-A-deaths}
 
-::: panel-tabset
+::::::::: panel-tabset
 #### Decrease
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Peterborough
 
@@ -1185,11 +1178,11 @@ cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 
 ::: {.column width="50%"}
 :::
-:::
+:::::
 
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Royal Liverpool
 
@@ -1237,12 +1230,12 @@ sus_deaths_REN <- tar_read(sus_deaths_REN)
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 ```
 :::
-:::
-:::
+:::::
+:::::::::
 
 ### `r title_falls_fractures` {#sec-appendix-A-falls-frac}
 
-::: panel-tabset
+:::::: panel-tabset
 #### Decrease
 
 Peterborough
@@ -1257,7 +1250,7 @@ cia_summary_plots(falls_and_fractures_RGN, "% of spells", "2010-11-01")
 
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Royal Liverpool
 
@@ -1293,8 +1286,8 @@ falls_and_fractures_RWF <- tar_read(falls_and_fractures_RWF)
 cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 ```
 :::
-:::
-:::
+:::::
+::::::
 
 ### `r title_cdiff` {#sec-appendix-A-cdiff}
 
@@ -1342,7 +1335,7 @@ cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2022-10-01")
 
 ### `r title_friends_family` {#sec-appendix-A-friends-family}
 
-::: panel-tabset
+:::::: panel-tabset
 #### Decrease
 
 Clatterbridge (REN)
@@ -1371,7 +1364,7 @@ cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01"
 
 #### No Change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REMRQ)
 
@@ -1407,15 +1400,15 @@ friends_and_family_RVJ <- tar_read(friends_and_family_RVJ)
 cia_summary_plots(friends_and_family_RVJ, "Positive responses (%)", "2014-05-01")
 ```
 :::
-:::
-:::
+:::::
+::::::
 
 ### `r title_staff_sickness` {#sec-appendix-A-staff-sickness}
 
-::: panel-tabset
+::::::::: panel-tabset
 #### Increase
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Southmead (RVJ)
 
@@ -1439,11 +1432,11 @@ staff_sickness_RWF <- tar_read(staff_sickness_RWF)
 cia_summary_plots(staff_sickness_RWF, "Sickness Rate (%)", "2011-01-01")
 ```
 :::
-:::
+:::::
 
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
 
@@ -1497,14 +1490,14 @@ staff_sickness_RAL <- tar_read(staff_sickness_RAL)
 cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 ```
 :::
-:::
-:::
+:::::
+:::::::::
 
 ### `r title_staff_turnover` {#sec-appendix-A-staff-turnover}
 
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
 
@@ -1538,7 +1531,7 @@ staff_turnover_REN <- tar_read(staff_turnover_REN)
 cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2020-06-01")
 ```
 :::
-:::
+:::::
 
 ### `r title_staff_survey` {#sec-appendix-A-staff-survey}
 
@@ -1594,10 +1587,10 @@ Peterborough_analysis |>
   ) * 100))
 ```
 
-::: panel-tabset
+::::::::::: panel-tabset
 #### Decrease
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Clatterbridge (REN)
 
@@ -1623,11 +1616,11 @@ cia_summary_plots(staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
 :::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
+:::::
 
 #### No change
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
 
@@ -1663,13 +1656,13 @@ staff_survey_RAL <- tar_read(staff_survey_RAL)
 cia_summary_plots(staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
 ```
 :::
-:::
+:::::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 
 #### Increase
 
-::: columns
+:::: columns
 ::: {.column width="50%"}
 Papworth (RGM)
 
@@ -1681,10 +1674,10 @@ staff_survey_RGM <- tar_read(staff_survey_RGM)
 cia_summary_plots(staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 ```
 :::
-:::
+::::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::
+:::::::::::
 
 ## B. Notes on data quality and suitability (for CIA) {#sec-appendix-B}
 

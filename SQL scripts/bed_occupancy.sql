@@ -6,10 +6,10 @@ SELECT
 	Available.Sector,
 	Available.Report_Period_Length,
 	Available.Number_Of_Beds AS Available,
-	Occupied.Number_Of_Beds AS Occupied,
-	CASE WHEN Available.Number_Of_Beds = 0 AND Occupied.Number_Of_Beds = 0 THEN NULL
-		ELSE Occupied.Number_Of_Beds / Available.Number_Of_Beds 
-		END AS Bed_Occupancy
+	Occupied.Number_Of_Beds AS Occupied
+---	CASE WHEN Available.Number_Of_Beds = 0 AND Occupied.Number_Of_Beds = 0 THEN NULL
+----		ELSE Occupied.Number_Of_Beds / Available.Number_Of_Beds 
+----		END AS Bed_Occupancy
 
 FROM [UKHF_Bed_Availability].[Provider_By_Sector_Available_Overnight_Beds1_1] AS Available
 

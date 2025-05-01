@@ -306,6 +306,7 @@ indicator_availability_over_time <-
     
     indicators <-
       data.frame(group, measure, level, start_date, end_date) |>
+      mutate(end_date=if_else(end_date>'2024-12-31', as.Date('2024-12-31'), end_date))|>
       gather(key = type, value = range, -group, -measure, -level) |>
       mutate(range = as.Date(range)) |>
       mutate(measure = factor(
@@ -406,7 +407,7 @@ indicator_availability_over_time <-
         text = element_text(size = 11)
       ) +
       scale_x_date(date_breaks = "1 year", date_labels = "%Y",
-                   limits = as.Date(c('2008-04-01', '2023-12-31'))) +
+                   limits = as.Date(c('2008-04-01', '2024-12-31'))) +
       coord_cartesian(clip = 'off')
     
     b <-
@@ -436,7 +437,7 @@ indicator_availability_over_time <-
         linewidth = 0.8
       ) +
       scale_x_date(date_breaks = "1 year", date_labels = "%Y" ,
-                   limits = as.Date(c('2008-04-01', '2023-12-31'))) +
+                   limits = as.Date(c('2008-04-01', '2024-12-31'))) +
       coord_cartesian(clip = 'off')
     
     c <-
@@ -466,7 +467,7 @@ indicator_availability_over_time <-
       scale_x_date(
         date_breaks = "1 year",
         date_labels = "%Y",
-        limits = as.Date(c('2008-04-01', '2023-12-31'))
+        limits = as.Date(c('2008-04-01','2024-12-31'))
       ) +
       coord_cartesian(clip = 'off')
     

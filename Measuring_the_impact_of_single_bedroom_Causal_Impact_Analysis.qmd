@@ -1291,8 +1291,12 @@ cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 
 ### `r title_cdiff` {#sec-appendix-A-cdiff}
 
+:::::: panel-tabset
+
 #### Decrease
 
+::: columns
+::: {.column width="50%"}
 Chase Farm
 
 ```{r, fig.width=5, fig.height=6}
@@ -1302,7 +1306,9 @@ cdiff_RAL <- tar_read(cdiff_RAL)
 
 cia_summary_plots(cdiff_RAL, "Rate/10,000 beddays", "2018-09-01")
 ```
+:::
 
+::: {.column width="50%"}
 Southmead
 
 ```{r, fig.width=5, fig.height=6}
@@ -1312,6 +1318,9 @@ cdiff_RVJ <- tar_read(cdiff_RVJ)
 
 cia_summary_plots(cdiff_RVJ, "Rate/10,000 beddays", "2014-05-01")
 ```
+:::
+:::
+
 
 #### No change
 
@@ -1332,6 +1341,7 @@ hcai_REN <- tar_read(hcai_REN)
 
 cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2022-10-01")
 ```
+::::::
 
 ### `r title_friends_family` {#sec-appendix-A-friends-family}
 

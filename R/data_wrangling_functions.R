@@ -54,6 +54,7 @@ standardise_staff_group <- function(staff_group) {
 #### Bed Occupancy functions ####
 wrangle_bed_occupancy <- function(bed_occupancy_file) {
   data <- read_sql_output(bed_occupancy_file) |>
+    mutate(bed_occupancy=occupied/available)|>
     dplyr::mutate(bed_occupancy = as.numeric(bed_occupancy))
   
   return(data)

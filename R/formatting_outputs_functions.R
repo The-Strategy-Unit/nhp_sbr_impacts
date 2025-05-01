@@ -344,15 +344,15 @@ get_title <- function(indicator) {
   return(title)
 }
 
-# get_sbr_details <- function(data){
-#   data <- data |>
-#     dplyr::mutate(
-#       pre_sbr_perc = round(pre_sbr * 100 / post_all, 2),
-#       post_sbr_perc = round(post_sbr * 100 / post_all, 2),
-#       date = format(date, "%b %Y"))
-#   
-#   return(data)
-# }
+ get_sbr_details <- function(data){
+   data <- data |>
+     dplyr::mutate(
+       pre_sbr_perc = round(pre_sbr * 100 / post_all, 2),
+       post_sbr_perc = round(post_sbr * 100 / post_all, 2),
+      date = format(date, "%b %Y"))
+   
+   return(data)
+ }
 
 get_sbr_details_table <- function(data){
   table <- data |>

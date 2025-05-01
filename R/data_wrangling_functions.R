@@ -23,7 +23,7 @@ read_sql_output <- function(filename) {
   data <- read.csv(filename) |>
     janitor::clean_names() |>
     dplyr::mutate(effective_snapshot_date = as.Date(effective_snapshot_date,
-                                                    format = "%d/%m/%Y"))
+                                                    format = "%Y-%m-%d"))
   
   return(data)
 }
@@ -64,16 +64,16 @@ wrangle_bed_occupancy <- function(bed_occupancy_file) {
 
 #### ERIC functions ####
 # To wrangle the eric data from sql and combine the two files:
-wrangle_eric <- function(eric_09_15, eric_16_23) {
+wrangle_eric <- function(eric_09_15, eric_16_25) {
   data <- read.csv(eric_09_15) |>
-    dplyr::bind_rows(read.csv(eric_16_23)) |>
+    mutate(effective_snapshot_date = as.Date(effective_snapshot_date,
+                                             format = "%d/%m/%Y"))|>
+    dplyr::bind_rows(read.csv(eric_16_25)|>mutate(effective_snapshot_date = as.Date(effective_snapshot_date,
+                                                                                    format ="%d/%m/%Y"))) |>
     get_single_bedrooms() |>
     dplyr::mutate(
-      value = as.numeric(value),
-      effective_snapshot_date = as.Date(effective_snapshot_date,
-                                        format = "%d/%m/%Y")
-    )
-  
+      value = as.numeric(value))
+
   return(data)
 }
 
@@ -180,7 +180,7 @@ wrangle_shmi <- function(shmi_file) {
 #### Turnover functions ####
 # To wrangle the turnover data from sql:
 wrangle_turnover <- function(turnover_file) {
-  data <- read_sql_output("Data/sql_turnover.csv") |>
+  data <- read_sql_output("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/sql_turnover.csv") |>
     dplyr::rename(
       "organisation_code" = org_code,
       "turnover_headcount" = head_count,
@@ -604,7 +604,7 @@ rtt_data_formatting <- function(data) {
   
   assign("pre2011_rtt_data", pre2011_rtt_data, envir = .GlobalEnv)
   
-  # RTT Waiting times April 2011 to Oct 2023
+  # RTT Waiting times April 2011 to March 2025
   rtt_data <- read.csv(data) |>
     clean_names() |>
     mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
@@ -667,7 +667,7 @@ friends_and_family_scores_data_formatting <-
     #Post 2022-07 data
     friends_and_family_scores_data2 <- read.csv(data2) |>
       clean_names() |>
-      mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%d/%m/%Y")) |> #Format date
+      mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
       mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
       filter(measure_category == "Percentage Positive") |>
       mutate(percent = as.numeric(measure_value) * 100) |>
@@ -691,7 +691,7 @@ friends_and_family_scores_data_formatting <-
 staff_sickness_absence_formatting <- function(data) {
   sickness_absence_data <- read.csv(data) |>
     clean_names() |>
-    mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%d/%m/%Y")) |> #Format date
+    mutate(effective_snapshot_date = as.Date(effective_snapshot_date, "%Y-%m-%d")) |> #Format date
     mutate(month = floor_date(effective_snapshot_date, "month")) |> #Format date to monthly
     select(-organisation_type, -effective_snapshot_date) |>
     mutate(fte_days_sick = as.numeric(fte_days_sick)) |>
@@ -916,7 +916,8 @@ staff_survey_formatting <-
            staff_survey_2020,
            staff_survey_2021,
            staff_survey_2022,
-           staff_survey_2023) {
+           staff_survey_2023,
+           staff_survey_2024) {
     survey_data_2008 <- read.csv(staff_survey_2008)
     survey_data_2009 <- read.csv(staff_survey_2009)
     survey_data_2010 <- read.csv(staff_survey_2010)
@@ -933,26 +934,27 @@ staff_survey_formatting <-
     survey_data_2021 <- read.csv(staff_survey_2021)
     survey_data_2022 <- read.csv(staff_survey_2022)
     survey_data_2023 <- read.csv(staff_survey_2023)
+    survey_data_2024 <- read.csv(staff_survey_2024)
     
     
-    survey_data <- survey_data_2008 |>
-      full_join(survey_data_2009, by = c("organisation_code")) |>
-      full_join(survey_data_2010, by = c("organisation_code")) |>
-      full_join(survey_data_2011, by = c("organisation_code")) |>
-      full_join(survey_data_2012, by = c("organisation_code")) |>
-      full_join(survey_data_2013, by = c("organisation_code")) |>
-      full_join(survey_data_2014, by = c("organisation_code")) |>
-      full_join(survey_data_2015, by = c("organisation_code")) |>
-      full_join(survey_data_2016, by = c("organisation_code")) |>
-      full_join(survey_data_2017, by = c("organisation_code")) |>
-      full_join(survey_data_2018, by = c("organisation_code")) |>
-      full_join(survey_data_2019, by = c("organisation_code")) |>
-      full_join(survey_data_2020, by = c("organisation_code")) |>
-      full_join(survey_data_2021, by = c("organisation_code")) |>
-      full_join(survey_data_2022, by = c("organisation_code")) |>
-      full_join(survey_data_2023, by = c("organisation_code")) |>
-      gather(key = "year", value = "positive_responses", -organisation_code) |>
-      mutate(year = str_sub(year, -4, -1))
+    survey_data <- 
+     rbind(survey_data_2008|>mutate(year="2008")|>rename(positive_responses=X2008),
+      survey_data_2009|>mutate(year="2009")|>rename(positive_responses=X2009), 
+      survey_data_2010|>mutate(year="2010")|>rename(positive_responses=X2010),
+      survey_data_2011|>mutate(year="2011")|>rename(positive_responses=X2011),
+      survey_data_2012|>mutate(year="2012")|>rename(positive_responses=X2012),
+      survey_data_2013|>mutate(year="2013")|>rename(positive_responses=X2013),
+      survey_data_2014|>mutate(year="2014")|>rename(positive_responses=X2014),
+      survey_data_2015|>mutate(year="2015")|>rename(positive_responses=X2015),
+      survey_data_2016|>mutate(year="2016")|>rename(positive_responses=X2016),
+      survey_data_2017|>mutate(year="2017")|>rename(positive_responses=X2017),
+      survey_data_2018|>mutate(year="2018")|>rename(positive_responses=X2018),
+      survey_data_2019|>mutate(year="2019")|>rename(positive_responses=X2019),
+      survey_data_2020|>mutate(year="2020")|>rename(positive_responses=X2020),
+      survey_data_2021|>mutate(year="2021")|>rename(positive_responses=X2021),
+      survey_data_2022|>mutate(year="2022")|>rename(positive_responses=X2022),
+      survey_data_2023|>mutate(year="2023")|>rename(positive_responses=X2023),
+      survey_data_2024|>mutate(year="2024")|>rename(positive_responses=X2024))
     
     return(survey_data)
   }

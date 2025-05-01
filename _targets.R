@@ -57,7 +57,7 @@ list(
   # Bed occupancy data
   tar_target(
     bed_occupancy_filepath,
-    "Data/sql_bed_occupancy.csv",
+    "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/sql_bed_occupancy.csv",
     format = "file"
   ),
   
@@ -67,12 +67,12 @@ list(
   ),
   
   # ERIC data
-  tar_target(eric_09_15_filepath, "data/sql_eric_09_15.csv", format = "file"),
-  tar_target(eric_16_23_filepath, "data/sql_eric_16_23.csv", format = "file"),
+  tar_target(eric_09_15_filepath, "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/sql_eric_09_15.csv", format = "file"),
+  tar_target(eric_16_25_filepath, "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/sql_eric_16_25.csv", format = "file"),
   
   tar_target(
     eric_udal,
-    wrangle_eric(eric_09_15_filepath, eric_16_23_filepath)
+    wrangle_eric(eric_09_15_filepath, eric_16_25_filepath)
   ),
   tar_target(eric_09,
              get_single_bedrooms_for_2009_10(2009)),
@@ -84,26 +84,26 @@ list(
   ),
   
   # SHMI data
-  tar_target(shmi_filepath, "Data/sql_shmi.csv", format = "file"),
+  #tar_target(shmi_filepath, "Data/sql_shmi.csv", format = "file"),
   
-  tar_target(formatted_shmi,
-             wrangle_shmi(shmi_filepath)),
+ # tar_target(formatted_shmi,
+  #           wrangle_shmi(shmi_filepath)),
   
   # Turnover
-  tar_target(turnover_filepath, "Data/sql_turnover.csv", format = "file"),
+  tar_target(turnover_filepath, "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/sql_turnover.csv", format = "file"),
   
   tar_target(formatted_turnover,
              wrangle_turnover(turnover_filepath)),
   
   # Workforce
-  tar_target(workforce_udal_filepath, "Data/sql_workforce.csv",
+  tar_target(workforce_udal_filepath, "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/sql_workforce.csv",
              format = "file"),
   
   tar_target(workforce_udal, read.csv(workforce_udal_filepath)),
   
   tar_target(
     workforce_links_filepath,
-    "Data/links_workforce.xlsx",
+    "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/links_workforce.xlsx",
     format = "file"
   ),
   tar_target(workforce_links, read_excel(workforce_links_filepath)),
@@ -116,34 +116,34 @@ list(
   # SUS various
   tar_target(
     beddays,
-    fun_load_beddays("Data/nhp_hospsite_beddays_mth.csv")
+    fun_load_beddays("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_hospsite_beddays_mth.csv")
   ),
   tar_target(
     sus_apcs,
-    fun_load_sus_apcs("Data/nhp_hospsite_apcs_mth.csv", beddays)
+    fun_load_sus_apcs("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_hospsite_apcs_mth.csv", beddays)
   ),
   tar_target(
     sus_cost_yr,
-    fun_load_sus_cost_yr("Data/nhp_hospsite_costs_yr.csv")
+    fun_load_sus_cost_yr("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_hospsite_costs_yr.csv")
   ),
   tar_target(
     sus_cost_mth,
-    fun_load_sus_cost_mth("Data/nhp_hospsite_costs_mth.csv")
+    fun_load_sus_cost_mth("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_hospsite_costs_mth.csv")
   ),
   tar_target(
     sus_readmit,
-    fun_load_sus_readmit("Data/nhp_sbr_readmit.csv")
+    fun_load_sus_readmit("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_sbr_readmit.csv")
   ),
   tar_target(sus_los,
-             fun_load_sus_los("Data/nhp_sbr_los.csv")),
+             fun_load_sus_los("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_sbr_los.csv")),
   tar_target(sus_falls,
-             fun_load_sus_falls("Data/nhp_sbr_falls.csv")),
+             fun_load_sus_falls("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_sbr_falls.csv")),
   tar_target(sus_ages,
-             fun_load_sus_ages("Data/nhp_sbr_admit_age.csv")),
+             fun_load_sus_ages("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_sbr_admit_age.csv")),
   tar_target(sus_deaths,
-             fun_load_sus_deaths("Data/nhp_sbr_deaths.csv")),
+             fun_load_sus_deaths("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_sbr_deaths.csv")),
   tar_target(ods_sites,
-             fun_load_ods_sites("Data/ods_geocoded.csv")),
+             fun_load_ods_sites("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/ods_geocoded.csv")),
   
   # rtt waiting times
   tar_target(
@@ -158,7 +158,7 @@ list(
     formatted_friends_and_family_data,
     friends_and_family_scores_data_formatting(
       "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/friends_and_family_inpatient_scores.csv",
-      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/friend_and_family_inpatient_scores_post_Jul2022.csv"
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/friends_and_family_inpatient_scores_post_Jul2022.csv"
     )
   ),
   
@@ -166,42 +166,43 @@ list(
   tar_target(
     formatted_HCAI_data,
     hcai_formatting(
-      "Data/hai_cdiff_pre_2018.csv",
-      "Data/hai_cdiff.csv",
-      "Data/hai_ecoli.csv",
-      "Data/hai_klebsiella.csv",
-      "Data/hai_mssa.csv",
-      "Data/hai_mrsa.csv",
-      "Data/hai_p_aeruginosa.csv"
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/hai_cdiff_pre_2018.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/hai_cdiff.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/hai_ecoli.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/hai_klebsiella.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/hai_mssa.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/hai_mrsa.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/hai_p_aeruginosa.csv"
     )
   ),
   
   # Staff sickness
   tar_target(
     formatted_staff_sickness_absence,
-    staff_sickness_absence_formatting("Data/staff_sickness_absence.csv")
+    staff_sickness_absence_formatting("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_sickness_absence.csv")
   ),
   
   #Staff survey
   tar_target(
     formatted_staff_survey_data,
     staff_survey_formatting(
-      "Data/staff_survey_2008.csv",
-      "Data/staff_survey_2009.csv",
-      "Data/staff_survey_2010.csv",
-      "Data/staff_survey_2011.csv",
-      "Data/staff_survey_2012.csv",
-      "Data/staff_survey_2013.csv",
-      "Data/staff_survey_2014.csv",
-      "Data/staff_survey_2015.csv",
-      "Data/staff_survey_2016.csv",
-      "Data/staff_survey_2017.csv",
-      "Data/staff_survey_2018.csv",
-      "Data/staff_survey_2019.csv",
-      "Data/staff_survey_2020.csv",
-      "Data/staff_survey_2021.csv",
-      "Data/staff_survey_2022.csv",
-      "Data/staff_survey_2023.csv"
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2008.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2009.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2010.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2011.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2012.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2013.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2014.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2015.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2016.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2017.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2018.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2019.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2020.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2021.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2022.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2023.csv",
+      "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/staff_survey_2024.csv"
     )
   ),
   
@@ -285,7 +286,7 @@ list(
   
   ## adding data on median ages:
   tar_target(med_age,
-             get_med_age_by_site("Data/nhp_sbr_admit_age.csv")),
+             get_med_age_by_site("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_sbr_admit_age.csv")),
   
   tar_target(med_age_matches,
              combine_med_age_matches(med_age)),
@@ -299,7 +300,7 @@ list(
   ## adding data on elective ratio:
   tar_target(
     elec_ratio,
-    get_elec_ratio_by_site("Data/nhp_sbr_bedmix.csv")
+    get_elec_ratio_by_site("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/nhp_sbr_bedmix.csv")
   ),
   
   tar_target(elec_ratio_matches,
@@ -421,8 +422,8 @@ list(
   tar_target(
     staff_survey_cia_format,
     staff_survey_cia_formatting(formatted_staff_survey_data)
-  ),
-  
+),
+ 
   
   # Single bed rooms
   tar_target(
@@ -774,7 +775,7 @@ list(
                                "RAL",
                                "RVJ",
                                "RWF")
-    ),
+  ),
     tar_target(
       map,
       map_controls(
@@ -784,7 +785,7 @@ list(
         ods_sites
       )
     )
-  ),
+ ),
   
   #----------------------------------------------------------------------------#
   #### Indicator availability plots ####
@@ -802,7 +803,7 @@ list(
       sus_deaths_cia_format,
       rtt_waiting_time_cia_format,
       bed_occupancy_cia_format,
-      length_of_stay_cia_format,
+     length_of_stay_cia_format,
       emergency_readmissions_cia_format,
       cleaning_costs_cia_format
     )
@@ -1047,7 +1048,7 @@ list(
         bed_occupancy,
         cia_analysis(
           org_code_of_interest,
-          bed_occupancy_cia_format,
+          bed_occupancy_cia_format|>filter(occupied!=0),
           "bed_occupancy",
           prior_sd,
           control_pool,
@@ -1064,7 +1065,8 @@ list(
     hcai_REM,
     cia_analysis(
       "REM",
-      hcai_cia_format,
+      hcai_cia_format|>
+        filter(!is.nan(combined_rate) & !is.infinite(combined_rate)),
       "combined_rate",
       0.1,
       control_pool,
@@ -1076,10 +1078,11 @@ list(
     hcai_REN,
     cia_analysis(
       "REN",
-      hcai_cia_format,
+      hcai_cia_format|>
+        filter(!is.nan(combined_rate) & !is.infinite(combined_rate)),
       "combined_rate",
-      0.05,
-      single_bedroom_matches_final,
+     0.05,
+     single_bedroom_matches_final,
       hospitals
     )
   ),
@@ -1244,7 +1247,7 @@ list(
     0.05,
     "RGN",
     0.1,
-    "RAL",
+   "RAL",
     0.05,
     "RVJ",
     0.05,
@@ -1370,7 +1373,7 @@ list(
         cleaning_costs,
         cia_analysis(
           org_code_of_interest,
-          cleaning_costs_cia_format,
+          cleaning_costs_cia_format|>filter(!is.na(cleaning_service_cost)),
           "cleaning_service_cost",
           prior_sd,
           control_pool,
@@ -1468,8 +1471,8 @@ list(
                           NA,
                           NA,
                           NA,
-                          NA,
-                          NA)),
+                         NA,
+                         NA)),
   
   tar_target(
     cdiff_output,
@@ -1576,8 +1579,8 @@ list(
   
   #----------------------------------------------------------------------------#
   #### Formatting Quarto outputs ####
-  # tar_target(sbr_details,
-  #            get_sbr_details(hospitals)),
+   tar_target(sbr_details,
+              get_sbr_details(hospitals)),
   tar_target(sbr_details_table,
              get_sbr_details_table(hospitals)),
   tar_target(

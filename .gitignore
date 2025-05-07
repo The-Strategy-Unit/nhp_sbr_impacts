@@ -64,3 +64,6 @@ _targets/
 #for gh pages
 /.quarto/
 /_site/
+
+# Report
+*.html

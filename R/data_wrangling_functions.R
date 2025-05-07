@@ -189,7 +189,6 @@ wrangle_turnover <- function(turnover_file) {
     ) |>
     dplyr::mutate(staff_group = standardise_staff_group(staff_group))
   
-  
   return(data)
   
 }

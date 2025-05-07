@@ -780,7 +780,7 @@ mean_forest_plot_DGH_Acute <- function(data, subtitle) {
   ))
   # final plot arrangement
   p_left + p_mid + p_right + plot_layout(design = layout) +
-    plot_annotation(subtitle = subtitle,
+    plot_annotation(subtitle = str_wrap(subtitle, 90),
                     theme = theme(
                       plot.subtitle = element_text(
                         hjust = 0,

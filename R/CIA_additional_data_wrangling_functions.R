@@ -106,6 +106,7 @@ staff_turnover_cia_formatting <- function(data) {
       .by = c(month, organisation_code, type)
     ) |>
     pivot_wider(names_from = type, values_from = turnover_fte) |>
+    mutate(Denoms=if_else(is.na(Denoms), `Denominator at end of period`, Denoms))|>
     mutate(leaving_rate = (Leavers / Denoms) * 100) |>
     filter(month >= '2018-08-01') |> #no leavers or joiners before this date
     mutate(leaving_rate = ifelse(is.na(leaving_rate), 0, leaving_rate)) |>
@@ -399,6 +400,7 @@ cleaning_costs_cia_formatting <- function(data) {
     rbind( c(NA, '2015-03-01', NA))|>
     rbind( c(NA, '2020-03-01', NA))|>
     rbind( c(NA, '2021-03-01', NA ))|>
+    rbind( c(NA, '2024-03-01', NA ))|>
     mutate(occupied_floor_area_m2=as.numeric(occupied_floor_area_m2))|>
     spread(key=site_code, value=occupied_floor_area_m2)|>
     within(REN22[month == '2020-03-01'] <- REN22[month == '2019-03-01'])|>

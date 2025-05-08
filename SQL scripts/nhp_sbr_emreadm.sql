@@ -13,14 +13,14 @@ into [NHSE_Sandbox_StrategyUnit].dbo.nhp_sbr_emreadm
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS a
 left outer join (Select Der_Pseudo_NHS_Number, APCS_Ident as APCS_Ident2, Admission_Date as Admission_Date2, Discharge_Date as Discharge_Date2
 			from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-			where Admission_Date between '2008-04-01' AND '2023-12-31'
+			where Admission_Date between '2008-04-01' AND '2025-03-31'
 			and Patient_Classification = '1'
 			--and Der_Admit_Treatment_Function_Code not in ('656','700','710','711','712','713','715','720','721','722','723','724','725','726','727','730')
 			and left(Admission_Method,1) = '2') b
 			on a.Der_Pseudo_NHS_Number = b.Der_Pseudo_NHS_Number
 			and datediff(dd,a.discharge_date, b.Admission_Date2) between 0 and 29
 
-where a.discharge_date between '2008-04-01' AND '2023-11-30'
+where a.discharge_date between '2008-04-01' AND '2025-03-31'
 and Discharge_Method in ('1','3')
 and Patient_Classification = '1'
 --and Der_Admit_Treatment_Function_Code not in ('656','700','710','711','712','713','715','720','721','722','723','724','725','726','727','730')
@@ -64,13 +64,13 @@ drop table #3
 ----## full extract to take to R
 select *
 from [NHSE_Sandbox_StrategyUnit].dbo.nhp_sbr_emreadm_agg
-where left(Der_Provider_Site_Code,1) = 'R'
+where (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 order by Der_Provider_Site_Code, yr_mth
 
 ----## testing the (national) time series for scale and consistency
 select yr_mth, sum(admits) as admits, sum(readmits) as readmits
 , sum(cast(readmits as float))/sum(cast(admits as float)) *1.0
 from [NHSE_Sandbox_StrategyUnit].dbo.nhp_sbr_emreadm_agg
-where left(Der_Provider_Site_Code,1) = 'R'
+where (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by yr_mth
 order by yr_mth

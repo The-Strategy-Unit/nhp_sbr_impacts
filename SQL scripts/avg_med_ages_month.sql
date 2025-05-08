@@ -7,7 +7,7 @@ select Der_Provider_Site_Code, apcs_ident, Age_At_Start_of_Spell_SUS
 into #1
 
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-04-01' and '2023-11-30'
+where Admission_Date between '2008-04-01' and '2025-03-31'
 and Age_At_Start_of_Spell_SUS between 0 and 115
 
 ----## grouped provider and period with count and mean age
@@ -46,5 +46,5 @@ drop table #4
 
 ----## table for extract to file
 Select * from [NHSE_Sandbox_StrategyUnit].dbo.nhp_sbr_ages
-where left(Der_Provider_Site_Code,1) = 'R'
+where (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 order by der_provider_site_code, yr_mth

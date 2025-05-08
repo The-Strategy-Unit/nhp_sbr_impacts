@@ -8,9 +8,9 @@ into #1
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
 where Patient_Classification = '1' ---ordinary admissions only
 and left(Admission_Method,1) in ('1','2') ---elective and emergency only
-and Admission_Date between '2008-04-01' AND '2023-11-30' ---full study period
+and Admission_Date between '2008-04-01' AND '2025-03-31' ---full study period
 and Discharge_Date is not NULL ---completed spells only
-and left(der_provider_code, 1) = 'R' ---NHS trusts only
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A') ---NHS trusts only + Midlands Met
 
 group by Der_Provider_Code, Der_Provider_Site_Code
 , Der_Financial_Year
@@ -25,4 +25,4 @@ from #1
 ----## for extract to R
 Select *
 from [NHSE_Sandbox_StrategyUnit].dbo.[nhp_sbr_bedmix]
-order by Der_Provider_Code, Der_Provider_Site_Code, Der_Financial_Year
+order by Der_Provider_Site_Code, Der_Financial_Year

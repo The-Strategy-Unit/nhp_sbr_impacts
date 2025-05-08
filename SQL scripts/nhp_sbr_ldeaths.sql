@@ -15,9 +15,9 @@ on a.Der_Pseudo_NHS_Number = b.Der_Pseudo_NHS_Number
 and datediff(dd,a.discharge_date, b.REG_DATE_OF_DEATH) between 0 and 29
 where Patient_Classification = '1' ---ordinary admissions only
 and Discharge_Method != '5' ---exclude stillbirths
-and Discharge_Date between '2008-04-01' AND '2023-11-30' ---full study period apr 08 to nov 23
+and Discharge_Date between '2008-04-01' AND '2025-03-31' ---full study period apr 08 to mar 25
 and Discharge_Date is not NULL ---completed spells only
-and left(der_provider_code, 1) = 'R' ---NHS trusts only
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A') ---NHS trusts only + mid met
 
 group by Der_Provider_Code, Der_Provider_Site_Code
 , cast(datepart(yyyy, Discharge_Date) as varchar) + '-' + (case when datepart(mm, Discharge_Date) < 10 then '0'+ cast(datepart(mm, Discharge_Date) as varchar) else cast(datepart(mm, Discharge_Date) as varchar) end)
@@ -25,4 +25,4 @@ group by Der_Provider_Code, Der_Provider_Site_Code
 ----## for extract to R
 Select *
 from [NHSE_Sandbox_StrategyUnit].dbo.[nhp_sbr_deaths]
-order by Der_Provider_Code, Der_Provider_Site_Code, yr_mth
+order by Der_Provider_Site_Code, yr_mth

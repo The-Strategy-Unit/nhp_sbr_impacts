@@ -55,33 +55,33 @@ set @start_date8 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.month
 declare @end_date8 date;
 set @end_date8 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period8)
 
---declare @period9 varchar(10);
---set @period9 = '2023-12'
---declare @start_date9 date;
---set @start_date9 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period9)
---declare @end_date9 date;
---set @end_date9 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period9)
+declare @period9 varchar(10);
+set @period9 = '2023-12'
+declare @start_date9 date;
+set @start_date9 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period9)
+declare @end_date9 date;
+set @end_date9 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period9)
 
---declare @period10 varchar(10);
---set @period10 = '2024-01'
---declare @start_date10 date;
---set @start_date10 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period10)
---declare @end_date10 date;
---set @end_date10 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period10)
+declare @period10 varchar(10);
+set @period10 = '2024-01'
+declare @start_date10 date;
+set @start_date10 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period10)
+declare @end_date10 date;
+set @end_date10 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period10)
 
---declare @period11 varchar(10);
---set @period11 = '2024-02'
---declare @start_date11 date;
---set @start_date11 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period11)
---declare @end_date11 date;
---set @end_date11 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period11)
+declare @period11 varchar(10);
+set @period11 = '2024-02'
+declare @start_date11 date;
+set @start_date11 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period11)
+declare @end_date11 date;
+set @end_date11 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period11)
 
---declare @period12 varchar(10);
---set @period12 = '2024-03'
---declare @start_date12 date;
---set @start_date12 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period12)
---declare @end_date12 date;
---set @end_date12 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period12)
+declare @period12 varchar(10);
+set @period12 = '2024-03'
+declare @start_date12 date;
+set @start_date12 = (select [start_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period12)
+declare @end_date12 date;
+set @end_date12 = (select [end_date] from NHSE_Sandbox_StrategyUnit.dbo.months_dates where [period] = @period12)
 
 ----## Now execute the queries on the above variables and save to temp file for future collation
 
@@ -93,8 +93,8 @@ Select Der_Provider_Site_Code, @period1 as [period]
 			else 0 end ) as beddays
 into NHSE_Sandbox_StrategyUnit.dbo.nhp_sbr_bd_2324
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-01-01' and '2023-11-30'
-and left(Der_Provider_Site_Code,1) = 'R'
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by Der_Provider_Site_Code
 
 union all
@@ -106,8 +106,8 @@ Select Der_Provider_Site_Code, @period2 as [period]
 			when admission_date between @start_date2 AND @end_date2 AND discharge_date between @start_date2 AND @end_date2 then datediff(dd,admission_date,discharge_date)
 			else 0 end ) as beddays
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-01-01' and '2023-11-30'
-and left(Der_Provider_Site_Code,1) = 'R'
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by Der_Provider_Site_Code
 
 union all
@@ -119,8 +119,8 @@ Select Der_Provider_Site_Code, @period3 as [period]
 			when admission_date between @start_date3 AND @end_date3 AND discharge_date between @start_date3 AND @end_date3 then datediff(dd,admission_date,discharge_date)
 			else 0 end ) as beddays
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-01-01' and '2023-11-30'
-and left(Der_Provider_Site_Code,1) = 'R'
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by Der_Provider_Site_Code
 
 union all
@@ -132,8 +132,8 @@ Select Der_Provider_Site_Code, @period4 as [period]
 			when admission_date between @start_date4 AND @end_date4 AND discharge_date between @start_date4 AND @end_date4 then datediff(dd,admission_date,discharge_date)
 			else 0 end ) as beddays
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-01-01' and '2023-11-30'
-and left(Der_Provider_Site_Code,1) = 'R'
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by Der_Provider_Site_Code
 
 union all
@@ -145,8 +145,8 @@ Select Der_Provider_Site_Code, @period5 as [period]
 			when admission_date between @start_date5 AND @end_date5 AND discharge_date between @start_date5 AND @end_date5 then datediff(dd,admission_date,discharge_date)
 			else 0 end ) as beddays
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-01-01' and '2023-11-30'
-and left(Der_Provider_Site_Code,1) = 'R'
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by Der_Provider_Site_Code
 
 union all
@@ -158,8 +158,8 @@ Select Der_Provider_Site_Code, @period6 as [period]
 			when admission_date between @start_date6 AND @end_date6 AND discharge_date between @start_date6 AND @end_date6 then datediff(dd,admission_date,discharge_date)
 			else 0 end ) as beddays
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-01-01' and '2023-11-30'
-and left(Der_Provider_Site_Code,1) = 'R'
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by Der_Provider_Site_Code
 
 union all
@@ -171,8 +171,8 @@ Select Der_Provider_Site_Code, @period7 as [period]
 			when admission_date between @start_date7 AND @end_date7 AND discharge_date between @start_date7 AND @end_date7 then datediff(dd,admission_date,discharge_date)
 			else 0 end ) as beddays
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-01-01' and '2023-11-30'
-and left(Der_Provider_Site_Code,1) = 'R'
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by Der_Provider_Site_Code
 
 union all
@@ -184,67 +184,67 @@ Select Der_Provider_Site_Code, @period8 as [period]
 			when admission_date between @start_date8 AND @end_date8 AND discharge_date between @start_date8 AND @end_date8 then datediff(dd,admission_date,discharge_date)
 			else 0 end ) as beddays
 from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
-where Admission_Date between '2008-01-01' and '2023-11-30'
-and left(Der_Provider_Site_Code,1) = 'R'
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
 group by Der_Provider_Site_Code
 
---union all
+union all
 
---Select Der_Provider_Site_Code, @period9 as [period]
---, sum( case when admission_date <= @start_date9 AND (discharge_date >= @end_date9 or discharge_date is NULL) then datediff(dd,@start_date9,@end_date9)
---			when admission_date <= @start_date9 AND discharge_date between @start_date9 AND @end_date9 then datediff(dd,@start_date9,discharge_date)
---			when admission_date between @start_date9 AND @end_date9 AND (discharge_date >= @end_date9 or discharge_date is NULL) then datediff(dd,admission_date,@end_date9)
---			when admission_date between @start_date9 AND @end_date9 AND discharge_date between @start_date9 AND @end_date9 then datediff(dd,admission_date,discharge_date)
---			else 0 end ) as beddays
---from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
---where Admission_Date between '2008-01-01' and '2023-11-30'
---and left(Der_Provider_Site_Code,1) = 'R'
---group by Der_Provider_Site_Code
+Select Der_Provider_Site_Code, @period9 as [period]
+, sum( case when admission_date <= @start_date9 AND (discharge_date >= @end_date9 or discharge_date is NULL) then datediff(dd,@start_date9,@end_date9)
+			when admission_date <= @start_date9 AND discharge_date between @start_date9 AND @end_date9 then datediff(dd,@start_date9,discharge_date)
+			when admission_date between @start_date9 AND @end_date9 AND (discharge_date >= @end_date9 or discharge_date is NULL) then datediff(dd,admission_date,@end_date9)
+			when admission_date between @start_date9 AND @end_date9 AND discharge_date between @start_date9 AND @end_date9 then datediff(dd,admission_date,discharge_date)
+			else 0 end ) as beddays
+from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
+group by Der_Provider_Site_Code
 
---union all
+union all
 
---Select Der_Provider_Site_Code, @period10 as [period]
---, sum( case when admission_date <= @start_date10 AND (discharge_date >= @end_date10 or discharge_date is NULL) then datediff(dd,@start_date10,@end_date10)
---			when admission_date <= @start_date10 AND discharge_date between @start_date10 AND @end_date10 then datediff(dd,@start_date10,discharge_date)
---			when admission_date between @start_date10 AND @end_date10 AND (discharge_date >= @end_date10 or discharge_date is NULL) then datediff(dd,admission_date,@end_date10)
---			when admission_date between @start_date10 AND @end_date10 AND discharge_date between @start_date10 AND @end_date10 then datediff(dd,admission_date,discharge_date)
---			else 0 end ) as beddays
---from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
---where Admission_Date between '2008-01-01' and '2023-11-30'
---and left(Der_Provider_Site_Code,1) = 'R'
---group by Der_Provider_Site_Code
+Select Der_Provider_Site_Code, @period10 as [period]
+, sum( case when admission_date <= @start_date10 AND (discharge_date >= @end_date10 or discharge_date is NULL) then datediff(dd,@start_date10,@end_date10)
+			when admission_date <= @start_date10 AND discharge_date between @start_date10 AND @end_date10 then datediff(dd,@start_date10,discharge_date)
+			when admission_date between @start_date10 AND @end_date10 AND (discharge_date >= @end_date10 or discharge_date is NULL) then datediff(dd,admission_date,@end_date10)
+			when admission_date between @start_date10 AND @end_date10 AND discharge_date between @start_date10 AND @end_date10 then datediff(dd,admission_date,discharge_date)
+			else 0 end ) as beddays
+from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
+group by Der_Provider_Site_Code
 
---union all
+union all
 
---Select Der_Provider_Site_Code, @period11 as [period]
---, sum( case when admission_date <= @start_date11 AND (discharge_date >= @end_date11 or discharge_date is NULL) then datediff(dd,@start_date11,@end_date11)
---			when admission_date <= @start_date11 AND discharge_date between @start_date11 AND @end_date11 then datediff(dd,@start_date11,discharge_date)
---			when admission_date between @start_date11 AND @end_date11 AND (discharge_date >= @end_date11 or discharge_date is NULL) then datediff(dd,admission_date,@end_date11)
---			when admission_date between @start_date11 AND @end_date11 AND discharge_date between @start_date11 AND @end_date11 then datediff(dd,admission_date,discharge_date)
---			else 0 end ) as beddays
---from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
---where Admission_Date between '2008-01-01' and '2023-11-30'
---and left(Der_Provider_Site_Code,1) = 'R'
---group by Der_Provider_Site_Code
+Select Der_Provider_Site_Code, @period11 as [period]
+, sum( case when admission_date <= @start_date11 AND (discharge_date >= @end_date11 or discharge_date is NULL) then datediff(dd,@start_date11,@end_date11)
+			when admission_date <= @start_date11 AND discharge_date between @start_date11 AND @end_date11 then datediff(dd,@start_date11,discharge_date)
+			when admission_date between @start_date11 AND @end_date11 AND (discharge_date >= @end_date11 or discharge_date is NULL) then datediff(dd,admission_date,@end_date11)
+			when admission_date between @start_date11 AND @end_date11 AND discharge_date between @start_date11 AND @end_date11 then datediff(dd,admission_date,discharge_date)
+			else 0 end ) as beddays
+from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
+group by Der_Provider_Site_Code
 
---union all
+union all
 
---Select Der_Provider_Site_Code, @period12 as [period]
---, sum( case when admission_date <= @start_date12 AND (discharge_date >= @end_date12 or discharge_date is NULL) then datediff(dd,@start_date12,@end_date12)
---			when admission_date <= @start_date12 AND discharge_date between @start_date12 AND @end_date12 then datediff(dd,@start_date12,discharge_date)
---			when admission_date between @start_date12 AND @end_date12 AND (discharge_date >= @end_date12 or discharge_date is NULL) then datediff(dd,admission_date,@end_date12)
---			when admission_date between @start_date12 AND @end_date12 AND discharge_date between @start_date12 AND @end_date12 then datediff(dd,admission_date,discharge_date)
---			else 0 end ) as beddays
---from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
---where Admission_Date between '2008-01-01' and '2023-11-30'
---and left(Der_Provider_Site_Code,1) = 'R'
---group by Der_Provider_Site_Code
+Select Der_Provider_Site_Code, @period12 as [period]
+, sum( case when admission_date <= @start_date12 AND (discharge_date >= @end_date12 or discharge_date is NULL) then datediff(dd,@start_date12,@end_date12)
+			when admission_date <= @start_date12 AND discharge_date between @start_date12 AND @end_date12 then datediff(dd,@start_date12,discharge_date)
+			when admission_date between @start_date12 AND @end_date12 AND (discharge_date >= @end_date12 or discharge_date is NULL) then datediff(dd,admission_date,@end_date12)
+			when admission_date between @start_date12 AND @end_date12 AND discharge_date between @start_date12 AND @end_date12 then datediff(dd,admission_date,discharge_date)
+			else 0 end ) as beddays
+from NHSE_SUSPlus_Live.dbo.tbl_Data_SEM_APCS
+where Admission_Date between '2008-01-01' and '2024-03-31'
+and (left(Der_Provider_Site_Code,1) = 'R' OR Der_Provider_Site_Code = 'I3W1A')
+group by Der_Provider_Site_Code
 
 order by Der_Provider_Site_Code, [period]
 
 ----## checking the data looks OK
-select *
-from NHSE_Sandbox_StrategyUnit.dbo.nhp_sbr_bd_2324
-where beddays > 0
-order by Der_Provider_Site_Code, [period]
+--select *
+--from NHSE_Sandbox_StrategyUnit.dbo.nhp_sbr_bd_2324
+--where beddays > 0
+--order by Der_Provider_Site_Code, [period]
 

@@ -391,6 +391,22 @@ get_number_control_sites <- function(data){
 
 # Used to format the table for the indicator information.
 format_indicator_table <- function(data) {
+  # table <- data |>
+  #   kable(format = "html", escape = FALSE, align = "c") |> 
+  #   kable_styling(
+  #     bootstrap_options = c("striped", "hover"),
+  #     full_width = FALSE,
+  #     position = "center"
+  #   ) |> 
+  #   row_spec(0, bold = TRUE, background = "#f9bf07", color = "black") |> 
+  #   column_spec(1, width = "5%") |> 
+  #   column_spec(2, width = "10%") |> 
+  #   column_spec(3, width = "10%") |> 
+  #   column_spec(4, width = "10%") |> 
+  #   column_spec(5, width = "15%") |> 
+  #   column_spec(6, width = "20%") |> 
+  #   column_spec(7, width = "30%")
+  
   table <- data |>
     as_flextable(
       hide_grouplabel = TRUE,
@@ -404,7 +420,13 @@ format_indicator_table <- function(data) {
     padding(padding = 2,
             part = "all",
             padding.top = NULL) |>
-    autofit()
+    width(j=1, width = 5) |>
+    width(j=2, width = 10) |>
+    width(j=3, width = 10) |>
+    width(j=4, width = 10) |>
+    width(j=5, width = 15) |>
+    width(j=6, width = 20) |>
+    width(j=7, width = 30)
   
   return(table)
   

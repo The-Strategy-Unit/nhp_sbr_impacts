@@ -20,6 +20,8 @@ tar_option_set(
     "htmltools",
     "imputeTS",
     "janitor",
+    "kableExtra",
+    "knitr",
     "leaflet",
     "lubridate",
     "MarketMatching",

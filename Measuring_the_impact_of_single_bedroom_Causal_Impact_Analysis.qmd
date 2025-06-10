@@ -1,5 +1,5 @@
 ---
-title: "Measuring the impact of Single Bed Rooms: Causal Impact Analysis"
+title: "Measuring the impact of Single Bed Rooms: A retrospective analysis for the New Hospitals Programme"
 editor: visual
 execute:
   echo: false
@@ -158,23 +158,38 @@ title_staff_survey <- get_title("staff_survey")
 #forest(res)
 ```
 
-# Foreword and acknowledgements
+# Foreword
 
-TBC...
+One of the key aims of the New Hospital Programme (NHP) is to ensure that every new hospital project builds on what we’ve learned from past ones. This includes not just the buildings themselves, but also how services are redesigned alongside them. This kind of shared learning hasn’t happened in a consistent way before, and the programme is committed to changing that. The NHP is also a chance to bring in new ideas and ways of working across the NHS – from how hospitals are designed to how care is delivered. It’s about scaling up innovation in a way that’s both joined-up and evidence-based.
+
+Of course, trying new things always comes with risks as well as potential benefits. The challenge is to weigh these carefully and to use the evidence to guide and refine our decisions. Innovations are introduced based on what we know so far and are tested over time. This helps improve understanding and allows us to adjust or even completely rethink our approaches when needed.
+
+One major policy decision by NHP has been to require that all new hospitals have 100% single bedded rooms. When this goal was set, the programme was clear that the evidence supporting it was limited – mainly based on theory and early experience from a few hospitals. Recognising this, NHP began detailed work to gather new data and use sophisticated analysis to assess the real impact of this change. The programme deserves credit for being open to new evidence and for its commitment to regularly reviewing and updating its policies. That flexibility is a real strength. By producing high-quality, publishable analysis and sharing the findings openly, the programme is leading by example - and using its unique position to make a meaningful contribution to the wider body of NHS knowledge.
+
+This paper shares the latest findings on how single bedrooms are working in practice. Unsurprisingly, the results are mixed and far from conclusive. That’s partly because this is still early days – we’re only just starting to see how these designs perform at scale. At the same time, NHP has also carried out its first formal review of staff and patient experiences in new hospitals built over the last 10–15 years. That’s covered in a separate report, but it’s worth noting that many people shared their views on single rooms – and that feedback should be considered alongside this paper.
+
+Overall, the current analysis shows that moving to 100% single rooms has benefits and drawbacks - these vary depending on the setting and how the design is implemented. What’s clear is that single rooms are not a guaranteed fix. The details and context really matter. Getting it right requires thoughtful design and a close eye on costs and trade-offs. Going forward, the programme should build on its commitment to researching what works best - and stay open to adjusting its approach based on real-world feedback and new evidence. That openness will be key to making sure innovations like adopting 100% single-bedded rooms genuinely improve care in new hospitals.
+
 
 This work, analysis and report have been a team effort. The following people have made a material contribution to all or part of the development of this work and the various outputs:
 
 **Strategy Unit** - Peter Spilsbury, Simon Bourne, Jacqueline Grout, Jennifer Wood. <br> **New Hospitals Programme** - Cheryl Riotto, Anne White, Joanna Wood, Carolyn Akyil, Dr. Michael Weinbren. <br> **NHS England** - Joshua Igbineweka, Paul Smith
 
-# Abstract
+# Executive Summary
 
-Objectives: Traditionally, hospital beds have been in multi-bed bays, however, there has been a move towards single occupancy inpatient rooms. Numerical evidence on the impact of single rooms is limited. We sought to quantify the potential impacts of switching to single-bed accommodation to help inform the planning and design of future hospitals.
+Traditionally, hospital beds have been in multi-bed bays, however, there has been a move towards single occupancy inpatient rooms. Numerical evidence on the impact of single rooms is limited. We sought to quantify the potential impacts of switching to single-bed accommodation to help inform the planning and design of future hospitals.
 
-Design & setting: We used causal impact analysis to quantify the change in productivity and efficiency measures (length of stay, waiting time, bed occupancy, emergency readmissions, cleaning costs), health and safety measures (in-hospital deaths, in-hospital falls and injuries, hospital acquired c.difficile), and patient and staff experience (Friends and Family Test for inpatient experience, staff survey, staff sickness and staff turnover) in 7 study hospitals in the English National Health Service that switched to entirely or majority single-bed rooms between 2010 to 2022, with the use of comparable control hospitals.
+We used causal impact analysis to quantify the change in productivity and efficiency measures (length of stay, waiting time, bed occupancy, emergency readmissions, cleaning costs), health and safety measures (in-hospital deaths, in-hospital falls and injuries, hospital acquired c.difficile), and patient and staff experience (Friends and Family Test for inpatient experience, staff survey, staff sickness and staff turnover) in 7 study hospitals in the English National Health Service that switched to entirely or majority single-bed rooms between 2010 to 2022, with the use of comparable control hospitals.
 
-Results: There was significant variability between hospitals following switching to single rooms. For bed occupancy, emergency readmissions, cleaning costs and all health and safety measures there were either positive effects or no change. However, positive, negative and no effects were seen for length of stay, waiting time, patient experience, and staff experience measures. Reduced length of stay could help offset additional costs associated with single room hospitals, however, at general acute hospitals there was no significant change in length of stay (7% reduction (-17% to 2% 95% CI)). At general acute hospitals the proportion of staff recommending their trust as a place to work significantly decreased by 15% (-23% to -6% 95% CI) and staff sickness absences increased by 6% (1% to 12% 95% CI).
+There was significant variability following switching to single rooms both within measures and between hospitals - mixed findings that are broadly in line with the published literature and also feedback from an independent listening exercise with representatives from these hospitals.
 
-Conclusion: There was significant variability within measures and between hospitals. Most indicator measures showed no consistent or significant change following a switch to single rooms, although staff do appear to be negatively affected in some ways. These findings are broadly in line with the published literature and also feedback from an independent listening exercise with representatives from these hospitals.
+For bed occupancy, emergency readmissions, cleaning costs and all health and safety measures there were either positive effects or no change. However, positive, negative and no effects were seen for length of stay, waiting time, patient experience, and staff experience measures. Where there were immediate positive ***or*** negative impacts on a metric, these often regressed back towards prior levels over the longer-term (2 years).
+
+Reduced length of stay could potentially help offset additional costs associated with single room hospitals, however, at general acute hospitals there was no significant change in length of stay (7% reduction (-17% to 2% 95% CI)). At general acute hospitals the proportion of staff recommending their trust as a place to work significantly decreased by 15% (-23% to -6% 95% CI) and staff sickness absences increased by 6% (1% to 12% 95% CI).
+
+For planning purposes, the NHP may want to take a more conservative approach to modelling the impact on LoS of SBR but also consider other potential efficiency gains i.e. reduced waiting times, reduction in falls/injuries and infections. Additionally, acknowledging the potential adverse impacts on staff experiences, qualitative monitoring of impacts would aid in implementation and mitigation strategies.
+
+For both SBR impacts and broader programme evaluation, a prospective monitoring framework of these indicators and more would support and develop the evidence-base for hospital design and builds in the future.
 
 # Introduction and background
 
@@ -184,23 +199,13 @@ Specifically, a starting assumption was that a length of stay reduction of 12% w
 
 It is the express aim of this analysis therefore to quantify the range of likely impacts for length of stay and a basket of other measures across patient & staff experience, productivity & efficiency and health & safety. Where there are differential impacts, i.e. for specialist units compared to general acute, these will also be highlighted to aid future planning assumptions.
 
-# Executive Summary
-
-Traditionally, hospital beds have been in shared multi-bed bays, however, there has been a move both in the UK and globally towards single-bed inpatient rooms. This analysis was undertaken to better understand the impact of switching to single-bed accommodation when building future hospitals.
+# Analytical scope
 
 There are 7 hospitals in England where single-bed inpatient accommodation replaced multi-bed accommodation fully or in part. We have used these hospital sites as natural experiments, and with the use of matched control sites are able to quantify changes in these study sites following their switch to single bedrooms.
 
-Our analysis investigates the impact on measures from three domains 1) Health and Safety, 2) Patient and Staff Experience and 3) Productivity and Efficiency to determine the extent of any benefits, or negative impacts that need to be mitigated with single-bed room sites.
+Our analysis investigates the impact on 12 measures across three domains 1) Health and Safety, 2) Patient and Staff Experience and 3) Productivity and Efficiency to determine the likely extent of any benefits, or negative impacts that need to be mitigated with single-bed room hospital sites.
 
-Our results are not consistent across hospital sites, suggesting that there are a number of other factors in the hospital design and procedures that are important, hence switching to single bedroom hospitals without considering the other factors would not necessarily have a positive effect on outcomes.
-
-For productivity and efficiency measures there is a general although not exclusive trend towards positive impacts following a switch to single bed rooms. While overall at general acute hospitals there are no significant changes, the data trends towards a decrease in mean length of stay and rate of emergency readmissions and an increase in bed occupancy.
-
-Switching to single bedrooms appears to have a positive or neutral effect on Health and Safety measures. It could be considered that no change in health and safety measures is a positive effect, as patient safety is not being negatively impacted. While data is limited there is a tendency towards decreased C. difficile infection rates.
-
-In terms of patient and staff experiences, the switch to single bedrooms tends to result in some negative effects for staff. For general acute hospitals there was a significant reduction of 15% in the percentage of staff who would recommend their trust as a place to work and a significant 6% increase in staff sickness. While this might, at least in part, be related to the move to a new hospital site that is less convenient for staff, it will be important for staff views and experiences should be considered when designing hospitals with single bedrooms and thought given to how potentially detrimental effects on staff may be mitigated. The percentage of patients reporting a positive experience increases by a small, but statistically significant 1%.
-
-# What we already know
+# What we already know on impacts
 
 There have been 2 NHP commissioned pieces of work in the recent past aiming to better understand the nature and scale of any impacts related to switching from multi-occupancy hospital rooms to single-bed rooms.
 
@@ -360,7 +365,7 @@ Where possible, for each indicator variable a meta-analysis was conducted using 
 
 A random-effects meta-analysis was conducted using the `metafor` R package [@metafor], and the relative effects for each site weighted using the inverse variance, as used for meta-analysis of causal impact models by Schmitt et al. [@Schmitt2017ExtendingBS].
 
-# Main results (including related notes from lookback exercise) {#sec-results}
+# Main results {#sec-results}
 
 ## Interpreting the causal impact analysis
 
@@ -700,7 +705,7 @@ While the availability of data has improved since 2008, there is a still a need 
 
 Given the apparent negative impacts on staff of a switch to single bedrooms it is likely important going forward that more data is collected on the views of staff specifically around switching to single bedrooms, including qualitative data to better understand what concerns and difficulties there may be.
 
-Also, there is more data is needed to fully understand the impacts of single bedrooms on infection control, including things such as hospital acquired influenza or COVID-19.
+Also, more data is needed to fully understand the impacts of single bedrooms on infection control, including things such as hospital acquired influenza or COVID-19.
 
 Further analysis would be needed to fully understand the impact on waiting times and waiting list sizes, given the dynamic nature of waiting lists. This is a measure where there could be cumulative effects over time, and also a new or redesigned hospital could result in more or less people being referred, so waiting list size/time will not just be dependent on hospital productivity.
 

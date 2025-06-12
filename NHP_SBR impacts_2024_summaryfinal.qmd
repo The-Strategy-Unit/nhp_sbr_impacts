@@ -1,6 +1,6 @@
 ---
 title: "Quantifying the impacts of hospitals increasing single bed room provision"
-author: "Andy Hood | Analytics Manager | Strategy Unit | Oct 2024"
+author: "Andy Hood | Analytics Manager | Strategy Unit | May 2025"
 format:
   pptx:
       reference-doc: template.pptx
@@ -110,12 +110,11 @@ The table across demonstrates the range of impacts across all new hospital sites
 
 -   Exercise caution when accounting for these impacts in business planning - use a range and suitable benchmark.
 -   Develop an evaluation framework from (some of) these measures, process indicators and wider evidence (logic model).
--   Include qualitative survey measures for patients and staff (free text for thematic analysis).
+-   Include qualitative survey measures for patients and staff (free text for thematic analysis) to support ongoing mitigation.
 -   Capture information on design, systemic and cultural factors that may also have bearing on these impacts.
 -   Start collecting data well before the change in bed provision and at least monthly!
 -   System dynamics modelling would aid understanding of multi-factorial productivity impacts (i.e. waiting lists, length of stay and bed occupancy).
 -   Undertake length of stay sub-group analysis i.e. by clinical and patient groups.
--   Mitigation strategies for staff well-being and retention.
 
 # The impact framework
 
@@ -354,15 +353,17 @@ tar_read(forest_plot_staff_survey)
 
 # Next steps and actions
 
-## Still on the to-do list...
+## Ongoing and related activities
 
--   NHP planning and modelling teams consider for inclusion in assumptions
+-   Discussing the NHP response to these findings (today's session)
 
--   Supporting development of monitoring and evaluation framework for NHP/SBR
+-   NHP planning and modelling teams consider findings for inclusion in assumptions and demand & capacity inflation and mitigation.
 
--   Engage with the 7 providers in the study (booked Dec '24) in terms of sharing of the findings in public domain
+-   Supporting development of monitoring and evaluation framework for NHP/SBR.
 
--   Pursue peer-reviewed journal publication (BMJ open)
+-   Engage with the 7 providers in the study in terms of sharing of these findings in the public domain?
+
+-   Consider regular (annual?) update of impact analysis for key indicators and inclusion of Midlands Met in retrospective review.
 
 # Acknowledgements
 

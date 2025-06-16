@@ -231,6 +231,10 @@ Broadly speaking, the evidence points towards an increase in falls/fall risk, im
 
 The review summary suggests that **"Overall, 87% of studies analysed by Taylor et al., 2018 reported advantages associated with single patient rooms. Of these, 27% reported a combination of advantages and disadvantages, while 22% of the studies reported a combination of advantages and neutral results."**
 
+In parallel with this work, colleagues at the Strategy Unit undertook a qualitative look-back exercise [@su_2025] with some previous new hospital schemes that were the same as our study sites. Though there were no specific views sought on single-bedded rooms, representatives of those schemes proactively identified SBR as either facilitating improvements or inducing challenges to ways of working.
+
+In the feedback from schemes, there were felt to be generally positive impacts on patient experience & recovery and infection control, but additional challenges for staff around time efficiency and observation practices including risks of out-of-sight events.
+
 # Hospital Background {#sec-hosp_background}
 
 Initially 11 hospitals were identified to have made a switch to single bedrooms. However due to being unable to access data for hospitals outside England, three hospitals (Ulster Hospital, Glasgow Central and The Grange Hospital) were excluded from this analysis. James Paget hospital made a switch to single bedrooms in May 2023 but was also excluded from analysis, due to the switch being too recent and that currently the ward is used as interim beds for RAAC remedial work.

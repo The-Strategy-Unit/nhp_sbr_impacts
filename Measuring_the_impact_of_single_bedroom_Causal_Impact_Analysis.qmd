@@ -160,18 +160,17 @@ title_staff_survey <- get_title("staff_survey")
 
 # Foreword
 
-One of the key aims of the New Hospital Programme (NHP) is to ensure that every new hospital project builds on what we’ve learned from past ones. This includes not just the buildings themselves, but also how services are redesigned alongside them. This kind of shared learning hasn’t happened in a consistent way before, and the programme is committed to changing that. The NHP is also a chance to bring in new ideas and ways of working across the NHS – from how hospitals are designed to how care is delivered. It’s about scaling up innovation in a way that’s both joined-up and evidence-based.
+One of the key aims of the New Hospital Programme (NHP) is to ensure that every new hospital project builds on what we've learned from past ones. This includes not just the buildings themselves, but also how services are redesigned alongside them. This kind of shared learning hasn't happened in a consistent way before, and the programme is committed to changing that. The NHP is also a chance to bring in new ideas and ways of working across the NHS -- from how hospitals are designed to how care is delivered. It's about scaling up innovation in a way that's both joined-up and evidence-based.
 
 Of course, trying new things always comes with risks as well as potential benefits. The challenge is to weigh these carefully and to use the evidence to guide and refine our decisions. Innovations are introduced based on what we know so far and are tested over time. This helps improve understanding and allows us to adjust or even completely rethink our approaches when needed.
 
-One major policy decision by NHP has been to require that all new hospitals have 100% single bedded rooms. When this goal was set, the programme was clear that the evidence supporting it was limited – mainly based on theory and early experience from a few hospitals. Recognising this, NHP began detailed work to gather new data and use sophisticated analysis to assess the real impact of this change. The programme deserves credit for being open to new evidence and for its commitment to regularly reviewing and updating its policies. That flexibility is a real strength. By producing high-quality, publishable analysis and sharing the findings openly, the programme is leading by example - and using its unique position to make a meaningful contribution to the wider body of NHS knowledge.
+One major policy decision by NHP has been to require that all new hospitals have 100% single bedded rooms. When this goal was set, the programme was clear that the evidence supporting it was limited -- mainly based on theory and early experience from a few hospitals. Recognising this, NHP began detailed work to gather new data and use sophisticated analysis to assess the real impact of this change. The programme deserves credit for being open to new evidence and for its commitment to regularly reviewing and updating its policies. That flexibility is a real strength. By producing high-quality, publishable analysis and sharing the findings openly, the programme is leading by example - and using its unique position to make a meaningful contribution to the wider body of NHS knowledge.
 
-This paper shares the latest findings on how single bedrooms are working in practice. Unsurprisingly, the results are mixed and far from conclusive. That’s partly because this is still early days – we’re only just starting to see how these designs perform at scale. At the same time, NHP has also carried out its first formal review of staff and patient experiences in new hospitals built over the last 10–15 years. That’s covered in a separate report, but it’s worth noting that many people shared their views on single rooms – and that feedback should be considered alongside this paper.
+This paper shares the latest findings on how single bedrooms are working in practice. Unsurprisingly, the results are mixed and far from conclusive. That's partly because this is still early days -- we're only just starting to see how these designs perform at scale. At the same time, NHP has also carried out its first formal review of staff and patient experiences in new hospitals built over the last 10--15 years. That's covered in a separate report, but it's worth noting that many people shared their views on single rooms -- and that feedback should be considered alongside this paper.
 
-Overall, the current analysis shows that moving to 100% single rooms has benefits and drawbacks - these vary depending on the setting and how the design is implemented. What’s clear is that single rooms are not a guaranteed fix. The details and context really matter. Getting it right requires thoughtful design and a close eye on costs and trade-offs. Going forward, the programme should build on its commitment to researching what works best - and stay open to adjusting its approach based on real-world feedback and new evidence. That openness will be key to making sure innovations like adopting 100% single-bedded rooms genuinely improve care in new hospitals.
+Overall, the current analysis shows that moving to 100% single rooms has benefits and drawbacks - these vary depending on the setting and how the design is implemented. What's clear is that single rooms are not a guaranteed fix. The details and context really matter. Getting it right requires thoughtful design and a close eye on costs and trade-offs. Going forward, the programme should build on its commitment to researching what works best - and stay open to adjusting its approach based on real-world feedback and new evidence. That openness will be key to making sure innovations like adopting 100% single-bedded rooms genuinely improve care in new hospitals.
 
 ***(Peter Spilsbury, Strategy Unit Director)***
-
 
 This work, analysis and report have been a team effort. The following people have made a material contribution to all or part of the development of this work and the various outputs:
 
@@ -326,7 +325,6 @@ tar_read(indicator_availability_table)
 
 ```
 
-
 For some sites (i.e Chase Farm, Clatterbridge and Papworth) at least part of the outcome period is impacted by COVID-19. While COVID-19 effects will also be present in the matched control sites, the magnitude of effects varies greatly between hospitals. Indeed, for some measures Papworth was excluded as it appears to have been impacted to a much greater degree by COVID-19 than its control sites.
 
 Where there is missing data or anomalies in the outcome periods, i.e. sudden increases or decreases, the outcome period has been cut short. For the Health and Safety indicators the rates of these adverse events were generally low at the specialist sites (Papworth, Clatterbridge and Chase Farm), often dropping to zero in some months, which meant it was not always possible to fit a suitable causal impact model.
@@ -379,7 +377,7 @@ Plots for each causal impact model are shown in appendix A (@sec-appendix-A). Th
 
 For example:
 
-:::::: columns
+::: columns
 ::: {.column width="40%"}
 ```{r, fig.width=5, fig.height=6}
 LoS_RGN <- tar_read(LoS_RGN)
@@ -388,7 +386,7 @@ cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
 ```
 :::
 
-:::: {.column width="60%"}
+::: {.column width="60%"}
 ::: {style="font-size: 85%;"}
 <br> <br>
 
@@ -402,8 +400,8 @@ cia_summary_plots(LoS_RGN, "Average LoS (days)", "2010-11-01")
 
 3)  Cumulative difference between the expected and actual values over the outcome period. Our measures are typically rates and percentages, which are not additive over time like count data would be, so the cumulative effect can not always be meaningfully interpreted. Also, the cumulative difference cannot always be compared across sites, due to data issues resulting in differing lengths of outcome period.
 :::
-::::
-::::::
+:::
+:::
 
 **Forest plots** summarise the relative effect in the outcome period, which is the proportional change following a switch to single bedrooms compared to what would be expected had no change occurred. For example, for median length of stay at Peterborough hospital the effect size is -0.19 (with a 95% credible interval of -0.22 to -0.16), indicating a 19% decrease in the median length of stay. Points to the left of the zero line on the forest plot with a credible interval that does not cross zero indicate there was a significant decrease. Since a decrease in length of stay is a positive outcome the point is coloured green. Any significant negative effect effect, such as an increase in length of stay or a decrease in positive responses to Friends and Family test, are shown in red.
 
@@ -453,7 +451,7 @@ tar_read(mean_forest_plot_waiting_time_median)
 
 The effect on median waiting time varied from a 12% reduction to a 15% increase. Both Royal Liverpool and Peterborough had a 12% reduction in median waiting time, which equated to a decrease from 18.6 wks to 16.3 wks at Royal Liverpool and from 5 wks to 4.3 wks at Peterborough. The mean effect at general acute hospitals was a non-significant 3% reduction in median waiting time.
 
-At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and that median waiting time would be unlikely to drop further over time as a result of the switch to single bedrooms (@sec-appendix-A-waiting-time). 
+At Peterborough median waiting time dropped and was then relatively stable for the 2-year outcome period suggesting there was a fixed effect and that median waiting time would be unlikely to drop further over time as a result of the switch to single bedrooms (@sec-appendix-A-waiting-time).
 
 Median waiting time significantly increased at Tunbridge Wells, but this effect appeared to only be temporary during the first year post-switch as during the second year of the outcome period the waiting times fall back in line with the expected values. The switch to single bedrooms at Tunbridge Wells started in Jan 2011, which is the date we have used in our analysis, but occurred in stages between Jan and Sept 2011, so the differences seen in the first year could be due to disruption of services while the hospital was in a transition period.
 
@@ -498,7 +496,7 @@ tar_read(forest_plot_cleaning_costs)
 tar_read(model_effects_table_cleaning_costs)
 ```
 
-Cleaning costs decreased by 35% and 42% at Clatterbridge and Papworth, respectively (@sec-appendix-A-cleaning). 
+Cleaning costs decreased by 35% and 42% at Clatterbridge and Papworth, respectively (@sec-appendix-A-cleaning).
 
 Cleaning costs are only recorded annually, so there is limited data with only 1 or 2 data points in the outcome period, and the first data point in the outcome period may not reflect the true changes in cost as some of the costs will have occurred prior to the switch, so these results should be interpreted cautiously.
 
@@ -723,7 +721,7 @@ Future work should focus on understanding how/whether outcomes in single room ho
 
 ### `r title_los` {#sec-appendix-A-los}
 
-::::::::::: panel-tabset
+::: panel-tabset
 #### Decrease
 
 ```{r, fig.width=5, fig.height=6}
@@ -751,7 +749,7 @@ Future work should focus on understanding how/whether outcomes in single room ho
 
 ```
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Peterborough
 
@@ -785,11 +783,11 @@ LoS_RVJ <- tar_read(LoS_RVJ)
 cia_summary_plots(LoS_RVJ, "Average LoS (days)", "2014-05-01")
 ```
 :::
-:::::
+:::
 
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Tunbridge Wells
 
@@ -813,11 +811,11 @@ LoS_REM <- tar_read(LoS_REM)
 cia_summary_plots(LoS_REM, "Average LoS (days)", "2022-10-01")
 ```
 :::
-:::::
+:::
 
 #### Increase
 
-:::: columns
+::: columns
 ::: {.column width="50%"}
 Clatterbridge
 
@@ -829,15 +827,15 @@ LoS_REN <- tar_read(LoS_REN)
 cia_summary_plots(LoS_REN, "Average LoS (days)", "2020-06-01")
 ```
 :::
-::::
-:::::::::::
+:::
+:::
 
 ### `r title_wait_time_median` {#sec-appendix-A-waiting-time}
 
-::::::::::: panel-tabset
+::: panel-tabset
 #### Decrease
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool
 
@@ -866,11 +864,11 @@ cia_summary_plots(waiting_time_median_RGN,
                   "2010-11-01")
 ```
 :::
-:::::
+:::
 
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Clatterbridge
 
@@ -932,11 +930,11 @@ cia_summary_plots(waiting_time_median_RGM,
 #                   "Median waiting time (wks)",
 #                   "2014-05-01")
 ```
-:::::
+:::
 
 #### Increase
 
-:::: columns
+::: columns
 ::: {.column width="50%"}
 Tunbridge Wells
 
@@ -951,15 +949,15 @@ cia_summary_plots(waiting_time_median_RWF,
                   "2011-01-01")
 ```
 :::
-::::
-:::::::::::
+:::
+:::
 
 ### `r title_bed_occup` {#sec-appendix-A-bed-occupancy}
 
-::::::::: panel-tabset
+::: panel-tabset
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Chase Farm
 
@@ -983,11 +981,11 @@ bed_occupancy_REM <- tar_read(bed_occupancy_REM)
 cia_summary_plots(bed_occupancy_REM, "Percentage", "2022-10-01")
 ```
 :::
-:::::
+:::
 
 #### Increase
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Clatterbridge
 
@@ -1011,17 +1009,17 @@ bed_occupancy_RVJ <- tar_read(bed_occupancy_RVJ)
 cia_summary_plots(bed_occupancy_RVJ, "Percentage", "2014-05-01")
 ```
 :::
-:::::
+:::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::::::::
+:::
 
 ### `r title_readmissions` {#sec-appendix-A-readmissions}
 
-::::::::: panel-tabset
+::: panel-tabset
 #### Decrease
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Clatterbridge
 
@@ -1055,11 +1053,11 @@ emergency_readmissions_RWF <- tar_read(emergency_readmissions_RWF)
 cia_summary_plots(emergency_readmissions_RWF, "% readmissions", "2011-01-01")
 ```
 :::
-:::::
+:::
 
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool
 
@@ -1103,15 +1101,15 @@ emergency_readmissions_RVJ <- tar_read(emergency_readmissions_RVJ)
 cia_summary_plots(emergency_readmissions_RVJ, "% readmissions", "2014-05-01")
 ```
 :::
-:::::
-:::::::::
+:::
+:::
 
 ### `r title_cleaning` {#sec-appendix-A-cleaning}
 
-:::::::: panel-tabset
+::: panel-tabset
 #### Decrease
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Papworth (RGM)
 
@@ -1145,13 +1143,13 @@ cleaning_costs_REN <- tar_read(cleaning_costs_REN)
 cia_summary_plots(cleaning_costs_REN, "Cost", "2020-06-01")
 ```
 :::
-:::::
+:::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 
 #### No change
 
-:::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
 
@@ -1163,17 +1161,17 @@ cleaning_costs_REM <- tar_read(cleaning_costs_REM)
 cia_summary_plots(cleaning_costs_REM, "Cost", "2022-10-01")
 ```
 :::
-::::
+:::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-::::::::
+:::
 
 ### `r title_deaths` {#sec-appendix-A-deaths}
 
-::::::::: panel-tabset
+::: panel-tabset
 #### Decrease
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Peterborough
 
@@ -1188,11 +1186,11 @@ cia_summary_plots(sus_deaths_RGN, "No./per 1,000 discharges", "2010-11-01")
 
 ::: {.column width="50%"}
 :::
-:::::
+:::
 
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool
 
@@ -1240,12 +1238,12 @@ sus_deaths_REN <- tar_read(sus_deaths_REN)
 cia_summary_plots(sus_deaths_REN, "No./per 1,000 discharges", "2020-06-01")
 ```
 :::
-:::::
-:::::::::
+:::
+:::
 
 ### `r title_falls_fractures` {#sec-appendix-A-falls-frac}
 
-:::::: panel-tabset
+::: panel-tabset
 #### Decrease
 
 Peterborough
@@ -1260,7 +1258,7 @@ cia_summary_plots(falls_and_fractures_RGN, "% of spells", "2010-11-01")
 
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool
 
@@ -1296,13 +1294,12 @@ falls_and_fractures_RWF <- tar_read(falls_and_fractures_RWF)
 cia_summary_plots(falls_and_fractures_RWF, "% of spells", "2011-01-01")
 ```
 :::
-:::::
-::::::
+:::
+:::
 
 ### `r title_cdiff` {#sec-appendix-A-cdiff}
 
-:::::: panel-tabset
-
+::: panel-tabset
 #### Decrease
 
 ::: columns
@@ -1331,7 +1328,6 @@ cia_summary_plots(cdiff_RVJ, "Rate/10,000 beddays", "2014-05-01")
 :::
 :::
 
-
 #### No change
 
 Royal Liverpool
@@ -1351,11 +1347,11 @@ hcai_REN <- tar_read(hcai_REN)
 
 cia_summary_plots(hcai_REN, "Rate/10,000 beddays", "2022-10-01")
 ```
-::::::
+:::
 
 ### `r title_friends_family` {#sec-appendix-A-friends-family}
 
-:::::: panel-tabset
+::: panel-tabset
 #### Decrease
 
 Clatterbridge (REN)
@@ -1384,7 +1380,7 @@ cia_summary_plots(friends_and_family_RGM, "Positive responses (%)", "2019-05-01"
 
 #### No Change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REMRQ)
 
@@ -1420,15 +1416,15 @@ friends_and_family_RVJ <- tar_read(friends_and_family_RVJ)
 cia_summary_plots(friends_and_family_RVJ, "Positive responses (%)", "2014-05-01")
 ```
 :::
-:::::
-::::::
+:::
+:::
 
 ### `r title_staff_sickness` {#sec-appendix-A-staff-sickness}
 
-::::::::: panel-tabset
+::: panel-tabset
 #### Increase
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Southmead (RVJ)
 
@@ -1452,11 +1448,11 @@ staff_sickness_RWF <- tar_read(staff_sickness_RWF)
 cia_summary_plots(staff_sickness_RWF, "Sickness Rate (%)", "2011-01-01")
 ```
 :::
-:::::
+:::
 
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
 
@@ -1510,14 +1506,14 @@ staff_sickness_RAL <- tar_read(staff_sickness_RAL)
 cia_summary_plots(staff_sickness_RAL, "Sickness Rate (%)", "2018-09-01")
 ```
 :::
-:::::
-:::::::::
+:::
+:::
 
 ### `r title_staff_turnover` {#sec-appendix-A-staff-turnover}
 
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
 
@@ -1551,7 +1547,7 @@ staff_turnover_REN <- tar_read(staff_turnover_REN)
 cia_summary_plots(staff_turnover_RGM, "Staff leaving rate (%)", "2020-06-01")
 ```
 :::
-:::::
+:::
 
 ### `r title_staff_survey` {#sec-appendix-A-staff-survey}
 
@@ -1607,10 +1603,10 @@ Peterborough_analysis |>
   ) * 100))
 ```
 
-::::::::::: panel-tabset
+::: panel-tabset
 #### Decrease
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Clatterbridge (REN)
 
@@ -1636,11 +1632,11 @@ cia_summary_plots(staff_survey_RVJ, "Positive Responses (%)", "2014-05-01")
 :::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::::
+:::
 
 #### No change
 
-::::: columns
+::: columns
 ::: {.column width="50%"}
 Royal Liverpool (REM)
 
@@ -1676,13 +1672,13 @@ staff_survey_RAL <- tar_read(staff_survey_RAL)
 cia_summary_plots(staff_survey_RAL, "Positive Responses (%)", "2018-09-01")
 ```
 :::
-:::::
+:::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
 
 #### Increase
 
-:::: columns
+::: columns
 ::: {.column width="50%"}
 Papworth (RGM)
 
@@ -1694,10 +1690,10 @@ staff_survey_RGM <- tar_read(staff_survey_RGM)
 cia_summary_plots(staff_survey_RGM, "Positive Responses (%)", "2019-05-01")
 ```
 :::
-::::
+:::
 
 Black dotted line indicates the time of the last data point prior to the switch to single bedrooms
-:::::::::::
+:::
 
 ## B. Notes on data quality and suitability (for CIA) {#sec-appendix-B}
 

@@ -28,7 +28,7 @@ library(lubridate)
 -   Given the absence of strong and consistent evidence to support this, our challenge was to quantify changes in LoS and a range of other potential impacts for 7 natural experiments in SBR between 2010 and 2022.
 -   We have identified 12 impact measures from routinely collected or published data to assess for pre-post effects.
 -   We used an approach called Causal Impact Analysis (CIA) to detect and quantify those pre-post changes in trend.
--   The results of our analysis, much like the published literature, are mixed. A recent qualitative lookback exercise with (many of the same) hospitals has confirmed on-the-ground feelings of both positive impacts and operational challenges and risks related to SBR switches.
+-   The results of our analysis, much like the published literature, are mixed. A recent qualitative lookback exercise with (many of the same) hospitals has confirmed on-the-ground feelings of both positive patient impacts and operational challenges and risks related to SBR switches.
 
 ## (2)
 
@@ -84,7 +84,7 @@ It is the express aim of this analysis therefore to quantify the range of likely
 
 ## Summary of key findings (1)
 
-Our results are generally not consistent within indicators and across hospital sites. This inconsistency is reflective of the findings from published literature. Only one impact measure moved in the same direction across all (eligible) sites - **staff turnover decreasing** and two measures were significant at the pooled general-acute hospital level - **staff sickness increasing** and **staff satisfaction decreasing**.
+Our results are generally not consistent within indicators and across hospital sites. This inconsistency is reflective of the findings from published literature. Only one impact measure moved in the same direction across all (eligible) sites - **staff turnover decreasing** and three measures were significant at the pooled general-acute hospital level - **patient experience increasing**, **staff sickness increasing** and **staff satisfaction decreasing**.
 
 This suggests that there are many factors in the hospital design, systems, policies and cultures that are important. Switching to single bedroom hospitals without considering these other factors would not necessarily have a positive effect on outcomes nor mitigate any likely risks.
 

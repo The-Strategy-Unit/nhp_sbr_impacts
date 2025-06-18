@@ -170,6 +170,8 @@ This paper shares the latest findings on how single bedrooms are working in prac
 
 Overall, the current analysis shows that moving to 100% single rooms has benefits and drawbacks - these vary depending on the setting and how the design is implemented. What’s clear is that single rooms are not a guaranteed fix. The details and context really matter. Getting it right requires thoughtful design and a close eye on costs and trade-offs. Going forward, the programme should build on its commitment to researching what works best - and stay open to adjusting its approach based on real-world feedback and new evidence. That openness will be key to making sure innovations like adopting 100% single-bedded rooms genuinely improve care in new hospitals.
 
+***(Peter Spilsbury, Strategy Unit Director)***
+
 
 This work, analysis and report have been a team effort. The following people have made a material contribution to all or part of the development of this work and the various outputs:
 
@@ -185,7 +187,7 @@ There was significant variability following switching to single rooms both withi
 
 For bed occupancy, emergency readmissions, cleaning costs and all health and safety measures there were either positive effects or no change. However, positive, negative and no effects were seen for length of stay, waiting time, patient experience, and staff experience measures. Where there were immediate positive ***or*** negative impacts on a metric, these often regressed back towards prior levels over the longer-term (2 years).
 
-Reduced length of stay could potentially help offset additional costs associated with single room hospitals, however, at general acute hospitals there was no significant change in length of stay (7% reduction (-17% to 2% 95% CI)). At general acute hospitals the proportion of staff recommending their trust as a place to work significantly decreased by 15% (-23% to -6% 95% CI) and staff sickness absences increased by 6% (1% to 12% 95% CI).
+Reduced length of stay could potentially help offset additional costs associated with single room hospitals, however, at general acute hospitals there was no significant change in length of stay (7% reduction (-17% to 2% 95% CI)). At general acute hospitals the patient experience increased signficantly by 1% (+0.1% to +2% 95% CI); the proportion of staff recommending their trust as a place to work significantly decreased by 15% (-23% to -6% 95% CI) and staff sickness absences increased by 6% (1% to 12% 95% CI).
 
 For planning purposes, the NHP may want to take a more conservative approach to modelling the impact on LoS of SBR but also consider other potential efficiency gains i.e. reduced waiting times, reduction in falls/injuries and infections. Additionally, acknowledging the potential adverse impacts on staff experiences, qualitative monitoring of impacts would aid in implementation and mitigation strategies.
 
@@ -713,7 +715,7 @@ Also, more data is needed to fully understand the impacts of single bedrooms on 
 
 Further analysis would be needed to fully understand the impact on waiting times and waiting list sizes, given the dynamic nature of waiting lists. This is a measure where there could be cumulative effects over time, and also a new or redesigned hospital could result in more or less people being referred, so waiting list size/time will not just be dependent on hospital productivity.
 
-Future work should focus on understanding how/whether outcomes in single room hospitals may be impacted by factors such as the layout and design of a hospital, culture, use of technology and ways of working.
+Future work should focus on understanding how/whether outcomes in single room hospitals may be impacted by factors such as the layout and design of a hospital, culture, use of technology and ways of working. Additionally, for length of stay in particular, work to understand specialty or patient group impacts would support more specific modelling assumptions.
 
 # Appendices
 

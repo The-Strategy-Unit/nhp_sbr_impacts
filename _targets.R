@@ -227,7 +227,7 @@ list(
   
   # to add in org/site names
   tar_target(ref_org_sites_filepath,
-             "data/ref_organisations_sites.csv"),
+             "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/data/ref_organisations_sites.csv"),
   
   tar_target(
     ref_org_sites,
@@ -238,7 +238,7 @@ list(
   
   # clatterbridge should be matched to cancer centres:
   tar_target(cancer_centres_filepath,
-             "data/ref_cancer_centres.csv"),
+             "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/data/ref_cancer_centres.csv"),
   
   tar_target(
     cancer_centres,
@@ -247,7 +247,7 @@ list(
   
   # royal papworth should be matched to cardiac sites:
   tar_target(cardiac_site_filepath,
-             "data/ref_cardiac_sites.csv"),
+             "Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/data/ref_cardiac_sites.csv"),
   
   tar_target(
     cardiac_sites,

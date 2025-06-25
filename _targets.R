@@ -36,7 +36,8 @@ tar_option_set(
     "tsibble",
     "zoo",
     "gridExtra"
-  ) # Packages that your targets need for their tasks.
+  ), # Packages that your targets need for their tasks.
+  error = "continue" # continue running rest of pipeline if errors.
 )
 
 # Run the R scripts in the R/ folder with your custom functions:

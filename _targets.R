@@ -18,6 +18,7 @@ tar_option_set(
     "geomtextpath",
     "ggplot2",
     "htmltools",
+    "httr",
     "imputeTS",
     "janitor",
     "kableExtra",

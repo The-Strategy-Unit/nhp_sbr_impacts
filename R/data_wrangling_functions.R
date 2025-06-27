@@ -355,14 +355,12 @@ combine_workforce <- function(workforce_udal, workforce_links) {
 rtt_data_formatting <- function(data) {
   #Functions to pull xls files for RTT waiting times prior to April 2011
   
-  read_rtt <- function(url, name) {
-    tmp = tempfile(fileext = "")
+  read_rtt <- function(name) {
+    safe_name <- paste0(gsub(" ","_",name),".xls")
+    fullpath <- paste0("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt/",safe_name)
     
-    download.file(url = url,
-                  destfile = tmp,
-                  mode = "wb")
     df <-
-      read_excel(tmp, sheet = "Provider", range = cell_limits(c(14, 3), c(NA, NA))) |>
+      read_excel(fullpath, sheet = "Provider", range = cell_limits(c(14, 3), c(NA, NA))) |>
       select(1, 3, 5:57) |>
       gather(key = number_of_weeks_since_referral, value = number_of_incomplete_pathways, -1, -2) |>
       mutate(month = name) |>
@@ -374,14 +372,12 @@ rtt_data_formatting <- function(data) {
   }
   
   
-  read_rtt2 <- function(url, name) {
-    tmp = tempfile(fileext = "")
+  read_rtt2 <- function(name) {
+    safe_name <- paste0(gsub(" ","_",name),".xls")
+    fullpath <- paste0("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt/",safe_name)
     
-    download.file(url = url,
-                  destfile = tmp,
-                  mode = "wb")
     df <-
-      read_excel(tmp, sheet = "Providers", range = cell_limits(c(6, 2), c(NA, NA))) |>
+      read_excel(fullpath, sheet = "Providers", range = cell_limits(c(6, 2), c(NA, NA))) |>
       select(1, 3, 5:57) |>
       gather(key = number_of_weeks_since_referral, value = number_of_incomplete_pathways, -1, -2) |>
       mutate(month = name) |>
@@ -392,14 +388,12 @@ rtt_data_formatting <- function(data) {
     
   }
   
-  read_rtt3 <- function(url, name) {
-    tmp = tempfile(fileext = "")
+  read_rtt3 <- function(name) {
+    safe_name <- paste0(gsub(" ","_",name),".xls")
+    fullpath <- paste0("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt/",safe_name)
     
-    download.file(url = url,
-                  destfile = tmp,
-                  mode = "wb")
     df <-
-      read_excel(tmp, sheet = "Providers", range = cell_limits(c(7, 2), c(NA, NA))) |>
+      read_excel(fullpath, sheet = "Providers", range = cell_limits(c(7, 2), c(NA, NA))) |>
       select(1, 3, 5:57) |>
       gather(key = number_of_weeks_since_referral, value = number_of_incomplete_pathways, -1, -2) |>
       mutate(month = name) |>
@@ -410,14 +404,12 @@ rtt_data_formatting <- function(data) {
     
   }
   
-  read_rtt4 <- function(url, name) {
-    tmp = tempfile(fileext = "")
+  read_rtt4 <- function(name) {
+    safe_name <- paste0(gsub(" ","_",name),".xls")
+    fullpath <- paste0("Z:/Strategic Analytics/Projects 2024/1220 - NHP Single Bed Rooms/Data/rtt/",safe_name)
     
-    download.file(url = url,
-                  destfile = tmp,
-                  mode = "wb")
     df <-
-      read_excel(tmp, sheet = "Providers", range = cell_limits(c(9, 2), c(NA, NA))) |>
+      read_excel(fullpath, sheet = "Providers", range = cell_limits(c(9, 2), c(NA, NA))) |>
       select(1, 3, 5:57) |>
       gather(key = number_of_weeks_since_referral, value = number_of_incomplete_pathways, -1, -2) |>
       mutate(month = name) |>
@@ -430,131 +422,41 @@ rtt_data_formatting <- function(data) {
   
   
   #2010-2011
-  read_rtt(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130104202122mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_126945.xls",
-    "Mar 2011"
-  )
-  read_rtt(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130104202122mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_128319.xls",
-    "Feb 2011"
-  )
-  read_rtt(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130104202122mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_128312.xls",
-    "Jan 2011"
-  )
-  read_rtt(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_128301.xls",
-    "Dec 2010"
-  )
-  read_rtt3(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_123623.xls",
-    "Nov 2010"
-  )
-  read_rtt3(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_122781.xls",
-    "Oct 2010"
-  )
-  read_rtt3(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_121819.xls",
-    "Sep 2010"
-  )
-  read_rtt3(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_132303.xls",
-    "Aug 2010"
-  )
-  read_rtt3(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_119386.xls",
-    "Jul 2010"
-  )
-  read_rtt3(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_118704.xls",
-    "Jun 2010"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_117449.xls",
-    "May 2010"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_123542.xls",
-    "Apr 2010"
-  )
+  read_rtt("Mar 2011")
+  read_rtt("Feb 2011")
+  read_rtt("Jan 2011")
+  read_rtt("Dec 2010")
+  read_rtt3("Nov 2010")
+  read_rtt3("Oct 2010")
+  read_rtt3("Sep 2010")
+  read_rtt3("Aug 2010")
+  read_rtt3("Jul 2010")
+  read_rtt3("Jun 2010")
+  read_rtt2("May 2010")
+  read_rtt2("Apr 2010")
   
   
   #2009-2010
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_132297.xls",
-    "Mar 2010"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_115407.xls",
-    "Feb 2010"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020034mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_114103.xls",
-    "Jan 2010"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_112615.xls",
-    "Dec 2009"
-  )
-  read_rtt4(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_111339.xls",
-    "Nov 2009"
-  )
-  read_rtt4(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_110153.xls",
-    "Oct 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_108744.xls",
-    "Sep 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_110194.xls",
-    "Aug 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_132304.xls",
-    "Jul 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_110211.xls",
-    "Jun 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_110222.xls",
-    "May 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_110218.xls",
-    "Apr 2009"
-  )
+  read_rtt2("Mar 2010")
+  read_rtt2("Feb 2010")
+  read_rtt2("Jan 2010")
+  read_rtt2("Dec 2009")
+  read_rtt4("Nov 2009")
+  read_rtt4("Oct 2009")
+  read_rtt2("Sep 2009")
+  read_rtt2("Aug 2009")
+  read_rtt2("Jul 2009")
+  read_rtt2("Jun 2009")
+  read_rtt2("May 2009")
+  read_rtt2("Apr 2009")
   
   #2008-2009
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_099876.xls",
-    "Mar 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_100042.xls",
-    "Feb 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020037mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_099989.xls",
-    "Jan 2009"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020040mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_095414.xls",
-    "Dec 2008"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020040mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_102155.xls",
-    "Nov 2008"
-  )
-  read_rtt2(
-    "https://webarchive.nationalarchives.gov.uk/ukgwa/20130105020040mp_/http://www.dh.gov.uk/prod_consum_dh/groups/dh_digitalassets/@dh/@en/@ps/@sta/@perf/documents/digitalasset/dh_102163.xls",
-    "Oct 2008"
-  )
+  read_rtt2("Mar 2009")
+  read_rtt2("Feb 2009")
+  read_rtt2("Jan 2009")
+  read_rtt2("Dec 2008")
+  read_rtt2("Nov 2008")
+  read_rtt2("Oct 2008")
   
   # merge pre 2011 files together
   pre2011_rtt_data <-

@@ -58,7 +58,7 @@ windowsFonts('Segoe UI' = windowsFont('Segoe UI'))
 
 ## Background
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 The New Hospitals Programme (NHP) team are considering the impacts of single-bedded inpatient accommodation in it's planning assumptions. A notional figure of 12% reduction in length of stay was being assumed. The Strategy Unit was engaged to review the appropriateness of this figure.
 :::
@@ -66,7 +66,7 @@ The New Hospitals Programme (NHP) team are considering the impacts of single-bed
 ::: {.column width="50%"}
 A rapid analysis of length of stay trends at Royal Liverpool Hospital (switched to single-bed accommodation in October 2022) was undertaken to assess the potential direction and scale of effect. The result of that initial crude analysis suggested some reduction was likely however there is significant potential that factors outside of the data may be influencing the effects, for example case-mix, hospital processes and pathways or wider ecological changes to inpatient demand.
 :::
-:::
+:::::
 
 ## Official bed numbers...
 
@@ -134,7 +134,7 @@ Currently out of scope:
 
 ## Literature Review
 
-::: columns
+::::: columns
 ::: {.column width="50%"}
 A previous systematic evidence review [@HEU2022] on the topic was commissioned by NHS England. The review aimed to identify significant clinical, humanistic and economic outcomes associated with admission to single-bed accommodation compared to shared rooms. The review grouped potential impacts into the following:
 
@@ -147,7 +147,7 @@ A previous systematic evidence review [@HEU2022] on the topic was commissioned b
 ::: {.column width="50%"}
 Conclusive findings were difficult to ascertain, though the review noted that patients generally preferred single rooms and length of stay savings may potentially offset increased costs of providing single-bed accommodation.
 :::
-:::
+:::::
 
 ## Literature review update
 

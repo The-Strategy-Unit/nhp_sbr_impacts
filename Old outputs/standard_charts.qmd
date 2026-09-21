@@ -1,0 +1,876 @@
+---
+title: "Site by Indicator charts"
+format: html
+execute: 
+  echo: false
+  warning: false
+embed-resources: true
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+library(targets)
+library(plotly)
+```
+
+# The intervention sites and their control matches
+
+The following maps demonstrate the location of the intervention sites
+across England and then, for each one individually, show where the
+current set of control sites are.
+
+Currently, the controls are matched according to whether they are part
+of a sub-set of specialty providers e.g. cancer or cardiothoracic and
+then having a similar % of single-bed inpatient rooms prior to the
+switch.
+
+The next iteration of this matching of control sites will include
+factors on hospital size and patient case-mix to improve the suitability
+of comparisons fed into the Causal Impact Analysis.
+
+```{r overview_map}
+tar_read(map_all_sites)
+```
+
+\
+
+::: panel-tabset
+## Royal Liverpool
+
+```{r royal_liverpool_map}
+tar_read(map_REM)
+```
+
+## Clatterbridge
+
+```{r clatterbridge_map}
+tar_read(map_REN)
+```
+
+## Royal Papworth
+
+```{r royal_papworth_map}
+tar_read(map_RGM)
+```
+
+## Peterborough
+
+```{r peterborough_map}
+tar_read(map_RGN)
+```
+
+## Chase Farm
+
+```{r chase_farm_map}
+tar_read(map_RAL)
+```
+
+## Southmead
+
+```{r southmead_map}
+tar_read(map_RVJ)
+```
+
+## Tunbridge Wells
+
+```{r tunbridge_wells_map}
+tar_read(map_RWF)
+```
+:::
+
+# The trends for each impact measure
+
+For all the indicator charts below:
+
+-   The black line is the trend for the hospital of interest
+-   The grey lines are the trends for each control for the hospital of
+    interest
+-   The blue line is for the onset of COVID-19
+-   The orange line is for the month where the hospital of interest
+    introduced single bedrooms
+
+::: panel-tabset
+## Bed occupancy
+
+These are the charts for bed occupancy percentage, taken from the
+quarterly [KH03
+collection](https://www.england.nhs.uk/statistics/statistical-work-areas/bed-availability-and-occupancy/bed-availability-and-occupancy-kh03/).
+
+### Royal Liverpool
+
+```{r royal_liverpool_bed_occupancy}
+tar_read(plot_bed_occupancy_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_bed_occupancy}
+tar_read(plot_bed_occupancy_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_bed_occupancy}
+tar_read(plot_bed_occupancy_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_bed_occupancy}
+tar_read(plot_bed_occupancy_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_bed_occupancy}
+tar_read(plot_bed_occupancy_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_bed_occupancy}
+tar_read(plot_bed_occupancy_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_bed_occupancy}
+tar_read(plot_bed_occupancy_RWF) |> 
+  ggplotly()
+```
+
+## Cleaning service costs
+
+These are the charts for cleaning service costs, taken from the annual
+[Estates Returns Information
+Collection](https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection).
+
+### Royal Liverpool
+
+```{r royal_liverpool_cleaning_costs}
+tar_read(plot_cleaning_costs_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_cleaning_costs}
+tar_read(plot_cleaning_costs_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_cleaning_costs}
+tar_read(plot_cleaning_costs_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_cleaning_costs}
+tar_read(plot_cleaning_costs_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_cleaning_costs}
+tar_read(plot_cleaning_costs_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_cleaning_costs}
+tar_read(plot_cleaning_costs_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_cleaning_costs}
+tar_read(plot_cleaning_costs_RWF) |> 
+  ggplotly()
+```
+
+## Cleaning staff
+
+These are the charts for cleaning staff WTE, taken from the annual
+[Estates Returns Information
+Collection](https://digital.nhs.uk/data-and-information/publications/statistical/estates-returns-information-collection).
+
+### Royal Liverpool
+
+```{r royal_liverpool_cleaning_staff}
+tar_read(plot_cleaning_staff_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_cleaning_staff}
+tar_read(plot_cleaning_staff_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_cleaning_staff}
+tar_read(plot_cleaning_staff_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_cleaning_staff}
+tar_read(plot_cleaning_staff_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_cleaning_staff}
+tar_read(plot_cleaning_staff_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_cleaning_staff}
+tar_read(plot_cleaning_staff_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_cleaning_staff}
+tar_read(plot_cleaning_staff_RWF) |> 
+  ggplotly()
+```
+
+## Falls and Fractures
+
+These are the charts for the number of falls and fractures per 10000
+beddays.
+
+### Royal Liverpool
+
+```{r royal_liverpool_falls_and_fractures}
+tar_read(plot_falls_and_fractures_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_falls_and_fractures}
+tar_read(plot_falls_and_fractures_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_falls_and_fractures}
+tar_read(plot_falls_and_fractures_RWF) |> 
+  ggplotly()
+```
+
+## HCAI
+
+These are the charts for the contributed rate of Healthcare associated
+Infections (HCAI) over time. For each of the bacteria below a rate of
+the number of cases divided by the number of 10000 beddays was
+calculated:
+
+-   Clostridium difficile
+-   Klebsiella
+-   Ecoli
+-   MSSA
+-   MRSA
+-   Pseudomonas Aeruginosa
+
+The combined rate of HCAI was calculated as the sum of the above rates.
+
+### Royal Liverpool
+
+```{r royal_liverpool_hcai}
+tar_read(plot_hcai_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_hcai}
+tar_read(plot_hcai_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_hcai}
+tar_read(plot_hcai_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_hcai}
+tar_read(plot_hcai_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_hcai}
+tar_read(plot_hcai_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_hcai}
+tar_read(plot_hcai_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_hcai}
+tar_read(plot_hcai_RWF) |> 
+  ggplotly()
+```
+
+## Length of Stay
+
+These are the charts for the average length of stay of all admissions in
+that month.
+
+### Royal Liverpool
+
+```{r royal_liverpool_length_of_stay}
+tar_read(plot_length_of_stay_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_length_of_stay}
+tar_read(plot_length_of_stay_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_length_of_stay}
+tar_read(plot_length_of_stay_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_length_of_stay}
+tar_read(plot_length_of_stay_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_length_of_stay}
+tar_read(plot_length_of_stay_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_length_of_stay}
+tar_read(plot_length_of_stay_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_length_of_stay}
+tar_read(plot_length_of_stay_RWF) |> 
+  ggplotly()
+```
+
+## Mortality
+
+These are the charts for the number of deaths in hospital per 1000
+admissions.
+
+### Royal Liverpool
+
+```{r royal_liverpool_sus_deaths}
+tar_read(plot_sus_deaths_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_sus_deaths}
+tar_read(plot_sus_deaths_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_sus_deaths}
+tar_read(plot_sus_deaths_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_sus_deaths}
+tar_read(plot_sus_deaths_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_sus_deaths}
+tar_read(plot_sus_deaths_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_sus_deaths}
+tar_read(plot_sus_deaths_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_sus_deaths}
+tar_read(plot_sus_deaths_RWF) |> 
+  ggplotly()
+```
+
+## Patient experience
+
+These are the charts for the percentage of positive responses in the
+friends and family test.
+
+### Royal Liverpool
+
+```{r royal_liverpool_friends_and_family}
+tar_read(plot_friends_and_family_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_friends_and_family}
+tar_read(plot_friends_and_family_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_friends_and_family}
+tar_read(plot_friends_and_family_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_friends_and_family}
+tar_read(plot_friends_and_family_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_friends_and_family}
+tar_read(plot_friends_and_family_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_friends_and_family}
+tar_read(plot_friends_and_family_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_friends_and_family}
+tar_read(plot_friends_and_family_RWF) |> 
+  ggplotly()
+```
+
+## Readmissions
+
+These are the charts for the percentage of emergency readmissions.
+
+### Royal Liverpool
+
+```{r royal_liverpool_emergency_readmissions}
+tar_read(plot_emergency_readmissions_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_emergency_readmissions}
+tar_read(plot_emergency_readmissions_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_emergency_readmissions}
+tar_read(plot_emergency_readmissions_RWF) |> 
+  ggplotly()
+```
+
+## Staff turnover
+
+These are the charts for the number of staff leavers over the number of
+staff.
+
+### Royal Liverpool
+
+```{r royal_liverpool_staff_turnover}
+tar_read(plot_staff_turnover_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_staff_turnover}
+tar_read(plot_staff_turnover_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_staff_turnover}
+tar_read(plot_staff_turnover_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_staff_turnover}
+tar_read(plot_staff_turnover_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_staff_turnover}
+tar_read(plot_staff_turnover_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_staff_turnover}
+tar_read(plot_staff_turnover_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_staff_turnover}
+tar_read(plot_staff_turnover_RWF) |> 
+  ggplotly()
+```
+
+## Staff sickness absence
+
+These are the charts for the percentage of staff absences due to
+sickness.
+
+### Royal Liverpool
+
+```{r royal_liverpool_staff_sickness}
+tar_read(plot_staff_sickness_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_staff_sickness}
+tar_read(plot_staff_sickness_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_staff_sickness}
+tar_read(plot_staff_sickness_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_staff_sickness}
+tar_read(plot_staff_sickness_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_staff_sickness}
+tar_read(plot_staff_sickness_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_staff_sickness}
+tar_read(plot_staff_sickness_RVJ) |>
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_staff_sickness}
+tar_read(plot_staff_sickness_RWF) |> 
+  ggplotly()
+```
+
+## Staff survey
+
+These are the charts for the percentage of positive responses to the staff 
+survey.
+
+### Royal Liverpool
+
+```{r royal_liverpool_staff_survey}
+tar_read(plot_staff_survey_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_staff_survey}
+tar_read(plot_staff_survey_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_staff_survey}
+tar_read(plot_staff_survey_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_staff_survey}
+tar_read(plot_staff_survey_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_staff_survey}
+tar_read(plot_staff_survey_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_staff_survey}
+tar_read(plot_staff_survey_RVJ) |>
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_staff_survey}
+tar_read(plot_staff_survey_RWF) |> 
+  ggplotly()
+```
+
+## Waiting time
+
+These are the charts for the median RTT waiting time in weeks.
+
+### Royal Liverpool
+
+```{r royal_liverpool_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_rtt_waiting_time}
+tar_read(plot_rtt_waiting_time_RWF) |> 
+  ggplotly()
+```
+
+## Single Bed Rooms
+
+These are the charts for the percentage of total beds being single room
+beds by year. Please note that these are at provider level due to having
+to use KH03 as denominator for total bed numbers in some periods (not
+reported in ERIC).
+
+### Royal Liverpool
+
+```{r royal_liverpool_sbr_percent}
+tar_read(plot_sbr_percent_REM) |> 
+  ggplotly()
+```
+
+### Clatterbridge
+
+```{r clatterbridge_sbr_percent}
+tar_read(plot_sbr_percent_REN) |> 
+  ggplotly()
+```
+
+### Royal Papworth
+
+```{r royal_papworth_sbr_percent}
+tar_read(plot_sbr_percent_RGM) |> 
+  ggplotly()
+```
+
+### Peterborough
+
+```{r peterborough_sbr_percent}
+tar_read(plot_sbr_percent_RGN) |> 
+  ggplotly()
+```
+
+### Chase Farm
+
+```{r chase_farm_sbr_percent}
+tar_read(plot_sbr_percent_RAL) |> 
+  ggplotly()
+```
+
+### Southmead
+
+```{r southmead_sbr_percent}
+tar_read(plot_sbr_percent_RVJ) |> 
+  ggplotly()
+```
+
+### Tunbridge Wells
+
+```{r tunbridge_wells_sbr_percent}
+tar_read(plot_sbr_percent_RWF) |> 
+  ggplotly()
+```
+:::
+
+## Overall Notes
+
+-   COVID-19 has affected all measures
+-   We do not have enough/any data pre SBR for some sites
+-   Clatterbridge not in eric data before 2021
+-   For turnover, should we look at joiners as well as leavers?
+-   Friends and family and falls and fractures have NaN, probably
+    because of zero denominators
+-   Missing Readmissions
+-   SBR available at provider only due to KH03 not being at site level
+    for the denominator
